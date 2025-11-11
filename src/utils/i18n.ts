@@ -59,19 +59,22 @@ export function getTranslation(
   return translation;
 }
 
-// Create a translation function for a specific language and page
-export function createTranslator(
-  language: Language,
+// Create a translation function using Astro's currentLocale
+export function createAstroTranslator(
+  currentLocale: string | undefined,
   page: keyof typeof esTranslations,
 ) {
+  const language = getCurrentLanguage(currentLocale);
   return (key: string): string => getTranslation(language, page, key);
 }
 
-// Get language from URL path
-export function getLanguageFromPath(pathname: string): Language {
-  if (pathname.startsWith("/en")) return "en";
-  if (pathname.startsWith("/ca")) return "ca";
-  return defaultLanguage;
+// Get current language from Astro.currentLocale with fallback
+export function getCurrentLanguage(
+  currentLocale: string | undefined,
+): Language {
+  return currentLocale && isSupportedLanguage(currentLocale)
+    ? (currentLocale as Language)
+    : defaultLanguage;
 }
 
 // Get the base path without language prefix

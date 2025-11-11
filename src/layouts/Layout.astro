@@ -1,17 +1,21 @@
 ---
 import type { Language } from "../utils/i18n";
-import { createTranslator, languagePrefixes } from "../utils/i18n";
+import {
+    createAstroTranslator,
+    getCurrentLanguage,
+    languagePrefixes,
+} from "../utils/i18n";
 import LanguageSwitcher from "../components/LanguageSwitcher.astro";
 
 interface Props {
-    language: Language;
     title?: string;
     description?: string;
     currentPath?: string;
 }
 
-const { language, title, description, currentPath } = Astro.props;
-const t = createTranslator(language, "home");
+const { title, description, currentPath } = Astro.props;
+const language = getCurrentLanguage(Astro.currentLocale);
+const t = createAstroTranslator(Astro.currentLocale, "home");
 
 const pageTitle = title || t("title");
 const pageDescription = description || t("description");
@@ -50,10 +54,7 @@ const pageDescription = description || t("description");
         />
     </head>
     <body>
-        <LanguageSwitcher
-            currentLanguage={language}
-            currentPath={currentPath || Astro.url.pathname}
-        />
+        <LanguageSwitcher currentPath={currentPath || Astro.url.pathname} />
         <slot />
     </body>
 </html>

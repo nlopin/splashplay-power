@@ -7,13 +7,6 @@ export async function getStaticPaths() {
         params: { lang },
     }));
 }
-
-const { lang } = Astro.params;
-
-// Validate that the language is supported
-if (!languages.includes(lang as any)) {
-    return Astro.redirect("/");
-}
 ---
 
-<HomePage requestedLanguage={lang} />
+<HomePage />

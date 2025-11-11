@@ -1,28 +1,10 @@
 ---
 import Welcome from "./Welcome.astro";
 import Layout from "../layouts/Layout.astro";
-import type { Language } from "../utils/i18n";
-import { isSupportedLanguage, defaultLanguage } from "../utils/i18n";
 
-interface Props {
-    requestedLanguage?: string;
-}
-
-const { requestedLanguage } = Astro.props;
-
-let language: Language;
-let currentPath: string;
-
-if (requestedLanguage && isSupportedLanguage(requestedLanguage)) {
-    language = requestedLanguage as Language;
-    currentPath = Astro.url.pathname;
-} else {
-    // Use the original URL for path calculations
-    language = defaultLanguage;
-    currentPath = "/";
-}
+const currentPath = Astro.url.pathname;
 ---
 
-<Layout language={language} currentPath={currentPath}>
-    <Welcome language={language} />
+<Layout currentPath={currentPath}>
+    <Welcome />
 </Layout>

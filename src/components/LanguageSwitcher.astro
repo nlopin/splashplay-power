@@ -1,13 +1,13 @@
 ---
 import type { Language } from "../utils/i18n";
-import { getAlternateLanguageLinks } from "../utils/i18n";
+import { getAlternateLanguageLinks, getCurrentLanguage } from "../utils/i18n";
 
 interface Props {
-    currentLanguage: Language;
     currentPath: string;
 }
 
-const { currentLanguage, currentPath } = Astro.props;
+const { currentPath } = Astro.props;
+const currentLanguage = getCurrentLanguage(Astro.currentLocale);
 const alternateLinks = getAlternateLanguageLinks(currentPath, currentLanguage);
 ---
 
