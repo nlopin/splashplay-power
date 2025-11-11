@@ -1,0 +1,13 @@
+{
+  "home": {
+    "title": "Splashplay - Estudio de Arte en Barcelona",
+    "welcome": "Bienvenido a Splashplay",
+    "description": "Un estudio de arte en Barcelona donde la creatividad fluye libremente y las personas prueban técnicas divertidas y no convencionales para crear tu obra maestra abstracta.",
+    "subtitle": "Para familias, parejas, grupos de amigos y equipos",
+    "getting_started": "Para empezar, abre el directorio",
+    "read_docs": "Lee nuestra documentación",
+    "join_discord": "Únete a nuestro Discord",
+    "news_title": "¿Qué hay de nuevo en Astro 5.0?",
+    "news_description": "Desde capas de contenido hasta islas de servidor, haz clic para aprender más sobre las nuevas características y mejoras en Astro 5.0"
+  }
+}

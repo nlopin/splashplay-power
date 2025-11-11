@@ -1,22 +1,68 @@
+---
+import type { Language } from "../utils/i18n";
+import { createTranslator, languagePrefixes } from "../utils/i18n";
+import LanguageSwitcher from "../components/LanguageSwitcher.astro";
+
+interface Props {
+    language: Language;
+    title?: string;
+    description?: string;
+    currentPath?: string;
+}
+
+const { language, title, description, currentPath } = Astro.props;
+const t = createTranslator(language, "home");
+
+const pageTitle = title || t("title");
+const pageDescription = description || t("description");
+---
+
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang={language}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <meta name="description" content={pageDescription} />
+        <title>{pageTitle}</title>
+
+        <!-- Add alternate language links for SEO -->
+        <link
+            rel="alternate"
+            hreflang="es"
+            href={`${Astro.site}${languagePrefixes.es}${Astro.url.pathname.replace(/^\/(en|ca)/, "") || "/"}`}
+        />
+        <link
+            rel="alternate"
+            hreflang="en"
+            href={`${Astro.site}${languagePrefixes.en}${Astro.url.pathname.replace(/^\/(en|ca)/, "") || "/"}`}
+        />
+        <link
+            rel="alternate"
+            hreflang="ca"
+            href={`${Astro.site}${languagePrefixes.ca}${Astro.url.pathname.replace(/^\/(en|ca)/, "") || "/"}`}
+        />
+        <link
+            rel="alternate"
+            hreflang="x-default"
+            href={`${Astro.site}${Astro.url.pathname.replace(/^\/(en|ca)/, "") || "/"}`}
+        />
+    </head>
+    <body>
+        <LanguageSwitcher
+            currentLanguage={language}
+            currentPath={currentPath || Astro.url.pathname}
+        />
+        <slot />
+    </body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+    html,
+    body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+    }
 </style>

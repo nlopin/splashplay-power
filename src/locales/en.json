@@ -1,0 +1,13 @@
+{
+  "home": {
+    "title": "Splashplay - Art Studio in Barcelona",
+    "welcome": "Welcome to Splashplay",
+    "description": "An art studio in Barcelona where creativity flows freely and people try playful unconventional techniques to create your abstract masterpiece.",
+    "subtitle": "For families, couples, groups of friends and teams",
+    "getting_started": "To get started, open the",
+    "read_docs": "Read our docs",
+    "join_discord": "Join our Discord",
+    "news_title": "What's New in Astro 5.0?",
+    "news_description": "From content layers to server islands, click to learn more about the new features and improvements in Astro 5.0"
+  }
+}

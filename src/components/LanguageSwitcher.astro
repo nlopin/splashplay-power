@@ -1,0 +1,65 @@
+---
+import type { Language } from "../utils/i18n";
+import { getAlternateLanguageLinks } from "../utils/i18n";
+
+interface Props {
+    currentLanguage: Language;
+    currentPath: string;
+}
+
+const { currentLanguage, currentPath } = Astro.props;
+const alternateLinks = getAlternateLanguageLinks(currentPath, currentLanguage);
+---
+
+<div class="language-switcher">
+    <select id="language-selector" data-current-path={currentPath}>
+        {
+            alternateLinks.map(({ name, url, current }) => (
+                <option value={url} selected={current}>
+                    {name}
+                </option>
+            ))
+        }
+    </select>
+</div>
+
+<script>
+    const selector = document.getElementById(
+        "language-selector",
+    ) as HTMLSelectElement;
+
+    if (selector) {
+        selector.addEventListener("change", (event) => {
+            const target = event.target as HTMLSelectElement;
+            const url = target.value;
+            window.location.href = url;
+        });
+    }
+</script>
+
+<style>
+    .language-switcher {
+        display: inline-block;
+        margin: 16px;
+    }
+
+    #language-selector {
+        background: linear-gradient(83.21deg, #3245ff 0%, #bc52ee 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 12px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+    #language-selector:hover {
+        opacity: 0.9;
+    }
+
+    #language-selector option {
+        background: white;
+        color: #111827;
+    }
+</style>

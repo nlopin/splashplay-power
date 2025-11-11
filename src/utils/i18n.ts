@@ -1,0 +1,112 @@
+export type Language = "es" | "en" | "ca";
+
+export const defaultLanguage: Language = "es";
+
+export const languages: Language[] = ["es", "en", "ca"];
+
+export const languageNames: Record<Language, string> = {
+  es: "Español",
+  en: "English",
+  ca: "Català",
+};
+
+export const languagePrefixes: Record<Language, string> = {
+  es: "", // Default language has no prefix
+  en: "/en",
+  ca: "/ca",
+};
+
+// Import translation files
+import esTranslations from "../locales/es.json";
+import enTranslations from "../locales/en.json";
+import caTranslations from "../locales/ca.json";
+
+type Translations = Record<Language, typeof esTranslations>;
+
+const translations: Translations = {
+  es: esTranslations,
+  en: enTranslations,
+  ca: caTranslations,
+};
+
+const languagesSet = new Set<string>(languages);
+export const isSupportedLanguage = (
+  maybeLanguage: string,
+): maybeLanguage is Language => languagesSet.has(maybeLanguage);
+
+export function getTranslation(
+  language: Language,
+  page: keyof typeof esTranslations,
+  key: string,
+): string {
+  const pageTranslations = translations[language]?.[page];
+  if (!pageTranslations) {
+    if (import.meta.env.DEV) {
+      console.error(`Missing translation page: ${language}.${page}`);
+    }
+    return key;
+  }
+
+  const translation = pageTranslations[key as keyof typeof pageTranslations];
+
+  if (!translation) {
+    if (import.meta.env.DEV) {
+      console.error(`Missing translation: ${language}.${page}.${key}`);
+    }
+    return key;
+  }
+
+  return translation;
+}
+
+// Create a translation function for a specific language and page
+export function createTranslator(
+  language: Language,
+  page: keyof typeof esTranslations,
+) {
+  return (key: string): string => getTranslation(language, page, key);
+}
+
+// Get language from URL path
+export function getLanguageFromPath(pathname: string): Language {
+  if (pathname.startsWith("/en")) return "en";
+  if (pathname.startsWith("/ca")) return "ca";
+  return defaultLanguage;
+}
+
+// Get the base path without language prefix
+export function getPathWithoutLanguage(pathname: string): string {
+  for (const lang of languages) {
+    const prefix = languagePrefixes[lang];
+    if (prefix && pathname.startsWith(prefix)) {
+      return pathname.slice(prefix.length) || "/";
+    }
+  }
+  return pathname;
+}
+
+// Generate URL for a specific language
+export function getLocalizedPath(path: string, language: Language): string {
+  const prefix = languagePrefixes[language];
+  const cleanPath = getPathWithoutLanguage(path);
+
+  if (cleanPath === "/") {
+    return prefix || "/";
+  }
+  return prefix + cleanPath;
+}
+
+// Get alternate language links for current page
+export function getAlternateLanguageLinks(
+  currentPath: string,
+  currentLanguage: Language,
+) {
+  const basePath = getPathWithoutLanguage(currentPath);
+
+  return languages.map((lang) => ({
+    language: lang,
+    name: languageNames[lang],
+    url: getLocalizedPath(basePath, lang),
+    current: lang === currentLanguage,
+  }));
+}
