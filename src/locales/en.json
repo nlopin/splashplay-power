@@ -9,5 +9,10 @@
     "join_discord": "Join our Discord",
     "news_title": "What's New in Astro 5.0?",
     "news_description": "From content layers to server islands, click to learn more about the new features and improvements in Astro 5.0"
+  },
+  "book": {
+    "couples_one_small": "One canvas, 30×40cm",
+    "couples_one_big": "Big one canvas, 60×90cm",
+    "couples_individual": "A 30×40cm canvas for each"
   }
 }

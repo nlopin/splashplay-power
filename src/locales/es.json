@@ -9,5 +9,10 @@
     "join_discord": "Únete a nuestro Discord",
     "news_title": "¿Qué hay de nuevo en Astro 5.0?",
     "news_description": "Desde capas de contenido hasta islas de servidor, haz clic para aprender más sobre las nuevas características y mejoras en Astro 5.0"
+  },
+  "book": {
+    "couples_one_small": "Lienzo standard, 30×40cm",
+    "couples_one_big": "Lienzo grande",
+    "couples_individual": "Dos lienzos 30×40cm"
   }
 }

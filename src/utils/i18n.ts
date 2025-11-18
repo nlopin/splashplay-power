@@ -34,6 +34,14 @@ export const isSupportedLanguage = (
   maybeLanguage: string,
 ): maybeLanguage is Language => languagesSet.has(maybeLanguage);
 
+export function getPageTranslations(
+  locale: string | undefined,
+  page: keyof typeof esTranslations,
+): (typeof esTranslations)[keyof typeof esTranslations] {
+  const language = getCurrentLanguage(locale);
+  return translations[language]?.[page];
+}
+
 export function getTranslation(
   language: Language,
   page: keyof typeof esTranslations,
@@ -47,6 +55,7 @@ export function getTranslation(
     return key;
   }
 
+  // todo: arbitrary depth of keys, now only one
   const translation = pageTranslations[key as keyof typeof pageTranslations];
 
   if (!translation) {
