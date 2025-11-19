@@ -9,9 +9,8 @@ const MILLISECONDS_IN_ONE_DAY = 24 * 60 * 60 * 1000;
 const EventTypeAvailableTimesSchema = z.looseObject({
   collection: z.array(
     z.object({
-      invitees_remaining: 1,
-      scheduling_url:
-        "https://calendly.com/splashplay-studio/friends-painting-experience/2025-10-27T11:00:00+00:00",
+      invitees_remaining: z.number(),
+      scheduling_url: z.string(),
       start_time: z.iso.datetime(),
       status: z.string(),
     }),
@@ -20,9 +19,25 @@ const EventTypeAvailableTimesSchema = z.looseObject({
 
 const eventType = "0b5a2e63-1554-4634-8c1d-65f8ce36fa74";
 
-async function getAvailableTime(days = BOOK_IN_ADVANCE) {
+let cache: {
+  data: z.infer<typeof EventTypeAvailableTimesSchema>["collection"];
+  timestamp: number;
+} | null = null;
+
+const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+
+export function resetCache() {
+  cache = null;
+}
+
+export async function getAvailableTime(days = BOOK_IN_ADVANCE) {
+  if (cache && Date.now() - cache.timestamp < CACHE_DURATION) {
+    console.log("Cache hit");
+    return cache.data;
+  }
+
   const batchCount = Math.ceil(days / BATCH_SIZE_IN_DAYS);
-  const availableTimes = [];
+  const availableTimes: z.infer<typeof EventTypeAvailableTimesSchema>["collection"] = [];
   const now = new Date();
   const startDate = new Date(
     Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0),
@@ -30,8 +45,8 @@ async function getAvailableTime(days = BOOK_IN_ADVANCE) {
   for (let i = 0; i < batchCount; i++) {
     const batchStartDate = new Date(
       startDate.getTime() +
-        MILLISECONDS_IN_ONE_DAY +
-        i * BATCH_SIZE_IN_DAYS * MILLISECONDS_IN_ONE_DAY,
+      MILLISECONDS_IN_ONE_DAY +
+      i * BATCH_SIZE_IN_DAYS * MILLISECONDS_IN_ONE_DAY,
     );
     const batchEndDate = new Date(
       batchStartDate.getTime() + MILLISECONDS_IN_ONE_DAY * BATCH_SIZE_IN_DAYS,
@@ -66,6 +81,11 @@ async function getAvailableTime(days = BOOK_IN_ADVANCE) {
       }
     }
   }
+
+  cache = {
+    data: availableTimes,
+    timestamp: Date.now(),
+  };
 
   return availableTimes;
 }

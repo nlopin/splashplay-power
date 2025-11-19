@@ -1,19 +1,32 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import {
-    createAstroTranslator,
-    getPageTranslations,
-    languages,
-} from "../../utils/i18n";
+import { getPageTranslations, isSupportedLanguage } from "../../utils/i18n";
 import BookingForm from "../../components/BookingForm.tsx";
+import { getAvailableTime } from "../../services/calendly";
 
-export async function getStaticPaths() {
-    return languages.map((lang) => ({ params: { lang } }));
+export const prerender = false;
+
+const { lang } = Astro.params;
+
+if (!lang || !isSupportedLanguage(lang)) {
+    return Astro.redirect("/404");
 }
 
-const translations = getPageTranslations(Astro.currentLocale, "book");
+const translations = getPageTranslations(lang, "book");
+
+const availableTimes = await getAvailableTime();
+const camelCaseTimes = availableTimes.map((time) => ({
+    inviteesRemaining: time.invitees_remaining,
+    schedulingUrl: time.scheduling_url,
+    startTime: time.start_time,
+    status: time.status,
+}));
 ---
 
 <Layout>
-    <BookingForm translations={translations} client:load />
+    <BookingForm
+        translations={translations}
+        initialAvailability={camelCaseTimes}
+        client:load
+    />
 </Layout>
