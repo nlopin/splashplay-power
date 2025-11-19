@@ -6,21 +6,21 @@ import {
 } from "@stripe/react-stripe-js/checkout";
 import {
   useState,
-  useMemo,
-  createContext,
-  type ReactNode,
-  useContext,
-  useEffect,
+  useRef,
 } from "react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import CouplesOptions from "./checkout/CouplesOptions";
-import type { createAstroTranslator } from "../utils/i18n";
+import * as z from "zod"
 
 const stripePromise = loadStripe(
   "pk_test_51Qyruz4egtrwKqHbiNj9GZWNMlws7RNZDLFBMCIHdACP2vgcEnFIZOLOzFqXIf7iKVBeX14WrmxHun1dMIuA67ic00PavaO1vu",
 );
 
 import { TranslatorProvider } from "./TranslatorContext";
+
+const paymentSessionResponseSchema = z.object({
+  clientSecret: z.string(),
+});
 
 export default function BookingForm({
   translations,
@@ -30,48 +30,82 @@ export default function BookingForm({
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
+  const [currentAmount, setCurrentAmount] = useState(8000); // Default to big canvas price
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    fetch("/api/payment-session", {
-      method: "POST",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setClientSecret(data.clientSecret);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("Failed to load payment session");
-        setIsLoading(false);
+  const handlePriceChange = async (data: {
+    amount: number;
+    productName: string;
+  }) => {
+    const { amount, productName } = data;
+    setCurrentAmount(amount);
+    setIsFetching(true);
+    setError(null);
+
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    try {
+      const res = await fetch("/api/payment-session", {
+        method: "POST",
+        body: JSON.stringify({ amount, productName }),
+        signal: controller.signal,
       });
-  }, []);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
 
-  if (error || !clientSecret) {
+      const responseData = await res.json();
+      const parseResult = paymentSessionResponseSchema.safeParse(responseData);
+      if (!parseResult.success) {
+        throw new Error("Invalid response from server", { cause: parseResult.error });
+      }
+
+      setClientSecret(parseResult.data.clientSecret);
+      setIsLoading(false);
+    } catch (err: any) {
+      if (err.name === "AbortError") {
+        console.log("Request aborted");
+        return;
+      }
+      console.error(err);
+      setError("Failed to load payment session");
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  if (error) {
     return <div>Error: {error || "Could not initialize payment"}</div>;
   }
 
   return (
     <TranslatorProvider translations={translations}>
       <AvailabilityCalendar />
-      <CouplesOptions />
-      <CheckoutProvider
-        stripe={stripePromise}
-        options={{
-          clientSecret,
-          elementsOptions: {
-            appearance: {
-              theme: "stripe",
+      <CouplesOptions onChange={handlePriceChange} />
+      {isLoading || !clientSecret ? (
+        <div>Loading...</div>
+      ) : (
+        <CheckoutProvider
+          stripe={stripePromise}
+          options={{
+            clientSecret,
+            elementsOptions: {
+              appearance: {
+                theme: "stripe",
+              },
             },
-          },
-        }}
-      >
-        <CheckoutForm />
-      </CheckoutProvider>
+          }}
+        >
+          <CheckoutForm amount={currentAmount} isFetching={isFetching} />
+        </CheckoutProvider>
+      )}
     </TranslatorProvider>
   );
 }
@@ -126,7 +160,7 @@ const EmailInput = ({ email, setEmail, error, setError }) => {
   );
 };
 
-const CheckoutForm = () => {
+const CheckoutForm = ({ amount, isFetching }: { amount: number; isFetching: boolean }) => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(null);
   const [message, setMessage] = useState(null);
@@ -175,11 +209,11 @@ const CheckoutForm = () => {
       />*/}
       <h4>Payment</h4>
       <PaymentElement id="payment-element" />
-      <button disabled={isLoading} id="submit">
+      <button disabled={isLoading || isFetching} id="submit">
         {isLoading || checkoutState.type === "loading" ? (
           <div className="spinner">Thinking</div>
         ) : (
-          `Pay ${checkoutState.checkout.total.total.amount} now`
+          `Pay ${(amount / 100).toFixed(2)}€ now`
         )}
       </button>
       {/* Show any error or success messages */}

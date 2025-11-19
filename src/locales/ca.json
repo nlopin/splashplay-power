@@ -9,5 +9,9 @@
     "join_discord": "Uneix-te al nostre Discord",
     "news_title": "Què hi ha de nou a Astro 5.0?",
     "news_description": "Des de capes de contingut fins a illes de servidor, fes clic per aprendre més sobre les noves característiques i millores d'Astro 5.0"
+  "book": {
+    "couples_one_small": "Un llenç, 30×40cm",
+    "couples_one_big": "Un llenç gran, 60×90cm",
+    "couples_individual": "Un llenç de 30×40cm per a cadascun"
   }
 }
