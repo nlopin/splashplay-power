@@ -25,6 +25,10 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
+      PUBLIC_STRIPE_PUBLISHABLE_KEY: envField.string({
+        context: "client",
+        access: "public",
+      }),
     },
   },
 

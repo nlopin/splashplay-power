@@ -4,17 +4,13 @@ import {
   PaymentElement,
   useCheckout,
 } from "@stripe/react-stripe-js/checkout";
-import {
-  useState,
-  useRef,
-} from "react";
+import { useState, useRef } from "react";
 import AvailabilityCalendar from "./AvailabilityCalendar";
 import CouplesOptions from "./checkout/CouplesOptions";
-import * as z from "zod"
+import * as z from "zod";
+import { PUBLIC_STRIPE_PUBLISHABLE_KEY } from "astro:env/client";
 
-const stripePromise = loadStripe(
-  "pk_test_51Qyruz4egtrwKqHbiNj9GZWNMlws7RNZDLFBMCIHdACP2vgcEnFIZOLOzFqXIf7iKVBeX14WrmxHun1dMIuA67ic00PavaO1vu",
-);
+const stripePromise = loadStripe(PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 import { TranslatorProvider } from "./TranslatorContext";
 
@@ -64,7 +60,9 @@ export default function BookingForm({
       const responseData = await res.json();
       const parseResult = paymentSessionResponseSchema.safeParse(responseData);
       if (!parseResult.success) {
-        throw new Error("Invalid response from server", { cause: parseResult.error });
+        throw new Error("Invalid response from server", {
+          cause: parseResult.error,
+        });
       }
 
       setClientSecret(parseResult.data.clientSecret);
@@ -160,7 +158,13 @@ const EmailInput = ({ email, setEmail, error, setError }) => {
   );
 };
 
-const CheckoutForm = ({ amount, isFetching }: { amount: number; isFetching: boolean }) => {
+const CheckoutForm = ({
+  amount,
+  isFetching,
+}: {
+  amount: number;
+  isFetching: boolean;
+}) => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(null);
   const [message, setMessage] = useState(null);
