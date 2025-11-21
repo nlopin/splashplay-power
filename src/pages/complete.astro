@@ -1,0 +1,121 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getPageTranslations } from "../utils/i18n";
+import Stripe from "stripe";
+import { STRIPE_SECRET_KEY } from "astro:env/server";
+
+export const prerender = false;
+
+const lang = "es";
+const translations = getPageTranslations(lang, "complete");
+const sessionId = Astro.url.searchParams.get("session_id");
+
+if (!sessionId) {
+    return Astro.redirect("/");
+}
+
+const stripe = new Stripe(STRIPE_SECRET_KEY, {
+    apiVersion: "2025-10-29.clover",
+});
+
+let session;
+let status = "loading";
+let message = translations.processing;
+
+try {
+    session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    if (session.status === "complete" && session.payment_status === "paid") {
+        status = "success";
+        message = translations.message;
+    } else if (session.status === "open") {
+        status = "processing";
+        message = translations.processing;
+    } else {
+        status = "failed";
+        message = translations.failed;
+    }
+} catch (error) {
+    console.error("Error retrieving Stripe session:", error);
+    status = "error";
+    message = translations.failed;
+}
+---
+
+<Layout title={translations.title}>
+    <div class="container">
+        <div class="content">
+            <h1>
+                {
+                    status === "success"
+                        ? translations.title
+                        : status === "processing"
+                          ? translations.processing
+                          : translations.failed
+                }
+            </h1>
+            <p>{message}</p>
+
+            {
+                status === "failed" || status === "error" ? (
+                    <a href="/book" class="button">
+                        {translations.back_to_book}
+                    </a>
+                ) : null
+            }
+
+            {status === "success" ? <div class="success-icon">🎉</div> : null}
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .content {
+        background: white;
+        padding: 3rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
+    }
+
+    h1 {
+        color: var(--color-primary);
+        margin-bottom: 1.5rem;
+    }
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        color: #4b5563;
+    }
+
+    .button {
+        display: inline-block;
+        background-color: var(--color-primary);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.2s;
+    }
+
+    .button:hover {
+        background-color: var(--color-primary-dark);
+    }
+
+    .success-icon {
+        font-size: 4rem;
+        margin-top: 2rem;
+    }
+</style>

@@ -3,16 +3,266 @@
     "title": "Splashplay - Art Studio in Barcelona",
     "welcome": "Welcome to Splashplay",
     "description": "An art studio in Barcelona where creativity flows freely and people try playful unconventional techniques to create your abstract masterpiece.",
-    "subtitle": "For families, couples, groups of friends and teams",
-    "getting_started": "To get started, open the",
-    "read_docs": "Read our docs",
-    "join_discord": "Join our Discord",
-    "news_title": "What's New in Astro 5.0?",
-    "news_description": "From content layers to server islands, click to learn more about the new features and improvements in Astro 5.0"
+    "subtitle": "For families, couples, groups of friends and teams"
+  },
+  "main": {
+    "nav_techniques": "Techniques",
+    "nav_pricing": "Prices",
+    "nav_gift_cards": "Gift Certificates",
+    "nav_experience": "Experience",
+    "nav_gallery": "Gallery",
+    "nav_contact": "Contacts",
+    "hero_title": "Creative Art Studio",
+    "hero_subtitle": "Art studio in Barcelona where creativity flows freely. For families, couples, groups of friends and teams. No skills needed!",
+    "hero_description": "",
+    "cta_book": "BOOK YOUR SESSION",
+    "why_fun": "Why It's Fun: Painting Techniques",
+    "why_fun_description": "Forget about paintbrushes. In our studio you'll try fun and unconventional techniques to create your abstract masterpiece, including:",
+    "techniques": {
+      "pouring": {
+        "title": "Pouring",
+        "description": "Pour different colors and watch them mix forming hypnotic patterns."
+      },
+      "spinning": {
+        "title": "Spinning",
+        "description": "Create radial designs by spinning your canvas after applying paint."
+      },
+      "boxing": {
+        "title": "Boxing",
+        "description": "Box your way to artistic expression with paint-covered boxing gloves."
+      },
+      "balloons": {
+        "title": "Balloons",
+        "description": "Create playful splash patterns by popping paint-filled balloons over the canvas."
+      },
+      "balls": {
+        "title": "Balls",
+        "description": "Create vibrant splatters by throwing paint-dipped padel balls against the canvas."
+      },
+      "guns": {
+        "title": "Water Guns",
+        "description": "Create color explosions by shooting paint with fun water guns on the canvas."
+      },
+      "dripping": {
+        "title": "Dripping",
+        "description": "Create unique strokes by letting paint drip freely on the canvas, pure Pollock style."
+      },
+      "surprise": {
+        "title": "Surprise",
+        "description": "Discover our secret technique: a surprise experience that transforms the canvas into pure fun and color."
+      },
+      "more": "And many more! Try any of these or invent your own!"
+    },
+    "testimonials_title": "What People Say About Us",
+    "testimonials": [
+      {
+        "name": "Sveta",
+        "text": "A great creative space where my friends and I not only painted and had fun, but also discovered something about ourselves.",
+        "highlight": "I'll definitely come back! Highly recommended!"
+      },
+      {
+        "name": "Mario",
+        "text": "We had an amazing time here! I had never painted before, but the playful and creative atmosphere was so welcoming that I created a piece that now hangs proudly in my home.",
+        "highlight": "I had never painted before"
+      },
+      {
+        "name": "Eliseo",
+        "text": "We had a very fun team afternoon, and beautiful things came out even from me, who don't have much art sense",
+        "highlight": "We had a very fun team afternoon"
+      },
+      {
+        "name": "Anastasia",
+        "text": "My friends and I created patterns and designs from our imagination. It was very fun and fascinating to discuss afterwards what each painting could symbolize.",
+        "highlight": ""
+      },
+      {
+        "name": "Jordi",
+        "text": "We came as a family and had a great time. They gave us aprons, shoe covers and gloves so we could paint without getting dirty. The space is very well prepared: there are protected walls, quality materials and many options to experiment with paint.",
+        "highlight": "We came as a family and had a great time"
+      },
+      {
+        "name": "Sergio",
+        "text": "Pleasant and fun experience",
+        "rating": "⭐⭐⭐⭐⭐"
+      }
+    ],
+    "who_for": "Who It's For and What's the Price",
+    "who_for_description": "Our sessions are designed for anyone who wants to combine fun, creativity and connection:",
+    "pricing": {
+      "friends": {
+        "icon": "👯",
+        "title": "Groups of Friends",
+        "price": "€90-180",
+        "duration": "⏱️ 1.5-2 hours",
+        "description": "Friends looking to have a fun time in Barcelona and a unique alternative to bowling, laser tag, karaoke or escape rooms. For a group of 2 to 6 people.",
+        "cta": "Book Now",
+        "info": "MORE INFO"
+      },
+      "couples": {
+        "icon": "👥",
+        "title": "Couples",
+        "price": "€60-90",
+        "duration": "⏱️ 1.5-2 hours",
+        "description": "Couples looking for a new date idea in Barcelona, something more fun and intimate than typical \"art and wine\" and designed just for two.",
+        "cta": "Book Now",
+        "info": "MORE INFO"
+      },
+      "families": {
+        "icon": "👨‍👩‍👧",
+        "title": "Families",
+        "price": "€60-180",
+        "duration": "⏱️ 1.5-2 hours",
+        "description": "Parents with children who want to spend time together in a creative way and strengthen their bonds.",
+        "cta": "Book Now",
+        "info": "MORE INFO"
+      },
+      "teams": {
+        "icon": "🤝",
+        "title": "Teams",
+        "price": "€40 pp",
+        "duration": "⏱️ 2 hours",
+        "description": "Coworkers looking for an unforgettable and fun team building experience.",
+        "cta": "Contact to book"
+      },
+      "individual": {
+        "icon": "👤",
+        "title": "Individual",
+        "price": "€60",
+        "duration": "⏱️ 1.5 hours",
+        "description": "A creative experience just for you",
+        "cta": "Contact to book"
+      }
+    },
+    "open_sessions": "🤗 Open Sessions",
+    "open_sessions_description": "Want to meet new people and just try it out? Join our weekly open sessions — fun painting events where anyone can participate.",
+    "open_sessions_list": [
+      {
+        "title": "🎨 Art Club: Paint & Connect",
+        "price": "€25",
+        "capacity": "👥 6 people",
+        "schedule": "🗓️ Every Sunday",
+        "time": "⏰ 17:00-19:00",
+        "cta": "Join us on Meetup"
+      },
+      {
+        "title": "🎨 Acrylic Pouring Workshop",
+        "price": "€30",
+        "capacity": "👥 6 people",
+        "schedule": "🗓️ Every Tuesday",
+        "time": "⏰ 19:00-21:00",
+        "cta": "Join us on Meetup"
+      },
+      {
+        "title": "🎨 Fun Art Night",
+        "price": "€35",
+        "capacity": "👥 6 people",
+        "schedule": "🗓️ Every Friday",
+        "time": "⏰ 18:30-20:00",
+        "cta": "Join us on Meetup"
+      }
+    ],
+    "gift_cards": "Gift Cards",
+    "gift_cards_description": "Perfect gift for art lovers! Give the gift of creativity.",
+    "gift_cards_subtitle": "The perfect gift for the creative person in your life!",
+    "gift_cards_list": [
+      {
+        "canvases": "1 Canvas",
+        "price": "€60"
+      },
+      {
+        "canvases": "2 Canvases",
+        "price": "€90"
+      },
+      {
+        "canvases": "3 Canvases",
+        "price": "€120"
+      },
+      {
+        "canvases": "4 Canvases",
+        "price": "€140"
+      },
+      {
+        "canvases": "5 Canvases",
+        "price": "€165"
+      },
+      {
+        "canvases": "10 Canvases",
+        "price": "€310"
+      }
+    ],
+    "gift_cards_validity": "All certificates are valid for 12 months. The 10 canvas certificate is valid for 18 months.",
+    "gift_cards_contact": "Contact to purchase",
+    "experience_steps": "Your Experience Step by Step",
+    "steps": [
+      {
+        "number": 1,
+        "title": "Book Your Session",
+        "description": "Choose the date and time that works best for you and your companions and get ready for an unforgettable creative adventure."
+      },
+      {
+        "number": 2,
+        "title": "Arrive and Get a Welcome Drink",
+        "description": "Enter our space, relax and get ready to have fun with art."
+      },
+      {
+        "number": 3,
+        "title": "Get Equipped",
+        "description": "Put on a protective suit, gloves and shoe covers so you can fully immerse yourself without worrying about the mess."
+      },
+      {
+        "number": 4,
+        "title": "Choose Your Colors",
+        "description": "Select your favorite paints and unleash your creativity. No rules, just play!"
+      },
+      {
+        "number": 5,
+        "title": "Create and Have Fun",
+        "description": "Splash, pour, punch or spin to create an abstract masterpiece."
+      },
+      {
+        "number": 6,
+        "title": "Pick Up Your Artwork",
+        "description": "Your painting will be ready to pick up in 24-48 hours once it dries."
+      }
+    ],
+    "ready_create": "🎨 Ready to create art?",
+    "gallery": "Gallery",
+    "gallery_description": "Discover the amazing artworks created by our visitors. Get inspired for your own creative session!",
+    "contact_title": "Contact",
+    "address": "Concili de Trento, 7, Barcelona",
+    "address_metro": "🚇 El Clot (L1, L2) and Glòries (L1)",
+    "directions": "Directions",
+    "whatsapp": "+34 641 671 670",
+    "whatsapp_send": "Send Message",
+    "email": "[email protected]",
+    "email_send": "Send Email",
+    "copyright": "© 2025 SplashPlay Creative Studio. All rights reserved."
   },
   "book": {
     "couples_one_small": "One canvas, 30×40cm",
     "couples_one_big": "Big one canvas, 60×90cm",
-    "couples_individual": "A 30×40cm canvas for each"
+    "couples_individual": "A 30×40cm canvas for each",
+    "contact_details": "Contact Details",
+    "full_name": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "pay_button": "Pay",
+    "payment_header": "Payment",
+    "loading": "Loading...",
+    "thinking": "Thinking",
+    "error_init": "Could not initialize payment",
+    "error_load": "Failed to load payment session",
+    "error_invalid_response": "Invalid response from server",
+    "error_required_fields": "Please fill in all required fields correctly.",
+    "validation_fullname": "Full name is required",
+    "validation_email": "Invalid email address",
+    "validation_phone": "Phone number is required"
+  },
+  "complete": {
+    "title": "Payment Successful!",
+    "message": "Thank you for your booking. You will receive a confirmation email shortly.",
+    "processing": "Processing payment...",
+    "failed": "Payment failed. Please try again.",
+    "back_to_book": "Back to Booking"
   }
 }

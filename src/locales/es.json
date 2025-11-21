@@ -3,16 +3,267 @@
     "title": "Splashplay - Estudio de Arte en Barcelona",
     "welcome": "Bienvenido a Splashplay",
     "description": "Un estudio de arte en Barcelona donde la creatividad fluye libremente y las personas prueban técnicas divertidas y no convencionales para crear tu obra maestra abstracta.",
-    "subtitle": "Para familias, parejas, grupos de amigos y equipos",
-    "getting_started": "Para empezar, abre el directorio",
-    "read_docs": "Lee nuestra documentación",
-    "join_discord": "Únete a nuestro Discord",
-    "news_title": "¿Qué hay de nuevo en Astro 5.0?",
-    "news_description": "Desde capas de contenido hasta islas de servidor, haz clic para aprender más sobre las nuevas características y mejoras en Astro 5.0"
+    "subtitle": "Para familias, parejas, grupos de amigos y equipos"
+  },
+  "main": {
+    "nav_techniques": "Técnicas",
+    "nav_pricing": "Precios",
+    "nav_gift_cards": "Tarjetas Regalo",
+    "nav_experience": "Experiencia",
+    "nav_gallery": "Galería",
+    "nav_contact": "Contacto",
+    "hero_title": "Estudio de Arte Creativo",
+    "hero_subtitle": "Estudio de arte en Barcelona donde la creatividad fluye libremente. Para familias, parejas, grupos de amigos y equipos. ¡No necesitas saber dibujar ni pintar!",
+    "hero_description": "",
+    "cta_book": "RESERVA TU SESIÓN",
+    "why_fun": "Por Qué es Divertido: Técnicas de Pintura",
+    "why_fun_description": "Olvídate de los pinceles. En nuestro estudio probarás técnicas divertidas y poco convencionales para crear tu obra maestra abstracta.",
+    "techniques": {
+      "pouring": {
+        "title": "Vertido",
+        "description": "Vierte diferentes colores y observa cómo se mezclan formando patrones hipnotizantes."
+      },
+      "spinning": {
+        "title": "Giro",
+        "description": "Crea diseños radiales girando tu lienzo después de aplicar la pintura."
+      },
+      "boxing": {
+        "title": "Boxeo",
+        "description": "Golpea tu camino hacia la expresión artística con guantes de boxeo cubiertos de pintura."
+      },
+      "balloons": {
+        "title": "Globos",
+        "description": "Crea patrones de salpicaduras juguetonas explotando globos llenos de pintura sobre el lienzo."
+      },
+      "balls": {
+        "title": "Pelotas",
+        "description": "Crea manchas vibrantes lanzando pelotas de pádel bañadas en pintura contra el lienzo."
+      },
+      "guns": {
+        "title": "Pistolas",
+        "description": "Crea explosiones de color disparando pintura con divertidas pistolas de agua sobre el lienzo."
+      },
+      "dripping": {
+        "title": "Goteo",
+        "description": "Crea trazos únicos dejando que la pintura gotee libremente sobre el lienzo, al puro estilo Pollock."
+      },
+      "surprise": {
+        "title": "Sorpresa",
+        "description": "Descubre nuestra técnica secreta: una experiencia sorpresa que transforma el lienzo en pura diversión y color."
+      },
+      "more": "¡Y muchas más! ¡Prueba alguna de estas o inventa la tuya propia!"
+    },
+    "testimonials_title": "Lo Que Dicen de Nosotros",
+    "testimonials": [
+      {
+        "name": "Sveta",
+        "text": "Un espacio creativo genial donde mis amigos y yo no solo pintamos y nos divertimos, sino que también descubrimos algo sobre nosotros mismos.",
+        "highlight": "¡seguro que volveré! ¡Muy recomendable!"
+      },
+      {
+        "name": "Mario",
+        "text": "¡Lo pasamos increíble aquí! Nunca había pintado, pero el ambiente era tan lúdico y creativo que, de alguna manera, creé una obra que ahora cuelga orgullosamente en mi casa.",
+        "highlight": "Nunca había pintado"
+      },
+      {
+        "name": "Eliseo",
+        "text": "Hemos pasado una tarde muy divertida en equipo, y han salido cosas bonitas incluso yo, que no tengo mucho arte",
+        "highlight": "Hemos pasado una tarde muy divertida en equipo"
+      },
+      {
+        "name": "Anastasia",
+        "text": "Mis amigos y yo creamos patrones y diseños desde nuestra imaginación. Fue muy divertido y fascinante comentar después qué podía simbolizar cada cuadro.",
+        "highlight": ""
+      },
+      {
+        "name": "Jordi",
+        "text": "Fuimos en familia y lo pasamos genial. Nos dieron batas, cubrezapatos y guantes para poder pintar sin mancharnos. El espacio está muy bien preparado: hay paredes protegidas, materiales de calidad y muchas opciones para experimentar con la pintura.",
+        "highlight": "Fuimos en familia y lo pasamos genial"
+      },
+      {
+        "name": "Sergio",
+        "text": "Experiencia agradable y divertida",
+        "rating": "⭐⭐⭐⭐⭐"
+      }
+    ],
+    "who_for": "Para Quién es y Cuál es el Precio",
+    "who_for_description": "Nuestras sesiones están diseñadas para cualquier persona que quiera combinar diversión, creatividad y conexión:",
+    "pricing": {
+      "friends": {
+        "icon": "👯",
+        "title": "Grupos de Amigos",
+        "price": "€90-180",
+        "duration": "⏱️ 1.5-2 horas",
+        "description": "Amigos que buscan pasar un rato divertido en Barcelona y una alternativa única al boliche, el láser tag, el karaoke o las salas de escape. Para un grupo de 2 a 6 personas.",
+        "cta": "Reservar Ahora",
+        "info": "MÁS INFORMACIÓN"
+      },
+      "couples": {
+        "icon": "👥",
+        "title": "Parejas",
+        "price": "€60-90",
+        "duration": "⏱️ 1.5-2 horas",
+        "description": "Parejas que buscan una idea nueva para una cita en Barcelona, algo más divertido e íntimo que el típico «arte y vino» y diseñado solo para dos.",
+        "cta": "Reservar Ahora",
+        "info": "MÁS INFORMACIÓN"
+      },
+      "families": {
+        "icon": "👨‍👩‍👧",
+        "title": "Familias",
+        "price": "€60-180",
+        "duration": "⏱️ 1.5-2 horas",
+        "description": "Padres con hijos que quieran pasar tiempo juntos de una manera creativa y fortalecer sus lazos.",
+        "cta": "Reservar Ahora",
+        "info": "MÁS INFORMACIÓN"
+      },
+      "teams": {
+        "icon": "🤝",
+        "title": "Equipos",
+        "price": "€40 pp",
+        "duration": "⏱️ 2 horas",
+        "description": "Compañeros de trabajo que desean una experiencia de team building inolvidable y divertida.",
+        "cta": "Contacta para reservar"
+      },
+      "individual": {
+        "icon": "👤",
+        "title": "Individual",
+        "price": "€60",
+        "duration": "⏱️ 1.5 horas",
+        "description": "Una experiencia creativa solo para ti",
+        "cta": "Contacta para reservar"
+      }
+    },
+    "cta_more_info": "MÁS INFORMACIÓN",
+    "open_sessions": "🤗 Sesiones Abiertas",
+    "open_sessions_description": "¿Quieres conocer gente nueva y simplemente probarlo? Únete a nuestras sesiones abiertas semanales — eventos de pintura divertidos donde cualquiera puede participar.",
+    "open_sessions_list": [
+      {
+        "title": "🎨 Club de Arte: Pinta y Conecta",
+        "price": "€25",
+        "capacity": "👥 6 personas",
+        "schedule": "🗓️ Todos los domingos",
+        "time": "⏰ 17:00-19:00",
+        "cta": "Únete a nosotros en Meetup"
+      },
+      {
+        "title": "🎨 Taller de Pouring con Acrílico",
+        "price": "€30",
+        "capacity": "👥 6 personas",
+        "schedule": "🗓️ Todos los martes",
+        "time": "⏰ 19:00-21:00",
+        "cta": "Únete a nosotros en Meetup"
+      },
+      {
+        "title": "🎨 Noche de Arte Divertido",
+        "price": "€35",
+        "capacity": "👥 6 personas",
+        "schedule": "🗓️ Todos los viernes",
+        "time": "⏰ 18:30-20:00",
+        "cta": "Únete a nosotros en Meetup"
+      }
+    ],
+    "gift_cards": "Tarjetas Regalo",
+    "gift_cards_description": "¡Regalo perfecto para los amantes del arte! Regala creatividad.",
+    "gift_cards_subtitle": "¡Un regalo perfecto para la persona creativa en tu vida!",
+    "gift_cards_list": [
+      {
+        "canvases": "1 Lienzo",
+        "price": "€60"
+      },
+      {
+        "canvases": "2 Lienzos",
+        "price": "€90"
+      },
+      {
+        "canvases": "3 Lienzos",
+        "price": "€120"
+      },
+      {
+        "canvases": "4 Lienzos",
+        "price": "€140"
+      },
+      {
+        "canvases": "5 Lienzos",
+        "price": "€165"
+      },
+      {
+        "canvases": "10 Lienzos",
+        "price": "€310"
+      }
+    ],
+    "gift_cards_validity": "Todos los certificados son válidos por 12 meses. El certificado de 10 lienzos es válido por 18 meses.",
+    "gift_cards_contact": "Contacta para comprar",
+    "experience_steps": "Tu Experiencia Paso a Paso",
+    "steps": [
+      {
+        "number": 1,
+        "title": "Reserva Tu Sesión",
+        "description": "Elige la fecha y la hora que mejor se adapten a ti y a tus acompañantes y prepárate para una aventura creativa inolvidable."
+      },
+      {
+        "number": 2,
+        "title": "Llega y Recibe una Bebida de Bienvenida",
+        "description": "Entra en nuestro espacio, relájate y prepárate para divertirte con el arte."
+      },
+      {
+        "number": 3,
+        "title": "Equípate",
+        "description": "Ponte un traje protector, guantes y cubrezapatos para que puedas sumergirte completamente sin preocuparte por el desorden."
+      },
+      {
+        "number": 4,
+        "title": "Elige Tus Colores",
+        "description": "Selecciona tus pinturas favoritas y libera tu creatividad. ¡Sin reglas, solo juega!"
+      },
+      {
+        "number": 5,
+        "title": "Crea y Diviértete",
+        "description": "Salpica, vierte, golpea o gira para crear una obra maestra abstracta."
+      },
+      {
+        "number": 6,
+        "title": "Recoge Tu Obra de Arte",
+        "description": "Tu pintura estará lista para recoger en 24-48 horas una vez que se seque."
+      }
+    ],
+    "ready_create": "🎨 ¿Listo para crear arte?",
+    "gallery": "Galería",
+    "gallery_description": "Descubre las increíbles obras de arte creadas por nuestros visitantes. ¡Inspírate para tu propia sesión creativa!",
+    "contact_title": "Contacto",
+    "address": "Concili de Trento, 7, Barcelona",
+    "address_metro": "🚇 El Clot (L1, L2) y Glòries (L1)",
+    "directions": "Cómo Llegar",
+    "whatsapp": "+34 641 671 670",
+    "whatsapp_send": "Enviar Mensaje",
+    "email": "hola@splashplay.es",
+    "email_send": "Enviar Email",
+    "copyright": "© 2025 SplashPlay Creative Studio. Todos los derechos reservados."
   },
   "book": {
     "couples_one_small": "Lienzo standard, 30×40cm",
     "couples_one_big": "Lienzo grande",
-    "couples_individual": "Dos lienzos 30×40cm"
+    "couples_individual": "Un lienzo de 30×40cm para cada uno",
+    "contact_details": "Datos de contacto",
+    "full_name": "Nombre completo",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "pay_button": "Pagar",
+    "payment_header": "Pago",
+    "loading": "Cargando...",
+    "thinking": "Procesando",
+    "error_init": "No se pudo inicializar el pago",
+    "error_load": "Error al cargar la sesión de pago",
+    "error_invalid_response": "Respuesta inválida del servidor",
+    "error_required_fields": "Por favor, rellena todos los campos requeridos correctamente.",
+    "validation_fullname": "El nombre completo es obligatorio",
+    "validation_email": "Dirección de correo inválida",
+    "validation_phone": "El número de teléfono es obligatorio"
+  },
+  "complete": {
+    "title": "¡Pago Exitoso!",
+    "message": "Gracias por tu reserva. Recibirás un correo de confirmación en breve.",
+    "processing": "Procesando pago...",
+    "failed": "El pago ha fallado. Por favor, inténtalo de nuevo.",
+    "back_to_book": "Volver a Reservar"
   }
 }

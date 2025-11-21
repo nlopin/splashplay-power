@@ -1,17 +1,265 @@
 {
   "home": {
     "title": "Splashplay - Estudi d'Art a Barcelona",
-    "welcome": "Benvingut a Splashplay",
-    "description": "Un estudi d'art a Barcelona on la creativitat flueix lliurement i la gent prova tècniques divertides i no convencionals per crear la teva obra mestra abstracta.",
-    "subtitle": "Per a famílies, parelles, grups d'amics i equips",
-    "getting_started": "Per començar, obre el directori",
-    "read_docs": "Llegeix la nostra documentació",
-    "join_discord": "Uneix-te al nostre Discord",
-    "news_title": "Què hi ha de nou a Astro 5.0?",
-    "news_description": "Des de capes de contingut fins a illes de servidor, fes clic per aprendre més sobre les noves característiques i millores d'Astro 5.0"
+    "description": "Un estudi d'art a Barcelona on la creativitat flueix lliurement."
+  },
+  "main": {
+    "nav_home": "Inici",
+    "nav_techniques": "Tècniques",
+    "nav_pricing": "Preus",
+    "nav_gallery": "Galeria",
+    "nav_contact": "Contacte",
+    "hero_title": "Estudi d'Art Creatiu",
+    "hero_subtitle": "Crea obres mestres abstractes amb tècniques divertides com abocament, gir i boxa.",
+    "hero_description": "Zero experiència artística necessària! Perfecte per a individus, parelles i grups.",
+    "cta_book": "Reserva la Teva Sessió",
+    "why_fun": "Per Què és Divertit: Tècniques de Pintura",
+    "why_fun_description": "Oblida't dels pinzells. Al nostre estudi provaràs tècniques divertides i poc convencionals per crear la teva obra mestra abstracta.",
+    "techniques": {
+      "pouring": {
+        "title": "Abocament",
+        "description": "Aboca diferents colors i observa com es barregen formant patrons hipnotitzants."
+      },
+      "spinning": {
+        "title": "Gir",
+        "description": "Crea dissenys radials girant el teu llenç després d'aplicar la pintura."
+      },
+      "boxing": {
+        "title": "Boxa",
+        "description": "Lluita el teu camí cap a l'expressió artística amb guants de boxa coberts de pintura."
+      },
+      "balloons": {
+        "title": "Globus",
+        "description": "Crea patrons de projeccions juguetons fent esclatar globus plens de pintura sobre el llenç."
+      },
+      "balls": {
+        "title": "Pilotes",
+        "description": "Crea taques vibrandes llançant pilotes de pàdel banyades en pintura contra el llenç."
+      },
+      "guns": {
+        "title": "Pistoles",
+        "description": "Crea explosions de color disparant pintura amb divertides pistoles d'aigua sobre el llenç."
+      },
+      "dripping": {
+        "title": "Gota a Gota",
+        "description": "Crea traços únics deixant que la pintura goti lliurement sobre el llenç, estil Pollock pur."
+      },
+      "surprise": {
+        "title": "Sorpresa",
+        "description": "Descobreix la nostra tècnica secreta: una experiència sorpresa que transforma el llenç en pura diversió i color."
+      },
+      "more": "I moltes més! Prova alguna d'aquestes o inventa la teva pròpia!"
+    },
+    "testimonials_title": "Què Diuen de Nosaltres",
+    "testimonials": [
+      {
+        "name": "Sveta",
+        "text": "Un espai creatiu genial on els meus amics i jo no només pintem i ens divertim, sinó que també descobrim algo sobre nosaltres mateixos.",
+        "highlight": "Segur que tornarem! Molt recomanable!"
+      },
+      {
+        "name": "Mario",
+        "text": "Ens ho vam passar increïble aquí! Mai havia pintat, però l'ambient era tan lúdic i creatiu que, d'alguna manera, vaig crear una obra que ara penja orgullosament a casa meva.",
+        "highlight": "Mai havia pintat"
+      },
+      {
+        "name": "Eliseo",
+        "text": "Vam passar una tarda molt divertida en equip, i van sortir coses boniques inclús jo, que no tinc molt art",
+        "highlight": "Vam passar una tarda molt divertida en equip"
+      },
+      {
+        "name": "Anastasia",
+        "text": "Els meus amics i jo vam crear patrons i dissenys des de la nostra imaginació. Va ser molt divertit i fascinant comentar després què podia simbolitzar cada quadre.",
+        "highlight": ""
+      },
+      {
+        "name": "Jordi",
+        "text": "Vam venir en família i ens ho vam passar genial. Ens van donar bates, cobresipatades i guants per poder pintar sense embrutar-nos. L'espai està molt ben preparat: hi ha parets protegides, materials de qualitat i moltes opcions per experimentar amb la pintura.",
+        "highlight": "Vam venir en família i ens ho vam passar genial"
+      },
+      {
+        "name": "Sergio",
+        "text": "Experiència agradable i divertida",
+        "rating": "⭐⭐⭐⭐⭐"
+      }
+    ],
+    "who_for": "Per a Qui és i Quin és el Preu",
+    "who_for_description": "Les nostres sessions estan dissenyades per a qualsevol persona que vulgui combinar diversió, creativitat i connexió:",
+    "pricing": {
+      "friends": {
+        "icon": "👯",
+        "title": "Grups d'Amics",
+        "price": "€90-180",
+        "duration": "⏱️ 1.5-2 hores",
+        "description": "Amics que busquen passar una bona estona a Barcelona i una alternativa única a la bola, l'etiqueta làser, el karaoke o les sales de escape. Per a un grup de 2 a 6 persones.",
+        "cta": "Reserva Ara",
+        "info": "MÉS INFORMACIÓ"
+      },
+      "couples": {
+        "icon": "👥",
+        "title": "Parelles",
+        "price": "€60-90",
+        "duration": "⏱️ 1.5-2 hores",
+        "description": "Parelles que busquen una idea nova per a una cita a Barcelona, algo més divertit i íntim que el típic «art i vi» i dissenyat només per a dos.",
+        "cta": "Reserva Ara",
+        "info": "MÉS INFORMACIÓ"
+      },
+      "families": {
+        "icon": "👨‍👩‍👧",
+        "title": "Famílies",
+        "price": "€60-180",
+        "duration": "⏱️ 1.5-2 hores",
+        "description": "Pares amb fills que vulguin passar temps junts de manera creativa i enfortir els seus vincles.",
+        "cta": "Reserva Ara",
+        "info": "MÉS INFORMACIÓ"
+      },
+      "teams": {
+        "icon": "🤝",
+        "title": "Equips",
+        "price": "€40 pp",
+        "duration": "⏱️ 2 hores",
+        "description": "Companys de treball que desitgen una experiència de consolidació d'equip memorable i divertida.",
+        "cta": "Contacta per reservar"
+      },
+      "individual": {
+        "icon": "👤",
+        "title": "Individual",
+        "price": "€60",
+        "duration": "⏱️ 1.5 hores",
+        "description": "Una experiència creativa només per a tu",
+        "cta": "Contacta per reservar"
+      }
+    },
+    "open_sessions": "🤗 Sessions Obertes",
+    "open_sessions_description": "Vols conèixer gent nova i simplement provar-ho? Uneix-te a les nostres sessions obertes setmanals — events de pintura divertits on qualsevol pot participar.",
+    "open_sessions_list": [
+      {
+        "title": "🎨 Club d'Art: Pinta i Connecta",
+        "price": "€25",
+        "capacity": "👥 6 persones",
+        "schedule": "🗓️ Tots els diumenges",
+        "time": "⏰ 17:00-19:00",
+        "cta": "Uneix-te a nosaltres a Meetup"
+      },
+      {
+        "title": "🎨 Taller d'Abocament amb Acrílica",
+        "price": "€30",
+        "capacity": "👥 6 persones",
+        "schedule": "🗓️ Tots els dimarts",
+        "time": "⏰ 19:00-21:00",
+        "cta": "Uneix-te a nosaltres a Meetup"
+      },
+      {
+        "title": "🎨 Nit d'Art Divertida",
+        "price": "€35",
+        "capacity": "👥 6 persones",
+        "schedule": "🗓️ Tots els divendres",
+        "time": "⏰ 18:30-20:00",
+        "cta": "Uneix-te a nosaltres a Meetup"
+      }
+    ],
+    "gift_cards": "Targetes Regal",
+    "gift_cards_description": "Regal perfecte per als amants de l'art! Regala creativitat.",
+    "gift_cards_subtitle": "El regal perfecte per a la persona creativa de la teva vida!",
+    "gift_cards_list": [
+      {
+        "canvases": "1 Llenç",
+        "price": "€60"
+      },
+      {
+        "canvases": "2 Llençs",
+        "price": "€90"
+      },
+      {
+        "canvases": "3 Llençs",
+        "price": "€120"
+      },
+      {
+        "canvases": "4 Llençs",
+        "price": "€140"
+      },
+      {
+        "canvases": "5 Llençs",
+        "price": "€165"
+      },
+      {
+        "canvases": "10 Llençs",
+        "price": "€310"
+      }
+    ],
+    "gift_cards_validity": "Tots els certificats són vàlids durant 12 mesos. El certificat de 10 llençs és vàlid durant 18 mesos.",
+    "gift_cards_contact": "Contacta per comprar",
+    "experience_steps": "La Teva Experiència Pas a Pas",
+    "steps": [
+      {
+        "number": 1,
+        "title": "Reserva la Teva Sessió",
+        "description": "Tria la data i l'hora que millor s'adaptin a tu i als teus acompanyants i prepara't per a una aventura creativa inesborrable."
+      },
+      {
+        "number": 2,
+        "title": "Arriba i Rep una Beguda de Bienvenida",
+        "description": "Entra al nostre espai, relaxa't i prepara't per divertir-te amb l'art."
+      },
+      {
+        "number": 3,
+        "title": "Equipa't",
+        "description": "Posa't un vestit protector, guants i cobresipatades perquè puguisubmergir-te completament sense preocupar-te del desordre."
+      },
+      {
+        "number": 4,
+        "title": "Tria els Teus Colors",
+        "description": "Selecciona les teves pintures preferides i allibera la teva creativitat. Cap regla, només juga!"
+      },
+      {
+        "number": 5,
+        "title": "Crea i Diverteix-te",
+        "description": "Salpica, aboca, colpeja o gira per crear una obra mestra abstracta."
+      },
+      {
+        "number": 6,
+        "title": "Recull la Teva Obra d'Art",
+        "description": "La teva pintura estarà llesta per recollir en 24-48 hores una vegada que s'hagi secat."
+      }
+    ],
+    "ready_create": "🎨 Llest per crear art?",
+    "gallery": "Galeria",
+    "gallery_description": "Descobreix les increïbles obres d'art creades pels nostres visitants. Inspira't per a la teva pròpia sessió creativa!",
+    "contact_title": "Contacte",
+    "address": "Concili de Trento, 7, Barcelona",
+    "address_metro": "🚇 El Clot (L1, L2) i Glòries (L1)",
+    "directions": "Com Arribar",
+    "whatsapp": "+34 641 671 670",
+    "whatsapp_send": "Enviar Missatge",
+    "email": "[email protected]",
+    "email_send": "Enviar Email",
+    "copyright": "© 2025 SplashPlay Creative Studio. Tots els drets reservats."
+  },
   "book": {
     "couples_one_small": "Un llenç, 30×40cm",
     "couples_one_big": "Un llenç gran, 60×90cm",
-    "couples_individual": "Un llenç de 30×40cm per a cadascun"
+    "couples_individual": "Un llenç de 30×40cm per a cadascú",
+    "contact_details": "Dades de contacte",
+    "full_name": "Nom complet",
+    "email": "Correu electrònic",
+    "phone": "Telèfon",
+    "pay_button": "Pagar",
+    "payment_header": "Pagament",
+    "loading": "Carregant...",
+    "thinking": "Processant",
+    "error_init": "No s'ha pogut inicialitzar el pagament",
+    "error_load": "Error al carregar la sessió de pagament",
+    "error_invalid_response": "Resposta invàlida del servidor",
+    "error_required_fields": "Si us plau, omple tots els camps requerits correctament.",
+    "validation_fullname": "El nom complet és obligatori",
+    "validation_email": "Adreça de correu electrònic invàlida",
+    "validation_phone": "El número de telèfon és obligatori"
+  },
+  "complete": {
+    "title": "Pagament Realitzat!",
+    "message": "Gràcies per la teva reserva. Rebràs un correu de confirmació aviat.",
+    "processing": "Processant pagament...",
+    "failed": "El pagament ha fallat. Si us plau, torna-ho a provar.",
+    "back_to_book": "Tornar a Reservar"
   }
 }

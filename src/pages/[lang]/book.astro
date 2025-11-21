@@ -27,6 +27,7 @@ const camelCaseTimes = availableTimes.map((time) => ({
     <BookingForm
         translations={translations}
         initialAvailability={camelCaseTimes}
+        lang={lang}
         client:load
     />
 </Layout>

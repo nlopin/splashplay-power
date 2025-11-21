@@ -1,41 +1,102 @@
-import { loadStripe } from "@stripe/stripe-js";
-import {
-  CheckoutProvider,
-  PaymentElement,
-  useCheckout,
-} from "@stripe/react-stripe-js/checkout";
-import { useState, useRef } from "react";
-import AvailabilityCalendar from "./AvailabilityCalendar";
-import CouplesOptions from "./checkout/CouplesOptions";
-import * as z from "zod";
-import { PUBLIC_STRIPE_PUBLISHABLE_KEY } from "astro:env/client";
-
-const stripePromise = loadStripe(PUBLIC_STRIPE_PUBLISHABLE_KEY);
-
+import { useState, useRef, useEffect } from "react";
 import { TranslatorProvider } from "./TranslatorContext";
+import { PaymentStep } from "./booking/PaymentStep";
+import { ScheduleStep } from "./booking/ScheduleStep";
+import { CreatePaymentSessionResponseSchema } from "../pages/api/types";
 
-const paymentSessionResponseSchema = z.object({
-  clientSecret: z.string(),
-});
+type Availability = {
+  inviteesRemaining: number;
+  schedulingUrl: string;
+  startTime: string;
+  status: string;
+};
+
+type SelectedTimeSlot = {
+  startTime: string;
+  formattedDate: string;
+  formattedTime: string;
+  schedulingUrl: string;
+};
+
+type Step = "schedule" | "payment";
 
 export default function BookingForm({
   translations,
+  initialAvailability,
+  lang,
 }: {
-  translations: Record<string, string>;
+  translations: any;
+  initialAvailability: Availability[];
+  lang: string;
 }) {
+  // Step management
+  const [currentStep, setCurrentStep] = useState<Step>("schedule");
+
+  // Selection state (kept in memory)
+  const [selectedTimeSlot, setSelectedTimeSlot] =
+    useState<SelectedTimeSlot | null>(null);
+  const [currentAmount, setCurrentAmount] = useState(8000); // Default to big canvas price
+  const [currentProductName, setCurrentProductName] =
+    useState("One Big Canvas");
+
+  // Payment state
   const [clientSecret, setClientSecret] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
-  const [currentAmount, setCurrentAmount] = useState(8000); // Default to big canvas price
+
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const handlePriceChange = async (data: {
-    amount: number;
-    productName: string;
-  }) => {
-    const { amount, productName } = data;
-    setCurrentAmount(amount);
+  // Unified URL state management and validation
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Validate payment step access - redirect if no selection
+    if (shouldRedirectToSchedule(currentStep, selectedTimeSlot)) {
+      redirectToSchedule();
+      setCurrentStep("schedule");
+      return; // Don't continue with URL updates if we're redirecting
+    }
+
+    // Handle browser back/forward navigation
+    const handlePopState = () => {
+      const urlStep = getCurrentStepFromURL();
+
+      // If trying to go to payment without selections, redirect to schedule
+      if (shouldRedirectToSchedule(urlStep, selectedTimeSlot)) {
+        redirectToSchedule();
+        setCurrentStep("schedule");
+        return;
+      }
+
+      // Clear payment state when navigating back to schedule
+      if (urlStep === "schedule" && currentStep === "payment") {
+        setClientSecret(null);
+        setError(null);
+        setIsLoading(false);
+        setIsFetching(false);
+
+        // Abort any pending session creation
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+      }
+
+      // Only update step if it's different to avoid infinite loops
+      if (urlStep !== currentStep) {
+        setCurrentStep(urlStep);
+      }
+    };
+
+    // Update URL when step changes internally
+    updateURLForStep(currentStep);
+
+    // Listen for browser navigation
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [currentStep, selectedTimeSlot]);
+
+  const createSession = async (amount: number, productName: string) => {
     setIsFetching(true);
     setError(null);
 
@@ -49,7 +110,11 @@ export default function BookingForm({
     try {
       const res = await fetch("/api/payment-session", {
         method: "POST",
-        body: JSON.stringify({ amount, productName }),
+        body: JSON.stringify({
+          amount,
+          productName,
+          lang,
+        }),
         signal: controller.signal,
       });
 
@@ -58,170 +123,133 @@ export default function BookingForm({
       }
 
       const responseData = await res.json();
-      const parseResult = paymentSessionResponseSchema.safeParse(responseData);
+      const parseResult =
+        CreatePaymentSessionResponseSchema.safeParse(responseData);
       if (!parseResult.success) {
-        throw new Error("Invalid response from server", {
+        throw new Error(translations.error_invalid_response, {
           cause: parseResult.error,
         });
       }
 
       setClientSecret(parseResult.data.clientSecret);
       setIsLoading(false);
-    } catch (err: any) {
-      if (err.name === "AbortError") {
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
         console.log("Request aborted");
         return;
       }
       console.error(err);
-      setError("Failed to load payment session");
+      setError(translations.error_load);
     } finally {
       setIsFetching(false);
     }
   };
 
+  const handlePriceChange = (data: { amount: number; productName: string }) => {
+    const { amount, productName } = data;
+    setCurrentAmount(amount);
+    setCurrentProductName(productName);
+  };
+
+  const handleTimeSlotSelect = (slot: SelectedTimeSlot | null) => {
+    setSelectedTimeSlot(slot);
+  };
+
+  const handlePayToBook = async () => {
+    if (!selectedTimeSlot) return;
+
+    setIsLoading(true);
+    try {
+      await createSession(currentAmount, currentProductName);
+      // Navigate to payment step - URL will be updated by useEffect
+      setCurrentStep("payment");
+    } catch (error) {
+      setIsLoading(false);
+      // Error is already handled in createSession
+    }
+  };
+
+  const handleEditSelections = () => {
+    // Clear payment state when going back to schedule
+    setClientSecret(null);
+    setError(null);
+    setIsLoading(false);
+    setIsFetching(false);
+
+    // Abort any pending session creation
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    setCurrentStep("schedule");
+  };
+
   if (error) {
-    return <div>Error: {error || "Could not initialize payment"}</div>;
+    return <div>Error: {error || translations.error_init}</div>;
   }
 
   return (
     <TranslatorProvider translations={translations}>
-      <AvailabilityCalendar />
-      <CouplesOptions onChange={handlePriceChange} />
-      {isLoading || !clientSecret ? (
-        <div>Loading...</div>
+      {currentStep === "schedule" ? (
+        <ScheduleStep
+          initialAvailability={initialAvailability}
+          selectedTimeSlot={selectedTimeSlot}
+          currentAmount={currentAmount}
+          currentProductName={currentProductName}
+          isLoading={isLoading}
+          onTimeSlotSelect={handleTimeSlotSelect}
+          onPriceChange={handlePriceChange}
+          onPayToBook={handlePayToBook}
+          translations={translations}
+        />
       ) : (
-        <CheckoutProvider
-          stripe={stripePromise}
-          options={{
-            clientSecret,
-            elementsOptions: {
-              appearance: {
-                theme: "stripe",
-              },
-            },
-          }}
-        >
-          <CheckoutForm amount={currentAmount} isFetching={isFetching} />
-        </CheckoutProvider>
+        <PaymentStep
+          selectedTimeSlot={selectedTimeSlot!}
+          currentAmount={currentAmount}
+          currentProductName={currentProductName}
+          clientSecret={clientSecret}
+          isLoading={isLoading}
+          isFetching={isFetching}
+          onEditSelections={handleEditSelections}
+          translations={translations}
+        />
       )}
     </TranslatorProvider>
   );
 }
 
-const validateEmail = async (email, checkout) => {
-  const updateResult = await checkout.updateEmail(email);
-  const isValid = updateResult.type !== "error";
+function getCurrentStepFromURL(): Step {
+  if (typeof window === "undefined") return "schedule";
 
-  return { isValid, message: !isValid ? updateResult.error.message : null };
-};
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get("step") === "payment" ? "payment" : "schedule";
+}
 
-const EmailInput = ({ email, setEmail, error, setError }) => {
-  const checkoutState = useCheckout();
-  if (checkoutState.type === "loading") {
-    return <div>Loading...</div>;
-  } else if (checkoutState.type === "error") {
-    return <div>Error: {checkoutState.error.message}</div>;
-  }
-  const { checkout } = checkoutState;
+function updateURLForStep(step: Step): void {
+  if (typeof window === "undefined") return;
 
-  const handleBlur = async () => {
-    if (!email) {
-      return;
-    }
-
-    const { isValid, message } = await validateEmail(email, checkout);
-    if (!isValid) {
-      setError(message);
-    }
-  };
-
-  const handleChange = (e) => {
-    setError(null);
-    setEmail(e.target.value);
-  };
-
-  return (
-    <>
-      <label>
-        Email
-        <input
-          id="email"
-          type="text"
-          value={email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          className={error ? "error" : ""}
-        />
-      </label>
-      {error && <div id="email-errors">{error}</div>}
-    </>
-  );
-};
-
-const CheckoutForm = ({
-  amount,
-  isFetching,
-}: {
-  amount: number;
-  isFetching: boolean;
-}) => {
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(null);
-  const [message, setMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const checkoutState = useCheckout();
-  if (checkoutState.type === "error") {
-    return <div>Error: {checkoutState.error.message}</div>;
+  const url = new URL(window.location.href);
+  if (step === "schedule") {
+    url.searchParams.delete("step");
+  } else {
+    url.searchParams.set("step", "payment");
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const newUrl = url.pathname + (url.search ? url.search : "");
+  window.history.pushState({}, "", newUrl);
+}
 
-    const { checkout } = checkoutState;
-    setIsLoading(true);
+function redirectToSchedule(): void {
+  if (typeof window === "undefined") return;
 
-    // const { isValid, message } = await validateEmail(email, checkout);
-    // if (!isValid) {
-    // setEmailError(message);
-    // setMessage(message);
-    // setIsLoading(false);
-    // return;
-    // }
+  const url = new URL(window.location.href);
+  url.searchParams.delete("step");
+  window.history.replaceState({}, "", url.pathname);
+}
 
-    const confirmResult = await checkout.confirm();
-
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
-    if (confirmResult.type === "error") {
-      setMessage(confirmResult.error.message);
-    }
-
-    setIsLoading(false);
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {/*<EmailInput
-        email={email}
-        setEmail={setEmail}
-        error={emailError}
-        setError={setEmailError}
-      />*/}
-      <h4>Payment</h4>
-      <PaymentElement id="payment-element" />
-      <button disabled={isLoading || isFetching} id="submit">
-        {isLoading || checkoutState.type === "loading" ? (
-          <div className="spinner">Thinking</div>
-        ) : (
-          `Pay ${(amount / 100).toFixed(2)}€ now`
-        )}
-      </button>
-      {/* Show any error or success messages */}
-      {message && <div id="payment-message">{message}</div>}
-    </form>
-  );
-};
+function shouldRedirectToSchedule(
+  step: Step,
+  selectedTimeSlot: SelectedTimeSlot | null,
+): boolean {
+  return step === "payment" && !selectedTimeSlot;
+}
