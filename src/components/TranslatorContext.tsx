@@ -1,32 +1,47 @@
 import { createContext, useContext, type ReactNode } from "react";
 
-type TranslatorContext = Record<string, string>;
+type TranslatorContext = {
+  language: string;
+  translations: Record<string, string>;
+};
 const translatorContext = createContext<TranslatorContext | null>(null);
 
 export const TranslatorProvider = ({
-    children,
-    translations,
+  children,
+  translations,
+  language,
 }: {
-    children: ReactNode;
-    translations: NonNullable<TranslatorContext>;
+  children: ReactNode;
+  translations: TranslatorContext["translations"];
+  language: TranslatorContext["language"];
 }) => {
-    if (translations === null) {
-        return null;
-    }
+  if (translations === null) {
+    return null;
+  }
 
-    return (
-        <translatorContext.Provider value={translations}>
-            {children}
-        </translatorContext.Provider>
-    );
+  return (
+    <translatorContext.Provider value={{ translations, language }}>
+      {children}
+    </translatorContext.Provider>
+  );
 };
 
 export const useTranslator = () => {
-    const translations = useContext(translatorContext);
+  const context = useContext(translatorContext);
 
-    if (translations === null) {
-        return () => "";
-    }
+  if (context === null) {
+    return () => "";
+  }
 
-    return (key: string) => translations[key] ?? key;
+  return (key: string) => context.translations[key] ?? key;
+};
+
+export const usePageLanguage = () => {
+  const context = useContext(translatorContext);
+
+  if (context === null) {
+    return "";
+  }
+
+  return context.language;
 };

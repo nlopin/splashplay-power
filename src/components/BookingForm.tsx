@@ -3,6 +3,7 @@ import { TranslatorProvider } from "./TranslatorContext";
 import { PaymentStep } from "./booking/PaymentStep";
 import { ScheduleStep } from "./booking/ScheduleStep";
 import { CreatePaymentSessionResponseSchema } from "../pages/api/types";
+import type { ISODatetime } from "@/types";
 
 type Availability = {
   inviteesRemaining: number;
@@ -11,12 +12,7 @@ type Availability = {
   status: string;
 };
 
-type SelectedTimeSlot = {
-  startTime: string;
-  formattedDate: string;
-  formattedTime: string;
-  schedulingUrl: string;
-};
+type SelectedTimeSlot = ISODatetime;
 
 type Step = "schedule" | "payment";
 
@@ -189,7 +185,7 @@ export default function BookingForm({
   }
 
   return (
-    <TranslatorProvider translations={translations}>
+    <TranslatorProvider translations={translations} language={lang}>
       {currentStep === "schedule" ? (
         <ScheduleStep
           initialAvailability={initialAvailability}
