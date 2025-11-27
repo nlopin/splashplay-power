@@ -1,11 +1,11 @@
 ---
-import type { Language } from "../utils/i18n";
 import {
     createAstroTranslator,
     getCurrentLanguage,
     languagePrefixes,
 } from "../utils/i18n";
-import LanguageSwitcher from "../components/LanguageSwitcher.astro";
+import Header from "../components/Header.astro";
+import "./layout.css";
 
 interface Props {
     title?: string;
@@ -30,6 +30,12 @@ const pageDescription = description || t("description");
         <meta name="generator" content={Astro.generator} />
         <meta name="description" content={pageDescription} />
         <title>{pageTitle}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+            rel="stylesheet"
+        />
 
         <!-- Add alternate language links for SEO -->
         <link
@@ -54,7 +60,7 @@ const pageDescription = description || t("description");
         />
     </head>
     <body>
-        <LanguageSwitcher currentPath={currentPath || Astro.url.pathname} />
+        <Header currentPath={currentPath || Astro.url.pathname} />
         <slot />
     </body>
 </html>
