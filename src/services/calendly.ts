@@ -17,7 +17,7 @@ const EventTypeAvailableTimesSchema = z.looseObject({
   ),
 });
 
-const eventType = "0b5a2e63-1554-4634-8c1d-65f8ce36fa74";
+const eventType = "42b4e39b-a004-4d6f-9c76-f15cd494e2c6";
 
 let cache: {
   data: z.infer<typeof EventTypeAvailableTimesSchema>["collection"];
