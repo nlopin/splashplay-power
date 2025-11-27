@@ -5,15 +5,21 @@ export function formatWeek(start: Date, end: Date, locale?: string): string {
   const dateTimeFormat = Intl.DateTimeFormat(locale ?? DEFAULT_LOCALE, {
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   });
   return dateTimeFormat.formatRange(start, end);
 }
 
-export function formatWeekday(date: Date, locale?: string): [string, string] {
+export function formatWeekday(
+  date: Date,
+  locale?: string,
+  weekdayStyle: "long" | "short" | "narrow" = "long",
+): [string, string] {
   const dateTimeFormat = Intl.DateTimeFormat(locale ?? DEFAULT_LOCALE, {
-    weekday: "long",
-    month: "long",
+    weekday: weekdayStyle,
+    month: weekdayStyle,
     day: "numeric",
+    timeZone: "UTC",
   });
   const parts = dateTimeFormat.format(date);
 
@@ -38,6 +44,7 @@ export function formatVisitDateTime(
     day: "numeric",
     hour: "numeric",
     minute: "numeric",
+    timeZone: "UTC",
   });
 
   return dateTimeFormat.format(date);

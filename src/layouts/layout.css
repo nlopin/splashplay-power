@@ -1,0 +1,75 @@
+:root {
+    --orange: #ff6b35;
+    --purple: #663399;
+    --orange-light: #ff9966;
+    --purple-light: #9a77c5;
+    /* Light pastel tints used in Gift Certificates pricing */
+    --orange-tint-bg: rgba(255, 107, 53, 0.05);
+    --purple-tint-bg: rgba(102, 51, 153, 0.05);
+    --light-bg: #f9f9f9;
+    --dark-text: #333333;
+    --white: #ffffff;
+    --gray-disabled: #ccc;
+    --border-color: #e0e0e0;
+    --border-color-light: #f0f0f0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Montserrat", sans-serif;
+    line-height: 1.6;
+    color: var(--dark-text);
+    background-color: var(--light-bg);
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+h1 {
+    font-size: 1.5rem;
+    color: var(--purple);
+}
+
+/* Accessibility class for visually hidden elements */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--purple);
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: var(--orange);
+}

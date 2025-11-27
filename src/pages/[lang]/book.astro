@@ -31,3 +31,205 @@ const camelCaseTimes = availableTimes.map((time) => ({
         client:load
     />
 </Layout>
+
+<style is:global>
+    .availability-calendar {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .nav-button {
+        background: none;
+        border: 1px solid var(--purple);
+        color: var(--purple);
+        border-radius: 4px;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        border-color: #ccc;
+        color: #ccc;
+    }
+
+    .nav-button:hover:not(:disabled) {
+        background-color: var(--purple);
+        color: var(--white);
+    }
+
+    .busy-label {
+        background-color: var(--orange);
+        color: var(--white);
+        font-size: 0.6rem;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 10px;
+        margin-top: 4px;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .week-display {
+        font-weight: bold;
+        color: var(--dark-text);
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        /* Removed gap and background-color to reduce borders */
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .grid-cell {
+        background-color: var(--white);
+        font-variant: tabular-nums;
+        border-right: 1px solid #f0f0f0; /* Vertical lines only */
+    }
+
+    /* Remove right border from last column */
+    .grid-cell:nth-child(7n) {
+        border-right: none;
+    }
+
+    .header-cell {
+        position: relative;
+        background-color: var(--light-bg);
+        padding: 0.25rem; /* Reduced padding */
+        text-align: center;
+        font-weight: 600;
+        border-bottom: 1px solid #e0e0e0; /* Stronger separator for header */
+        font-size: 0.8rem;
+    }
+
+    .header-cell .weekday {
+        color: var(--purple);
+    }
+
+    .header-cell .date {
+        color: var(--dark-text);
+    }
+
+    .busy-label {
+        position: absolute;
+        bottom: -10px; /* Position at the bottom edge */
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--orange);
+        color: var(--white);
+        font-size: 0.5rem;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        white-space: nowrap;
+        z-index: 10;
+        pointer-events: none; /* Don't block clicks on elements below */
+    }
+
+    .slot-cell {
+        padding: 1px; /* Reduced padding */
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px; /* Reduced gap */
+        min-height: 36px; /* Smaller height */
+    }
+
+    .time-slot-button {
+        appearance: none;
+        width: 100%;
+        padding: 2px;
+        font-size: 0.8rem;
+        background-color: transparent;
+        color: var(--purple);
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.2s;
+    }
+
+    .time-slot-button:hover {
+        background-color: var(--purple-light);
+        color: var(--white);
+    }
+
+    .time-slot-button.selected {
+        background-color: var(--purple);
+        color: var(--white);
+        border-color: var(--purple);
+    }
+
+    .time-slot-button[data-minute="00"] {
+        grid-column: 1;
+    }
+
+    .time-slot-button[data-minute="30"] {
+        grid-column: 2;
+    }
+
+    .mobile-only {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        .desktop-only {
+            display: none;
+        }
+
+        .mobile-only {
+            display: block;
+        }
+
+        .header-cell {
+            padding: 0.1rem;
+            font-size: 0.7rem;
+        }
+
+        .availability-calendar {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 1rem; /* Space for scrollbar */
+        }
+
+        .calendar-grid {
+            min-width: 500px; /* Allow narrower columns (approx 71px) */
+        }
+
+        .slot-cell {
+            grid-template-columns: 1fr; /* Stack slots vertically */
+            grid-template-rows: 1fr 1fr; /* Explicit equal rows for 00 and 30 */
+            min-height: 80px; /* Reserve space for 2 slots so rows don't collapse */
+            gap: 4px; /* Add some gap between stacked buttons */
+        }
+
+        .time-slot-button {
+            width: 100%;
+            padding: 8px 0; /* Larger touch target */
+        }
+
+        .time-slot-button[data-minute="00"] {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .time-slot-button[data-minute="30"] {
+            grid-column: 1;
+            grid-row: 2;
+        }
+    }
+</style>
