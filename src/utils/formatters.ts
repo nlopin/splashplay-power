@@ -44,6 +44,7 @@ export function formatVisitDateTime(
     day: "numeric",
     hour: "numeric",
     minute: "numeric",
+    hour12: false,
     timeZone: "UTC",
   });
 

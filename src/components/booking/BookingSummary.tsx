@@ -1,12 +1,9 @@
 import type { FC } from "react";
-import { useTranslator } from "../TranslatorContext";
+import { usePageLanguage, useTranslator } from "../TranslatorContext";
+import type { ISODatetime } from "@/types";
+import { formatVisitDateTime } from "@/utils/formatters";
 
-type SelectedTimeSlot = {
-  startTime: string;
-  formattedDate: string;
-  formattedTime: string;
-  schedulingUrl: string;
-};
+type SelectedTimeSlot = ISODatetime;
 
 type SummaryMode = "preview" | "confirmation";
 
@@ -30,6 +27,7 @@ export const BookingSummary: FC<BookingSummaryProps> = ({
   translations,
 }) => {
   const t = useTranslator();
+  const language = usePageLanguage();
   const priceInEuros = (currentAmount / 100).toFixed(0);
 
   const isPreviewMode = mode === "preview";
@@ -39,40 +37,15 @@ export const BookingSummary: FC<BookingSummaryProps> = ({
     return null;
   }
 
-  const containerStyle = {
-    backgroundColor: isPreviewMode ? "white" : "#f8f9fa",
-    border: isPreviewMode ? "2px solid #007cba" : "1px solid #e9ecef",
-    borderRadius: "12px",
-    padding: "24px",
-  };
-
-  const headerStyle = {
-    textAlign: "center" as const,
-    marginBottom: "20px",
-    color: "#333",
-    fontSize: isPreviewMode ? "1.2rem" : "1.5rem",
-  };
-
   return (
-    <div style={containerStyle}>
+    <div className={`booking-summary ${mode}`}>
       {isConfirmationMode && (
-        <h2 style={headerStyle}>
-          {translations.booking_summary || "Booking Summary"}
-        </h2>
+        <h2>{translations.booking_summary || "Booking Summary"}</h2>
       )}
 
-      <div className="selected-info" style={{ marginBottom: "20px" }}>
+      <div className="selected-info">
         {selectedTimeSlot && (
-          <div
-            className="selected-time"
-            style={{
-              marginBottom: "12px",
-              padding: "12px",
-              backgroundColor: isPreviewMode ? "#e3f2fd" : "#fff",
-              borderRadius: "8px",
-              border: isConfirmationMode ? "1px solid #e9ecef" : "none",
-            }}
-          >
+          <div className="selected-time">
             {isConfirmationMode ? (
               <div
                 style={{
@@ -86,30 +59,19 @@ export const BookingSummary: FC<BookingSummaryProps> = ({
                   {translations.date_time || "Date & Time"}:
                 </span>
                 <strong style={{ color: "#333", fontSize: "16px" }}>
-                  {selectedTimeSlot.formattedDate} at{" "}
-                  {selectedTimeSlot.formattedTime}
+                  {formatVisitDateTime(selectedTimeSlot, language)}
                 </strong>
               </div>
             ) : (
-              <strong style={{ color: "#007cba" }}>
+              <strong>
                 {translations.selected_time || "Selected Time"}:{" "}
-                {selectedTimeSlot.formattedDate} at{" "}
-                {selectedTimeSlot.formattedTime}
+                {formatVisitDateTime(selectedTimeSlot, language)}
               </strong>
             )}
           </div>
         )}
 
-        <div
-          className="selected-canvas"
-          style={{
-            padding: "12px",
-            backgroundColor: isPreviewMode ? "#f0f8ff" : "#fff",
-            borderRadius: "8px",
-            border: isConfirmationMode ? "1px solid #e9ecef" : "none",
-            marginBottom: isConfirmationMode ? "12px" : "0",
-          }}
-        >
+        <div className="selected-canvas">
           {isConfirmationMode ? (
             <div
               style={{
@@ -127,25 +89,14 @@ export const BookingSummary: FC<BookingSummaryProps> = ({
               </strong>
             </div>
           ) : (
-            <strong style={{ color: "#333" }}>
+            <strong>
               {translations.canvas_type || "Canvas"}: {currentProductName}
             </strong>
           )}
         </div>
 
         {isConfirmationMode && (
-          <div
-            className="total-row"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              padding: "12px",
-              backgroundColor: "#fff",
-              borderRadius: "8px",
-              border: "1px solid #e9ecef",
-            }}
-          >
+          <div className="total-row">
             <span
               style={{ color: "#666", fontSize: "18px", fontWeight: "bold" }}
             >
@@ -165,48 +116,16 @@ export const BookingSummary: FC<BookingSummaryProps> = ({
       </div>
 
       {isPreviewMode && (
-        <div className="total-price" style={{ marginBottom: "20px" }}>
-          <div className="price-amount" style={{ textAlign: "center" }}>
-            <strong
-              style={{
-                fontSize: "2.5em",
-                color: "#007cba",
-                display: "block",
-                marginBottom: "8px",
-              }}
-            >
-              €{priceInEuros}
-            </strong>
-            <span style={{ color: "#666", fontSize: "1.1em" }}>
-              {translations.total_price || "Total Price"}
-            </span>
+        <div className="total-price">
+          <div className="price-amount">
+            <strong>€{priceInEuros}</strong>
+            <span>{translations.total_price || "Total Price"}</span>
           </div>
         </div>
       )}
 
       {showEditButton && onEdit && (
-        <button
-          onClick={onEdit}
-          style={{
-            padding: "12px 20px",
-            backgroundColor: "transparent",
-            color: "#007cba",
-            border: "2px solid #007cba",
-            borderRadius: "8px",
-            cursor: "pointer",
-            fontSize: "16px",
-            fontWeight: "500",
-            transition: "all 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#007cba";
-            e.currentTarget.style.color = "white";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent";
-            e.currentTarget.style.color = "#007cba";
-          }}
-        >
+        <button className="edit-selections-btn" onClick={onEdit}>
           ← {translations.edit_selections || "Edit selections"}
         </button>
       )}

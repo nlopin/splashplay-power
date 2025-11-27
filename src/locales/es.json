@@ -240,6 +240,10 @@
     "copyright": "© 2025 SplashPlay Creative Studio. Todos los derechos reservados."
   },
   "book": {
+    "select_time_and_size": "Selecciona Hora y Tamaño de Lienzo",
+    "canvas_size": "Tamaño de Lienzo",
+    "pay_to_book": "Pagar para Reservar",
+    "select_time_to_continue": "Por favor, selecciona un horario para continuar",
     "couples_one_small": "Lienzo standard, 30×40cm",
     "couples_one_big": "Lienzo grande",
     "couples_individual": "Un lienzo de 30×40cm para cada uno",

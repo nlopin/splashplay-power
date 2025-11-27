@@ -191,12 +191,10 @@ export default function BookingForm({
           initialAvailability={initialAvailability}
           selectedTimeSlot={selectedTimeSlot}
           currentAmount={currentAmount}
-          currentProductName={currentProductName}
           isLoading={isLoading}
           onTimeSlotSelect={handleTimeSlotSelect}
           onPriceChange={handlePriceChange}
           onPayToBook={handlePayToBook}
-          translations={translations}
         />
       ) : (
         <PaymentStep

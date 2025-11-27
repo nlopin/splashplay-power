@@ -239,6 +239,10 @@
     "copyright": "© 2025 SplashPlay Creative Studio. All rights reserved."
   },
   "book": {
+    "select_time_and_size": "Select Time and Canvas Size",
+    "canvas_size": "Canvas Size",
+    "pay_to_book": "Pay to Book",
+    "select_time_to_continue": "Please select a time slot to continue",
     "couples_one_small": "One canvas, 30×40cm",
     "couples_one_big": "Big one canvas, 60×90cm",
     "couples_individual": "A 30×40cm canvas for each",
