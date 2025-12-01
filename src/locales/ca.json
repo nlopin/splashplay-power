@@ -242,7 +242,7 @@
     "select_time_to_continue": "Si us plau, selecciona un horari per continuar",
     "couples_one_small": "Un llenç, 30×40cm",
     "couples_one_big": "Un llenç gran, 60×90cm",
-    "couples_individual": "Un llenç de 30×40cm per a cadascú",
+    "couples_individual": "Dos llenços de 30×40cm",
     "contact_details": "Dades de contacte",
     "full_name": "Nom complet",
     "email": "Correu electrònic",
@@ -257,7 +257,8 @@
     "error_required_fields": "Si us plau, omple tots els camps requerits correctament.",
     "validation_fullname": "El nom complet és obligatori",
     "validation_email": "Adreça de correu electrònic invàlida",
-    "validation_phone": "El número de telèfon és obligatori"
+    "validation_phone": "El número de telèfon és obligatori",
+    "creative_date": "Cita Creativa"
   },
   "complete": {
     "title": "Pagament Realitzat!",

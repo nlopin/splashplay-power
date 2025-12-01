@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTranslator } from "../../TranslatorContext";
+import { formatPrice } from "@/utils/price";
 
 type PictureType = "one_small" | "one_big" | "individual";
 
@@ -12,15 +13,10 @@ interface CouplesOptionsProps {
   onChange: (data: PricingData) => void;
 }
 
-const getPricing = (type: PictureType): PricingData => {
-  switch (type) {
-    case "one_small":
-      return { amount: 6000, productName: "One Small Canvas" };
-    case "one_big":
-      return { amount: 8000, productName: "One Big Canvas" };
-    case "individual":
-      return { amount: 9000, productName: "Two Canvases" };
-  }
+const PRICE: Record<PictureType, number> = {
+  one_small: 6000,
+  one_big: 8000,
+  individual: 9000,
 };
 
 export function CouplesOptions({ onChange }: CouplesOptionsProps) {
@@ -28,13 +24,28 @@ export function CouplesOptions({ onChange }: CouplesOptionsProps) {
   const t = useTranslator();
 
   useEffect(() => {
-    onChange(getPricing(pictureType));
-  }, [pictureType]);
+    onChange({
+      amount: PRICE[pictureType],
+      productName: t(`couples_${pictureType}`),
+    });
+  }, [pictureType, t]);
 
-  const options = [
-    { value: "one_small", label: t("couples_one_small"), price: "€60" },
-    { value: "one_big", label: t("couples_one_big"), price: "€80" },
-    { value: "individual", label: t("couples_individual"), price: "€90" },
+  const options: Array<{ value: PictureType; label: string; price: string }> = [
+    {
+      value: "one_small",
+      label: t("couples_one_small"),
+      price: formatPrice(PRICE.one_small),
+    },
+    {
+      value: "one_big",
+      label: t("couples_one_big"),
+      price: formatPrice(PRICE.one_big),
+    },
+    {
+      value: "individual",
+      label: t("couples_individual"),
+      price: formatPrice(PRICE.individual),
+    },
   ];
 
   return (
@@ -49,7 +60,11 @@ export function CouplesOptions({ onChange }: CouplesOptionsProps) {
             name="picture_type"
             value={option.value}
             checked={pictureType === option.value}
-            onChange={() => setPictureType(option.value as PictureType)}
+            onChange={() =>
+              ((newType: PictureType) => {
+                setPictureType(newType);
+              })(option.value)
+            }
             className="option-input"
           />
           <div className="option-content">

@@ -246,7 +246,7 @@
     "select_time_to_continue": "Por favor, selecciona un horario para continuar",
     "couples_one_small": "Lienzo standard, 30×40cm",
     "couples_one_big": "Lienzo grande",
-    "couples_individual": "Un lienzo de 30×40cm para cada uno",
+    "couples_individual": "Dos lienzos de 30×40cm",
     "contact_details": "Datos de contacto",
     "full_name": "Nombre completo",
     "email": "Correo electrónico",
@@ -261,7 +261,8 @@
     "error_required_fields": "Por favor, rellena todos los campos requeridos correctamente.",
     "validation_fullname": "El nombre completo es obligatorio",
     "validation_email": "Dirección de correo inválida",
-    "validation_phone": "El número de teléfono es obligatorio"
+    "validation_phone": "El número de teléfono es obligatorio",
+    "creative_date": "Cita Creativa"
   },
   "complete": {
     "title": "¡Pago Exitoso!",

@@ -245,7 +245,7 @@
     "select_time_to_continue": "Please select a time slot to continue",
     "couples_one_small": "One canvas, 30×40cm",
     "couples_one_big": "Big one canvas, 60×90cm",
-    "couples_individual": "A 30×40cm canvas for each",
+    "couples_individual": "Two 30×40cm canvas",
     "contact_details": "Contact Details",
     "full_name": "Full Name",
     "email": "Email",
@@ -260,7 +260,8 @@
     "error_required_fields": "Please fill in all required fields correctly.",
     "validation_fullname": "Full name is required",
     "validation_email": "Invalid email address",
-    "validation_phone": "Phone number is required"
+    "validation_phone": "Phone number is required",
+    "creative_date": "Creative Date"
   },
   "complete": {
     "title": "Payment Successful!",

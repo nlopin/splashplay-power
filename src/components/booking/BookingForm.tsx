@@ -6,6 +6,7 @@ import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
 import { PaymentStep } from "./PaymentStep";
 import { ScheduleStep, type ScheduleStepProps } from "./ScheduleStep";
 import type { SelectedTimeSlot } from "./types";
+import { formatVisitDateTime } from "@/utils/formatters";
 
 type Availability = {
   inviteesRemaining: number;
@@ -91,7 +92,10 @@ export default function BookingForm({
     return () => window.removeEventListener("popstate", handlePopState);
   }, [currentStep, selectedTimeSlot]);
 
-  const createSession = async (amount: number, productName: string) => {
+  const createSession = async (
+    amount: number,
+    formattedProductName: string,
+  ) => {
     setError(null);
 
     if (abortControllerRef.current) {
@@ -106,7 +110,7 @@ export default function BookingForm({
         method: "POST",
         body: JSON.stringify({
           amount,
-          productName,
+          productName: formattedProductName,
           lang,
         }),
         signal: controller.signal,
@@ -153,9 +157,16 @@ export default function BookingForm({
   const handlePayToBook: ScheduleStepProps["onPayToBook"] = async () => {
     if (!selectedTimeSlot || !currentAmount || !currentProductName) return;
 
+    const formattedProductName = formatBookingProductName(
+      translations.creative_date,
+      selectedTimeSlot,
+      currentProductName,
+      lang,
+    );
+
     setIsLoading(true);
     try {
-      await createSession(currentAmount, currentProductName);
+      await createSession(currentAmount, formattedProductName);
       // Navigate to payment step - URL will be updated by useEffect
       setCurrentStep("payment");
     } catch (error) {
@@ -243,4 +254,15 @@ function shouldRedirectToSchedule(
   selectedTimeSlot: SelectedTimeSlot | null,
 ): boolean {
   return step === "payment" && !selectedTimeSlot;
+}
+
+export function formatBookingProductName(
+  creativeDateTranslation: string,
+  bookingDate: string,
+  canvasType: string,
+  locale?: string,
+): string {
+  const formattedDate = formatVisitDateTime(bookingDate, "short", locale);
+
+  return `${creativeDateTranslation}, ${formattedDate}, ${canvasType}`;
 }

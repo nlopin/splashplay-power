@@ -59,13 +59,13 @@ export const BookingSummary: FC<BookingSummaryProps> = ({
                   {translations.date_time || "Date & Time"}:
                 </span>
                 <strong style={{ color: "#333", fontSize: "16px" }}>
-                  {formatVisitDateTime(selectedTimeSlot, language)}
+                  {formatVisitDateTime(selectedTimeSlot, "long", language)}
                 </strong>
               </div>
             ) : (
               <strong>
                 {translations.selected_time || "Selected Time"}:{" "}
-                {formatVisitDateTime(selectedTimeSlot, language)}
+                {formatVisitDateTime(selectedTimeSlot, "long", language)}
               </strong>
             )}
           </div>
