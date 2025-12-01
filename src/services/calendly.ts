@@ -1,5 +1,12 @@
 import * as z from "zod";
-import { CALENDLY_TOKEN } from "astro:env/server";
+import {
+  CALENDLY_TOKEN,
+  CALENDLY_COUPLES_EVENT_TYPE_ID,
+  CALENDLY_FAMILY_EVENT_TYPE_ID,
+  CALENDLY_FRIENDS_EVENT_TYPE_ID,
+  CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
+} from "astro:env/server";
+import type { EventType } from "@/components/booking/types";
 
 const CALENDLY_URL = "https://api.calendly.com/";
 const BOOK_IN_ADVANCE = 30;
@@ -17,27 +24,55 @@ const EventTypeAvailableTimesSchema = z.looseObject({
   ),
 });
 
-const eventType = "42b4e39b-a004-4d6f-9c76-f15cd494e2c6";
+const EVENT_TYPE_IDS: Record<EventType, string> = {
+  couples: CALENDLY_COUPLES_EVENT_TYPE_ID,
+  family: CALENDLY_FAMILY_EVENT_TYPE_ID,
+  friends: CALENDLY_FRIENDS_EVENT_TYPE_ID,
+  individual: CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
+};
 
-let cache: {
-  data: z.infer<typeof EventTypeAvailableTimesSchema>["collection"];
-  timestamp: number;
-} | null = null;
+let cache: Record<
+  EventType,
+  {
+    data: z.infer<typeof EventTypeAvailableTimesSchema>["collection"];
+    timestamp: number;
+  } | null
+> = {
+  couples: null,
+  family: null,
+  friends: null,
+  individual: null,
+};
 
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
 
-export function resetCache() {
-  cache = null;
+export function resetCache(eventType?: EventType) {
+  if (eventType) {
+    cache[eventType] = null;
+  } else {
+    cache = {
+      couples: null,
+      family: null,
+      friends: null,
+      individual: null,
+    };
+  }
 }
 
-export async function getAvailableTime(days = BOOK_IN_ADVANCE) {
-  if (cache && Date.now() - cache.timestamp < CACHE_DURATION) {
-    console.log("Cache hit");
-    return cache.data;
+export async function getAvailableTime(
+  eventType: EventType,
+  days = BOOK_IN_ADVANCE,
+) {
+  const eventCache = cache[eventType];
+  if (eventCache && Date.now() - eventCache.timestamp < CACHE_DURATION) {
+    console.log(`Cache hit for ${eventType}`);
+    return eventCache.data;
   }
 
   const batchCount = Math.ceil(days / BATCH_SIZE_IN_DAYS);
-  const availableTimes: z.infer<typeof EventTypeAvailableTimesSchema>["collection"] = [];
+  const availableTimes: z.infer<
+    typeof EventTypeAvailableTimesSchema
+  >["collection"] = [];
   const now = new Date();
   const startDate = new Date(
     Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0),
@@ -45,8 +80,8 @@ export async function getAvailableTime(days = BOOK_IN_ADVANCE) {
   for (let i = 0; i < batchCount; i++) {
     const batchStartDate = new Date(
       startDate.getTime() +
-      MILLISECONDS_IN_ONE_DAY +
-      i * BATCH_SIZE_IN_DAYS * MILLISECONDS_IN_ONE_DAY,
+        MILLISECONDS_IN_ONE_DAY +
+        i * BATCH_SIZE_IN_DAYS * MILLISECONDS_IN_ONE_DAY,
     );
     const batchEndDate = new Date(
       batchStartDate.getTime() + MILLISECONDS_IN_ONE_DAY * BATCH_SIZE_IN_DAYS,
@@ -54,10 +89,9 @@ export async function getAvailableTime(days = BOOK_IN_ADVANCE) {
     const params = new URLSearchParams();
     params.append("start_time", batchStartDate.toISOString());
     params.append("end_time", batchEndDate.toISOString());
-    // todo dynamic event type
     params.append(
       "event_type",
-      "https://api.calendly.com/event_types/" + eventType,
+      "https://api.calendly.com/event_types/" + EVENT_TYPE_IDS[eventType],
     );
     const response = await fetch(
       `${CALENDLY_URL}/event_type_available_times?${params}`,
@@ -82,7 +116,7 @@ export async function getAvailableTime(days = BOOK_IN_ADVANCE) {
     }
   }
 
-  cache = {
+  cache[eventType] = {
     data: availableTimes,
     timestamp: Date.now(),
   };
