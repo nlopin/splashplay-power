@@ -1,11 +1,10 @@
+import { type FC, useState } from "react";
+
+import { useTranslator } from "@/components/TranslatorContext";
+
+import type { SelectedTimeSlot } from "./types";
 import { AvailabilityCalendar } from "./AvailabilityCalendar";
 import { CouplesOptions } from "./eventTypeOptions/CouplesOptions";
-import type { FC } from "react";
-import type { ISODatetime } from "@/types";
-import { formatVisitDateTime } from "@/utils/formatters";
-import { usePageLanguage, useTranslator } from "../TranslatorContext";
-
-type SelectedTimeSlot = ISODatetime;
 
 type Availability = {
   inviteesRemaining: number;
@@ -19,10 +18,9 @@ interface PricingData {
   productName: string;
 }
 
-interface ScheduleStepProps {
+export interface ScheduleStepProps {
   initialAvailability: Availability[];
   selectedTimeSlot: SelectedTimeSlot | null;
-  currentAmount: number;
   isLoading: boolean;
   onTimeSlotSelect: (slot: SelectedTimeSlot | null) => void;
   onPriceChange: (data: PricingData) => void;
@@ -32,17 +30,22 @@ interface ScheduleStepProps {
 export const ScheduleStep: FC<ScheduleStepProps> = ({
   initialAvailability,
   selectedTimeSlot,
-  currentAmount,
   isLoading,
   onTimeSlotSelect,
   onPriceChange,
   onPayToBook,
 }) => {
   const t = useTranslator();
-  const language = usePageLanguage();
-  const isScheduleComplete = selectedTimeSlot !== null;
-  const priceInEuros = (currentAmount / 100).toFixed(0);
+  const [currentAmount, setCurrentAmount] = useState<number | null>(null);
+
+  const isScheduleComplete =
+    selectedTimeSlot !== null && currentAmount !== null;
   const hasAvailability = initialAvailability.length > 0;
+
+  const handlePriceChange = (data: PricingData) => {
+    setCurrentAmount(data.amount);
+    onPriceChange(data);
+  };
 
   return (
     <div className="schedule-step">
@@ -60,22 +63,19 @@ export const ScheduleStep: FC<ScheduleStepProps> = ({
 
       <div className="canvas-options">
         <h3>{t("canvas_size")}</h3>
-        <CouplesOptions onChange={onPriceChange} />
+        <CouplesOptions onChange={handlePriceChange} />
       </div>
-
-      {selectedTimeSlot && (
-        <button
-          className="pay-to-book-btn"
-          disabled={!isScheduleComplete || isLoading}
-          onClick={onPayToBook}
-        >
-          {isLoading ? t("loading") : `${t("pay_to_book")} €${priceInEuros}`}
-        </button>
-      )}
 
       {!isScheduleComplete && (
         <p className="schedule-error">{t("select_time_to_continue")}</p>
       )}
+      <button
+        className="pay-to-book-btn"
+        disabled={!isScheduleComplete || isLoading}
+        onClick={onPayToBook}
+      >
+        {isLoading ? t("loading") : `${t("pay_to_book")}`}
+      </button>
     </div>
   );
 };

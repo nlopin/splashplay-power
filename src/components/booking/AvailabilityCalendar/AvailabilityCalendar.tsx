@@ -1,14 +1,15 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
+
 import type { ISODatetime } from "@/types";
-import { groupWeeks } from "./groupWeeks";
 import { formatTime, formatWeek, formatWeekday } from "@/utils/formatters";
 import { usePageLanguage } from "@/components/TranslatorContext";
+
+import type { SelectedTimeSlot } from "../types";
+import { groupWeeks } from "./groupWeeks";
 
 type Availability = {
   startTime: ISODatetime;
 };
-
-type SelectedTimeSlot = ISODatetime;
 
 const hoursRegex = /T(\d{2}):/;
 

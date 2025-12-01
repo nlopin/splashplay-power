@@ -242,7 +242,7 @@
   "book": {
     "select_time_and_size": "Selecciona Hora y Tamaño de Lienzo",
     "canvas_size": "Tamaño de Lienzo",
-    "pay_to_book": "Pagar para Reservar",
+    "pay_to_book": "Reservar",
     "select_time_to_continue": "Por favor, selecciona un horario para continuar",
     "couples_one_small": "Lienzo standard, 30×40cm",
     "couples_one_big": "Lienzo grande",

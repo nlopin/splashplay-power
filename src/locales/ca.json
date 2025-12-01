@@ -238,7 +238,7 @@
   "book": {
     "select_time_and_size": "Selecciona Hora i Mida de Llenç",
     "canvas_size": "Mida de Llenç",
-    "pay_to_book": "Pagar per Reservar",
+    "pay_to_book": "Reservar",
     "select_time_to_continue": "Si us plau, selecciona un horari per continuar",
     "couples_one_small": "Un llenç, 30×40cm",
     "couples_one_big": "Un llenç gran, 60×90cm",

@@ -1,9 +1,9 @@
 import type { FC } from "react";
-import { usePageLanguage, useTranslator } from "../TranslatorContext";
-import type { ISODatetime } from "@/types";
+
+import { usePageLanguage, useTranslator } from "@/components/TranslatorContext";
 import { formatVisitDateTime } from "@/utils/formatters";
 
-type SelectedTimeSlot = ISODatetime;
+import type { SelectedTimeSlot } from "./types";
 
 type SummaryMode = "preview" | "confirmation";
 

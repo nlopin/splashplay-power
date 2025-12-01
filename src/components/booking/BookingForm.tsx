@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { TranslatorProvider } from "./TranslatorContext";
-import { PaymentStep } from "./booking/PaymentStep";
-import { ScheduleStep } from "./booking/ScheduleStep";
-import { CreatePaymentSessionResponseSchema } from "../pages/api/types";
-import type { ISODatetime } from "@/types";
+
+import { TranslatorProvider } from "@/components/TranslatorContext";
+import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
+
+import { PaymentStep } from "./PaymentStep";
+import { ScheduleStep, type ScheduleStepProps } from "./ScheduleStep";
+import type { SelectedTimeSlot } from "./types";
 
 type Availability = {
   inviteesRemaining: number;
@@ -11,8 +13,6 @@ type Availability = {
   startTime: string;
   status: string;
 };
-
-type SelectedTimeSlot = ISODatetime;
 
 type Step = "schedule" | "payment";
 
@@ -31,15 +31,15 @@ export default function BookingForm({
   // Selection state (kept in memory)
   const [selectedTimeSlot, setSelectedTimeSlot] =
     useState<SelectedTimeSlot | null>(null);
-  const [currentAmount, setCurrentAmount] = useState(8000); // Default to big canvas price
-  const [currentProductName, setCurrentProductName] =
-    useState("One Big Canvas");
+  const [currentAmount, setCurrentAmount] = useState<number | null>(null);
+  const [currentProductName, setCurrentProductName] = useState<string | null>(
+    null,
+  );
 
   // Payment state
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isFetching, setIsFetching] = useState(false);
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -70,7 +70,6 @@ export default function BookingForm({
         setClientSecret(null);
         setError(null);
         setIsLoading(false);
-        setIsFetching(false);
 
         // Abort any pending session creation
         if (abortControllerRef.current) {
@@ -93,7 +92,6 @@ export default function BookingForm({
   }, [currentStep, selectedTimeSlot]);
 
   const createSession = async (amount: number, productName: string) => {
-    setIsFetching(true);
     setError(null);
 
     if (abortControllerRef.current) {
@@ -128,7 +126,6 @@ export default function BookingForm({
       }
 
       setClientSecret(parseResult.data.clientSecret);
-      setIsLoading(false);
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") {
         console.log("Request aborted");
@@ -136,23 +133,25 @@ export default function BookingForm({
       }
       console.error(err);
       setError(translations.error_load);
-    } finally {
-      setIsFetching(false);
     }
   };
 
-  const handlePriceChange = (data: { amount: number; productName: string }) => {
-    const { amount, productName } = data;
+  const handlePriceChange: ScheduleStepProps["onPriceChange"] = ({
+    amount,
+    productName,
+  }) => {
     setCurrentAmount(amount);
     setCurrentProductName(productName);
   };
 
-  const handleTimeSlotSelect = (slot: SelectedTimeSlot | null) => {
+  const handleTimeSlotSelect: ScheduleStepProps["onTimeSlotSelect"] = (
+    slot,
+  ) => {
     setSelectedTimeSlot(slot);
   };
 
-  const handlePayToBook = async () => {
-    if (!selectedTimeSlot) return;
+  const handlePayToBook: ScheduleStepProps["onPayToBook"] = async () => {
+    if (!selectedTimeSlot || !currentAmount || !currentProductName) return;
 
     setIsLoading(true);
     try {
@@ -160,8 +159,9 @@ export default function BookingForm({
       // Navigate to payment step - URL will be updated by useEffect
       setCurrentStep("payment");
     } catch (error) {
+      console.error(error);
+    } finally {
       setIsLoading(false);
-      // Error is already handled in createSession
     }
   };
 
@@ -170,7 +170,6 @@ export default function BookingForm({
     setClientSecret(null);
     setError(null);
     setIsLoading(false);
-    setIsFetching(false);
 
     // Abort any pending session creation
     if (abortControllerRef.current) {
@@ -190,7 +189,6 @@ export default function BookingForm({
         <ScheduleStep
           initialAvailability={initialAvailability}
           selectedTimeSlot={selectedTimeSlot}
-          currentAmount={currentAmount}
           isLoading={isLoading}
           onTimeSlotSelect={handleTimeSlotSelect}
           onPriceChange={handlePriceChange}
@@ -199,11 +197,10 @@ export default function BookingForm({
       ) : (
         <PaymentStep
           selectedTimeSlot={selectedTimeSlot!}
-          currentAmount={currentAmount}
-          currentProductName={currentProductName}
+          currentAmount={currentAmount!}
+          currentProductName={currentProductName!}
           clientSecret={clientSecret}
           isLoading={isLoading}
-          isFetching={isFetching}
           onEditSelections={handleEditSelections}
           translations={translations}
         />

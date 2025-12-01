@@ -1,9 +1,8 @@
 import type { FC } from "react";
+
 import { BookingSummary } from "./BookingSummary";
 import { StripeCheckoutWrapper } from "./StripeCheckoutWrapper";
-import type { ISODatetime } from "@/types";
-
-type SelectedTimeSlot = ISODatetime;
+import type { SelectedTimeSlot } from "./types";
 
 interface PaymentStepProps {
   selectedTimeSlot: SelectedTimeSlot;
