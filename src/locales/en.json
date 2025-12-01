@@ -261,7 +261,11 @@
     "validation_fullname": "Full name is required",
     "validation_email": "Invalid email address",
     "validation_phone": "Phone number is required",
-    "creative_date": "Creative Date"
+    "creative_date": "Creative Date",
+    "booking_summary": "Booking Summary",
+    "date_time": "Date & Time",
+    "canvas_type": "Canvas",
+    "edit_selections": "Edit selections"
   },
   "complete": {
     "title": "Payment Successful!",

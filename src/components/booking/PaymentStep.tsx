@@ -1,8 +1,8 @@
 import type { FC } from "react";
 
-import { BookingSummary } from "./BookingSummary";
 import { StripeCheckoutWrapper } from "./StripeCheckoutWrapper";
 import type { SelectedTimeSlot } from "./types";
+import { BookingSummary } from "./BookingSummary";
 
 interface PaymentStepProps {
   selectedTimeSlot: SelectedTimeSlot;
@@ -11,7 +11,6 @@ interface PaymentStepProps {
   clientSecret: string | null;
   isLoading: boolean;
   onEditSelections: () => void;
-  translations: any;
 }
 
 export const PaymentStep: FC<PaymentStepProps> = ({
@@ -21,33 +20,25 @@ export const PaymentStep: FC<PaymentStepProps> = ({
   clientSecret,
   isLoading,
   onEditSelections,
-  translations,
 }) => {
   return (
-    <div
-      className="payment-step"
-      style={{
-        maxWidth: "800px",
-        margin: "0 auto",
-        padding: "20px",
-      }}
-    >
-      <BookingSummary
-        selectedTimeSlot={selectedTimeSlot}
-        currentAmount={currentAmount}
-        currentProductName={currentProductName}
-        mode="confirmation"
-        showEditButton={true}
-        onEdit={onEditSelections}
-        translations={translations}
-      />
+    <div className="payment-step">
+      <div className="payment-layout">
+        <div className="summary-column">
+          <BookingSummary
+            selectedTimeSlot={selectedTimeSlot}
+            currentAmount={currentAmount}
+            currentProductName={currentProductName}
+            onEdit={onEditSelections}
+          />
+        </div>
 
-      <div style={{ marginTop: "32px" }}>
-        <StripeCheckoutWrapper
-          clientSecret={clientSecret}
-          isLoading={isLoading}
-          translations={translations}
-        />
+        <div className="payment-column">
+          <StripeCheckoutWrapper
+            clientSecret={clientSecret}
+            isLoading={isLoading}
+          />
+        </div>
       </div>
     </div>
   );

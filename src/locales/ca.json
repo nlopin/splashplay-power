@@ -258,7 +258,11 @@
     "validation_fullname": "El nom complet és obligatori",
     "validation_email": "Adreça de correu electrònic invàlida",
     "validation_phone": "El número de telèfon és obligatori",
-    "creative_date": "Cita Creativa"
+    "creative_date": "Cita Creativa",
+    "booking_summary": "Resum de la Reserva",
+    "date_time": "Data i Hora",
+    "canvas_type": "Llenç",
+    "edit_selections": "Editar seleccions"
   },
   "complete": {
     "title": "Pagament Realitzat!",

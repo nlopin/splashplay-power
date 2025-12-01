@@ -262,7 +262,11 @@
     "validation_fullname": "El nombre completo es obligatorio",
     "validation_email": "Dirección de correo inválida",
     "validation_phone": "El número de teléfono es obligatorio",
-    "creative_date": "Cita Creativa"
+    "creative_date": "Cita Creativa",
+    "booking_summary": "Resumen de la Reserva",
+    "date_time": "Fecha y Hora",
+    "canvas_type": "Lienzo",
+    "edit_selections": "Editar selecciones"
   },
   "complete": {
     "title": "¡Pago Exitoso!",
