@@ -5,7 +5,7 @@ import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
 
 import { PaymentStep } from "./PaymentStep";
 import { ScheduleStep, type ScheduleStepProps } from "./ScheduleStep";
-import type { SelectedTimeSlot } from "./types";
+import type { SelectedTimeSlot, EventType } from "./types";
 import { formatVisitDateTime } from "@/utils/formatters";
 
 type Availability = {
@@ -21,10 +21,12 @@ export default function BookingForm({
   translations,
   initialAvailability,
   lang,
+  eventType,
 }: {
   translations: any;
   initialAvailability: Availability[];
   lang: string;
+  eventType: EventType;
 }) {
   // Step management
   const [currentStep, setCurrentStep] = useState<Step>("schedule");
@@ -201,6 +203,7 @@ export default function BookingForm({
           initialAvailability={initialAvailability}
           selectedTimeSlot={selectedTimeSlot}
           isLoading={isLoading}
+          eventType={eventType}
           onTimeSlotSelect={handleTimeSlotSelect}
           onPriceChange={handlePriceChange}
           onPayToBook={handlePayToBook}
@@ -213,7 +216,6 @@ export default function BookingForm({
           clientSecret={clientSecret}
           isLoading={isLoading}
           onEditSelections={handleEditSelections}
-          translations={translations}
         />
       )}
     </TranslatorProvider>
