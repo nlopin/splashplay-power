@@ -22,13 +22,3 @@ export interface PricingData {
   amount: number;
   productName: string;
 }
-
-export interface EventTypeOptionsProps {
-  onChange: (data: PricingData) => void;
-}
-
-export interface FamilyFormData {
-  adults: number;
-  kids: number;
-  canvases: number;
-}

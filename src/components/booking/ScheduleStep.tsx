@@ -1,59 +1,48 @@
-import { type FC, useState } from "react";
-
 import { useTranslator } from "@/components/TranslatorContext";
 
-import type { SelectedTimeSlot } from "./types";
+import type {
+  SelectedTimeSlot,
+  EventType,
+  PricingData,
+  Availability,
+} from "./types";
 import { AvailabilityCalendar } from "./AvailabilityCalendar";
-import { CouplesOptions } from "./eventTypeOptions/CouplesOptions";
-
-type Availability = {
-  inviteesRemaining: number;
-  schedulingUrl: string;
-  startTime: string;
-  status: string;
-};
-
-interface PricingData {
-  amount: number;
-  productName: string;
-}
+import { EventTypeSelector } from "./EventTypeSelector";
+import { EventTypeOptions } from "./eventTypeOptions";
 
 export interface ScheduleStepProps {
-  initialAvailability: Availability[];
+  availability: Availability;
   selectedTimeSlot: SelectedTimeSlot | null;
   isLoading: boolean;
+  eventType: EventType;
   onTimeSlotSelect: (slot: SelectedTimeSlot | null) => void;
   onPriceChange: (data: PricingData) => void;
   onPayToBook: () => void;
 }
 
-export const ScheduleStep: FC<ScheduleStepProps> = ({
-  initialAvailability,
+export function ScheduleStep({
+  availability,
   selectedTimeSlot,
   isLoading,
+  eventType,
   onTimeSlotSelect,
   onPriceChange,
   onPayToBook,
-}) => {
+}: ScheduleStepProps) {
   const t = useTranslator();
-  const [currentAmount, setCurrentAmount] = useState<number | null>(null);
-
-  const isScheduleComplete =
-    selectedTimeSlot !== null && currentAmount !== null;
-  const hasAvailability = initialAvailability.length > 0;
-
-  const handlePriceChange = (data: PricingData) => {
-    setCurrentAmount(data.amount);
-    onPriceChange(data);
-  };
 
   return (
     <div className="schedule-step">
+      <EventTypeSelector
+        currentEventType={eventType}
+        onEventTypeChange={() => {}} // URL-based navigation
+      />
+
       <h2>{t("select_time_and_size")}</h2>
 
-      {hasAvailability ? (
+      {availability.length > 0 ? (
         <AvailabilityCalendar
-          availability={initialAvailability}
+          availability={availability}
           onTimeSlotSelect={onTimeSlotSelect}
           selectedTimeSlot={selectedTimeSlot}
         />
@@ -63,19 +52,19 @@ export const ScheduleStep: FC<ScheduleStepProps> = ({
 
       <div className="canvas-options">
         <h3>{t("canvas_size")}</h3>
-        <CouplesOptions onChange={handlePriceChange} />
+        <EventTypeOptions eventType={eventType} onChange={onPriceChange} />
       </div>
 
-      {!isScheduleComplete && (
+      {!(selectedTimeSlot !== null) && (
         <p className="schedule-error">{t("select_time_to_continue")}</p>
       )}
       <button
         className="pay-to-book-btn"
-        disabled={!isScheduleComplete || isLoading}
+        disabled={!(selectedTimeSlot !== null) || isLoading}
         onClick={onPayToBook}
       >
         {isLoading ? t("loading") : `${t("pay_to_book")}`}
       </button>
     </div>
   );
-};
+}

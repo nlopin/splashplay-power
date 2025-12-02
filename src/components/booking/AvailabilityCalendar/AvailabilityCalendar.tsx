@@ -4,12 +4,8 @@ import type { ISODatetime } from "@/types";
 import { formatTime, formatWeek, formatWeekday } from "@/utils/formatters";
 import { usePageLanguage } from "@/components/TranslatorContext";
 
-import type { SelectedTimeSlot } from "../types";
+import type { Availability, SelectedTimeSlot } from "../types";
 import { groupWeeks } from "./groupWeeks";
-
-type Availability = {
-  startTime: ISODatetime;
-};
 
 const hoursRegex = /T(\d{2}):/;
 
@@ -18,7 +14,7 @@ export function AvailabilityCalendar({
   onTimeSlotSelect,
   selectedTimeSlot,
 }: {
-  availability: Availability[];
+  availability: Availability;
   onTimeSlotSelect?: (slot: SelectedTimeSlot | null) => void;
   selectedTimeSlot?: SelectedTimeSlot | null;
 }) {
@@ -30,11 +26,7 @@ export function AvailabilityCalendar({
     setInternalSelectedSlot(selectedTimeSlot ?? null);
   }, [selectedTimeSlot]);
 
-  const weeks = useMemo(
-    () =>
-      groupWeeks(availability.map((availability) => availability.startTime)),
-    [availability],
-  );
+  const weeks = useMemo(() => groupWeeks(availability), [availability]);
 
   const hours = useMemo(() => {
     const START_HOUR = 9;
@@ -46,7 +38,7 @@ export function AvailabilityCalendar({
       ); // Default 9-21
     }
     const endHour = availability.reduce((curMax, slot) => {
-      const execResult = hoursRegex.exec(slot.startTime);
+      const execResult = hoursRegex.exec(slot);
       if (!execResult) return curMax;
       return Math.max(parseInt(execResult[1], 10), curMax);
     }, START_HOUR);

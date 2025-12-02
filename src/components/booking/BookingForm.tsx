@@ -5,26 +5,19 @@ import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
 
 import { PaymentStep } from "./PaymentStep";
 import { ScheduleStep, type ScheduleStepProps } from "./ScheduleStep";
-import type { SelectedTimeSlot, EventType } from "./types";
+import type { SelectedTimeSlot, EventType, Availability } from "./types";
 import { formatVisitDateTime } from "@/utils/formatters";
-
-type Availability = {
-  inviteesRemaining: number;
-  schedulingUrl: string;
-  startTime: string;
-  status: string;
-};
 
 type Step = "schedule" | "payment";
 
 export default function BookingForm({
   translations,
-  initialAvailability,
+  availability,
   lang,
   eventType,
 }: {
-  translations: any;
-  initialAvailability: Availability[];
+  translations: Record<string, string>;
+  availability: Availability;
   lang: string;
   eventType: EventType;
 }) {
@@ -160,7 +153,7 @@ export default function BookingForm({
     if (!selectedTimeSlot || !currentAmount || !currentProductName) return;
 
     const formattedProductName = formatBookingProductName(
-      translations.creative_date,
+      translations[ProductNameKeyByEventType[eventType]],
       selectedTimeSlot,
       currentProductName,
       lang,
@@ -200,7 +193,7 @@ export default function BookingForm({
     <TranslatorProvider translations={translations} language={lang}>
       {currentStep === "schedule" ? (
         <ScheduleStep
-          initialAvailability={initialAvailability}
+          availability={availability}
           selectedTimeSlot={selectedTimeSlot}
           isLoading={isLoading}
           eventType={eventType}
@@ -258,13 +251,20 @@ function shouldRedirectToSchedule(
   return step === "payment" && !selectedTimeSlot;
 }
 
+const ProductNameKeyByEventType: Record<EventType, string> = {
+  couples: "creative_date",
+  family: "family_session",
+  friends: "friends_session",
+  individual: "individual_session",
+};
+
 export function formatBookingProductName(
   creativeDateTranslation: string,
   bookingDate: string,
-  canvasType: string,
+  eventOptions: string,
   locale?: string,
 ): string {
   const formattedDate = formatVisitDateTime(bookingDate, "short", locale);
 
-  return `${creativeDateTranslation}, ${formattedDate}, ${canvasType}`;
+  return `${creativeDateTranslation}, ${formattedDate} (${eventOptions})`;
 }

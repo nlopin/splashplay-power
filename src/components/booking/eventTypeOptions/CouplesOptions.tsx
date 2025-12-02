@@ -1,17 +1,11 @@
 import { useState, useEffect } from "react";
-import { useTranslator } from "../../TranslatorContext";
+
 import { formatPrice } from "@/utils/price";
+import { useTranslator } from "@/components/TranslatorContext";
+
+import type { EventTypeOptionsProps } from "./EventTypeOptions";
 
 type PictureType = "one_small" | "one_big" | "individual";
-
-interface PricingData {
-  amount: number;
-  productName: string;
-}
-
-interface CouplesOptionsProps {
-  onChange: (data: PricingData) => void;
-}
 
 const PRICE: Record<PictureType, number> = {
   one_small: 6000,
@@ -19,7 +13,7 @@ const PRICE: Record<PictureType, number> = {
   individual: 9000,
 };
 
-export function CouplesOptions({ onChange }: CouplesOptionsProps) {
+export function CouplesOptions({ onChange }: EventTypeOptionsProps) {
   const [pictureType, setPictureType] = useState<PictureType>("one_big");
   const t = useTranslator();
 
