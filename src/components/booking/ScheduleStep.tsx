@@ -33,10 +33,7 @@ export function ScheduleStep({
 
   return (
     <div className="schedule-step">
-      <EventTypeSelector
-        currentEventType={eventType}
-        onEventTypeChange={() => {}} // URL-based navigation
-      />
+      <EventTypeSelector currentEventType={eventType} />
 
       <h2>{t("select_time_and_size")}</h2>
 
@@ -51,20 +48,21 @@ export function ScheduleStep({
       )}
 
       <div className="canvas-options">
-        <h3>{t("canvas_size")}</h3>
         <EventTypeOptions eventType={eventType} onChange={onPriceChange} />
       </div>
 
-      {!(selectedTimeSlot !== null) && (
-        <p className="schedule-error">{t("select_time_to_continue")}</p>
-      )}
-      <button
-        className="pay-to-book-btn"
-        disabled={!(selectedTimeSlot !== null) || isLoading}
-        onClick={onPayToBook}
-      >
-        {isLoading ? t("loading") : `${t("pay_to_book")}`}
-      </button>
+      <div className="book-button-container">
+        <button
+          className="pay-to-book-btn"
+          disabled={!(selectedTimeSlot !== null) || isLoading}
+          onClick={onPayToBook}
+        >
+          {isLoading ? t("loading") : `${t("pay_to_book")}`}
+        </button>
+        {!(selectedTimeSlot !== null) && (
+          <p className="schedule-error">{t("select_time_to_continue")}</p>
+        )}
+      </div>
     </div>
   );
 }

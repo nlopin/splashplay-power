@@ -16,7 +16,7 @@ export default function BookingForm({
   lang,
   eventType,
 }: {
-  translations: Record<string, string>;
+  translations: Record<string, any>;
   availability: Availability;
   lang: string;
   eventType: EventType;
