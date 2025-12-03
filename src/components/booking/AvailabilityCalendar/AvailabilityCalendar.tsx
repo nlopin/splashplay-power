@@ -40,7 +40,7 @@ export function AvailabilityCalendar({
     const endHour = availability.reduce((curMax, slot) => {
       const execResult = hoursRegex.exec(slot);
       if (!execResult) return curMax;
-      return Math.max(parseInt(execResult[1], 10), curMax);
+      return Math.max(parseInt(execResult[1], 10) + 1, curMax);
     }, START_HOUR);
 
     return Array.from(

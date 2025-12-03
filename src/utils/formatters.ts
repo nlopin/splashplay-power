@@ -30,7 +30,7 @@ export function formatWeekday(
 export function formatTime(isoDatetime: ISODatetime): string {
   const [, isoTime] = isoDatetime.split("T");
   const [hour, minute] = isoTime.split(":");
-  return `${hour}:${minute}`;
+  return `${parseInt(hour) + 1}:${minute}`;
 }
 
 export function formatVisitDateTime(
@@ -50,7 +50,7 @@ export function formatVisitDateTime(
           hour: "numeric",
           minute: "numeric",
           hour12: false,
-          timeZone: "UTC",
+          timeZone: "+01:00",
         }
       : {
           month: "2-digit",
@@ -59,7 +59,7 @@ export function formatVisitDateTime(
           hour: "numeric",
           minute: "numeric",
           hour12: false,
-          timeZone: "UTC",
+          timeZone: "+01:00",
         };
   const dateTimeFormat = Intl.DateTimeFormat(
     // use en-GB to enforce dd/mm/yyyy format for english locale
