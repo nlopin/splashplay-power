@@ -1,6 +1,9 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
-import { getPageTranslations, isSupportedLanguage } from "../../../utils/i18n";
+import Layout from "@/layouts/Layout.astro";
+import { getPageTranslations, isSupportedLanguage } from "@/utils/i18n";
+import { getAvailableTime } from "@/services/calendly";
+import BookingForm from "@/components/booking/BookingForm.tsx";
+import type { EventType } from "@/components/booking/types";
 
 export const prerender = false;
 
@@ -10,85 +13,154 @@ if (!lang || !isSupportedLanguage(lang)) {
     return Astro.redirect("/404");
 }
 
-const eventType = "individual";
+const eventType: EventType = "individual";
 const translations = getPageTranslations(lang, "book");
+
+const availableTimes = await getAvailableTime(eventType);
+const availability = availableTimes.map((time) => time.start_time);
 ---
 
 <Layout>
-    <div class="coming-soon">
-        <h1>Individual Booking</h1>
-        <p>Individual booking experience coming soon!</p>
-        <p>This feature is currently under development.</p>
-
-        <div class="navigation-links">
-            <a href={`/${lang}/book/couples`} class="nav-link">Book for Couples</a>
-            <a href={`/${lang}/book/family`} class="nav-link">Book for Family</a>
-        </div>
-    </div>
+    <BookingForm
+        translations={translations}
+        availability={availability}
+        lang={lang}
+        eventType={eventType}
+        client:load
+    />
 </Layout>
 
-<style>
-    .coming-soon {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 60px 20px;
-        text-align: center;
+<style is:global>
+    /* Individual uses the same styles as friends since layout is identical */
+    .options-grid.vertical {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        margin: 0;
+        gap: 20px;
     }
 
-    .coming-soon h1 {
-        color: var(--dark-text);
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
+    .options-grid-unified {
+        grid-template-columns:
+            max-content max-content minmax(70px, max-content)
+            max-content;
     }
 
-    .coming-soon p {
-        color: #666;
-        font-size: 1.2rem;
-        margin-bottom: 1rem;
-        line-height: 1.6;
-    }
-
-    .navigation-links {
-        margin-top: 2rem;
+    /* Friends/Individual Options Styles */
+    .friends-options {
         display: flex;
-        gap: 1rem;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .number-input-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: flex-start;
+        margin-top: 0;
+    }
+
+    .number-input {
+        width: 100%;
+        border: 1px solid var(--border-color);
+        background: var(--white);
+        border-radius: 6px;
+        font-size: 1rem;
+        text-align: right;
+        color: var(--dark-text);
+        padding: 6px 8px;
+        outline: none;
+    }
+
+    .number-input-btn {
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border-color);
+        background: var(--white);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
         justify-content: center;
-        flex-wrap: wrap;
+        cursor: pointer;
+        color: var(--dark-text);
+        font-size: 1.2rem;
+        transition: all 0.2s;
     }
 
-    .nav-link {
-        display: inline-block;
-        padding: 12px 24px;
-        background-color: var(--purple);
-        color: var(--white);
-        text-decoration: none;
-        border-radius: 8px;
+    .number-input-btn:hover:not(:disabled) {
+        background: var(--purple-light);
+        border-color: var(--purple);
+    }
+
+    .number-input-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .option-card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 12px 0;
+        background-color: transparent;
+        border: none;
+        cursor: default;
+        position: relative;
+    }
+
+    .option-card:hover {
+        background-color: transparent;
+    }
+
+    .option-card.selected {
+        background-color: transparent;
+        border: none;
+        padding: 16px 0;
+    }
+
+    .option-input {
+        margin-right: 12px;
+        width: 20px;
+        height: 20px;
+        accent-color: var(--purple);
+    }
+
+    .option-card.selected .option-input {
+        accent-color: var(--purple);
+    }
+
+    .option-content {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        gap: 12px;
+    }
+
+    .option-label {
+        color: var(--dark-text);
+        transition: color 0.2s;
+        min-width: 80px;
         font-weight: 500;
-        transition: all 0.2s ease;
     }
 
-    .nav-link:hover {
-        background-color: var(--purple-light);
-        transform: translateY(-2px);
+    .option-price {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: var(--purple);
+        transition: color 0.2s;
     }
 
-    @media (max-width: 768px) {
-        .coming-soon {
-            padding: 40px 16px;
-        }
+    /* Total price styles */
+    .total-price-label,
+    .total-price {
+        font-weight: 600;
+    }
 
-        .coming-soon h1 {
-            font-size: 2rem;
-        }
-
-        .navigation-links {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .nav-link {
-            width: 100%;
-            max-width: 250px;
-        }
+    .total-price {
+        font-size: 1.5rem;
+        text-align: right;
+        color: var(--purple);
+        position: relative;
+        right: -2px;
     }
 </style>
