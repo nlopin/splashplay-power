@@ -37,37 +37,60 @@ export function EventTypeSelector({
 }: EventTypeSelectorProps) {
   const t = useTranslator();
 
-  const handleEventTypeChange = (eventType: EventType) => {
-    if (eventType !== currentEventType) {
-      // Navigate to the appropriate route
-      const currentPath = window.location.pathname;
-      const pathParts = currentPath.split("/");
+  const currentOption = EVENT_TYPE_OPTIONS.find(
+    (option) => option.value === currentEventType,
+  );
 
-      pathParts[pathParts.length - 1] = eventType;
-      window.location.href = pathParts.join("/");
-    }
+  // Get other options (excluding the current one)
+  const otherOptions = EVENT_TYPE_OPTIONS.filter(
+    (option) => option.value !== currentEventType,
+  );
+
+  const handleEventTypeChange = (eventType: EventType) => {
+    // Navigate to the appropriate route
+    const currentPath = window.location.pathname;
+    const pathParts = currentPath.split("/");
+    pathParts[pathParts.length - 1] = eventType;
+    window.location.href = pathParts.join("/");
   };
 
   return (
-    <div className="event-type-selector">
-      <h3>{t("select_event_type")}</h3>
-      <div className="event-type-grid">
-        {EVENT_TYPE_OPTIONS.map((option) => (
-          <button
-            key={option.value}
-            className={`event-type-card ${
-              currentEventType === option.value ? "selected" : ""
-            }`}
-            onClick={() => handleEventTypeChange(option.value)}
-          >
-            <div className="event-type-content">
-              <div className="event-type-label">{t(option.labelKey)}</div>
-              <div className="event-type-description">
+    <div>
+      <button
+        className="event-type-trigger"
+        popoverTarget="event-type-popover"
+        aria-haspopup="true"
+        type="button"
+      >
+        <h1 className="current-selection">
+          {currentOption && t(currentOption.labelKey)}
+        </h1>
+        <span className="dropdown-arrow">▼</span>
+      </button>
+
+      <div
+        id="event-type-popover"
+        popover="auto"
+        className="event-type-popover"
+      >
+        <div className="popover-options">
+          {otherOptions.map((option) => (
+            <a
+              key={option.value}
+              href="#"
+              className="event-type-option"
+              onClick={(e) => {
+                e.preventDefault();
+                handleEventTypeChange(option.value);
+              }}
+            >
+              <span className="option-label">{t(option.labelKey)}</span>
+              <span className="option-description">
                 {t(option.descriptionKey)}
-              </div>
-            </div>
-          </button>
-        ))}
+              </span>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );

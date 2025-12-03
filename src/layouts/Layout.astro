@@ -370,58 +370,126 @@ const pageDescription = description || t("description");
         margin: 0;
     }
 
-    /* Event Type Selector Styles */
-    .event-type-selector {
-        margin-bottom: 2rem;
-    }
-
-    .event-type-selector h3 {
-        text-align: center;
-        color: var(--dark-text);
-        margin-bottom: 1rem;
-    }
-
-    .event-type-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* Event Type Selector Dropdown Styles */
+    .event-type-trigger {
+        display: flex;
+        align-items: baseline;
         gap: 12px;
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .event-type-card {
-        background-color: var(--white);
-        border: 2px solid var(--border-color);
-        border-radius: 12px;
-        padding: 16px;
+        background: transparent;
+        border: none;
+        padding: 0;
         cursor: pointer;
-        transition: all 0.2s ease;
-        text-align: center;
-        appearance: none;
         font-family: inherit;
+        appearance: none;
+        anchor-name: --event-trigger;
+        color: var(--dark-text);
+
+        h1 {
+            color: inherit;
+        }
     }
 
-    .event-type-card:hover {
-        border-color: var(--purple);
+    .event-type-trigger:hover {
+        color: var(--purple);
+    }
+
+    .event-type-trigger:focus-visible {
+        outline: 2px solid var(--purple);
+        outline-offset: 4px;
+        border-radius: 4px;
+    }
+
+    .event-type-trigger .current-selection {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    /* Popover styles */
+    .event-type-popover {
+        margin: 0;
+        padding: 8px;
+        background: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-height: 400px;
+        overflow-y: auto;
+        inset: unset;
+        position-anchor: --event-trigger;
+        position: fixed;
+        top: anchor(bottom);
+        left: anchor(left);
+        margin-top: 12px;
+        min-width: 280px;
+    }
+
+    .event-type-popover::backdrop {
+        background: transparent;
+    }
+
+    .event-type-popover:popover-open {
+        animation: slideDown 0.2s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .popover-options {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .event-type-option {
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+        text-decoration: none;
+        color: inherit;
+        border-radius: 6px;
+        transition: background-color 0.2s ease;
+    }
+
+    .event-type-option:hover {
         background-color: var(--light-bg);
     }
 
-    .event-type-card.selected {
-        border-color: var(--purple);
-        background-color: var(--purple-tint-bg);
+    .event-type-option:focus-visible {
+        outline: 2px solid var(--purple);
+        outline-offset: -2px;
     }
 
-    .event-type-label {
-        font-size: 1.1rem;
-        font-weight: bold;
+    .event-type-option .option-label {
+        font-weight: 500;
+        font-size: 1rem;
+        margin-bottom: 4px;
         color: var(--dark-text);
-        margin-bottom: 8px;
     }
 
-    .event-type-description {
-        font-size: 0.9rem;
+    .event-type-option .option-description {
+        font-size: 0.875rem;
         color: #666;
         line-height: 1.4;
+    }
+
+    @media (max-width: 768px) {
+        .event-type-trigger .current-selection {
+            font-size: 1.8rem;
+        }
+
+        .dropdown-arrow {
+            font-size: 1rem;
+        }
     }
 
     /* Schedule Step Styles */
