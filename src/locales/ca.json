@@ -275,6 +275,8 @@
     "validation_email": "Adreça de correu electrònic invàlida",
     "validation_phone": "El número de telèfon és obligatori",
     "creative_date": "Cita Creativa",
+    "duration_hour": "{hours} hora",
+    "duration_hours": "{hours} hores",
     "booking_summary": "Resum de la Reserva",
     "date_time": "Data i Hora",
     "canvas_type": "Llenç",

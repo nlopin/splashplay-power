@@ -278,6 +278,8 @@
     "validation_email": "Invalid email address",
     "validation_phone": "Phone number is required",
     "creative_date": "Creative Date",
+    "duration_hour": "{hours} hour",
+    "duration_hours": "{hours} hours",
     "booking_summary": "Booking Summary",
     "date_time": "Date & Time",
     "canvas_type": "Canvas",
