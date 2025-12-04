@@ -12,22 +12,22 @@ const EVENT_TYPE_OPTIONS: ReadonlyArray<{
 }> = [
   {
     value: "couples",
-    labelKey: "event_type_couples",
+    labelKey: "creative_date",
     descriptionKey: "event_type_couples_desc",
   },
   {
     value: "family",
-    labelKey: "event_type_family",
+    labelKey: "family_session",
     descriptionKey: "event_type_family_desc",
   },
   {
     value: "friends",
-    labelKey: "event_type_friends",
+    labelKey: "friends_session",
     descriptionKey: "event_type_friends_desc",
   },
   {
     value: "individual",
-    labelKey: "event_type_individual",
+    labelKey: "individual_session",
     descriptionKey: "event_type_individual_desc",
   },
 ];
