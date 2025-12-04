@@ -59,7 +59,7 @@ const pageDescription = description || t("description");
         />
     </head>
     <body>
-        <Header currentPath={currentPath || Astro.url.pathname} />
+        <!-- <Header currentPath={currentPath || Astro.url.pathname} /> -->
         <slot />
     </body>
 </html>
@@ -499,13 +499,17 @@ const pageDescription = description || t("description");
         padding: 20px;
         display: flex;
         flex-direction: column;
-        gap: 2rem;
+        gap: 32px;
     }
 
     .schedule-step h2 {
         color: var(--dark-text);
         font-size: 2rem;
         margin: 0;
+    }
+
+    .schedule-step .book-button-container {
+        margin-top: -24px;
     }
 
     .book-button-container {
@@ -860,5 +864,22 @@ const pageDescription = description || t("description");
         font-weight: bold;
         color: var(--purple);
         transition: color 0.2s;
+    }
+
+    /* Standard total price styles */
+    .options-grid-unified {
+        .total-price-label,
+        .total-price {
+            margin-top: 20px;
+            font-weight: 600;
+        }
+
+        .total-price {
+            font-size: 1.5rem;
+            text-align: right;
+            color: var(--purple);
+            position: relative;
+            right: -2px;
+        }
     }
 </style>

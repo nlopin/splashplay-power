@@ -35,8 +35,6 @@ export function ScheduleStep({
     <div className="schedule-step">
       <EventTypeSelector currentEventType={eventType} />
 
-      <h2>{t("select_time_and_size")}</h2>
-
       {availability.length > 0 ? (
         <AvailabilityCalendar
           availability={availability}

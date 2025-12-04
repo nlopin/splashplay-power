@@ -20,13 +20,11 @@ export function IndividualOptions({ onChange }: EventTypeOptionsProps) {
   }, [onChange, t]);
 
   return (
-    <div className="friends-options">
-      <div className="options-grid-unified">
-        <div className="option-label total-price-label">{t("total_price")}</div>
-        <div></div>
-        <div className="total-price">{formatPrice(INDIVIDUAL_PRICE)}</div>
-        <div></div>
-      </div>
+    <div className="options-grid-unified">
+      <div className="option-label total-price-label">{t("total_price")}</div>
+      <div></div>
+      <div className="total-price">{formatPrice(INDIVIDUAL_PRICE)}</div>
+      <div></div>
     </div>
   );
 }
