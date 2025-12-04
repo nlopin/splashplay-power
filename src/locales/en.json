@@ -283,7 +283,10 @@
     "booking_summary": "Booking Summary",
     "date_time": "Date & Time",
     "canvas_type": "Canvas",
-    "edit_selections": "Edit selections"
+    "edit_selections": "Edit selections",
+    "most_popular": "Popular",
+    "last_spots": "Last spots!",
+    "choose_canvas": "Choose Canvas"
   },
   "complete": {
     "title": "Payment Successful!",

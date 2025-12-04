@@ -285,7 +285,10 @@
     "booking_summary": "Resumen de Reserva",
     "date_time": "Fecha y Hora",
     "canvas_type": "Lienzo",
-    "edit_selections": "Editar selecciones"
+    "edit_selections": "Editar selecciones",
+    "most_popular": "Popular",
+    "last_spots": "Últimos turnos!",
+    "choose_canvas": "Elige Lienzo"
   },
   "complete": {
     "title": "¡Pago Exitoso!",

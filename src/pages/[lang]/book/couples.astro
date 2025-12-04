@@ -31,7 +31,205 @@ const availability = availableTimes.map((time) => time.start_time);
 </Layout>
 
 <style is:global>
-    /* Couples-specific styles */
+    .couples-options-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px;
+        justify-content: flex-start;
+    }
+
+    .couples-options-section {
+        margin-bottom: 16px;
+    }
+
+    .couples-option-card {
+        cursor: pointer;
+        min-width: 240px;
+        flex-shrink: 0;
+        border: 2px solid #e0e0e0;
+        border-radius: 16px;
+        padding: 16px;
+        background-color: white;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+        position: relative;
+        transition: all 0.2s ease;
+        flex: 1;
+    }
+
+    .couples-option-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+        border-color: #d0d0d0;
+    }
+
+    .couples-option-card.selected {
+        border: 2px solid var(--purple);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+        transform: translateY(-2px);
+    }
+
+    .couples-option-image-container {
+        width: 100%;
+        max-width: 210px;
+        aspect-ratio: 9 / 16;
+        overflow: hidden;
+        border-radius: 12px;
+        background-color: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 260px;
+    }
+
+    .couples-option-card.selected .couples-option-image-container {
+        border: none;
+        box-shadow: none;
+    }
+
+    .couples-option-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .couples-option-card .option-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        text-align: center;
+    }
+
+    .couples-option-card .option-label {
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #1a1a1a;
+        text-align: center;
+    }
+
+    .couples-option-card .option-price {
+        font-size: 16px;
+        font-weight: 600;
+        background-color: #f0f0f0;
+        padding: 6px 16px;
+        border-radius: 20px;
+        color: #333;
+    }
+
+    .couples-option-card.selected .option-price {
+        background-color: var(--purple);
+        color: white;
+    }
+
+    .popular-badge {
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        background-color: var(--orange);
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 640px) {
+        .couples-option-card {
+            width: 160px;
+            padding: 12px;
+            gap: 12px;
+        }
+
+        .couples-option-card .option-input {
+            top: 8px;
+            left: 8px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .couples-option-card .option-input:checked::after {
+            width: 6px;
+            height: 6px;
+        }
+
+        .couples-option-image-container {
+            aspect-ratio: 9 / 16;
+        }
+
+        .couples-option-card .option-label {
+            font-size: 16px;
+        }
+
+        .couples-option-card .option-price {
+            font-size: 14px;
+            padding: 4px 12px;
+        }
+
+        .popular-badge {
+            top: -10px;
+            right: -8px;
+            font-size: 10px;
+            padding: 3px 10px;
+        }
+    }
+
+    .couples-options-title {
+        width: 100%;
+        text-align: left;
+        font-size: 1.5rem;
+        color: #1a1a1a;
+    }
+
+    /* Style radio button */
+    .couples-option-card .option-input {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        width: 20px;
+        height: 20px;
+        margin: 0;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border: 2px solid #d0d0d0;
+        border-radius: 50%;
+        background-color: white;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .couples-option-card .option-input:checked {
+        border-color: var(--purple);
+        background-color: var(--purple);
+    }
+
+    .couples-option-card .option-input:checked::after {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: white;
+        display: block;
+    }
+
+    .couples-option-card:hover .option-input {
+        border-color: var(--purple);
+    }
+
+    /* Other existing styles */
     .options-grid-unified {
         grid-template-columns: max-content max-content max-content max-content;
     }

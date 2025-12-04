@@ -2,7 +2,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 
 import type { ISODatetime } from "@/types";
 import { formatTime, formatWeek, formatWeekday } from "@/utils/formatters";
-import { usePageLanguage } from "@/components/TranslatorContext";
+import { usePageLanguage, useTranslator } from "@/components/TranslatorContext";
 
 import type { Availability, SelectedTimeSlot } from "../types";
 import { groupWeeks } from "./groupWeeks";
@@ -18,6 +18,7 @@ export function AvailabilityCalendar({
   onTimeSlotSelect?: (slot: SelectedTimeSlot | null) => void;
   selectedTimeSlot?: SelectedTimeSlot | null;
 }) {
+  const t = useTranslator();
   const language = usePageLanguage();
   const [internalSelectedSlot, setInternalSelectedSlot] =
     useState<SelectedTimeSlot | null>(null);
@@ -104,7 +105,9 @@ export function AvailabilityCalendar({
               <div className="weekday mobile-only">{shortWeekday}</div>
               <div className="date desktop-only">{longDate}</div>
               <div className="date mobile-only">{shortDate}</div>
-              {isAlmostFilled && <div className="busy-label">Last spots!</div>}
+              {isAlmostFilled && (
+                <div className="busy-label">{t("last_spots")}</div>
+              )}
             </div>
           );
         })}

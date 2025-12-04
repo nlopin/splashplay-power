@@ -280,7 +280,10 @@
     "booking_summary": "Resum de la Reserva",
     "date_time": "Data i Hora",
     "canvas_type": "Llenç",
-    "edit_selections": "Editar seleccions"
+    "edit_selections": "Editar seleccions",
+    "most_popular": "Popular",
+    "last_spots": "Últims torns!",
+    "choose_canvas": "Tria Llenç"
   },
   "complete": {
     "title": "Pagament Realitzat!",
