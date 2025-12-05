@@ -32,8 +32,6 @@ export const StripeCheckoutWrapper: FC<StripeCheckoutWrapperProps> = ({
 
   return (
     <div className="checkout-wrapper">
-      <h3 className="checkout-header">{t("payment_header")}</h3>
-
       <EmbeddedCheckoutProvider
         stripe={stripePromise}
         options={{

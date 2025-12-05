@@ -203,9 +203,6 @@ export default function BookingForm({
         />
       ) : (
         <PaymentStep
-          selectedTimeSlot={selectedTimeSlot!}
-          currentAmount={currentAmount!}
-          currentProductName={currentProductName!}
           clientSecret={clientSecret}
           isLoading={isLoading}
           onEditSelections={handleEditSelections}
