@@ -18,12 +18,9 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const { amount, productName, datetime, lang, calendarId } = parseResult.data;
+  const { amount, productName, datetime, lang, eventType } = parseResult.data;
   const origin = new URL(request.url).origin;
-  const returnUrl =
-    lang === "es"
-      ? `${origin}/complete?session_id={CHECKOUT_SESSION_ID}`
-      : `${origin}/${lang}/complete?session_id={CHECKOUT_SESSION_ID}`;
+  const returnUrl = `${origin}/${lang}/complete?session_id={CHECKOUT_SESSION_ID}`;
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
@@ -36,8 +33,9 @@ export const POST: APIRoute = async ({ request }) => {
       },
     },
     metadata: {
-      calendarId,
+      eventType,
       sessionTime: datetime,
+      sessionTitle: productName,
     },
     customer_creation: "always",
     line_items: [

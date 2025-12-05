@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 
 import { TranslatorProvider } from "@/components/TranslatorContext";
 import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
-import { EVENT_TYPE_IDS } from "@/constants";
 import { formatVisitDateTime } from "@/utils/formatters";
 import type { ISODatetime } from "@/types";
 
@@ -92,12 +91,12 @@ export default function BookingForm({
   const createSession = async ({
     amount,
     formattedProductName,
-    calendarId,
+    eventType,
     datetime,
   }: {
     amount: number;
     formattedProductName: string;
-    calendarId: string;
+    eventType: EventType;
     datetime: ISODatetime;
   }) => {
     setError(null);
@@ -115,7 +114,7 @@ export default function BookingForm({
         body: JSON.stringify({
           amount,
           productName: formattedProductName,
-          calendarId,
+          eventType,
           datetime,
           lang,
         }),
@@ -175,7 +174,7 @@ export default function BookingForm({
       await createSession({
         amount: currentAmount,
         formattedProductName,
-        calendarId: EVENT_TYPE_IDS[eventType],
+        eventType,
         datetime: selectedTimeSlot,
       });
       // Navigate to payment step - URL will be updated by useEffect

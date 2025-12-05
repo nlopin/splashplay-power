@@ -3,8 +3,9 @@ import { CALENDLY_TOKEN } from "astro:env/server";
 
 import type { EventType } from "@/components/booking/types";
 import { EVENT_TYPE_IDS } from "@/constants";
+import { type ISODatetime } from "@/types";
 
-const CALENDLY_URL = "https://api.calendly.com/";
+const CALENDLY_URL = "https://api.calendly.com";
 const BOOK_IN_ADVANCE = 30;
 const BATCH_SIZE_IN_DAYS = 7;
 const MILLISECONDS_IN_ONE_DAY = 24 * 60 * 60 * 1000;
@@ -78,10 +79,7 @@ export async function getAvailableTime(
     const params = new URLSearchParams();
     params.append("start_time", batchStartDate.toISOString());
     params.append("end_time", batchEndDate.toISOString());
-    params.append(
-      "event_type",
-      "https://api.calendly.com/event_types/" + EVENT_TYPE_IDS[eventType],
-    );
+    params.append("event_type", getEventTypeId(eventType));
     const response = await fetch(
       `${CALENDLY_URL}/event_type_available_times?${params}`,
       {
@@ -111,4 +109,66 @@ export async function getAvailableTime(
   };
 
   return availableTimes;
+}
+
+export async function bookEvent(
+  eventType: EventType,
+  {
+    datetime,
+    name,
+    phone,
+    email,
+    comment = "",
+  }: {
+    datetime: ISODatetime;
+    name: string;
+    phone: string;
+    email: string;
+    comment?: string;
+  },
+): Promise<boolean> {
+  const body = JSON.stringify({
+    event_type: getEventTypeId(eventType),
+    start_time: datetime,
+    location: {
+      kind: "physical",
+      location: "Carrer del Concili de Trento, 7, Barcelona",
+    },
+    invitee: {
+      name,
+      email,
+      timezone: "Europe/Madrid",
+      text_reminder_number: phone,
+    },
+    questions_and_answers: [
+      {
+        question: "Comment",
+        answer: comment,
+        // comment must always be the first question in the calendly question form
+        position: 0,
+      },
+    ],
+  });
+
+  const response = await fetch(`${CALENDLY_URL}/invitees`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${CALENDLY_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body,
+  });
+
+  if (response.status !== 201) {
+    console.error(
+      `Error while creating calendly event ${await response.json()}`,
+    );
+    return false;
+  }
+
+  return true;
+}
+
+function getEventTypeId(eventType: EventType): string {
+  return CALENDLY_URL + "/event_types/" + EVENT_TYPE_IDS[eventType];
 }

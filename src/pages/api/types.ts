@@ -1,10 +1,11 @@
+import { EVENT_TYPE } from "@/components/booking/types";
 import * as z from "zod";
 
 export const CreatePaymentSessionPayloadSchema = z.object({
   amount: z.number(),
   productName: z.string(),
   datetime: z.iso.datetime(),
-  calendarId: z.uuid(),
+  eventType: z.enum(Object.values(EVENT_TYPE)),
   lang: z.string().optional().default("es"),
   fullName: z.string().optional(),
   email: z.email().optional(),

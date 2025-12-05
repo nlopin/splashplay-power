@@ -34,10 +34,10 @@ export const isSupportedLanguage = (
   maybeLanguage: string,
 ): maybeLanguage is Language => languagesSet.has(maybeLanguage);
 
-export function getPageTranslations(
+export function getPageTranslations<Page extends keyof typeof esTranslations>(
   locale: string | undefined,
-  page: keyof typeof esTranslations,
-): (typeof esTranslations)[keyof typeof esTranslations] {
+  page: Page,
+): (typeof esTranslations)[Page] {
   const language = getCurrentLanguage(locale);
   return translations[language]?.[page];
 }

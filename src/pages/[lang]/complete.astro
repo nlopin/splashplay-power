@@ -1,38 +1,68 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import { getPageTranslations, isSupportedLanguage } from "../../utils/i18n";
 import Stripe from "stripe";
+import * as z from "zod";
 import { STRIPE_SECRET_KEY } from "astro:env/server";
+
+import Layout from "@/layouts/Layout.astro";
+import { getPageTranslations } from "@/utils/i18n";
+import { bookEvent } from "@/services/calendly";
+import { EVENT_TYPE } from "@/components/booking/types";
+import { DEFAULT_LOCALE } from "@/constants";
 
 export const prerender = false;
 
-const { lang } = Astro.params;
-
-if (!lang || !isSupportedLanguage(lang)) {
-    return Astro.redirect("/404");
-}
-
+const lang = DEFAULT_LOCALE;
 const translations = getPageTranslations(lang, "complete");
 const sessionId = Astro.url.searchParams.get("session_id");
 
 if (!sessionId) {
-    return Astro.redirect(`/${lang === "es" ? "" : lang}`);
+    return Astro.redirect("/");
 }
 
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
     apiVersion: "2025-10-29.clover",
 });
 
-let session;
 let status = "loading";
 let message = translations.processing;
 
-try {
-    session = await stripe.checkout.sessions.retrieve(sessionId);
+const metadataSchema = z.object({
+    eventType: z.enum(Object.values(EVENT_TYPE)),
+    sessionTime: z.iso.datetime(),
+    sessionTitle: z.string(),
+});
 
-    if (session.status === "complete" && session.payment_status === "paid") {
+const customerSchema = z.object({
+    email: z.email(),
+    individual_name: z.string(),
+    phone: z.string(),
+});
+
+try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+
+    const parsedMetadata = metadataSchema.safeParse(session.metadata);
+    const parsedCustomer = customerSchema.safeParse(session.customer_details);
+
+    if (
+        session.status === "complete" &&
+        session.payment_status === "paid" &&
+        parsedMetadata.success &&
+        parsedCustomer.success
+    ) {
+        const isOk = await bookEvent(parsedMetadata.data.eventType, {
+            datetime: parsedMetadata.data.sessionTime,
+            email: parsedCustomer.data.email,
+            name: parsedCustomer.data.individual_name,
+            phone: parsedCustomer.data.phone,
+            comment: parsedMetadata.data.sessionTitle,
+        });
+
         status = "success";
         message = translations.message;
+        if (!isOk) {
+            console.log("error while booking an event", session.id);
+        }
     } else if (session.status === "open") {
         status = "processing";
         message = translations.processing;
@@ -63,10 +93,7 @@ try {
 
             {
                 status === "failed" || status === "error" ? (
-                    <a
-                        href={`/${lang === "es" ? "book" : `${lang}/book`}`}
-                        class="button"
-                    >
+                    <a href="/book" class="button">
                         {translations.back_to_book}
                     </a>
                 ) : null
