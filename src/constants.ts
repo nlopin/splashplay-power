@@ -1,1 +1,16 @@
+import {
+  PUBLIC_CALENDLY_COUPLES_EVENT_TYPE_ID,
+  PUBLIC_CALENDLY_FAMILY_EVENT_TYPE_ID,
+  PUBLIC_CALENDLY_FRIENDS_EVENT_TYPE_ID,
+  PUBLIC_CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
+} from "astro:env/client";
+import type { EventType } from "./components/booking/types";
+
 export const DEFAULT_LOCALE = "es";
+
+export const EVENT_TYPE_IDS: Record<EventType, string> = {
+  couples: PUBLIC_CALENDLY_COUPLES_EVENT_TYPE_ID,
+  family: PUBLIC_CALENDLY_FAMILY_EVENT_TYPE_ID,
+  friends: PUBLIC_CALENDLY_FRIENDS_EVENT_TYPE_ID,
+  individual: PUBLIC_CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
+};

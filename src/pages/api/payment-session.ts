@@ -18,7 +18,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const { amount, productName, lang } = parseResult.data;
+  const { amount, productName, datetime, lang, calendarId } = parseResult.data;
   const origin = new URL(request.url).origin;
   const returnUrl =
     lang === "es"
@@ -34,6 +34,10 @@ export const POST: APIRoute = async ({ request }) => {
         enabled: true,
         optional: false,
       },
+    },
+    metadata: {
+      calendarId,
+      sessionTime: datetime,
     },
     customer_creation: "always",
     line_items: [

@@ -2,11 +2,13 @@ import { useState, useRef, useEffect } from "react";
 
 import { TranslatorProvider } from "@/components/TranslatorContext";
 import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
+import { EVENT_TYPE_IDS } from "@/constants";
+import { formatVisitDateTime } from "@/utils/formatters";
+import type { ISODatetime } from "@/types";
 
 import { PaymentStep } from "./PaymentStep";
 import { ScheduleStep, type ScheduleStepProps } from "./ScheduleStep";
 import type { SelectedTimeSlot, EventType, Availability } from "./types";
-import { formatVisitDateTime } from "@/utils/formatters";
 
 type Step = "schedule" | "payment";
 
@@ -87,10 +89,17 @@ export default function BookingForm({
     return () => window.removeEventListener("popstate", handlePopState);
   }, [currentStep, selectedTimeSlot]);
 
-  const createSession = async (
-    amount: number,
-    formattedProductName: string,
-  ) => {
+  const createSession = async ({
+    amount,
+    formattedProductName,
+    calendarId,
+    datetime,
+  }: {
+    amount: number;
+    formattedProductName: string;
+    calendarId: string;
+    datetime: ISODatetime;
+  }) => {
     setError(null);
 
     if (abortControllerRef.current) {
@@ -106,6 +115,8 @@ export default function BookingForm({
         body: JSON.stringify({
           amount,
           productName: formattedProductName,
+          calendarId,
+          datetime,
           lang,
         }),
         signal: controller.signal,
@@ -161,7 +172,12 @@ export default function BookingForm({
 
     setIsLoading(true);
     try {
-      await createSession(currentAmount, formattedProductName);
+      await createSession({
+        amount: currentAmount,
+        formattedProductName,
+        calendarId: EVENT_TYPE_IDS[eventType],
+        datetime: selectedTimeSlot,
+      });
       // Navigate to payment step - URL will be updated by useEffect
       setCurrentStep("payment");
     } catch (error) {
