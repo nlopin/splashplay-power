@@ -21,6 +21,18 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
+      STRIPE_WEBHOOK_SECRET_KEY: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      TELEGRAM_SECRET_KEY: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      TELEGRAM_CHAT_ID: envField.string({
+        context: "server",
+        access: "secret",
+      }),
       CALENDLY_TOKEN: envField.string({
         context: "server",
         access: "secret",
