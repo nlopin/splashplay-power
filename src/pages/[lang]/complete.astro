@@ -5,7 +5,7 @@ import { STRIPE_SECRET_KEY } from "astro:env/server";
 
 import Layout from "@/layouts/Layout.astro";
 import { getPageTranslations } from "@/utils/i18n";
-import { bookEvent } from "@/services/calendly";
+import { bookEvent, resetCache } from "@/services/calendly";
 import { EVENT_TYPE } from "@/components/booking/types";
 import { DEFAULT_LOCALE } from "@/constants";
 
@@ -60,7 +60,9 @@ try {
 
         status = "success";
         message = translations.message;
-        if (!isOk) {
+        if (isOk) {
+            resetCache();
+        } else {
             console.log("error while booking an event", session.id);
         }
     } else if (session.status === "open") {
