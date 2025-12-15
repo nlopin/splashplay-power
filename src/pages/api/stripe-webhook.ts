@@ -29,11 +29,14 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   switch (event.type) {
-    case "payment_intent.succeeded":
-      const paymentIntent = event.data.object;
-      const { sessionTitle } = paymentIntent.metadata;
+    case "checkout.session.completed":
+      const session = event.data.object;
+      console.log(JSON.stringify(session));
+      const { sessionTitle } = session.metadata || {};
 
-      await sendPaymentNotification(paymentIntent.amount, sessionTitle);
+      if (session.amount_total) {
+        await sendPaymentNotification(session.amount_total, sessionTitle);
+      }
 
       break;
   }
