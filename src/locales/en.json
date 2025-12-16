@@ -294,6 +294,7 @@
     "message": "Thank you for your booking. You will receive a confirmation email shortly.",
     "processing": "Processing payment...",
     "failed": "Payment failed. Please try again.",
-    "back_to_book": "Back to Booking"
+    "back_to_book": "Back to Booking",
+    "return_to_main": "Return to main page"
   }
 }

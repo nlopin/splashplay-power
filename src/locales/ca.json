@@ -290,7 +290,8 @@
     "title": "Pagament Realitzat!",
     "message": "Gràcies per la teva reserva. Rebràs un correu de confirmació aviat.",
     "processing": "Processant pagament...",
-    "failed": "El pagament ha fallat. Si us plau, torna-ho a provar.",
-    "back_to_book": "Tornar a Reservar"
+    "failed": "El pagament ha fallat. Si us plau, torna-ho a intentar.",
+    "back_to_book": "Tornar a Reservar",
+    "return_to_main": "Tornar a la pàgina principal"
   }
 }

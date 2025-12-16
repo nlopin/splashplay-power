@@ -296,6 +296,7 @@
     "message": "Gracias por tu reserva. Recibirás un correo de confirmación en breve.",
     "processing": "Procesando pago...",
     "failed": "El pago ha fallado. Por favor, inténtalo de nuevo.",
-    "back_to_book": "Volver a Reservar"
+    "back_to_book": "Volver a Reservar",
+    "return_to_main": "Volver a la página principal"
   }
 }
