@@ -1,7 +1,13 @@
 import { Stripe } from "stripe";
 import type { APIRoute } from "astro";
 import { STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET_KEY } from "astro:env/server";
-import { sendTelegramMessage, sendTelegramSticker } from "@/services/telegram";
+
+import {
+  escapeMarkdown,
+  sendTelegramMessage,
+  sendTelegramSticker,
+} from "@/services/telegram";
+import { getPaymentIntentId } from "@/services/stripe";
 
 export const prerender = false;
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
@@ -31,11 +37,14 @@ export const POST: APIRoute = async ({ request }) => {
   switch (event.type) {
     case "checkout.session.completed":
       const session = event.data.object;
-      console.log(JSON.stringify(session));
       const { sessionTitle } = session.metadata || {};
 
       if (session.amount_total) {
-        await sendPaymentNotification(session.amount_total, sessionTitle);
+        await sendPaymentNotification(
+          session.amount_total,
+          sessionTitle,
+          getPaymentIntentId(session),
+        );
       }
 
       break;
@@ -60,6 +69,7 @@ const PAYMENT_SUCCESS_STICKERS: Readonly<Array<string>> = [
 async function sendPaymentNotification(
   amount: number,
   sessionTitle: string,
+  transactionId: string,
 ): Promise<void> {
   try {
     await sendTelegramSticker(
@@ -68,7 +78,7 @@ async function sendPaymentNotification(
       ],
     );
     await sendTelegramMessage(
-      formatPaymentSuccessMessage(amount, sessionTitle),
+      formatPaymentSuccessMessage(amount, sessionTitle, transactionId),
     );
   } catch (error) {
     console.error("Failed to send payment notification:", error);
@@ -78,6 +88,7 @@ async function sendPaymentNotification(
 export function formatPaymentSuccessMessage(
   amount: number,
   sessionTitle: string,
+  transactionId: string,
 ): string {
   const formattedAmount = (amount / 100).toFixed(2);
 
@@ -85,7 +96,11 @@ export function formatPaymentSuccessMessage(
   message += `Amount: *${formattedAmount} €*\n`;
 
   if (sessionTitle) {
-    message += `Event: ${sessionTitle}\n`;
+    message += `Event: ${escapeMarkdown(sessionTitle)}\n`;
+  }
+
+  if (transactionId) {
+    message += `Transaction ID: [${escapeMarkdown(transactionId)}](https://dashboard.stripe.com/acct_1QyrutG3Vb6TnG9U/payments/${transactionId})\n`;
   }
 
   message += `\nStatus: ✅ Payment Successful`;

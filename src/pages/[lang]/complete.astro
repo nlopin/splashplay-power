@@ -8,6 +8,8 @@ import { getPageTranslations } from "@/utils/i18n";
 import { bookEvent, resetCache } from "@/services/calendly";
 import { EVENT_TYPE } from "@/components/booking/types";
 import { DEFAULT_LOCALE } from "@/constants";
+import { formatEventComment } from "@/components/booking/eventMessage";
+import { getPaymentIntentId } from "@/services/stripe";
 
 export const prerender = false;
 
@@ -43,6 +45,7 @@ try {
 
     const parsedMetadata = metadataSchema.safeParse(session.metadata);
     const parsedCustomer = customerSchema.safeParse(session.customer_details);
+    const paymentIntentId = getPaymentIntentId(session);
 
     if (
         session.status === "complete" &&
@@ -55,7 +58,10 @@ try {
             email: parsedCustomer.data.email,
             name: parsedCustomer.data.individual_name,
             phone: parsedCustomer.data.phone,
-            comment: parsedMetadata.data.sessionTitle,
+            comment: formatEventComment(
+                paymentIntentId,
+                parsedMetadata.data.sessionTitle,
+            ),
         });
 
         status = "success";

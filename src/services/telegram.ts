@@ -10,6 +10,17 @@ export interface TelegramMessage {
   parse_mode?: "Markdown" | "HTML";
 }
 
+/**
+ * Escapes special Markdown characters in Telegram messages
+ * to prevent parsing errors
+ */
+export function escapeMarkdown(text: string): string {
+  // Telegram MarkdownV2 special characters that need escaping
+  // We use the simpler Markdown (v1) mode, which requires escaping: _ * [ ] ( ) ~ ` > # + - = | { } . !
+  // For Markdown v1, we mainly need to escape _ * [ ] ( ) `
+  return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, "\\$&");
+}
+
 export async function sendTelegramMessage(
   message: string,
   parseMode: "Markdown" | "HTML" = "Markdown",
