@@ -32,8 +32,12 @@ describe("groupWeeks", () => {
     expect(Array.isArray(weeks)).toBe(true);
     expect(weeks).toHaveLength(1);
 
-    expect(weeks[0][0].date.toDateString()).toBe("Mon Nov 24 2025");
-    expect(weeks[0][6].date.toDateString()).toBe("Sun Nov 30 2025");
+    expect(weeks[0][0].date.toUTCString()).toBe(
+      "Mon, 24 Nov 2025 11:00:00 GMT",
+    );
+    expect(weeks[0][6].date.toUTCString()).toBe(
+      "Sun, 30 Nov 2025 11:00:00 GMT",
+    );
 
     expect(weeks[0].every((day) => day.times.length === 1)).toBe(true);
   });
@@ -57,8 +61,12 @@ describe("groupWeeks", () => {
     expect(Array.isArray(weeks)).toBe(true);
     expect(weeks).toHaveLength(1);
 
-    expect(weeks[0][0].date.toDateString()).toBe("Mon Nov 24 2025");
-    expect(weeks[0][6].date.toDateString()).toBe("Sun Nov 30 2025");
+    expect(weeks[0][0].date.toUTCString()).toBe(
+      "Mon, 24 Nov 2025 11:00:00 GMT",
+    );
+    expect(weeks[0][6].date.toUTCString()).toBe(
+      "Sun, 30 Nov 2025 11:00:00 GMT",
+    );
 
     expect(
       weeks[0].every(
@@ -86,10 +94,18 @@ describe("groupWeeks", () => {
     expect(Array.isArray(weeks)).toBe(true);
     expect(weeks).toHaveLength(2);
 
-    expect(weeks[0][0].date.toDateString()).toBe("Mon Nov 24 2025");
-    expect(weeks[0][6].date.toDateString()).toBe("Sun Nov 30 2025");
-    expect(weeks[1][0].date.toDateString()).toBe("Mon Dec 01 2025");
-    expect(weeks[1][6].date.toDateString()).toBe("Sun Dec 07 2025");
+    expect(weeks[0][0].date.toUTCString()).toBe(
+      "Mon, 24 Nov 2025 11:00:00 GMT",
+    );
+    expect(weeks[0][6].date.toUTCString()).toBe(
+      "Sun, 30 Nov 2025 11:00:00 GMT",
+    );
+    expect(weeks[1][0].date.toUTCString()).toBe(
+      "Mon, 01 Dec 2025 11:00:00 GMT",
+    );
+    expect(weeks[1][6].date.toUTCString()).toBe(
+      "Sun, 07 Dec 2025 11:00:00 GMT",
+    );
   });
 
   it("fill week gaps", () => {
@@ -112,12 +128,24 @@ describe("groupWeeks", () => {
     expect(weeks).toHaveLength(3);
 
     // three weeks correctly generated
-    expect(weeks[0][0].date.toDateString()).toBe("Mon Nov 24 2025");
-    expect(weeks[0][6].date.toDateString()).toBe("Sun Nov 30 2025");
-    expect(weeks[1][0].date.toDateString()).toBe("Mon Dec 01 2025");
-    expect(weeks[1][6].date.toDateString()).toBe("Sun Dec 07 2025");
-    expect(weeks[2][0].date.toDateString()).toBe("Mon Dec 08 2025");
-    expect(weeks[2][6].date.toDateString()).toBe("Sun Dec 14 2025");
+    expect(weeks[0][0].date.toUTCString()).toBe(
+      "Mon, 24 Nov 2025 11:00:00 GMT",
+    );
+    expect(weeks[0][6].date.toUTCString()).toBe(
+      "Sun, 30 Nov 2025 11:00:00 GMT",
+    );
+    expect(weeks[1][0].date.toUTCString()).toBe(
+      "Mon, 01 Dec 2025 11:00:00 GMT",
+    );
+    expect(weeks[1][6].date.toUTCString()).toBe(
+      "Sun, 07 Dec 2025 11:00:00 GMT",
+    );
+    expect(weeks[2][0].date.toUTCString()).toBe(
+      "Mon, 08 Dec 2025 11:00:00 GMT",
+    );
+    expect(weeks[2][6].date.toUTCString()).toBe(
+      "Sun, 14 Dec 2025 11:00:00 GMT",
+    );
 
     // first week has time slots
     expect(weeks[0].every((day) => day.times.length === 1)).toBe(true);
@@ -188,7 +216,9 @@ describe("createGapWeeks", () => {
 
     const gapWeeks = createGapWeeks(mondayEarlier, mondayLater);
     expect(gapWeeks).toHaveLength(1);
-    expect(gapWeeks[0][0].date.toDateString()).toBe("Mon Dec 01 2025");
+    expect(gapWeeks[0][0].date.toUTCString()).toBe(
+      "Mon, 01 Dec 2025 00:00:00 GMT",
+    );
   });
 
   it("returns multiple gap weeks", () => {
@@ -204,9 +234,15 @@ describe("createGapWeeks", () => {
 
     const gapWeeks = createGapWeeks(mondayEarlier, mondayLater);
     expect(gapWeeks).toHaveLength(3);
-    expect(gapWeeks[0][0].date.toDateString()).toBe("Mon Dec 01 2025");
-    expect(gapWeeks[1][0].date.toDateString()).toBe("Mon Dec 08 2025");
-    expect(gapWeeks[2][0].date.toDateString()).toBe("Mon Dec 15 2025");
+    expect(gapWeeks[0][0].date.toUTCString()).toBe(
+      "Mon, 01 Dec 2025 00:00:00 GMT",
+    );
+    expect(gapWeeks[1][0].date.toUTCString()).toBe(
+      "Mon, 08 Dec 2025 00:00:00 GMT",
+    );
+    expect(gapWeeks[2][0].date.toUTCString()).toBe(
+      "Mon, 15 Dec 2025 00:00:00 GMT",
+    );
   });
 
   it("returns swaps parameters order if first monday is later than second", () => {
@@ -224,7 +260,9 @@ describe("createGapWeeks", () => {
 
     // behaves the same is "returns one gap week"
     expect(gapWeeks).toHaveLength(1);
-    expect(gapWeeks[0][0].date.toDateString()).toBe("Mon Dec 01 2025");
+    expect(gapWeeks[0][0].date.toUTCString()).toBe(
+      "Mon, 01 Dec 2025 00:00:00 GMT",
+    );
   });
 });
 
@@ -244,8 +282,12 @@ describe("createWeek", () => {
         const week = createWeek(new Date(isodate));
 
         expect(week).toHaveLength(7);
-        expect(week[0].date.toDateString()).toBe("Mon Nov 24 2025");
-        expect(week[6].date.toDateString()).toBe("Sun Nov 30 2025");
+        expect(week[0].date.toUTCString()).toBe(
+          "Mon, 24 Nov 2025 00:00:00 GMT",
+        );
+        expect(week[6].date.toUTCString()).toBe(
+          "Sun, 30 Nov 2025 00:00:00 GMT",
+        );
       },
     );
   });

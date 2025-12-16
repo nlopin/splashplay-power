@@ -8,6 +8,11 @@ type Day = {
   times: ISODatetime[];
 };
 
+// Helper function to get UTC date string for comparison (YYYY-MM-DD format)
+function getUTCDateString(date: Date): string {
+  return date.toISOString().split("T")[0];
+}
+
 // dates must be ordered from oldest to newest
 export function groupWeeks(orderedDates: ISODatetime[]): Week[] {
   const weeks: Week[] = [];
@@ -18,8 +23,8 @@ export function groupWeeks(orderedDates: ISODatetime[]): Week[] {
     const currentWeek = weeks.at(-1);
     const isInCurrentWeek =
       currentWeek !== undefined &&
-      currentWeek.at(weekdayPosition)!.date.toDateString() ===
-        date.toDateString();
+      getUTCDateString(currentWeek.at(weekdayPosition)!.date) ===
+        getUTCDateString(date);
 
     if (isInCurrentWeek) {
       currentWeek[weekdayPosition].times.push(isoDateString);
@@ -47,7 +52,7 @@ export function createGapWeeks(mondayEarlier: Day, mondayLater: Day): Week[] {
 
   for (
     let nextMonday = addWeek(mondayEarlier.date);
-    nextMonday.toDateString() !== mondayLater.date.toDateString();
+    getUTCDateString(nextMonday) !== getUTCDateString(mondayLater.date);
     nextMonday = addWeek(nextMonday)
   ) {
     gapWeeks.push(createWeek(nextMonday));
@@ -67,8 +72,8 @@ export function createWeek(date: Date): Week {
   return weekdays;
 }
 
-// return weekday position Monday is 0
+// return weekday position, Monday is 0
 export function getWeekdayPosition(date: Date): number {
-  const weekday = date.getDay(); // 0 is Sunday
+  const weekday = date.getUTCDay(); // 0 is Sunday
   return weekday === 0 ? 6 : weekday - 1;
 }
