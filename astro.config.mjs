@@ -37,6 +37,10 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
+      CALENDLY_WEBHOOK_SECRET_KEY: envField.string({
+        context: "server",
+        access: "secret",
+      }),
       PUBLIC_CALENDLY_COUPLES_EVENT_TYPE_ID: envField.string({
         context: "client",
         access: "public",

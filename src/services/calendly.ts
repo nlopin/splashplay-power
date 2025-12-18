@@ -161,7 +161,7 @@ export async function bookEvent(
 
   if (response.status !== 201) {
     console.error(
-      `Error while creating calendly event ${await response.json()}`,
+      `Error while creating calendly event ${await response.text()}`,
     );
     return false;
   }

@@ -15,3 +15,9 @@ export function getTransactionIdFromEventComment(eventComment: string): string {
   }
   return "";
 }
+
+export function getSessionTitleFromEventComment(eventComment: string): string {
+  const [sessionTitle] = eventComment.split(TRANSACTION_TITLE);
+
+  return sessionTitle.trim();
+}
