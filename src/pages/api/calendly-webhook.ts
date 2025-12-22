@@ -30,7 +30,6 @@ const BaseCalendlyPayload = z.looseObject({
   ),
 });
 
-// Calendly webhook event types
 const CalendlyWebhookEvent = z.discriminatedUnion("event", [
   z.looseObject({
     event: z.literal("invitee.created"),
