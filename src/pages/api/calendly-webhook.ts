@@ -21,6 +21,7 @@ const BaseCalendlyPayload = z.looseObject({
     uri: z.string(),
     start_time: z.iso.datetime(),
   }),
+  rescheduled: z.boolean(),
   questions_and_answers: z.array(
     z.object({
       question: z.string(),
@@ -152,7 +153,9 @@ async function handleInviteeCreated({
 
   const formattedTime = formatVisitDateTime(scheduledTime, "short", "en");
 
-  let message = `✅ *Calendly event created*\n`;
+  let message = payload.rescheduled
+    ? `↔️ *Calendly event rescheduled*\n`
+    : `✅ *Calendly event created*\n`;
   message += `Guest: ${escapeMarkdown(payload.name)}, (${payload.email})\n`;
   message += `Time: ${escapeMarkdown(formattedTime)}\n`;
 
