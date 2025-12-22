@@ -4,6 +4,7 @@ import { CALENDLY_TOKEN } from "astro:env/server";
 import type { EventType } from "@/components/booking/types";
 import { EVENT_TYPE_IDS } from "@/constants";
 import { type ISODatetime } from "@/types";
+import { getSunday } from "@/utils/datetime";
 
 const CALENDLY_URL = "https://api.calendly.com";
 const BOOK_IN_ADVANCE = 30;
@@ -49,6 +50,7 @@ export function resetCache(eventType?: EventType) {
   }
 }
 
+// requests available times from today + n days, rouded up to get full weeks
 export async function getAvailableTime(
   eventType: EventType,
   days = BOOK_IN_ADVANCE,
@@ -59,36 +61,43 @@ export async function getAvailableTime(
     return eventCache.data;
   }
 
-  const batchCount = Math.ceil(days / BATCH_SIZE_IN_DAYS);
-  const availableTimes: z.infer<
-    typeof EventTypeAvailableTimesSchema
-  >["collection"] = [];
+  const batchCount = Math.ceil(days / BATCH_SIZE_IN_DAYS) + 1; // we need +1 to get the rest of the last week
   const now = new Date();
   const startDate = new Date(
     Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0),
   );
-  for (let i = 0; i < batchCount; i++) {
+
+  const fetchPromises = Array.from({ length: batchCount }, (_, i) => {
+    const isLast = i === batchCount - 1;
     const batchStartDate = new Date(
       startDate.getTime() +
         MILLISECONDS_IN_ONE_DAY +
         i * BATCH_SIZE_IN_DAYS * MILLISECONDS_IN_ONE_DAY,
     );
-    const batchEndDate = new Date(
-      batchStartDate.getTime() + MILLISECONDS_IN_ONE_DAY * BATCH_SIZE_IN_DAYS,
-    );
+    const batchEndDate = isLast
+      ? getSunday(batchStartDate)
+      : new Date(
+          batchStartDate.getTime() +
+            MILLISECONDS_IN_ONE_DAY * BATCH_SIZE_IN_DAYS,
+        );
     const params = new URLSearchParams();
     params.append("start_time", batchStartDate.toISOString());
     params.append("end_time", batchEndDate.toISOString());
     params.append("event_type", getEventTypeId(eventType));
-    const response = await fetch(
-      `${CALENDLY_URL}/event_type_available_times?${params}`,
-      {
-        headers: {
-          Authorization: `Bearer ${CALENDLY_TOKEN}`,
-        },
-      },
-    );
 
+    return fetch(`${CALENDLY_URL}/event_type_available_times?${params}`, {
+      headers: {
+        Authorization: `Bearer ${CALENDLY_TOKEN}`,
+      },
+    });
+  });
+
+  const responses = await Promise.all(fetchPromises);
+  const availableTimes: z.infer<
+    typeof EventTypeAvailableTimesSchema
+  >["collection"] = [];
+
+  for (const response of responses) {
     if (response.status === 200) {
       const responseJson = await response.json();
       const parsedData = EventTypeAvailableTimesSchema.safeParse(responseJson);

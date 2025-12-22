@@ -1,5 +1,10 @@
 import type { ISODatetime } from "@/types";
-import { addDay, addWeek } from "@/utils/datetime";
+import {
+  addDay,
+  addWeek,
+  getMonday,
+  getWeekdayPosition,
+} from "@/utils/datetime";
 
 export type Week = Day[]; //Monday through Sunday
 
@@ -62,18 +67,11 @@ export function createGapWeeks(mondayEarlier: Day, mondayLater: Day): Week[] {
 }
 
 export function createWeek(date: Date): Week {
-  const receivedWeekday = getWeekdayPosition(date);
-  const monday = receivedWeekday === 0 ? date : addDay(date, -receivedWeekday);
+  const monday = getMonday(date);
   const weekdays = new Array<Day>(7);
   for (let i = 0; i < 7; i++) {
     weekdays[i] = { date: addDay(monday, i), times: [] };
   }
 
   return weekdays;
-}
-
-// return weekday position, Monday is 0
-export function getWeekdayPosition(date: Date): number {
-  const weekday = date.getUTCDay(); // 0 is Sunday
-  return weekday === 0 ? 6 : weekday - 1;
 }

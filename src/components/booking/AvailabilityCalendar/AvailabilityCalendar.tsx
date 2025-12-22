@@ -1,13 +1,16 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
 
 import type { ISODatetime } from "@/types";
-import { formatTime, formatWeek, formatWeekday } from "@/utils/formatters";
+import {
+  formatTime,
+  formatWeek,
+  formatWeekday,
+  getHourInBusinessTimezone,
+} from "@/utils/formatters";
 import { usePageLanguage, useTranslator } from "@/components/TranslatorContext";
 
 import type { Availability, SelectedTimeSlot } from "../types";
 import { groupWeeks } from "./groupWeeks";
-
-const hoursRegex = /T(\d{2}):/;
 
 export function AvailabilityCalendar({
   availability,
@@ -39,9 +42,10 @@ export function AvailabilityCalendar({
       ); // Default 9-21
     }
     const endHour = availability.reduce((curMax, slot) => {
-      const execResult = hoursRegex.exec(slot);
-      if (!execResult) return curMax;
-      return Math.max(parseInt(execResult[1], 10) + 1, curMax);
+      // Convert to business timezone before extracting hour (handles DST)
+      const hour = getHourInBusinessTimezone(slot);
+      // +1 to include the hour block containing this slot (e.g., slot at 15:30 needs a table till 16)
+      return Math.max(hour + 1, curMax);
     }, START_HOUR);
 
     return Array.from(

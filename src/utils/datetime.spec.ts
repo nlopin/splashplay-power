@@ -1,5 +1,11 @@
-import { describe, it, expect } from "vitest";
-import { HOUR_IN_MILLIS, DAY_IN_MILLIS, addDay, addWeek } from "./datetime";
+import { describe, it, expect, test } from "vitest";
+import {
+  addDay,
+  addWeek,
+  getWeekdayPosition,
+  getSunday,
+  getMonday,
+} from "./datetime";
 
 describe("addDay", () => {
   it("adds one day", () => {
@@ -62,5 +68,49 @@ describe("addDay", () => {
       expect(result).toEqual(date);
       expect(result).not.toBe(date); // still returns new Date instance
     });
+  });
+});
+
+describe("getWeekdayPosition", () => {
+  test.for([
+    ["Monday", "2025-11-24", 0],
+    ["Tuesday", "2025-11-25", 1],
+    ["Wednesday", "2025-11-26", 2],
+    ["Thursday", "2025-11-27", 3],
+    ["Friday", "2025-11-28", 4],
+    ["Saturday", "2025-11-29", 5],
+    ["Sunday", "2025-11-30", 6],
+  ])("%s (%s) has position %i", ([_, isodate, position]) => {
+    expect(getWeekdayPosition(new Date(isodate))).toBe(position);
+  });
+});
+
+describe("getSunday", () => {
+  test.for([
+    ["Monday", "2025-11-24", 0],
+    ["Tuesday", "2025-11-25", 1],
+    ["Wednesday", "2025-11-26", 2],
+    ["Thursday", "2025-11-27", 3],
+    ["Friday", "2025-11-28", 4],
+    ["Saturday", "2025-11-29", 5],
+    ["Sunday", "2025-11-30", 6],
+  ])("For %s (%s), the Sunday is 2025-11-30T23:59:59", ([_, isodate]) => {
+    const sunday = getSunday(new Date(isodate));
+    expect(sunday.toISOString()).toBe("2025-11-30T23:59:59.000Z");
+  });
+});
+
+describe("getMonday", () => {
+  test.for([
+    ["Monday", "2025-11-24", 0],
+    ["Tuesday", "2025-11-25", 1],
+    ["Wednesday", "2025-11-26", 2],
+    ["Thursday", "2025-11-27", 3],
+    ["Friday", "2025-11-28", 4],
+    ["Saturday", "2025-11-29", 5],
+    ["Sunday", "2025-11-30", 6],
+  ])("For %s (%s), the Monday is 2025-11-24", ([_, isodate]) => {
+    const monday = getMonday(new Date(isodate));
+    expect(monday.toISOString()).toBe("2025-11-24T00:00:00.000Z");
   });
 });

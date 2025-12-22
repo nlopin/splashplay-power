@@ -292,17 +292,3 @@ describe("createWeek", () => {
     );
   });
 });
-
-describe("getWeekdayPosition", () => {
-  test.for([
-    ["Monday", "2025-11-24", 0],
-    ["Tuesday", "2025-11-25", 1],
-    ["Wednesday", "2025-11-26", 2],
-    ["Thursday", "2025-11-27", 3],
-    ["Friday", "2025-11-28", 4],
-    ["Saturday", "2025-11-29", 5],
-    ["Sunday", "2025-11-30", 6],
-  ])("%s (%s) has position %i", ([_, isodate, position]) => {
-    expect(getWeekdayPosition(new Date(isodate))).toBe(position);
-  });
-});

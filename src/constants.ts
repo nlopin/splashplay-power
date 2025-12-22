@@ -7,6 +7,7 @@ import {
 import type { EventType } from "./components/booking/types";
 
 export const DEFAULT_LOCALE = "es";
+export const BUSINESS_TIMEZONE = "Europe/Madrid";
 
 export const EVENT_TYPE_IDS: Record<EventType, string> = {
   couples: PUBLIC_CALENDLY_COUPLES_EVENT_TYPE_ID,
