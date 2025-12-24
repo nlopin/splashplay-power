@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import one_small from "@/assets/img/30x40_compartido.jpg";
+import one_big from "@/assets/img/60x80_compartido.jpg";
+import individual from "@/assets/img/30x40_2individuales.jpg";
 
 import { formatPrice } from "@/utils/price";
 import { useTranslator } from "@/components/TranslatorContext";
@@ -14,9 +17,9 @@ const PRICE: Record<PictureType, number> = {
 };
 
 const IMAGES: Record<PictureType, string> = {
-  one_small: "/img/30x40_compartido.jpg",
-  one_big: "/img/60x80_compartido.jpg",
-  individual: "/img/30x40_2individuales.jpg",
+  one_small: one_small.src,
+  one_big: one_big.src,
+  individual: individual.src,
 };
 
 export function CouplesOptions({ onChange }: EventTypeOptionsProps) {
