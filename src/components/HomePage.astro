@@ -1,10 +1,10 @@
 ---
-import Welcome from "./Welcome.astro";
+import Hero from "./Hero.astro";
 import Layout from "../layouts/Layout.astro";
 
 const currentPath = Astro.url.pathname;
 ---
 
 <Layout currentPath={currentPath}>
-    <Welcome />
+    <Hero />
 </Layout>

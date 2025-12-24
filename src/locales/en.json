@@ -133,6 +133,7 @@
         "cta": "Contact to book"
       }
     },
+    "cta_more_info": "MORE INFO",
     "open_sessions": "🤗 Open Sessions",
     "open_sessions_description": "Want to meet new people and just try it out? Join our weekly open sessions — fun painting events where anyone can participate.",
     "open_sessions_list": [
@@ -243,6 +244,7 @@
     "pay_to_book": "Book",
     "select_time_to_continue": "Please select a time slot to continue",
     "select_event_type": "Choose Your Experience",
+    "event_type_couples": "Couples",
     "event_type_couples_desc": "Perfect for romantic dates and quality time together",
     "event_type_family_desc": "Fun creative time for families with kids",
     "event_type_friends_desc": "Great for friend groups and celebrations",

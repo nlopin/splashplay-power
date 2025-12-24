@@ -25,7 +25,8 @@ const pageDescription = description || t("description");
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.ico" sizes="32x32" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <meta name="generator" content={Astro.generator} />
         <meta name="description" content={pageDescription} />
         <title>{pageTitle}</title>
@@ -59,7 +60,7 @@ const pageDescription = description || t("description");
         />
     </head>
     <body>
-        <!-- <Header currentPath={currentPath || Astro.url.pathname} /> -->
+        <Header currentPath={currentPath || Astro.url.pathname} />
         <slot />
     </body>
 </html>
@@ -87,6 +88,7 @@ const pageDescription = description || t("description");
         --border-color: #e0e0e0;
         --border-color-light: #f0f0f0;
         --shadow-color: rgba(0, 0, 0, 0.1);
+        --max-one-column-width: 1140px;
     }
 
     * {

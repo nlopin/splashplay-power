@@ -1,12 +1,16 @@
 {
   "home": {
     "title": "Splashplay - Estudi d'Art a Barcelona",
-    "description": "Un estudi d'art a Barcelona on la creativitat flueix lliurement."
+    "welcome": "Benvingut a Splashplay",
+    "description": "Un estudi d'art a Barcelona on la creativitat flueix lliurement.",
+    "subtitle": "Per a famílies, parelles, grups d'amics i equips"
   },
   "main": {
     "nav_home": "Inici",
     "nav_techniques": "Tècniques",
     "nav_pricing": "Preus",
+    "nav_gift_cards": "Targetes Regal",
+    "nav_experience": "Experiència",
     "nav_gallery": "Galeria",
     "nav_contact": "Contacte",
     "hero_title": "Estudi d'Art Creatiu",
@@ -130,6 +134,7 @@
         "cta": "Contacta per reservar"
       }
     },
+    "cta_more_info": "MÉS INFORMACIÓ",
     "open_sessions": "🤗 Sessions Obertes",
     "open_sessions_description": "Vols conèixer gent nova i simplement provar-ho? Uneix-te a les nostres sessions obertes setmanals — events de pintura divertits on qualsevol pot participar.",
     "open_sessions_list": [
@@ -240,6 +245,7 @@
     "pay_to_book": "Reservar",
     "select_time_to_continue": "Si us plau, selecciona un horari per continuar",
     "select_event_type": "Tria la Teva Experiència",
+    "event_type_couples": "Parelles",
     "event_type_couples_desc": "Perfecte per a cites romàntiques i temps de qualitat junts",
     "event_type_family_desc": "Temps creatiu divertit per a famílies amb nens",
     "event_type_friends_desc": "Genial per a grups d'amics i celebracions",

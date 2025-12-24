@@ -12,54 +12,56 @@ const alternateLinks = getAlternateLanguageLinks(currentPath, currentLanguage);
 ---
 
 <div class="language-switcher">
-    <select id="language-selector" data-current-path={currentPath}>
-        {
-            alternateLinks.map(({ name, url, current }) => (
-                <option value={url} selected={current}>
-                    {name}
-                </option>
-            ))
-        }
-    </select>
-</div>
-
-<script>
-    const selector = document.getElementById(
-        "language-selector",
-    ) as HTMLSelectElement;
-
-    if (selector) {
-        selector.addEventListener("change", (event) => {
-            const target = event.target as HTMLSelectElement;
-            const url = target.value;
-            window.location.href = url;
-        });
+    {
+        alternateLinks.map(({ language, url, current }, index) => (
+            <>
+                <a href={url} class:list={["lang-link", { active: current }]}>
+                    {language.toUpperCase()}
+                </a>
+                {index < alternateLinks.length - 1 && (
+                    <span class="separator">|</span>
+                )}
+            </>
+        ))
     }
-</script>
+</div>
 
 <style>
     .language-switcher {
-        display: inline-block;
-        margin: 16px;
-    }
-
-    #language-selector {
-        background: linear-gradient(83.21deg, #3245ff 0%, #bc52ee 100%);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: "Montserrat", sans-serif;
+        font-weight: 600;
         font-size: 14px;
-        cursor: pointer;
-        transition: opacity 0.2s;
     }
 
-    #language-selector:hover {
-        opacity: 0.9;
+    .lang-link {
+        text-decoration: none;
+        color: var(--purple);
+        transition: color 0.2s;
+        padding: 4px;
     }
 
-    #language-selector option {
-        background: white;
-        color: #111827;
+    .lang-link:hover {
+        color: var(--orange);
+    }
+
+    .lang-link.active {
+        color: var(--orange);
+        cursor: default;
+        pointer-events: none;
+    }
+
+    .separator {
+        color: var(--purple);
+        opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+        .language-switcher {
+            margin: 10px 0;
+            justify-content: center;
+        }
     }
 </style>

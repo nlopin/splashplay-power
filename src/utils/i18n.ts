@@ -88,12 +88,29 @@ export function getCurrentLanguage(
 
 // Get the base path without language prefix
 export function getPathWithoutLanguage(pathname: string): string {
-  for (const lang of languages) {
-    const prefix = languagePrefixes[lang];
-    if (prefix && pathname.startsWith(prefix)) {
-      return pathname.slice(prefix.length) || "/";
+  // 1. Check for configured non-empty prefixes first (e.g. /en, /ca)
+  const sortedPrefixes = Object.values(languagePrefixes)
+    .filter(p => p !== "")
+    .sort((a, b) => b.length - a.length);
+
+  for (const prefix of sortedPrefixes) {
+    if (pathname === prefix || pathname.startsWith(`${prefix}/`)) {
+      const remaining = pathname.slice(prefix.length);
+      return remaining === "" ? "/" : remaining;
     }
   }
+
+  // 2. Also check if the path starts with /es (the default language) 
+  // even if its prefix is configured as "" for URL generation.
+  // This handles cases where we are internally at /es (e.g. via rewrite or direct access).
+  for (const lang of languages) {
+    const langPrefix = `/${lang}`;
+    if (pathname === langPrefix || pathname.startsWith(`${langPrefix}/`)) {
+      const remaining = pathname.slice(langPrefix.length);
+      return remaining === "" ? "/" : remaining;
+    }
+  }
+
   return pathname;
 }
 
