@@ -148,7 +148,6 @@ const links = [
         display: flex;
         justify-content: space-between;
         align-items: center;
-        isolation: isolate;
     }
 
     .logo-container img {
@@ -221,9 +220,22 @@ const links = [
         color: rgb(80, 40, 120);
     }
 
+    @media (min-width: 769px) {
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-bar {
+            isolation: isolate;
+        }
+    }
+
     @media (max-width: 768px) {
         .nav-bar {
             position: relative;
+            isolation: isolate;
         }
 
         .logo-container img {
