@@ -1,6 +1,7 @@
 ---
 import Hero from "./Hero.astro";
 import DrawingTechniques from "./DrawingTechniques.astro";
+import Reviews from "./Reviews.astro";
 import Layout from "../layouts/Layout.astro";
 
 const currentPath = Astro.url.pathname;
@@ -9,4 +10,5 @@ const currentPath = Astro.url.pathname;
 <Layout currentPath={currentPath}>
     <Hero />
     <DrawingTechniques />
+    <Reviews />
 </Layout>

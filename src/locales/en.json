@@ -58,38 +58,14 @@
       "more": "And many more! Try any of these or invent your own!"
     },
     "testimonials_title": "What People Say About Us",
-    "testimonials": [
-      {
-        "name": "Sveta",
-        "text": "A great creative space where my friends and I not only painted and had fun, but also discovered something about ourselves.",
-        "highlight": "I'll definitely come back! Highly recommended!"
-      },
-      {
-        "name": "Mario",
-        "text": "We had an amazing time here! I had never painted before, but the playful and creative atmosphere was so welcoming that I created a piece that now hangs proudly in my home.",
-        "highlight": "I had never painted before"
-      },
-      {
-        "name": "Eliseo",
-        "text": "We had a very fun team afternoon, and beautiful things came out even from me, who don't have much art sense",
-        "highlight": "We had a very fun team afternoon"
-      },
-      {
-        "name": "Anastasia",
-        "text": "My friends and I created patterns and designs from our imagination. It was very fun and fascinating to discuss afterwards what each painting could symbolize.",
-        "highlight": ""
-      },
-      {
-        "name": "Jordi",
-        "text": "We came as a family and had a great time. They gave us aprons, shoe covers and gloves so we could paint without getting dirty. The space is very well prepared: there are protected walls, quality materials and many options to experiment with paint.",
-        "highlight": "We came as a family and had a great time"
-      },
-      {
-        "name": "Sergio",
-        "text": "Pleasant and fun experience",
-        "rating": "⭐⭐⭐⭐⭐"
-      }
-    ],
+    "reviews": {
+      "sveta": "<p>A great creative space where my friends and I not only painted and had fun, but also discovered something about ourselves.</p><p>I was eager to try different techniques and styles — <strong>I’m definitely coming back! Highly recommended!</strong></p>",
+      "mario": "<p>We had an incredible time here! <strong>I had never painted before</strong>, but the atmosphere was so playful and creative that somehow, I created a piece that now proudly hangs in my home</p>",
+      "eliseo": "<p><strong>We spent a very fun afternoon as a team</strong>, and some beautiful things came out — even from me, and I don’t have much artistic talent.</p>",
+      "anastasia": "<p>My friends and I just created patterns and designs from our imagination.</p><p>It was so much fun and fascinating to discuss afterward what each painting might symbolize.</p>",
+      "jordi": "<p><strong>We went as a family and had a great time.</strong> They gave us overalls, shoe covers, and gloves so we could paint without getting stained.</p><p>The space is well-prepared: there are protected walls, quality materials, and many options to experiment with paint</p>",
+      "sergio": "<p>⭐⭐⭐⭐⭐</p><p>Nice and fun experience</p>"
+    },
     "who_for": "Who It's For and What's the Price",
     "who_for_description": "Our sessions are designed for anyone who wants to combine fun, creativity and connection:",
     "pricing": {

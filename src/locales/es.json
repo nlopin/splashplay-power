@@ -58,38 +58,14 @@
       "more": "¡Y muchas más! ¡Prueba alguna de estas o inventa la tuya propia!"
     },
     "testimonials_title": "Lo Que Dicen de Nosotros",
-    "testimonials": [
-      {
-        "name": "Sveta",
-        "text": "Un espacio creativo genial donde mis amigos y yo no solo pintamos y nos divertimos, sino que también descubrimos algo sobre nosotros mismos.",
-        "highlight": "¡seguro que volveré! ¡Muy recomendable!"
-      },
-      {
-        "name": "Mario",
-        "text": "¡Lo pasamos increíble aquí! Nunca había pintado, pero el ambiente era tan lúdico y creativo que, de alguna manera, creé una obra que ahora cuelga orgullosamente en mi casa.",
-        "highlight": "Nunca había pintado"
-      },
-      {
-        "name": "Eliseo",
-        "text": "Hemos pasado una tarde muy divertida en equipo, y han salido cosas bonitas incluso yo, que no tengo mucho arte",
-        "highlight": "Hemos pasado una tarde muy divertida en equipo"
-      },
-      {
-        "name": "Anastasia",
-        "text": "Mis amigos y yo creamos patrones y diseños desde nuestra imaginación. Fue muy divertido y fascinante comentar después qué podía simbolizar cada cuadro.",
-        "highlight": ""
-      },
-      {
-        "name": "Jordi",
-        "text": "Fuimos en familia y lo pasamos genial. Nos dieron batas, cubrezapatos y guantes para poder pintar sin mancharnos. El espacio está muy bien preparado: hay paredes protegidas, materiales de calidad y muchas opciones para experimentar con la pintura.",
-        "highlight": "Fuimos en familia y lo pasamos genial"
-      },
-      {
-        "name": "Sergio",
-        "text": "Experiencia agradable y divertida",
-        "rating": "⭐⭐⭐⭐⭐"
-      }
-    ],
+    "reviews": {
+      "sveta": "<p>Un espacio creativo genial donde mis amigos y yo no solo pintamos y nos divertimos, sino que también descubrimos algo sobre nosotros mismos.</p><p>Tenía ganas de probar diferentes técnicas y estilos — <strong>¡seguro que volveré! ¡Muy recomendable!</strong></p>",
+      "mario": "<p>¡Lo pasamos increíble aquí! <strong>Nunca había pintado</strong>, pero el ambiente era tan lúdico y creativo que, de alguna manera, creé una obra que ahora cuelga orgullosamente en mi casa.</p>",
+      "eliseo": "<p><strong>Hemos pasado una tarde muy divertida en equipo</strong>, y han salido cosas bonitas incluso yo, que no tengo mucho arte</p>",
+      "anastasia": "<p>Mis amigos y yo creamos patrones y diseños desde nuestra imaginación.</p><p>Fue muy divertido y fascinante comentar después qué podía simbolizar cada cuadro.</p>",
+      "jordi": "<p><strong>Fuimos en familia y lo pasamos genial.</strong> Nos dieron batas, cubrezapatos y guantes para poder pintar sin mancharnos.</p><p>El espacio está muy bien preparado: hay paredes protegidas, materiales de calidad y muchas opciones para experimentar con la pintura.</p>",
+      "sergio": "<p>⭐⭐⭐⭐⭐</p><p>Experiencia agradable y divertida</p>"
+    },
     "who_for": "Para Quién es y Cuál es el Precio",
     "who_for_description": "Nuestras sesiones están diseñadas para cualquier persona que quiera combinar diversión, creatividad y conexión:",
     "pricing": {

@@ -59,38 +59,14 @@
       "more": "I moltes més! Prova alguna d'aquestes o inventa la teva pròpia!"
     },
     "testimonials_title": "Què Diuen de Nosaltres",
-    "testimonials": [
-      {
-        "name": "Sveta",
-        "text": "Un espai creatiu genial on els meus amics i jo no només pintem i ens divertim, sinó que també descobrim algo sobre nosaltres mateixos.",
-        "highlight": "Segur que tornarem! Molt recomanable!"
-      },
-      {
-        "name": "Mario",
-        "text": "Ens ho vam passar increïble aquí! Mai havia pintat, però l'ambient era tan lúdic i creatiu que, d'alguna manera, vaig crear una obra que ara penja orgullosament a casa meva.",
-        "highlight": "Mai havia pintat"
-      },
-      {
-        "name": "Eliseo",
-        "text": "Vam passar una tarda molt divertida en equip, i van sortir coses boniques inclús jo, que no tinc molt art",
-        "highlight": "Vam passar una tarda molt divertida en equip"
-      },
-      {
-        "name": "Anastasia",
-        "text": "Els meus amics i jo vam crear patrons i dissenys des de la nostra imaginació. Va ser molt divertit i fascinant comentar després què podia simbolitzar cada quadre.",
-        "highlight": ""
-      },
-      {
-        "name": "Jordi",
-        "text": "Vam venir en família i ens ho vam passar genial. Ens van donar bates, cobresipatades i guants per poder pintar sense embrutar-nos. L'espai està molt ben preparat: hi ha parets protegides, materials de qualitat i moltes opcions per experimentar amb la pintura.",
-        "highlight": "Vam venir en família i ens ho vam passar genial"
-      },
-      {
-        "name": "Sergio",
-        "text": "Experiència agradable i divertida",
-        "rating": "⭐⭐⭐⭐⭐"
-      }
-    ],
+    "reviews": {
+      "sveta": "<p>Un espai creatiu genial on els meus amics i jo no només vam pintar i ens vam divertir, sinó que també vam descobrir alguna cosa sobre nosaltres mateixos.</p><p>Tenia ganes de provar diferents tècniques i estils — <strong>hi tornaré segur! Molt recomanable!</strong></p>",
+      "mario": "<p>Ens ho vam passar increïble! <strong>No havia pintat mai</strong>, però l’ambient era tan juganer i creatiu que, d’alguna manera, vaig crear una peça que ara penja amb orgull a casa meva.</p>",
+      "eliseo": "<p><strong>Vam passar una tarda molt divertida en equip</strong>, i en van sortir coses precioses — fins i tot de mi, i no tinc gaire talent artístic.</p>",
+      "anastasia": "<p>Els meus amics i jo vam crear patrons i dissenys des de la nostra imaginació.</p><p>Va ser molt divertit i fascinant comentar després què podia simbolizar cada quadre.</p>",
+      "jordi": "<p><strong>Hi vam anar en família i ens ho vam passar molt bé.</strong> Ens van donar granotes, cobreixsabates i guants per poder pintar sense embrutar-nos.</p><p>L'espai està molt ben preparat: hi ha parets protegides, materials de qualitat i moltes opcions per experimentar amb la pintura.</p>",
+      "sergio": "<p>⭐⭐⭐⭐⭐</p><p>Experiència agradable i divertida</p>"
+    },
     "who_for": "Per a Qui és i Quin és el Preu",
     "who_for_description": "Les nostres sessions estan dissenyades per a qualsevol persona que vulgui combinar diversió, creativitat i connexió:",
     "pricing": {
