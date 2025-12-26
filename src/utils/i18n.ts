@@ -42,12 +42,43 @@ export function getPageTranslations<Page extends keyof typeof esTranslations>(
   return translations[language]?.[page];
 }
 
+// Define recursive type for translation objects
+type TranslationValue = string | TranslationObject;
+interface TranslationObject {
+  [key: string]: TranslationValue;
+}
+
+export function getRecursiveValue(
+  obj: TranslationObject | string | undefined,
+  keys: string[],
+): string | undefined {
+  if (!obj || keys.length === 0 || typeof obj === "string") return undefined;
+
+  const [currentKey, ...restKeys] = keys;
+  const value = obj[currentKey];
+
+  if (restKeys.length === 0) {
+    console.warn(`Translation key "${currentKey}" points to an object `);
+    return typeof value === "string" ? value : undefined;
+  }
+
+  // Recurse if there are more keys and value is an object
+  if (typeof value === "object" && value !== null) {
+    return getRecursiveValue(value, restKeys);
+  }
+
+  return undefined;
+}
+
 export function getTranslation(
   language: Language,
   page: keyof typeof esTranslations,
   key: string,
 ): string {
-  const pageTranslations = translations[language]?.[page];
+  const pageTranslations = translations[language]?.[
+    page
+  ] as unknown as TranslationObject;
+
   if (!pageTranslations) {
     if (import.meta.env.DEV) {
       console.error(`Missing translation page: ${language}.${page}`);
@@ -55,17 +86,16 @@ export function getTranslation(
     return key;
   }
 
-  // todo: arbitrary depth of keys, now only one
-  const translation = pageTranslations[key as keyof typeof pageTranslations];
+  const value = getRecursiveValue(pageTranslations, key.split("."));
 
-  if (!translation) {
+  if (!value) {
     if (import.meta.env.DEV) {
       console.error(`Missing translation: ${language}.${page}.${key}`);
     }
     return key;
   }
 
-  return translation;
+  return value;
 }
 
 // Create a translation function using Astro's currentLocale
@@ -90,7 +120,7 @@ export function getCurrentLanguage(
 export function getPathWithoutLanguage(pathname: string): string {
   // 1. Check for configured non-empty prefixes first (e.g. /en, /ca)
   const sortedPrefixes = Object.values(languagePrefixes)
-    .filter(p => p !== "")
+    .filter((p) => p !== "")
     .sort((a, b) => b.length - a.length);
 
   for (const prefix of sortedPrefixes) {
@@ -100,7 +130,7 @@ export function getPathWithoutLanguage(pathname: string): string {
     }
   }
 
-  // 2. Also check if the path starts with /es (the default language) 
+  // 2. Also check if the path starts with /es (the default language)
   // even if its prefix is configured as "" for URL generation.
   // This handles cases where we are internally at /es (e.g. via rewrite or direct access).
   for (const lang of languages) {
