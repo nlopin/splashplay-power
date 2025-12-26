@@ -5,6 +5,10 @@
     "description": "An art studio in Barcelona where creativity flows freely and people try playful unconventional techniques to create your abstract masterpiece.",
     "subtitle": "For families, couples, groups of friends and teams"
   },
+  "banner": {
+    "text": "Prefer to read this page in English?",
+    "button": "Switch to English"
+  },
   "main": {
     "nav_techniques": "Techniques",
     "nav_pricing": "Prices",

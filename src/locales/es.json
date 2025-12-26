@@ -5,6 +5,10 @@
     "description": "Un estudio de arte en Barcelona donde la creatividad fluye libremente y las personas prueban técnicas divertidas y no convencionales para crear tu obra maestra abstracta.",
     "subtitle": "Para familias, parejas, grupos de amigos y equipos"
   },
+  "banner": {
+    "text": "¿Prefieres leer esta página en Español?",
+    "button": "Cambiar a Español"
+  },
   "main": {
     "nav_techniques": "Técnicas",
     "nav_pricing": "Precios",

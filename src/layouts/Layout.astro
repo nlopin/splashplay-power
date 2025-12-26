@@ -3,8 +3,10 @@ import {
     createAstroTranslator,
     getCurrentLanguage,
     languagePrefixes,
+    getAlternateLanguageLinks,
 } from "../utils/i18n";
 import Header from "../components/Header.astro";
+import LanguageBanner from "../components/LanguageBanner.astro";
 
 interface Props {
     title?: string;
@@ -15,6 +17,10 @@ interface Props {
 const { title, description, currentPath } = Astro.props;
 const language = getCurrentLanguage(Astro.currentLocale);
 const t = createAstroTranslator(Astro.currentLocale, "home");
+const alternateLinks = getAlternateLanguageLinks(
+    currentPath || Astro.url.pathname,
+    language,
+);
 
 const pageTitle = title || t("title");
 const pageDescription = description || t("description");
@@ -60,6 +66,7 @@ const pageDescription = description || t("description");
         />
     </head>
     <body>
+        <LanguageBanner alternateLinks={alternateLinks} />
         <Header currentPath={currentPath || Astro.url.pathname} />
         <slot />
     </body>
@@ -150,6 +157,9 @@ const pageDescription = description || t("description");
         color: var(--orange);
     }
 
+    .hidden {
+        display: none !important;
+    }
     /* Shared Booking Styles */
 
     /* Calendar Styles */
@@ -494,7 +504,7 @@ const pageDescription = description || t("description");
 
     /* Schedule Step Styles */
     .schedule-step {
-        max-width: 1200px;
+        max-width: var(--max-one-column-width);
         margin: 0 auto;
         padding: 20px;
         display: flex;
@@ -686,7 +696,7 @@ const pageDescription = description || t("description");
 
     /* Payment Step Styles */
     .payment-step {
-        max-width: 1200px;
+        max-width: var(--max-one-column-width);
         margin: 0 auto;
         padding: 20px;
         display: flex;

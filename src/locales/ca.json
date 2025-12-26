@@ -5,6 +5,10 @@
     "description": "Un estudi d'art a Barcelona on la creativitat flueix lliurement.",
     "subtitle": "Per a famílies, parelles, grups d'amics i equips"
   },
+  "banner": {
+    "text": "Prefereixes llegir aquesta pàgina en Català?",
+    "button": "Canviar a Català"
+  },
   "main": {
     "nav_home": "Inici",
     "nav_techniques": "Tècniques",

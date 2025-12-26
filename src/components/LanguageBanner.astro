@@ -1,0 +1,174 @@
+---
+import * as z from "zod";
+import { getTranslation, type Language } from "../utils/i18n";
+
+interface Props {
+    alternateLinks: Array<{
+        language: Language;
+        url: string;
+        current: boolean;
+    }>;
+}
+
+const { alternateLinks } = Astro.props;
+
+const BannersDescriptionSchema = z.array(
+    z.object({
+        lang: z.enum(["es", "ca", "en"]),
+        url: z.url(),
+        text: z.string(),
+        button: z.string(),
+    }),
+);
+// We need to pass the translations for the banner to the client script
+// The script will pick the correct translation based on the DETECTED browser language
+const banners: z.infer<typeof BannersDescriptionSchema> = alternateLinks
+    .filter((link) => !link.current)
+    .map((link) => {
+        return {
+            lang: link.language,
+            url: link.url,
+            text: getTranslation(link.language, "banner", "text"),
+            button: getTranslation(link.language, "banner", "button"),
+        };
+    });
+---
+
+<div id="language-banner" class="hidden" data-banners={JSON.stringify(banners)}>
+    <div id="banner-content">
+        <p id="banner-text"></p>
+        <div id="banner-actions">
+            <a id="banner-link" href="#"></a>
+            <button id="banner-close" aria-label="Close">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    ><line x1="18" y1="6" x2="6" y2="18"></line><line
+                        x1="6"
+                        y1="6"
+                        x2="18"
+                        y2="18"></line></svg
+                >
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const banner = document.getElementById("language-banner");
+    const bannerText = document.getElementById("banner-text");
+    const bannerLink = document.getElementById("banner-link");
+    const bannerClose = document.getElementById("banner-close");
+
+    if (banner && bannerText && bannerLink && bannerClose) {
+        // matches the BannerDescriptionSchema, can't use zod here because it's client side code
+        const bannersData = JSON.parse(banner.dataset.banners || "[]") as any[];
+        const browserLang = navigator.language.split("-")[0]; // e.g. 'en-US' -> 'en'
+
+        const isDismissed =
+            localStorage.getItem("language_banner_dismissed") === "true";
+
+        if (!isDismissed) {
+            const targetBanner = bannersData.find(
+                (b: any) => b.lang === browserLang,
+            );
+
+            if (targetBanner) {
+                bannerText.textContent = targetBanner.text;
+                bannerLink.textContent = targetBanner.button;
+                "href" in bannerLink && (bannerLink.href = targetBanner.url);
+
+                banner.classList.remove("hidden");
+            }
+        }
+
+        bannerClose.addEventListener("click", () => {
+            localStorage.setItem("language_banner_dismissed", "true");
+            banner.classList.add("hidden");
+        });
+    }
+</script>
+
+<style>
+    #language-banner {
+        background-color: var(--purple);
+        color: var(--white);
+        padding: 4px 16px;
+        font-size: 0.875rem;
+    }
+
+    #banner-content {
+        max-width: var(--max-one-column-width);
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        width: 100%;
+        margin: 0 auto;
+        align-items: baseline;
+    }
+
+    #banner-text {
+        margin: 0;
+    }
+
+    #banner-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    #banner-link {
+        color: var(--white);
+        text-decoration: underline;
+        font-weight: 600;
+    }
+
+    #banner-link:hover {
+        color: var(--orange);
+    }
+
+    #banner-close {
+        background: none;
+        border: none;
+        color: var(--white);
+        font-size: 1rem;
+        cursor: pointer;
+        padding: 0.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #banner-close:hover {
+        color: var(--orange);
+    }
+
+    @media (max-width: 768px) {
+        #language-banner {
+            padding: 8px;
+        }
+
+        #banner-content {
+            padding: 0 16px;
+            position: relative;
+        }
+
+        #banner-actions {
+            padding-right: 24px;
+        }
+
+        #banner-close {
+            position: absolute;
+            top: -2px;
+            right: 0;
+        }
+    }
+</style>
