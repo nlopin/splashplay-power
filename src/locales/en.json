@@ -66,8 +66,8 @@
       "jordi": "<p><strong>We went as a family and had a great time.</strong> They gave us overalls, shoe covers, and gloves so we could paint without getting stained.</p><p>The space is well-prepared: there are protected walls, quality materials, and many options to experiment with paint</p>",
       "sergio": "<p>⭐⭐⭐⭐⭐</p><p>Nice and fun experience</p>"
     },
-    "who_for": "Who It's For and What's the Price",
-    "who_for_description": "Our sessions are designed for anyone who wants to combine fun, creativity and connection:",
+    "pricing_title": "Who It's For and What's the Price",
+    "pricing_subtitle": "Our sessions are designed for anyone who wants to combine fun, creativity and connection:",
     "pricing": {
       "friends": {
         "icon": "👯",
@@ -110,7 +110,7 @@
         "price": "€60",
         "duration": "⏱️ 1.5 hours",
         "description": "A creative experience just for you",
-        "cta": "Contact to book"
+        "cta": "Book"
       }
     },
     "cta_more_info": "MORE INFO",

@@ -67,8 +67,8 @@
       "jordi": "<p><strong>Hi vam anar en família i ens ho vam passar molt bé.</strong> Ens van donar granotes, cobreixsabates i guants per poder pintar sense embrutar-nos.</p><p>L'espai està molt ben preparat: hi ha parets protegides, materials de qualitat i moltes opcions per experimentar amb la pintura.</p>",
       "sergio": "<p>⭐⭐⭐⭐⭐</p><p>Experiència agradable i divertida</p>"
     },
-    "who_for": "Per a Qui és i Quin és el Preu",
-    "who_for_description": "Les nostres sessions estan dissenyades per a qualsevol persona que vulgui combinar diversió, creativitat i connexió:",
+    "pricing_title": "Per a Qui és i Quin és el Preu",
+    "pricing_subtitle": "Les nostres sessions estan dissenyades per a qualsevol persona que vulgui combinar diversió, creativitat i connexió:",
     "pricing": {
       "friends": {
         "icon": "👯",
@@ -111,7 +111,7 @@
         "price": "€60",
         "duration": "⏱️ 1.5 hores",
         "description": "Una experiència creativa només per a tu",
-        "cta": "Contacta per reservar"
+        "cta": "Reservar"
       }
     },
     "cta_more_info": "MÉS INFORMACIÓ",

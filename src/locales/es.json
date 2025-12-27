@@ -66,8 +66,8 @@
       "jordi": "<p><strong>Fuimos en familia y lo pasamos genial.</strong> Nos dieron batas, cubrezapatos y guantes para poder pintar sin mancharnos.</p><p>El espacio está muy bien preparado: hay paredes protegidas, materiales de calidad y muchas opciones para experimentar con la pintura.</p>",
       "sergio": "<p>⭐⭐⭐⭐⭐</p><p>Experiencia agradable y divertida</p>"
     },
-    "who_for": "Para Quién es y Cuál es el Precio",
-    "who_for_description": "Nuestras sesiones están diseñadas para cualquier persona que quiera combinar diversión, creatividad y conexión:",
+    "pricing_title": "Para Quién es y Cuál es el Precio",
+    "pricing_subtitle": "Nuestras sesiones están diseñadas para cualquier persona que quiera combinar diversión, creatividad y conexión:",
     "pricing": {
       "friends": {
         "icon": "👯",
@@ -110,7 +110,7 @@
         "price": "€60",
         "duration": "⏱️ 1.5 horas",
         "description": "Una experiencia creativa solo para ti",
-        "cta": "Contacta para reservar"
+        "cta": "Reservar"
       }
     },
     "cta_more_info": "MÁS INFORMACIÓN",

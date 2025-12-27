@@ -2,21 +2,22 @@
 interface Props {
     text: string;
     href: string;
+    size?: "sm" | "md";
 }
 
-const { text, href } = Astro.props;
+const { text, href, size = "md" } = Astro.props;
 ---
 
-<a href={href} class="cta-button">
+<a href={href} class={`cta-button cta-button--${size}`}>
     {text}
 </a>
 
 <style>
     .cta-button {
-        display: inline-block;
+        display: block;
+        width: 100%;
         background-color: var(--orange);
         color: var(--white);
-        padding: 16px 32px;
         border-radius: 30px;
         text-decoration: none;
         font-weight: bold;
@@ -24,6 +25,17 @@ const { text, href } = Astro.props;
         border: none;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+        text-align: center;
+    }
+
+    .cta-button--md {
+        padding: 12px 24px;
+    }
+
+    .cta-button--sm {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        font-weight: 600;
     }
 
     .cta-button:hover {
