@@ -203,7 +203,8 @@
     "complete_booking": "Completa la teva Reserva",
     "most_popular": "Popular",
     "last_spots": "Últims torns!",
-    "choose_canvas": "Tria Llenç"
+    "choose_canvas": "Tria Llenç",
+    "back_to_main": "Tornar a la pàgina principal"
   },
   "complete": {
     "title": "Pagament Realitzat!",

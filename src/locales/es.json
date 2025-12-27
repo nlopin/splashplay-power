@@ -202,7 +202,8 @@
     "complete_booking": "Completa tu Reserva",
     "most_popular": "Popular",
     "last_spots": "Últimos turnos!",
-    "choose_canvas": "Elige Lienzo"
+    "choose_canvas": "Elige Lienzo",
+    "back_to_main": "Volver a la página principal"
   },
   "complete": {
     "title": "¡Pago Exitoso!",

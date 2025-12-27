@@ -1,0 +1,25 @@
+---
+import Layout from "./Layout.astro";
+import Header from "../components/Header.astro";
+import LanguageBanner from "../components/LanguageBanner.astro";
+import { getCurrentLanguage, getAlternateLanguageLinks } from "../utils/i18n";
+
+interface Props {
+    title?: string;
+    description?: string;
+    currentPath?: string;
+}
+
+const { title, description, currentPath } = Astro.props;
+const language = getCurrentLanguage(Astro.currentLocale);
+const alternateLinks = getAlternateLanguageLinks(
+    currentPath || Astro.url.pathname,
+    language,
+);
+---
+
+<Layout title={title} description={description} currentPath={currentPath}>
+    <LanguageBanner alternateLinks={alternateLinks} />
+    <Header currentPath={currentPath || Astro.url.pathname} />
+    <slot />
+</Layout>

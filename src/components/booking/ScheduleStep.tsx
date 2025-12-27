@@ -1,4 +1,4 @@
-import { useTranslator } from "@/components/TranslatorContext";
+import { usePageLanguage, useTranslator } from "@/components/TranslatorContext";
 
 import type {
   SelectedTimeSlot,
@@ -30,9 +30,21 @@ export function ScheduleStep({
   onPayToBook,
 }: ScheduleStepProps) {
   const t = useTranslator();
+  const lang = usePageLanguage();
+
+  const handleBackClick = () => {
+    if (typeof window === "undefined") return;
+
+    const langPrefix = lang === "es" ? "/" : `/${lang}`;
+    window.location.href = langPrefix;
+  };
 
   return (
     <div className="schedule-step">
+      <button onClick={handleBackClick} className="back-link">
+        ← {t("back_to_main")}
+      </button>
+
       <EventTypeSelector currentEventType={eventType} />
 
       {availability.length > 0 ? (

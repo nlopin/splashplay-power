@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import * as z from "zod";
 import { STRIPE_SECRET_KEY } from "astro:env/server";
 
-import Layout from "@/layouts/Layout.astro";
+import PageLayout from "@/layouts/PageLayout.astro";
 import { getPageTranslations, languagePrefixes } from "@/utils/i18n";
 import { bookEvent, resetCache } from "@/services/calendly";
 import { EVENT_TYPE } from "@/components/booking/types";
@@ -82,7 +82,7 @@ try {
 }
 ---
 
-<Layout title={translations.title}>
+<PageLayout title={translations.title}>
     <div class="container">
         <img src={splashPlayLogo.src} alt="Splash Play" class="logo" />
         <div class="content">
@@ -129,7 +129,7 @@ try {
             </div>
         </div>
     </div>
-</Layout>
+</PageLayout>
 
 <style>
     .container {

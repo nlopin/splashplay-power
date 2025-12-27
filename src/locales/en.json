@@ -202,7 +202,8 @@
     "complete_booking": "Complete Your Booking",
     "most_popular": "Popular",
     "last_spots": "Last spots!",
-    "choose_canvas": "Choose Canvas"
+    "choose_canvas": "Choose Canvas",
+    "back_to_main": "Back to main page"
   },
   "complete": {
     "title": "Payment Successful!",

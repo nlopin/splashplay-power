@@ -3,10 +3,7 @@ import {
     createAstroTranslator,
     getCurrentLanguage,
     languagePrefixes,
-    getAlternateLanguageLinks,
 } from "../utils/i18n";
-import Header from "../components/Header.astro";
-import LanguageBanner from "../components/LanguageBanner.astro";
 
 interface Props {
     title?: string;
@@ -14,13 +11,9 @@ interface Props {
     currentPath?: string;
 }
 
-const { title, description, currentPath } = Astro.props;
+const { title, description } = Astro.props;
 const language = getCurrentLanguage(Astro.currentLocale);
 const t = createAstroTranslator(Astro.currentLocale, "home");
-const alternateLinks = getAlternateLanguageLinks(
-    currentPath || Astro.url.pathname,
-    language,
-);
 
 const pageTitle = title || t("title");
 const pageDescription = description || t("description");
@@ -66,8 +59,6 @@ const pageDescription = description || t("description");
         />
     </head>
     <body>
-        <LanguageBanner alternateLinks={alternateLinks} />
-        <Header currentPath={currentPath || Astro.url.pathname} />
         <slot />
         <script>
             if (window.location.hash) {
@@ -881,5 +872,26 @@ const pageDescription = description || t("description");
             position: relative;
             right: -2px;
         }
+    }
+
+    /* Back link styles */
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: none;
+        border: none;
+        color: var(--purple);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0.5rem 0;
+        transition: all 0.2s ease;
+        align-self: flex-start;
+        margin-bottom: -16px;
+    }
+
+    .back-link:hover {
+        color: var(--orange);
     }
 </style>

@@ -1,5 +1,5 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import PageLayout from "../layouts/PageLayout.astro";
 
 import Hero from "./sections/Hero.astro";
 import Techniques from "./sections/Techniques.astro";
@@ -13,7 +13,7 @@ import Contact from "./sections/Contact.astro";
 const currentPath = Astro.url.pathname;
 ---
 
-<Layout currentPath={currentPath}>
+<PageLayout currentPath={currentPath}>
     <Hero />
     <Techniques />
     <Testimonials />
@@ -22,4 +22,4 @@ const currentPath = Astro.url.pathname;
     <ExperienceSteps />
     <Gallery />
     <Contact />
-</Layout>
+</PageLayout>
