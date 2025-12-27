@@ -1,0 +1,59 @@
+---
+import {
+    createAstroTranslator,
+    type TranslationNamespace,
+} from "../../utils/i18n";
+
+interface Props {
+    emoji?: string;
+    translationNamespace: TranslationNamespace;
+    includedKeys: string[];
+}
+
+const { translationNamespace, includedKeys, emoji = "😎" } = Astro.props;
+const t = createAstroTranslator(Astro.currentLocale, translationNamespace);
+---
+
+<div class="whats-included">
+    <h3 class="section-title">{t("included_title")}</h3>
+    <ul class="included-list">
+        {
+            includedKeys.map((key) => (
+                <li>
+                    <span class="emoji">{emoji}</span>
+                    <span>{t(key)}</span>
+                </li>
+            ))
+        }
+    </ul>
+</div>
+
+<style>
+    .whats-included {
+        margin-top: 1rem;
+    }
+
+    .included-list {
+        list-style: none;
+        padding: 0;
+        margin: 1rem auto 1.5rem;
+        max-width: 720px;
+    }
+
+    .included-list li {
+        background: var(--white);
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
+        margin: 0.5rem 0;
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .included-list .emoji {
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+</style>

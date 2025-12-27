@@ -23,6 +23,8 @@ import caTranslations from "../locales/ca.json";
 
 type Translations = Record<Language, typeof esTranslations>;
 
+export type TranslationNamespace = keyof typeof esTranslations;
+
 const translations: Translations = {
   es: esTranslations,
   en: enTranslations,

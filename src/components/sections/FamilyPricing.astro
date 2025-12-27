@@ -1,0 +1,280 @@
+---
+import {
+    createAstroTranslator,
+    getCurrentLanguage,
+    getLocalizedPath,
+} from "../../utils/i18n";
+
+const t = createAstroTranslator(Astro.currentLocale, "family");
+const lang = getCurrentLanguage(Astro.currentLocale);
+
+const pricingOptions = [
+    {
+        canvasKey: "option1_canvas",
+        price: 60,
+        pricePerPerson: null,
+        peopleKey: "option1_people",
+        peopleCount: 1,
+    },
+    {
+        canvasKey: "option2_canvas",
+        price: 90,
+        pricePerPerson: 45,
+        peopleKey: "option2_people",
+        peopleCount: 2,
+    },
+    {
+        canvasKey: "option3_canvas",
+        price: 120,
+        pricePerPerson: 40,
+        peopleKey: "option3_people",
+        peopleCount: 3,
+    },
+    {
+        canvasKey: "option4_canvas",
+        price: 140,
+        pricePerPerson: 35,
+        peopleKey: "option4_people",
+        peopleCount: 4,
+    },
+    {
+        canvasKey: "option5_canvas",
+        price: 160,
+        pricePerPerson: 32,
+        peopleKey: "option5_people",
+        peopleCount: 5,
+    },
+    {
+        canvasKey: "option6_canvas",
+        price: 180,
+        pricePerPerson: 30,
+        peopleKey: "option6_people",
+        peopleCount: 6,
+    },
+];
+---
+
+<section id="prices" class="prices prices--friends">
+    <div class="container">
+        <h2 class="section-title" id="pricing">{t("pricing_title")}</h2>
+
+        <div class="price-header">
+            <div class="price-summary">
+                <p class="techniques-info" set:html={t("pricing_intro")} />
+                <table class="price-table">
+                    <thead>
+                        <tr>
+                            <th>{t("table_canvases")}</th>
+                            <th>{t("table_price")}</th>
+                            <th>{t("table_price_per")}</th>
+                            <th>{t("table_recommended")}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            pricingOptions.map((option) => (
+                                <tr>
+                                    <td data-label={t("table_canvases")}>
+                                        {t(option.canvasKey)}
+                                    </td>
+                                    <td data-label={t("table_price")}>
+                                        €{option.price}
+                                    </td>
+                                    <td data-label={t("table_price_per")}>
+                                        {option.pricePerPerson
+                                            ? `€${option.pricePerPerson}`
+                                            : ""}
+                                    </td>
+                                    <td data-label={t("table_recommended")}>
+                                        {t(option.peopleKey)}
+                                    </td>
+                                    <td>
+                                        <a
+                                            href={`${getLocalizedPath("book/family", lang)}`}
+                                            class="btn btn-small calendly-link"
+                                        >
+                                            {t("cta_book_button")}
+                                        </a>
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .prices--friends {
+        padding: 3rem 0;
+        background-color: var(--white);
+        scroll-margin-top: 60px;
+    }
+
+    .price-header {
+        text-align: center;
+        margin-bottom: 1rem;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .price-summary {
+        max-width: 720px;
+        margin: 0.5rem auto 0;
+        text-align: center;
+    }
+
+    .techniques-info {
+        margin-bottom: 2rem;
+        color: var(--dark-text);
+        font-size: 1rem;
+        line-height: 1.6;
+        text-align: center;
+    }
+
+    .price-table {
+        width: 100%;
+        max-width: 720px;
+        margin: 0.75rem auto 1rem;
+        border-collapse: collapse;
+        background: var(--white);
+        border: 1px solid #eee;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .price-table th,
+    .price-table td {
+        padding: 0.9rem 1rem;
+        text-align: left;
+    }
+
+    .price-table th:last-child,
+    .price-table td:last-child {
+        text-align: center;
+    }
+
+    .price-table thead th {
+        background: rgba(102, 51, 153, 0.06);
+        color: var(--purple);
+        font-weight: 700;
+    }
+
+    .price-table tbody tr:not(:last-child) td {
+        border-bottom: 1px solid #eee;
+    }
+
+    .price-table td:nth-child(2),
+    .price-table td:nth-child(3) {
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    /* Price per group (column 2) in orange */
+    .price-table td:nth-child(2) {
+        color: var(--orange);
+    }
+
+    /* Price per person (column 3) in purple */
+    .price-table td:nth-child(3) {
+        color: var(--purple);
+    }
+
+    .btn {
+        display: inline-block;
+        background-color: var(--orange);
+        color: var(--white);
+        padding: 0.6rem 1.2rem;
+        border-radius: 30px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .btn:hover {
+        background-color: var(--purple);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-small {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    /* Mobile Table Styles */
+    @media (max-width: 767px) {
+        .price-table,
+        .price-table tbody,
+        .price-table tr,
+        .price-table th,
+        .price-table td {
+            display: block;
+            width: 100%;
+            background-color: transparent;
+            box-shadow: none;
+            border: none;
+            border-radius: 0;
+        }
+
+        .price-table thead {
+            display: none;
+        }
+
+        .price-table tr {
+            margin-bottom: 1rem;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: var(--white);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            padding: 1rem;
+        }
+
+        .price-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: none;
+            font-size: 0.95rem;
+        }
+
+        .price-table td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: var(--purple);
+            font-size: 0.9rem;
+            text-align: left;
+            white-space: normal;
+            word-break: break-word;
+            flex-shrink: 0;
+            padding-right: 0.5rem;
+        }
+
+        .price-table td:last-of-type {
+            border-bottom: none;
+        }
+
+        .price-table td:last-child {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-top: 1px solid #eee;
+            margin-top: 0.5rem;
+        }
+
+        .price-table td:last-child::before {
+            display: none;
+        }
+    }
+</style>

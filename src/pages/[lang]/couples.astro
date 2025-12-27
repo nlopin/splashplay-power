@@ -1,0 +1,12 @@
+---
+import CouplesPage from "../../components/CouplesPage.astro";
+import { languages } from "../../utils/i18n";
+
+export async function getStaticPaths() {
+    return languages.map((lang) => ({
+        params: { lang },
+    }));
+}
+---
+
+<CouplesPage />

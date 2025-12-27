@@ -1,0 +1,12 @@
+---
+import FamilyPage from "../../components/FamilyPage.astro";
+import { languages } from "../../utils/i18n";
+
+export async function getStaticPaths() {
+    return languages.map((lang) => ({
+        params: { lang },
+    }));
+}
+---
+
+<FamilyPage />

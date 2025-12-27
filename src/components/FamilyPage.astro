@@ -1,0 +1,49 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+
+import FamilyHero from "./sections/FamilyHero.astro";
+import Techniques from "./sections/Techniques.astro";
+import Testimonials from "./sections/Testimonials.astro";
+import FamilyPricing from "./sections/FamilyPricing.astro";
+import WhatsIncluded from "./sections/WhatsIncluded.astro";
+import GiftCard from "./sections/GiftCards.astro";
+import ExperienceSteps from "./sections/ExperienceSteps.astro";
+import Gallery from "./sections/Gallery.astro";
+import Contact from "./sections/Contact.astro";
+
+const currentPath = Astro.url.pathname;
+
+const familyGiftCardOptions = [
+    { descriptionKey: "gift_cards_option1", price: "€60" },
+    { descriptionKey: "gift_cards_option2", price: "€80" },
+    { descriptionKey: "gift_cards_option3", price: "€90" },
+    { descriptionKey: "gift_cards_option4", price: "€120" },
+];
+
+const includedKeys = [
+    "included_1",
+    "included_2",
+    "included_3",
+    "included_4",
+    "included_5",
+];
+---
+
+<PageLayout currentPath={currentPath}>
+    <FamilyHero />
+    <Techniques />
+    <Testimonials />
+    <FamilyPricing />
+    <WhatsIncluded
+        translationNamespace="family"
+        includedKeys={includedKeys}
+        emoji="🧑‍🧑‍🧒‍🧒"
+    />
+    <GiftCard
+        translationNamespace="family"
+        giftCardOptions={familyGiftCardOptions}
+    />
+    <ExperienceSteps />
+    <Gallery />
+    <Contact />
+</PageLayout>

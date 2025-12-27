@@ -1,17 +1,27 @@
 ---
 import { Image } from "astro:assets";
 import Logo from "../../assets/splash-play-logo.svg";
-import { createAstroTranslator } from "../../utils/i18n";
+import {
+    createAstroTranslator,
+    type TranslationNamespace,
+} from "../../utils/i18n";
 
-const t = createAstroTranslator(Astro.currentLocale, "main");
+interface Props {
+    translationNamespace?: TranslationNamespace;
+    giftCardOptions?: Array<{ descriptionKey: string; price: string }>;
+}
 
-// Define gift card options with prices
-const giftCardOptions = [
-    { descriptionKey: "gift_cards_option1", price: "€60" },
-    { descriptionKey: "gift_cards_option2", price: "€80" },
-    { descriptionKey: "gift_cards_option3", price: "€90" },
-    { descriptionKey: "gift_cards_option4", price: "€120" },
-];
+const {
+    translationNamespace = "main",
+    giftCardOptions = [
+        { descriptionKey: "gift_cards_option1", price: "€60" },
+        { descriptionKey: "gift_cards_option2", price: "€80" },
+        { descriptionKey: "gift_cards_option3", price: "€90" },
+        { descriptionKey: "gift_cards_option4", price: "€120" },
+    ],
+} = Astro.props;
+
+const t = createAstroTranslator(Astro.currentLocale, translationNamespace);
 ---
 
 <section id="gift-cards" class="gift-certificates">
@@ -84,13 +94,6 @@ const giftCardOptions = [
         padding: 3rem 0;
         background-color: var(--white);
         scroll-margin-top: 60px;
-    }
-
-    .section-title {
-        font-size: 2rem;
-        color: var(--purple);
-        text-align: center;
-        margin-bottom: 1.5rem;
     }
 
     .gift-certificates-intro {

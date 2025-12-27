@@ -23,3 +23,19 @@ const alternateLinks = getAlternateLanguageLinks(
     <Header currentPath={currentPath || Astro.url.pathname} />
     <slot />
 </Layout>
+
+<style is:global>
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem; /* 40px converted to rem (40/16) */
+        color: var(--purple);
+        margin-bottom: 2rem;
+        font-weight: 700;
+    }
+
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 1.8rem;
+        }
+    }
+</style>

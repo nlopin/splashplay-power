@@ -27,10 +27,29 @@ export function CouplesOptions({ onChange }: EventTypeOptionsProps) {
   const t = useTranslator();
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const typeParam = params.get("option") as PictureType | null;
+
+    if (
+      typeParam &&
+      (typeParam === "one_small" ||
+        typeParam === "one_big" ||
+        typeParam === "individual")
+    ) {
+      setPictureType(typeParam);
+    }
+  }, []);
+
+  useEffect(() => {
     onChange({
       amount: PRICE[pictureType],
       productName: t(`couples_${pictureType}`),
     });
+
+    // Update URL with the selected option
+    const url = new URL(window.location.href);
+    url.searchParams.set("option", pictureType);
+    window.history.replaceState({}, "", url);
   }, [pictureType, t]);
 
   const options: Array<{

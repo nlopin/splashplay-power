@@ -1,0 +1,16 @@
+---
+import friends from "../../assets/photo/friends.jpg";
+import { createAstroTranslator } from "../../utils/i18n";
+import PromoHero from "./PromoHero.astro";
+
+const t = createAstroTranslator(Astro.currentLocale, "friends");
+---
+
+<PromoHero
+    title={t("hero_title")}
+    subtitle={t("hero_subtitle")}
+    image={friends}
+    imageAlt={t("hero_image_alt")}
+    ctaText={t("cta_book")}
+    variant="friends"
+/>
