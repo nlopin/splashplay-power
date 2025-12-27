@@ -1,5 +1,9 @@
 ---
-import { createAstroTranslator, getCurrentLanguage } from "../../utils/i18n";
+import {
+    createAstroTranslator,
+    getCurrentLanguage,
+    getLocalizedPath,
+} from "../../utils/i18n";
 import CTAButton from "../CTAButton.astro";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
@@ -8,18 +12,18 @@ const lang = getCurrentLanguage(Astro.currentLocale);
 const priceCards = [
     {
         id: "friends",
-        link: `/${lang}/friends`,
-        bookingLink: `/${lang}/book/friends`,
+        link: getLocalizedPath("friends", lang),
+        bookingLink: getLocalizedPath("book/friends", lang),
     },
     {
         id: "couples",
-        link: `/${lang}/couples`,
-        bookingLink: `/${lang}/book/couples`,
+        link: getLocalizedPath("couples", lang),
+        bookingLink: getLocalizedPath("book/couples", lang),
     },
     {
         id: "families",
-        link: `/${lang}/families`,
-        bookingLink: `/${lang}/book/family`,
+        link: getLocalizedPath("families", lang),
+        bookingLink: getLocalizedPath("book/family", lang),
     },
     {
         id: "teams",
@@ -27,7 +31,7 @@ const priceCards = [
     },
     {
         id: "individual",
-        bookingLink: `/${lang}/book/individual`,
+        bookingLink: getLocalizedPath("book/individual", lang),
     },
 ];
 ---
