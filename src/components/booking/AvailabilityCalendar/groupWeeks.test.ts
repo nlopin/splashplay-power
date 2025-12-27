@@ -1,10 +1,5 @@
 import { describe, expect, it, test } from "vitest";
-import {
-  getWeekdayPosition,
-  groupWeeks,
-  createWeek,
-  createGapWeeks,
-} from "./groupWeeks";
+import { groupWeeks, createWeek, createGapWeeks } from "./groupWeeks";
 import type { ISODatetime } from "@/types";
 
 const makeISODateTime = (date: string, time: string): ISODatetime => {
