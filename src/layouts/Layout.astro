@@ -69,6 +69,19 @@ const pageDescription = description || t("description");
         <LanguageBanner alternateLinks={alternateLinks} />
         <Header currentPath={currentPath || Astro.url.pathname} />
         <slot />
+        <script>
+            if (window.location.hash) {
+                window.addEventListener("load", () => {
+                    const hash = window.location.hash;
+                    const element = document.querySelector(hash);
+                    if (element) {
+                        setTimeout(() => {
+                            element.scrollIntoView({ behavior: "instant" });
+                        }, 0);
+                    }
+                });
+            }
+        </script>
     </body>
 </html>
 
