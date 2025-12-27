@@ -117,96 +117,48 @@
     "cta_more_info": "MÉS INFORMACIÓ",
     "open_sessions": "🤗 Sessions Obertes",
     "open_sessions_description": "Vols conèixer gent nova i simplement provar-ho? Uneix-te a les nostres sessions obertes setmanals — events de pintura divertits on qualsevol pot participar.",
-    "open_sessions_list": [
-      {
-        "title": "🎨 Club d'Art: Pinta i Connecta",
-        "price": "€25",
-        "capacity": "👥 6 persones",
-        "schedule": "🗓️ Tots els diumenges",
-        "time": "⏰ 17:00-19:00",
-        "cta": "Uneix-te a nosaltres a Meetup"
-      },
-      {
-        "title": "🎨 Taller d'Abocament amb Acrílica",
-        "price": "€30",
-        "capacity": "👥 6 persones",
-        "schedule": "🗓️ Tots els dimarts",
-        "time": "⏰ 19:00-21:00",
-        "cta": "Uneix-te a nosaltres a Meetup"
-      },
-      {
-        "title": "🎨 Nit d'Art Divertida",
-        "price": "€35",
-        "capacity": "👥 6 persones",
-        "schedule": "🗓️ Tots els divendres",
-        "time": "⏰ 18:30-20:00",
-        "cta": "Uneix-te a nosaltres a Meetup"
-      }
-    ],
+    "open_session1_title": "🎨 Club d'Art: Pinta i Connecta",
+    "open_session1_price": "€25",
+    "open_session1_capacity": "👥 6 persones",
+    "open_session1_schedule": "🗓️ Tots els diumenges",
+    "open_session1_time": "⏰ 17:00-19:00",
+    "open_session2_title": "🎨 Taller d'Abocament amb Acrílica",
+    "open_session2_price": "€30",
+    "open_session2_capacity": "👥 6 persones",
+    "open_session2_schedule": "🗓️ Tots els dimarts",
+    "open_session2_time": "⏰ 19:00-21:00",
+    "open_session3_title": "🎨 Nit d'Art Divertida",
+    "open_session3_price": "€35",
+    "open_session3_capacity": "👥 6 persones",
+    "open_session3_schedule": "🗓️ Tots els divendres",
+    "open_session3_time": "⏰ 18:30-20:00",
+    "open_sessions_cta": "Uneix-te a nosaltres a Meetup",
+    "open_sessions_url": "https://www.meetup.com/splashplay-studio/",
     "gift_cards": "Targetes Regal",
-    "gift_cards_description": "Regal perfecte per als amants de l'art! Regala creativitat.",
-    "gift_cards_subtitle": "El regal perfecte per a la persona creativa de la teva vida!",
-    "gift_cards_list": [
-      {
-        "canvases": "1 Llenç",
-        "price": "€60"
-      },
-      {
-        "canvases": "2 Llençs",
-        "price": "€90"
-      },
-      {
-        "canvases": "3 Llençs",
-        "price": "€120"
-      },
-      {
-        "canvases": "4 Llençs",
-        "price": "€140"
-      },
-      {
-        "canvases": "5 Llençs",
-        "price": "€165"
-      },
-      {
-        "canvases": "10 Llençs",
-        "price": "€310"
-      }
-    ],
-    "gift_cards_validity": "Tots els certificats són vàlids durant 12 mesos. El certificat de 10 llençs és vàlid durant 18 mesos.",
-    "gift_cards_contact": "Contacta per comprar",
+    "gift_cards_intro": "El regal perfecte per Nadal, Cap d'Any o aniversaris: una experiència divertida i creativa.<br><br>Com funciona? Només ompliràs un mini-formulari amb el teu nom, el teu correu electrònic i el missatge divertit que vulguis afegir. Després poses el nom i el correu de la persona afortunada… i tries el dia en què vols sorprendre-la.<br><br>I ja està: en la data que marquis, <strong>el teu amic o parella rep un correu electrònic amb la targeta regal i instruccions súper fàcils per usar-la.</strong><br><br>Ràpid, simple i amb molta bona vibra! 🎉",
+    "gift_cards_logo_alt": "Logotip de SplashPlay Studio",
+    "gift_cards_title": "Targeta Regal",
+    "gift_cards_text": "Un regal perfecte per a la persona creativa a la teva vida!",
+    "gift_cards_option1": "1 llenç 30x40 cm - per a 2-3 persones o individual",
+    "gift_cards_option2": "1 llenç gran 60x90 cm - per a 2-5 persones o individual",
+    "gift_cards_option3": "2 llenços 30x40 cm - per a 2-4 persones",
+    "gift_cards_option4": "3 llenços 30x40 cm - per a 3-6 persones",
+    "gift_cards_validity": "Vàlid per 6 mesos.",
+    "gift_cards_buy": "Comprar",
+    "gift_cards_buy_url": "https://app.cardivo.com/giftcards/splashplay-bcn",
     "experience_steps": "La Teva Experiència Pas a Pas",
-    "steps": [
-      {
-        "number": 1,
-        "title": "Reserva la Teva Sessió",
-        "description": "Tria la data i l'hora que millor s'adaptin a tu i als teus acompanyants i prepara't per a una aventura creativa inesborrable."
-      },
-      {
-        "number": 2,
-        "title": "Arriba i Rep una Beguda de Bienvenida",
-        "description": "Entra al nostre espai, relaxa't i prepara't per divertir-te amb l'art."
-      },
-      {
-        "number": 3,
-        "title": "Equipa't",
-        "description": "Posa't un vestit protector, guants i cobresipatades perquè puguisubmergir-te completament sense preocupar-te del desordre."
-      },
-      {
-        "number": 4,
-        "title": "Tria els Teus Colors",
-        "description": "Selecciona les teves pintures preferides i allibera la teva creativitat. Cap regla, només juga!"
-      },
-      {
-        "number": 5,
-        "title": "Crea i Diverteix-te",
-        "description": "Salpica, aboca, colpeja o gira per crear una obra mestra abstracta."
-      },
-      {
-        "number": 6,
-        "title": "Recull la Teva Obra d'Art",
-        "description": "La teva pintura estarà llesta per recollir en 24-48 hores una vegada que s'hagi secat."
-      }
-    ],
+    "step1_title": "Reserva la Teva Sessió",
+    "step1_description": "Tria la data i l'hora que millor s'adaptin a tu i als teus acompanyants i prepara't per a una aventura creativa inesborrable.",
+    "step2_title": "Arriba i Rep una Beguda de Bienvenida",
+    "step2_description": "Entra al nostre espai, relaxa't i prepara't per divertir-te amb l'art.",
+    "step3_title": "Equipa't",
+    "step3_description": "Posa't un vestit protector, guants i cobresipatades perquè puguisubmergir-te completament sense preocupar-te del desordre.",
+    "step4_title": "Tria els Teus Colors",
+    "step4_description": "Selecciona les teves pintures preferides i allibera la teva creativitat. Cap regla, només juga!",
+    "step5_title": "Crea i Diverteix-te",
+    "step5_description": "Salpica, aboca, colpeja o gira per crear una obra mestra abstracta.",
+    "step6_title": "Recull la Teva Obra d'Art",
+    "step6_description": "La teva pintura estarà llesta per recollir en 24-48 hores una vegada que s'hagi secat.",
     "ready_create": "🎨 Llest per crear art?",
     "gallery": "Galeria",
     "gallery_description": "Descobreix les increïbles obres d'art creades pels nostres visitants. Inspira't per a la teva pròpia sessió creativa!",

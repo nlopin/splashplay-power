@@ -116,96 +116,48 @@
     "cta_more_info": "MORE INFO",
     "open_sessions": "🤗 Open Sessions",
     "open_sessions_description": "Want to meet new people and just try it out? Join our weekly open sessions — fun painting events where anyone can participate.",
-    "open_sessions_list": [
-      {
-        "title": "🎨 Art Club: Paint & Connect",
-        "price": "€25",
-        "capacity": "👥 6 people",
-        "schedule": "🗓️ Every Sunday",
-        "time": "⏰ 17:00-19:00",
-        "cta": "Join us on Meetup"
-      },
-      {
-        "title": "🎨 Acrylic Pouring Workshop",
-        "price": "€30",
-        "capacity": "👥 6 people",
-        "schedule": "🗓️ Every Tuesday",
-        "time": "⏰ 19:00-21:00",
-        "cta": "Join us on Meetup"
-      },
-      {
-        "title": "🎨 Fun Art Night",
-        "price": "€35",
-        "capacity": "👥 6 people",
-        "schedule": "🗓️ Every Friday",
-        "time": "⏰ 18:30-20:00",
-        "cta": "Join us on Meetup"
-      }
-    ],
-    "gift_cards": "Gift Cards",
-    "gift_cards_description": "Perfect gift for art lovers! Give the gift of creativity.",
-    "gift_cards_subtitle": "The perfect gift for the creative person in your life!",
-    "gift_cards_list": [
-      {
-        "canvases": "1 Canvas",
-        "price": "€60"
-      },
-      {
-        "canvases": "2 Canvases",
-        "price": "€90"
-      },
-      {
-        "canvases": "3 Canvases",
-        "price": "€120"
-      },
-      {
-        "canvases": "4 Canvases",
-        "price": "€140"
-      },
-      {
-        "canvases": "5 Canvases",
-        "price": "€165"
-      },
-      {
-        "canvases": "10 Canvases",
-        "price": "€310"
-      }
-    ],
-    "gift_cards_validity": "All certificates are valid for 12 months. The 10 canvas certificate is valid for 18 months.",
-    "gift_cards_contact": "Contact to purchase",
+    "open_session1_title": "🎨 Art Club: Paint & Connect",
+    "open_session1_price": "€25",
+    "open_session1_capacity": "👥 6 people",
+    "open_session1_schedule": "🗓️ Every Sunday",
+    "open_session1_time": "⏰ 17:00-19:00",
+    "open_session2_title": "🎨 Acrylic Pouring Workshop",
+    "open_session2_price": "€30",
+    "open_session2_capacity": "👥 6 people",
+    "open_session2_schedule": "🗓️ Every Tuesday",
+    "open_session2_time": "⏰ 19:00-21:00",
+    "open_session3_title": "🎨 Fun Art Night",
+    "open_session3_price": "€35",
+    "open_session3_capacity": "👥 6 people",
+    "open_session3_schedule": "🗓️ Every Friday",
+    "open_session3_time": "⏰ 18:30-20:00",
+    "open_sessions_cta": "Join us on Meetup",
+    "open_sessions_url": "https://www.meetup.com/splashplay-studio/",
+    "gift_cards": "Gift Certificates",
+    "gift_cards_intro": "The perfect gift for Christmas, New Year, or birthdays: a fun and creative experience.<br><br>How does it work? You just fill out a mini-form with your name, your email, and the fun message you want to add. Then you enter the name and email of the lucky person… and choose the day you want to surprise them.<br><br>And that's it: on the date you mark, <strong>your friend or partner receives an email with the gift certificate and super easy instructions to use it.</strong><br><br>Quick, simple, and with great vibes! 🎉",
+    "gift_cards_logo_alt": "SplashPlay Studio Logo",
+    "gift_cards_title": "Gift Certificate",
+    "gift_cards_text": "A perfect gift for the creative person in your life!",
+    "gift_cards_option1": "1 canvas 30x40 cm - for 2-3 people or individual",
+    "gift_cards_option2": "1 large canvas 60x90 cm - for 2-5 people or individual",
+    "gift_cards_option3": "2 canvases 30x40 cm - for 2-4 people",
+    "gift_cards_option4": "3 canvases 30x40 cm - for 3-6 people",
+    "gift_cards_validity": "Valid for 6 months.",
+    "gift_cards_buy": "Buy",
+    "gift_cards_buy_url": "https://app.cardivo.com/giftcards/splashplay-bcn",
     "experience_steps": "Your Experience Step by Step",
-    "steps": [
-      {
-        "number": 1,
-        "title": "Book Your Session",
-        "description": "Choose the date and time that works best for you and your companions and get ready for an unforgettable creative adventure."
-      },
-      {
-        "number": 2,
-        "title": "Arrive and Get a Welcome Drink",
-        "description": "Enter our space, relax and get ready to have fun with art."
-      },
-      {
-        "number": 3,
-        "title": "Get Equipped",
-        "description": "Put on a protective suit, gloves and shoe covers so you can fully immerse yourself without worrying about the mess."
-      },
-      {
-        "number": 4,
-        "title": "Choose Your Colors",
-        "description": "Select your favorite paints and unleash your creativity. No rules, just play!"
-      },
-      {
-        "number": 5,
-        "title": "Create and Have Fun",
-        "description": "Splash, pour, punch or spin to create an abstract masterpiece."
-      },
-      {
-        "number": 6,
-        "title": "Pick Up Your Artwork",
-        "description": "Your painting will be ready to pick up in 24-48 hours once it dries."
-      }
-    ],
+    "step1_title": "Book Your Session",
+    "step1_description": "Choose the date and time that works best for you and your companions and get ready for an unforgettable creative adventure.",
+    "step2_title": "Arrive and Get a Welcome Drink",
+    "step2_description": "Enter our space, relax and get ready to have fun with art.",
+    "step3_title": "Get Equipped",
+    "step3_description": "Put on a protective suit, gloves and shoe covers so you can fully immerse yourself without worrying about the mess.",
+    "step4_title": "Choose Your Colors",
+    "step4_description": "Select your favorite paints and unleash your creativity. No rules, just play!",
+    "step5_title": "Create and Have Fun",
+    "step5_description": "Splash, pour, punch or spin to create an abstract masterpiece.",
+    "step6_title": "Pick Up Your Artwork",
+    "step6_description": "Your painting will be ready to pick up in 24-48 hours once it dries.",
     "ready_create": "🎨 Ready to create art?",
     "gallery": "Gallery",
     "gallery_description": "Discover the amazing artworks created by our visitors. Get inspired for your own creative session!",

@@ -1,0 +1,173 @@
+---
+import { createAstroTranslator } from "../../utils/i18n";
+import CTAButton from "../CTAButton.astro";
+
+const t = createAstroTranslator(Astro.currentLocale, "main");
+
+const steps = [
+    { titleKey: "step1_title", descriptionKey: "step1_description" },
+    { titleKey: "step2_title", descriptionKey: "step2_description" },
+    { titleKey: "step3_title", descriptionKey: "step3_description" },
+    { titleKey: "step4_title", descriptionKey: "step4_description" },
+    { titleKey: "step5_title", descriptionKey: "step5_description" },
+    { titleKey: "step6_title", descriptionKey: "step6_description" },
+];
+---
+
+<section id="experience" class="experience">
+    <div class="container">
+        <h2 class="section-title">{t("experience_steps")}</h2>
+
+        <ol class="steps">
+            {
+                steps.map((step) => (
+                    <li class="step-item">
+                        <div class="step-content">
+                            <h3 class="step-title">{t(step.titleKey)}</h3>
+                            <p class="step-description">
+                                {t(step.descriptionKey)}
+                            </p>
+                        </div>
+                    </li>
+                ))
+            }
+        </ol>
+
+        <div class="experience-cta">
+            <p class="experience-prompt">{t("ready_create")}</p>
+            <div class="cta-container">
+                <CTAButton text={t("cta_book")} href="#pricing" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .experience {
+        padding: 3rem 0;
+        background-color: var(--white);
+        scroll-margin-top: 60px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        color: var(--purple);
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .steps {
+        list-style: none;
+        counter-reset: step-counter;
+        padding: 0;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+    }
+
+    .step-item {
+        counter-increment: step-counter;
+        position: relative;
+        padding-left: 3.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .step-item::before {
+        content: counter(step-counter);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2.5rem;
+        height: 2.5rem;
+        background-color: var(--orange);
+        color: var(--white);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .step-title {
+        font-size: 1.2rem;
+        color: var(--purple);
+        margin-bottom: 0.5rem;
+    }
+
+    .step-description {
+        font-size: 1rem;
+        color: var(--dark-text);
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .experience-cta {
+        text-align: center;
+        margin-top: 3rem;
+    }
+
+    .cta-container {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .experience-prompt {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin-bottom: 1rem;
+    }
+
+    @media (min-width: 769px) {
+        .steps {
+            max-width: 800px;
+        }
+
+        .step-item {
+            padding-left: 5rem;
+            margin-bottom: 3rem;
+        }
+
+        .step-item::before {
+            width: 3.5rem;
+            height: 3.5rem;
+            font-size: 1.5rem;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+        }
+
+        .step-description {
+            font-size: 1.1rem;
+        }
+
+        .experience-prompt {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .step-item {
+            padding-left: 3.5rem;
+        }
+
+        .step-item::before {
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 1.2rem;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+        }
+
+        .step-description {
+            font-size: 1rem;
+        }
+
+        .experience-prompt {
+            font-size: 1.2rem;
+        }
+    }
+</style>

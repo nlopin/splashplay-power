@@ -1,16 +1,25 @@
 ---
-import Hero from "./Hero.astro";
-import DrawingTechniques from "./DrawingTechniques.astro";
-import Reviews from "./Reviews.astro";
-import Prices from "./Prices.astro";
 import Layout from "../layouts/Layout.astro";
+
+import Hero from "./sections/Hero.astro";
+import Techniques from "./sections/Techniques.astro";
+import Testimonials from "./sections/Testimonials.astro";
+import Pricing from "./sections/Pricing.astro";
+import GiftCard from "./sections/GiftCards.astro";
+import ExperienceSteps from "./sections/ExperienceSteps.astro";
+import Gallery from "./sections/Gallery.astro";
+import Contact from "./sections/Contact.astro";
 
 const currentPath = Astro.url.pathname;
 ---
 
 <Layout currentPath={currentPath}>
     <Hero />
-    <DrawingTechniques />
-    <Reviews />
-    <Prices />
+    <Techniques />
+    <Testimonials />
+    <Pricing />
+    <GiftCard />
+    <ExperienceSteps />
+    <Gallery />
+    <Contact />
 </Layout>

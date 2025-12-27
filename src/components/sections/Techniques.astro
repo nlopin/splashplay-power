@@ -1,0 +1,197 @@
+---
+import { createAstroTranslator } from "../../utils/i18n";
+
+import pouringVideo from "../../assets/video/techniques/pouring1K.mp4";
+import spinningVideo from "../../assets/video/techniques/spinning1K.mp4";
+import boxingVideo from "../../assets/video/techniques/boxing1K.mp4";
+import balloonsVideo from "../../assets/video/techniques/balloons1K.mp4";
+import padelVideo from "../../assets/video/techniques/padel.mp4";
+import pistolasVideo from "../../assets/video/techniques/pistolas.mp4";
+import drippingVideo from "../../assets/video/techniques/dripping.mp4";
+import sorpresaVideo from "../../assets/video/techniques/sorpresa.mp4";
+
+const t = createAstroTranslator(Astro.currentLocale, "main");
+
+const techniques = [
+    {
+        id: "pouring",
+        video: pouringVideo,
+    },
+    {
+        id: "spinning",
+        video: spinningVideo,
+    },
+    {
+        id: "boxing",
+        video: boxingVideo,
+    },
+    {
+        id: "balloons",
+        video: balloonsVideo,
+    },
+    {
+        id: "balls",
+        video: padelVideo,
+    },
+    {
+        id: "guns",
+        video: pistolasVideo,
+    },
+    {
+        id: "dripping",
+        video: drippingVideo,
+    },
+    {
+        id: "surprise",
+        video: sorpresaVideo,
+    },
+];
+---
+
+<section id="techniques" class="techniques">
+    <div class="container">
+        <h2 class="section-title">{t("why_fun")}</h2>
+        <p class="techniques-intro">{t("why_fun_description")}</p>
+
+        <div class="techniques-grid">
+            {
+                techniques.map((tech) => (
+                    <div class="technique-item">
+                        <div class="technique-video-container">
+                            <video
+                                class="technique-video"
+                                muted
+                                loop
+                                playsinline
+                                autoplay
+                            >
+                                <source src={tech.video} type="video/mp4" />
+                            </video>
+                        </div>
+                        <h3 class="technique-title">
+                            {t(`techniques.${tech.id}.title`)}
+                        </h3>
+                        <p class="technique-description">
+                            {t(`techniques.${tech.id}.description`)}
+                        </p>
+                    </div>
+                ))
+            }
+        </div>
+        <br />
+        <p class="techniques-intro">{t("techniques.more")}</p>
+    </div>
+</section>
+
+<style>
+    /* Techniques Section */
+    .techniques {
+        padding: 3rem 0;
+        background-color: var(--light-bg);
+        scroll-margin-top: 60px;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 1.8rem;
+        color: var(--purple);
+        margin-bottom: 2rem;
+        font-weight: 700;
+    }
+
+    .techniques-intro {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        font-size: 1rem;
+        color: var(--dark-text);
+        line-height: 1.6;
+    }
+
+    .techniques-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        max-width: var(--max-one-column-width);
+        margin: 0 auto;
+    }
+
+    .technique-item {
+        background: var(--white);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    .technique-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .technique-video-container {
+        position: relative;
+        overflow: hidden;
+        padding-top: 100%; /* 1:1 aspect ratio (square) */
+    }
+
+    .technique-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Cover the entire square area */
+        object-position: center; /* Center the video content */
+    }
+
+    .technique-title {
+        color: var(--purple);
+        margin: 1rem 1rem 0.5rem;
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    .technique-description {
+        margin: 0 1rem 1rem;
+        color: var(--dark-text);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    /* Tablet and up */
+    @media (min-width: 768px) {
+        .techniques-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    /* Desktop and up */
+    @media (min-width: 992px) {
+        .techniques-intro {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+        }
+
+        .techniques-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2.5rem;
+        }
+
+        .technique-title {
+            font-size: 1.5rem;
+            margin: 1.2rem 1.5rem 0.5rem;
+        }
+
+        .technique-description {
+            font-size: 1rem;
+            margin: 0 1.5rem 1.5rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+        }
+    }
+</style>

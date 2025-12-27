@@ -1,0 +1,343 @@
+---
+import { Image } from "astro:assets";
+import Logo from "../../assets/splash-play-logo.svg";
+import { createAstroTranslator } from "../../utils/i18n";
+
+const t = createAstroTranslator(Astro.currentLocale, "main");
+
+// Define gift card options with prices
+const giftCardOptions = [
+    { descriptionKey: "gift_cards_option1", price: "€60" },
+    { descriptionKey: "gift_cards_option2", price: "€80" },
+    { descriptionKey: "gift_cards_option3", price: "€90" },
+    { descriptionKey: "gift_cards_option4", price: "€120" },
+];
+---
+
+<section id="gift-cards" class="gift-certificates">
+    <div class="container">
+        <h2 class="section-title">{t("gift_cards")}</h2>
+
+        <div class="gift-certificates-intro">
+            <p
+                class="gift-certificates-description"
+                set:html={t("gift_cards_intro")}
+            />
+        </div>
+
+        <div class="gift-certificate-container">
+            <div class="gift-certificate-image">
+                <div class="gift-certificate">
+                    <Image
+                        src={Logo}
+                        alt={t("gift_cards_logo_alt")}
+                        class="gift-certificate-logo-img"
+                    />
+                    <div class="gift-certificate-title">
+                        {t("gift_cards_title")}
+                    </div>
+                    <div class="gift-certificate-details">
+                        <div class="gift-certificate-text">
+                            {t("gift_cards_text")}
+                        </div>
+                    </div>
+                    <div
+                        class="gift-certificate-gradient gift-certificate-gradient-1"
+                    >
+                    </div>
+                    <div
+                        class="gift-certificate-gradient gift-certificate-gradient-2"
+                    >
+                    </div>
+                </div>
+            </div>
+
+            <div class="gift-certificate-info">
+                <ul class="gift-certificate-prices">
+                    {
+                        giftCardOptions.map((option) => (
+                            <li class="gift-price-row">
+                                <span class="gift-canvases">
+                                    {t(option.descriptionKey)}
+                                </span>
+                                <span class="gift-price">{option.price}</span>
+                                <a
+                                    href={t("gift_cards_buy_url")}
+                                    class="btn btn-small"
+                                >
+                                    {t("gift_cards_buy")}
+                                </a>
+                            </li>
+                        ))
+                    }
+                </ul>
+                <div class="gift-certificate-validity">
+                    <p>{t("gift_cards_validity")}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .gift-certificates {
+        padding: 3rem 0;
+        background-color: var(--white);
+        scroll-margin-top: 60px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        color: var(--purple);
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .gift-certificates-intro {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+    }
+
+    .gift-certificates-description {
+        font-size: 1.1rem;
+        color: var(--dark-text);
+    }
+
+    .gift-certificate-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        max-width: 900px;
+        margin: 0 auto;
+        align-items: start;
+    }
+
+    .gift-certificate-image {
+        position: sticky;
+        top: 110px;
+    }
+
+    .gift-certificate {
+        background-color: white;
+        border-radius: 12px;
+        padding: 40px 30px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 400px;
+        aspect-ratio: 16/9;
+        margin: 0 auto;
+    }
+
+    .gift-certificate-gradient {
+        position: absolute;
+        border-radius: 50%;
+        z-index: 0;
+        filter: blur(30px);
+    }
+
+    .gift-certificate-gradient-1 {
+        top: -60px;
+        left: -60px;
+        width: 220px;
+        height: 220px;
+        background: radial-gradient(
+            circle,
+            rgba(255, 107, 53, 0.3) 0%,
+            rgba(255, 107, 53, 0) 70%
+        );
+    }
+
+    .gift-certificate-gradient-2 {
+        bottom: -80px;
+        right: -80px;
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(
+            circle,
+            rgba(102, 51, 153, 0.25) 0%,
+            rgba(102, 51, 153, 0) 70%
+        );
+    }
+
+    .gift-certificate-logo-img {
+        width: 120px;
+        height: auto;
+        margin-bottom: 15px;
+        z-index: 1;
+        position: relative;
+    }
+
+    .gift-certificate-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--purple);
+        margin-bottom: 15px;
+        z-index: 1;
+        position: relative;
+    }
+
+    .gift-certificate-details {
+        text-align: center;
+        z-index: 1;
+        position: relative;
+    }
+
+    .gift-certificate-text {
+        font-size: 16px;
+        line-height: 1.4;
+        max-width: 280px;
+        color: var(--dark-text);
+    }
+
+    .gift-certificate-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .gift-certificate-validity {
+        font-size: 0.9rem;
+        color: var(--dark-text);
+        opacity: 0.8;
+        padding-left: 1rem;
+    }
+
+    .gift-certificate-validity p {
+        margin: 0;
+    }
+
+    .gift-certificate-prices {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .gift-price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .gift-price-row:last-child {
+        border-bottom: none;
+    }
+
+    .gift-canvases {
+        font-weight: 600;
+        color: var(--purple);
+        flex: 1;
+        text-align: left;
+    }
+
+    .gift-price {
+        font-weight: 700;
+        color: var(--orange);
+        font-size: 1.1rem;
+        margin: 0 1rem;
+        white-space: nowrap;
+    }
+
+    .btn {
+        display: inline-block;
+        background-color: var(--orange);
+        color: var(--white);
+        padding: 0.8rem 1.5rem;
+        border-radius: 30px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn:hover {
+        background-color: var(--purple);
+        color: var(--white);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-small {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .gift-certificate-container {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .gift-certificate-image {
+            position: static;
+            order: -1;
+        }
+
+        .gift-certificate {
+            max-width: 100%;
+            padding: 30px 20px;
+            margin: 0 auto;
+        }
+
+        .gift-certificate-logo-img {
+            width: 100px;
+        }
+
+        .gift-certificate-title {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .gift-certificate-text {
+            font-size: 14px;
+            max-width: none;
+        }
+
+        .gift-certificate-info {
+            gap: 1.25rem;
+        }
+
+        .gift-certificate-prices {
+            gap: 0.5rem;
+        }
+
+        .gift-price-row {
+            padding: 0.5rem 0.75rem;
+        }
+
+        .gift-certificate-validity {
+            font-size: 0.85rem;
+        }
+    }
+
+    @media (max-width: 1024px) and (min-width: 769px) {
+        .gift-certificate-container {
+            gap: 1.5rem;
+        }
+
+        .gift-certificate {
+            padding: 35px 25px;
+        }
+
+        .gift-certificate-logo-img {
+            width: 100px;
+        }
+
+        .gift-certificate-title {
+            font-size: 24px;
+        }
+    }
+</style>
