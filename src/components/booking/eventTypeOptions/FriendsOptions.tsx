@@ -5,27 +5,30 @@ import { formatPrice } from "@/utils/price";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
 
+const MIN_COUNT = 1;
+const MAX_COUNT = 6;
+
 export interface FriendsFormData {
   guests: number;
+  canvases: number;
 }
 
-export function calculateFriendsPrice(guests: number): number {
-  const minGuests = 2;
-
-  if (guests < minGuests) {
-    guests = minGuests;
+export function calculateFriendsPrice(canvases: number): number {
+  if (canvases < MIN_COUNT) {
+    canvases = MIN_COUNT;
   }
 
   const basePrices = [
-    9000, // 2 guests: €90
-    12000, // 3 guests: €120
-    14000, // 4 guests: €140
-    16000, // 5 guests: €160
-    18000, // 6 guests: €180
+    6000, // 1 canvas: €60
+    9000, // 2 canvases: €90
+    12000, // 3 canvases: €120
+    14000, // 4 canvases: €140
+    16000, // 5 canvases: €160
+    18000, // 6 canvases: €180
   ];
 
-  if (guests <= 6) {
-    return basePrices[guests - minGuests];
+  if (canvases <= MAX_COUNT) {
+    return basePrices[canvases - MIN_COUNT];
   }
 
   return basePrices[basePrices.length - 1];
@@ -33,27 +36,64 @@ export function calculateFriendsPrice(guests: number): number {
 
 export function FriendsOptions({ onChange }: EventTypeOptionsProps) {
   const [formData, setFormData] = useState<FriendsFormData>({
-    guests: 2,
+    guests: MIN_COUNT,
+    canvases: MIN_COUNT,
   });
   const t = useTranslator();
 
-  // Calculate total price and notify parent
+  // Read canvas query param on mount
   useEffect(() => {
-    const totalAmount = calculateFriendsPrice(formData.guests);
-    const productName = `${formData.guests} guests`;
+    const params = new URLSearchParams(window.location.search);
+    const canvasParam = params.get("canvas");
+
+    if (canvasParam) {
+      const canvasValue = parseInt(canvasParam, 10);
+      if (
+        !isNaN(canvasValue) &&
+        canvasValue >= MIN_COUNT &&
+        canvasValue <= MAX_COUNT
+      ) {
+        setFormData((prev) => ({
+          ...prev,
+          canvases: canvasValue,
+          guests: canvasValue,
+        }));
+      }
+    }
+  }, []);
+
+  // Calculate total price and notify parent, update URL
+  useEffect(() => {
+    const totalAmount = calculateFriendsPrice(formData.canvases);
+    const productName = `${formData.guests} guests, ${formData.canvases} canvases`;
 
     onChange({
       amount: totalAmount,
       productName,
     });
+
+    // Update URL with the selected canvas count
+    const url = new URL(window.location.href);
+    url.searchParams.set("canvas", formData.canvases.toString());
+    window.history.replaceState({}, "", url);
   }, [formData, onChange]);
 
-  const handleInputChange = (value: number) => {
-    const clampedValue = Math.max(2, Math.min(value, 6));
-    setFormData({ guests: clampedValue });
+  const handleGuestsChange = (value: number) => {
+    const clampedValue = Math.max(MIN_COUNT, Math.min(value, MAX_COUNT));
+    const syncCanvases = formData.guests === formData.canvases;
+
+    setFormData({
+      guests: clampedValue,
+      canvases: syncCanvases ? clampedValue : formData.canvases,
+    });
   };
 
-  const totalPrice = calculateFriendsPrice(formData.guests);
+  const handleCanvasesChange = (value: number) => {
+    const clampedValue = Math.max(MIN_COUNT, Math.min(value, MAX_COUNT));
+    setFormData((prev) => ({ ...prev, canvases: clampedValue }));
+  };
+
+  const totalPrice = calculateFriendsPrice(formData.canvases);
 
   return (
     <div className="friends-options">
@@ -62,24 +102,54 @@ export function FriendsOptions({ onChange }: EventTypeOptionsProps) {
         <button
           type="button"
           className="number-input-btn"
-          onClick={() => handleInputChange(formData.guests - 1)}
-          disabled={formData.guests <= 2}
+          onClick={() => handleGuestsChange(formData.guests - 1)}
+          disabled={formData.guests <= MIN_COUNT}
         >
           -
         </button>
         <input
           type="number"
-          min="2"
-          max="6"
+          min={MIN_COUNT}
+          max={MAX_COUNT}
           value={formData.guests}
-          onChange={(e) => handleInputChange(parseInt(e.target.value) || 2)}
+          onChange={(e) =>
+            handleGuestsChange(parseInt(e.target.value) || MIN_COUNT)
+          }
           className="number-input"
         />
         <button
           type="button"
           className="number-input-btn"
-          onClick={() => handleInputChange(formData.guests + 1)}
-          disabled={formData.guests >= 6}
+          onClick={() => handleGuestsChange(formData.guests + 1)}
+          disabled={formData.guests >= MAX_COUNT}
+        >
+          +
+        </button>
+
+        <div className="option-label">{t("friends_canvases_count")}</div>
+        <button
+          type="button"
+          className="number-input-btn"
+          onClick={() => handleCanvasesChange(formData.canvases - 1)}
+          disabled={formData.canvases <= MIN_COUNT}
+        >
+          -
+        </button>
+        <input
+          type="number"
+          min={MIN_COUNT}
+          max={MAX_COUNT}
+          value={formData.canvases}
+          onChange={(e) =>
+            handleCanvasesChange(parseInt(e.target.value) || MIN_COUNT)
+          }
+          className="number-input"
+        />
+        <button
+          type="button"
+          className="number-input-btn"
+          onClick={() => handleCanvasesChange(formData.canvases + 1)}
+          disabled={formData.canvases >= MAX_COUNT}
         >
           +
         </button>
