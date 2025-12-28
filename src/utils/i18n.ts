@@ -60,8 +60,14 @@ export function getRecursiveValue(
   const value = obj[currentKey];
 
   if (restKeys.length === 0) {
-    console.warn(`Translation key "${currentKey}" points to an object `);
-    return typeof value === "string" ? value : undefined;
+    if (typeof value !== "string") {
+      console.warn(
+        `Translation key "${currentKey}" points to a non-string value. The value type is ${typeof value}`,
+      );
+      return undefined;
+    }
+
+    return value;
   }
 
   // Recurse if there are more keys and value is an object

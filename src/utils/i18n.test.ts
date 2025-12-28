@@ -56,7 +56,7 @@ describe("getRecursiveValue", () => {
     expect(getRecursiveValue(translations, ["nested"])).toBeUndefined();
 
     expect(consoleSpy).toHaveBeenCalledWith(
-      'Translation key "nested" points to an object ',
+      'Translation key \"nested\" points to a non-string value. The value type is object',
     );
   });
 
