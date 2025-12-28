@@ -65,7 +65,7 @@ export function FriendsOptions({ onChange }: EventTypeOptionsProps) {
   // Calculate total price and notify parent, update URL
   useEffect(() => {
     const totalAmount = calculateFriendsPrice(formData.canvases);
-    const productName = `${formData.guests} guests, ${formData.canvases} canvases`;
+    const productName = `${formData.guests} ${formData.guests === 1 ? "invitado" : "invitados"}, ${formData.canvases} ${formData.canvases === 1 ? "lienzo" : "lienzos"}`;
 
     onChange({
       amount: totalAmount,

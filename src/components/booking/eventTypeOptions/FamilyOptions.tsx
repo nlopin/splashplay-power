@@ -99,7 +99,7 @@ export function FamilyOptions({ onChange }: EventTypeOptionsProps) {
   // Calculate total price and notify parent
   useEffect(() => {
     const totalAmount = calculateFamilyPrice(formData.canvases);
-    const productName = `${formData.adults} adults, ${formData.kids} kids, ${formData.canvases} canvases`;
+    const productName = `${formData.adults} adultos, ${formData.kids} niños, ${formData.canvases} ${formData.canvases === 1 ? "lienzo" : "lienzos"}`;
 
     onChange({
       amount: totalAmount,
