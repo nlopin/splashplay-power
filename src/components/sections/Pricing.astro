@@ -12,18 +12,18 @@ const lang = getCurrentLanguage(Astro.currentLocale);
 const priceCards = [
     {
         id: "friends",
-        link: getLocalizedPath("friends", lang),
-        bookingLink: getLocalizedPath("book/friends", lang),
+        link: getLocalizedPath("/friends", lang),
+        bookingLink: getLocalizedPath("/book/friends", lang),
     },
     {
         id: "couples",
-        link: getLocalizedPath("couples", lang),
-        bookingLink: getLocalizedPath("book/couples", lang),
+        link: getLocalizedPath("/couples", lang),
+        bookingLink: getLocalizedPath("/book/couples", lang),
     },
     {
         id: "families",
-        link: getLocalizedPath("families", lang),
-        bookingLink: getLocalizedPath("book/family", lang),
+        link: getLocalizedPath("/families", lang),
+        bookingLink: getLocalizedPath("/book/family", lang),
     },
     {
         id: "teams",
@@ -31,7 +31,7 @@ const priceCards = [
     },
     {
         id: "individual",
-        bookingLink: getLocalizedPath("book/individual", lang),
+        bookingLink: getLocalizedPath("/book/individual", lang),
     },
 ];
 ---
