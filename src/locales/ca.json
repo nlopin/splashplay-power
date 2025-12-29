@@ -18,15 +18,15 @@
     "nav_gallery": "Galeria",
     "nav_contact": "Contacte",
     "hero_title": "Estudi d'Art Creatiu",
-    "hero_subtitle": "Crea obres mestres abstractes amb tècniques divertides com abocament, gir i boxa.",
+    "hero_subtitle": "Estudi d'art a Barcelona on la creativitat flueix lliurement. Per a famílies, parelles, grups d'amics i equips. No cal saber dibuixar ni pintar!",
     "hero_description": "Zero experiència artística necessària! Perfecte per a individus, parelles i grups.",
     "cta_book": "Reserva la Teva Sessió",
     "why_fun": "Per Què és Divertit: Tècniques de Pintura",
     "why_fun_description": "Oblida't dels pinzells. Al nostre estudi provaràs tècniques divertides i poc convencionals per crear la teva obra mestra abstracta.",
     "techniques": {
       "pouring": {
-        "title": "Abocament",
-        "description": "Aboca diferents colors i observa com es barregen formant patrons hipnotitzants."
+        "title": "Vessament",
+        "description": "Vessa diferents colors i observa com es barregen formant patrons hipnotitzants."
       },
       "spinning": {
         "title": "Gir",
@@ -34,31 +34,31 @@
       },
       "boxing": {
         "title": "Boxa",
-        "description": "Lluita el teu camí cap a l'expressió artística amb guants de boxa coberts de pintura."
+        "description": "Crea la teva expressió artística a cops amb guants de boxa coberts de pintura."
       },
       "balloons": {
         "title": "Globus",
-        "description": "Crea patrons de projeccions juguetons fent esclatar globus plens de pintura sobre el llenç."
+        "description": "Crea patrons d'esquitxades juganeres explotant globus plens de pintura sobre el llenç."
       },
       "balls": {
         "title": "Pilotes",
-        "description": "Crea taques vibrandes llançant pilotes de pàdel banyades en pintura contra el llenç."
+        "description": "Crea taques vibrants llançant pilotes de pàdel banyades en pintura contra el llenç."
       },
       "guns": {
         "title": "Pistoles",
         "description": "Crea explosions de color disparant pintura amb divertides pistoles d'aigua sobre el llenç."
       },
       "dripping": {
-        "title": "Gota a Gota",
-        "description": "Crea traços únics deixant que la pintura goti lliurement sobre el llenç, estil Pollock pur."
+        "title": "Goteig",
+        "description": "Crea traços únics deixant que la pintura degoti lliurement sobre el llenç, al pur estil Pollock."
       },
       "surprise": {
         "title": "Sorpresa",
         "description": "Descobreix la nostra tècnica secreta: una experiència sorpresa que transforma el llenç en pura diversió i color."
       },
-      "more": "I moltes més! Prova alguna d'aquestes o inventa la teva pròpia!"
+      "more": "I moltes més! Prova’n alguna d’aquestes o inventa la teva pròpia!"
     },
-    "testimonials_title": "Què Diuen de Nosaltres",
+    "testimonials_title": "El Que Diuen de Nosaltres",
     "reviews": {
       "sveta": "<p>Un espai creatiu genial on els meus amics i jo no només vam pintar i ens vam divertir, sinó que també vam descobrir alguna cosa sobre nosaltres mateixos.</p><p>Tenia ganes de provar diferents tècniques i estils — <strong>hi tornaré segur! Molt recomanable!</strong></p>",
       "mario": "<p>Ens ho vam passar increïble! <strong>No havia pintat mai</strong>, però l’ambient era tan juganer i creatiu que, d’alguna manera, vaig crear una peça que ara penja amb orgull a casa meva.</p>",
