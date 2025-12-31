@@ -41,21 +41,21 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
-      PUBLIC_CALENDLY_COUPLES_EVENT_TYPE_ID: envField.string({
-        context: "client",
-        access: "public",
+      CALENDLY_COUPLES_EVENT_TYPE_ID: envField.string({
+        context: "server",
+        access: "secret",
       }),
-      PUBLIC_CALENDLY_FAMILY_EVENT_TYPE_ID: envField.string({
-        context: "client",
-        access: "public",
+      CALENDLY_FAMILY_EVENT_TYPE_ID: envField.string({
+        context: "server",
+        access: "secret",
       }),
-      PUBLIC_CALENDLY_FRIENDS_EVENT_TYPE_ID: envField.string({
-        context: "client",
-        access: "public",
+      CALENDLY_FRIENDS_EVENT_TYPE_ID: envField.string({
+        context: "server",
+        access: "secret",
       }),
-      PUBLIC_CALENDLY_INDIVIDUAL_EVENT_TYPE_ID: envField.string({
-        context: "client",
-        access: "public",
+      CALENDLY_INDIVIDUAL_EVENT_TYPE_ID: envField.string({
+        context: "server",
+        access: "secret",
       }),
       PUBLIC_STRIPE_PUBLISHABLE_KEY: envField.string({
         context: "client",
