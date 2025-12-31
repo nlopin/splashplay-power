@@ -1,12 +1,23 @@
 import * as z from "zod";
-import { CALENDLY_TOKEN } from "astro:env/server";
+import {
+  CALENDLY_TOKEN,
+  CALENDLY_COUPLES_EVENT_TYPE_ID,
+  CALENDLY_FAMILY_EVENT_TYPE_ID,
+  CALENDLY_FRIENDS_EVENT_TYPE_ID,
+  CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
+} from "astro:env/server";
 
 import type { EventType } from "@/components/booking/types";
-import { EVENT_TYPE_IDS } from "@/constants";
 import { type ISODatetime } from "@/types";
 import { getSunday } from "@/utils/datetime";
 
 const CALENDLY_URL = "https://api.calendly.com";
+const EVENT_TYPE_IDS: Record<EventType, string> = {
+  couples: CALENDLY_COUPLES_EVENT_TYPE_ID,
+  family: CALENDLY_FAMILY_EVENT_TYPE_ID,
+  friends: CALENDLY_FRIENDS_EVENT_TYPE_ID,
+  individual: CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
+};
 const BOOK_IN_ADVANCE = 30;
 const BATCH_SIZE_IN_DAYS = 7;
 const MILLISECONDS_IN_ONE_DAY = 24 * 60 * 60 * 1000;
