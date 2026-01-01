@@ -116,11 +116,19 @@ const links = [
 <script>
     const toggle = document.querySelector(".mobile-menu-toggle");
     const navContainer = document.querySelector(".nav-links-container");
+    const navLinks = document.querySelectorAll(".nav-links a");
 
     if (toggle && navContainer) {
         toggle.addEventListener("click", () => {
             navContainer.classList.toggle("open");
             toggle.classList.toggle("open");
+        });
+
+        navLinks.forEach((link) => {
+            link.addEventListener("click", () => {
+                navContainer.classList.remove("open");
+                toggle.classList.remove("open");
+            });
         });
     }
 </script>
