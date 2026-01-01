@@ -29,7 +29,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   } catch (err) {
     return new Response(
-      `Webhook Error: ${Error.isError(err) ? err.message : err}`,
+      `Webhook Error: ${err instanceof Error ? err.message : err}`,
       { status: 400 },
     );
   }
