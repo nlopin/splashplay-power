@@ -1,9 +1,14 @@
 ---
 import couples from "../../assets/photo/couples.jpg";
-import { createAstroTranslator } from "../../utils/i18n";
+import {
+    createAstroTranslator,
+    getCurrentLanguage,
+    getLocalizedPath,
+} from "../../utils/i18n";
 import PromoHero from "./PromoHero.astro";
 
 const t = createAstroTranslator(Astro.currentLocale, "couples");
+const lang = getCurrentLanguage(Astro.currentLocale);
 ---
 
 <PromoHero
@@ -12,5 +17,6 @@ const t = createAstroTranslator(Astro.currentLocale, "couples");
     image={couples}
     imageAlt={t("hero_image_alt")}
     ctaText={t("cta_book")}
+    ctaHref={getLocalizedPath("/book/couples", lang)}
     variant="couples"
 />
