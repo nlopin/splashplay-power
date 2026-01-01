@@ -60,19 +60,6 @@ const pageDescription = description || t("description");
     </head>
     <body>
         <slot />
-        <script>
-            if (window.location.hash) {
-                window.addEventListener("load", () => {
-                    const hash = window.location.hash;
-                    const element = document.querySelector(hash);
-                    if (element) {
-                        setTimeout(() => {
-                            element.scrollIntoView({ behavior: "instant" });
-                        }, 0);
-                    }
-                });
-            }
-        </script>
     </body>
 </html>
 
