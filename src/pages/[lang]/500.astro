@@ -1,0 +1,16 @@
+---
+import ServerError from "../../components/ServerError.astro";
+import { languages, type Language } from "../../utils/i18n";
+
+export async function getStaticPaths() {
+    return languages
+        .filter((lang) => lang !== "es")
+        .map((lang) => ({
+            params: { lang },
+        }));
+}
+
+const { lang } = Astro.params as { lang: Language };
+---
+
+<ServerError lang={lang} />

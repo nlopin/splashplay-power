@@ -329,5 +329,12 @@
     "heading": "Page not found",
     "message": "The page you're looking for doesn't exist.",
     "homeLink": "Go to homepage"
+  },
+  "serverError": {
+    "title": "Something went wrong",
+    "heading": "Something went wrong",
+    "message": "We're sorry, an unexpected error occurred.",
+    "contactMessage": "If this issue persists, please contact us via WhatsApp.",
+    "homeLink": "Go to homepage"
   }
 }

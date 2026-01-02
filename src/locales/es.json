@@ -329,5 +329,12 @@
     "heading": "Página no encontrada",
     "message": "La página que buscas no existe.",
     "homeLink": "Ir a la página principal"
+  },
+  "serverError": {
+    "title": "Error del servidor",
+    "heading": "Algo salió mal",
+    "message": "Ha ocurrido un error inesperado.",
+    "contactMessage": "Si el problema persiste, contáctanos por WhatsApp.",
+    "homeLink": "Ir a la página principal"
   }
 }

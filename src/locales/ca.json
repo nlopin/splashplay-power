@@ -330,5 +330,12 @@
     "heading": "Pàgina no trobada",
     "message": "La pàgina que busques no existeix.",
     "homeLink": "Anar a la pàgina principal"
+  },
+  "serverError": {
+    "title": "Error del servidor",
+    "heading": "Alguna cosa ha anat malament",
+    "message": "Ho sentim, ha ocorregut un error inesperat.",
+    "contactMessage": "Si el problema persisteix, contacta'ns per WhatsApp.",
+    "homeLink": "Anar a la pàgina principal"
   }
 }
