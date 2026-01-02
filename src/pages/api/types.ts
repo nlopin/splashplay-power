@@ -6,7 +6,7 @@ export const CreatePaymentSessionPayloadSchema = z.object({
   productName: z.string(),
   datetime: z.iso.datetime(),
   eventType: z.enum(Object.values(EVENT_TYPE)),
-  lang: z.string().optional().default("es"),
+  lang: z.enum(["es", "ca", "en"]).optional().default("es"),
   fullName: z.string().optional(),
   email: z.email().optional(),
   phone: z.string().optional(),

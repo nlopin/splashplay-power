@@ -25,6 +25,8 @@ export const POST: APIRoute = async ({ request }) => {
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     ui_mode: "embedded",
+    allow_promotion_codes: true,
+    locale: lang === "ca" ? "es" : lang, // catalan is not supported
     phone_number_collection: { enabled: true },
     name_collection: {
       individual: {

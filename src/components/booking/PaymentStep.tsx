@@ -1,7 +1,6 @@
 import type { FC } from "react";
 
 import { StripeCheckoutWrapper } from "./StripeCheckoutWrapper";
-import type { SelectedTimeSlot } from "./types";
 import { useTranslator } from "@/components/TranslatorContext";
 
 interface PaymentStepProps {
