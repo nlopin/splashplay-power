@@ -64,11 +64,13 @@ const pricingOptions = [
                                     { "popular-card": option.popular },
                                 ]}
                             >
-                                <Image
-                                    src={option.image}
-                                    alt={option.title}
-                                    class="price-card-image"
-                                />
+                                <div class="price-card-image-container">
+                                    <Image
+                                        src={option.image}
+                                        alt={option.title}
+                                        class="price-card-image"
+                                    />
+                                </div>
                                 <div class="price-card-details">
                                     <div class="price-card-price">
                                         {option.price}
@@ -167,11 +169,17 @@ const pricingOptions = [
         z-index: 1;
     }
 
+    .price-card-image-container {
+        aspect-ratio: 3 / 4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .price-card-image {
         width: 100%;
-        height: auto;
+        height: 100%;
         object-fit: contain;
-        display: block;
     }
 
     .price-card-details {
@@ -229,13 +237,69 @@ const pricingOptions = [
     }
 
     @media (max-width: 768px) {
+        .prices--couples {
+            padding: 2rem 0;
+        }
+
+        .gift-certificates-intro {
+            margin-bottom: 1rem;
+        }
+
         .price-cards-container {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 16px;
+        }
+
+        .price-card-image-container {
+            padding: 16px;
+            padding-bottom: 0;
+            aspect-ratio: 2 / 3;
+            /*
+             * max-height ensures the card fits on screen with room to hint at the next card.
+             *
+             * Why 55svh:
+             * - svh (small viewport height) accounts for mobile browser chrome (URL bar, etc.)
+             *   Unlike vh which uses the largest possible viewport, svh uses the smallest,
+             *   ensuring our constraint works even when browser UI is visible.
+             * - 55% of viewport leaves ~45% for: section title, card details (price, title,
+             *   description, button), gap between cards, and a peek of the next card.
+             * - This is larger than the previous 35svh which made images feel too small.
+             *
+             * Combined with aspect-ratio: 2/3, the container will use whichever is smaller:
+             * - The height calculated from width × (3/2), OR
+             * - 55svh
+             * This keeps tall portrait images reasonably sized while showing them in full
+             * (object-fit: contain on the image prevents cropping).
+             */
+            max-height: 55svh;
+        }
+
+        .price-card-details {
+            padding: 1rem;
         }
 
         .price-card-price {
-            font-size: 2rem;
+            font-size: 1.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .price-card-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-card-details p {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .price-card-details br {
+            display: none;
+        }
+
+        .btn-card {
+            padding: 0.6rem 1.25rem;
+            margin-top: 0.75rem;
         }
     }
 </style>
