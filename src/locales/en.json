@@ -323,5 +323,11 @@
     "gift_cards_validity": "Valid for 6 months.",
     "gift_cards_buy": "Buy",
     "gift_cards_buy_url": "https://app.cardivo.com/giftcards/splashplay-bcn"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "heading": "Page not found",
+    "message": "The page you're looking for doesn't exist.",
+    "homeLink": "Go to homepage"
   }
 }
