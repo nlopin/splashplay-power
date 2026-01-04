@@ -1,5 +1,6 @@
 import { Stripe } from "stripe";
 import type { APIRoute } from "astro";
+import * as z from "zod";
 import { STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET_KEY } from "astro:env/server";
 
 import {
@@ -8,10 +9,25 @@ import {
   sendTelegramSticker,
 } from "@/services/telegram";
 import { getPaymentIntentId } from "@/services/stripe";
+import { bookEvent, resetCache } from "@/services/calendly";
+import { formatEventComment } from "@/components/booking/eventMessage";
+import { EVENT_TYPE } from "@/components/booking/types";
 
 export const prerender = false;
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
   apiVersion: "2025-10-29.clover",
+});
+
+const metadataSchema = z.object({
+  eventType: z.enum(Object.values(EVENT_TYPE)),
+  sessionTime: z.iso.datetime(),
+  sessionTitle: z.string(),
+});
+
+const customerSchema = z.object({
+  email: z.email(),
+  name: z.string(),
+  phone: z.string(),
 });
 
 export const POST: APIRoute = async ({ request }) => {
@@ -36,14 +52,46 @@ export const POST: APIRoute = async ({ request }) => {
 
   switch (event.type) {
     case "checkout.session.completed":
-      const session = event.data.object;
-      const { sessionTitle } = session.metadata || {};
+      // Retrieve the full session from API, webhook payload may not include all fields
+      const session = await stripe.checkout.sessions.retrieve(
+        event.data.object.id,
+      );
+      const paymentIntentId = getPaymentIntentId(session);
 
-      if (session.amount_total) {
-        await sendPaymentNotification(
-          session.amount_total,
-          sessionTitle,
-          getPaymentIntentId(session),
+      const parsedMetadata = metadataSchema.safeParse(session.metadata);
+      const parsedCustomer = customerSchema.safeParse(session.customer_details);
+
+      // Book Calendly event
+      if (parsedMetadata.success && parsedCustomer.success) {
+        if (session.amount_total) {
+          await sendPaymentNotification(
+            session.amount_total,
+            parsedMetadata.data.sessionTitle,
+            paymentIntentId,
+          );
+        }
+
+        const isOk = await bookEvent(parsedMetadata.data.eventType, {
+          datetime: parsedMetadata.data.sessionTime,
+          email: parsedCustomer.data.email,
+          name: parsedCustomer.data.name,
+          phone: parsedCustomer.data.phone,
+          comment: formatEventComment(
+            paymentIntentId,
+            parsedMetadata.data.sessionTitle,
+          ),
+        });
+
+        if (isOk) {
+          resetCache();
+        } else {
+          console.error("Failed to book Calendly event", session.id);
+        }
+      } else {
+        console.error(
+          "event parsing error",
+          parsedCustomer.error?.message,
+          parsedMetadata.error?.message,
         );
       }
 

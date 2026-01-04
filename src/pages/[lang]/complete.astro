@@ -1,14 +1,9 @@
 ---
 import Stripe from "stripe";
-import * as z from "zod";
 import { STRIPE_SECRET_KEY } from "astro:env/server";
 
 import PageLayout from "@/layouts/PageLayout.astro";
 import { getPageTranslations, languagePrefixes } from "@/utils/i18n";
-import { bookEvent, resetCache } from "@/services/calendly";
-import { EVENT_TYPE } from "@/components/booking/types";
-import { formatEventComment } from "@/components/booking/eventMessage";
-import { getPaymentIntentId } from "@/services/stripe";
 import splashPlayLogo from "@/assets/splash-play-logo.svg";
 
 export const prerender = false;
@@ -28,49 +23,12 @@ const stripe = new Stripe(STRIPE_SECRET_KEY, {
 let status = "loading";
 let sessionTitle = "";
 
-const metadataSchema = z.object({
-    eventType: z.enum(Object.values(EVENT_TYPE)),
-    sessionTime: z.iso.datetime(),
-    sessionTitle: z.string(),
-});
-
-const customerSchema = z.object({
-    email: z.email(),
-    individual_name: z.string(),
-    phone: z.string(),
-});
-
 try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    const parsedMetadata = metadataSchema.safeParse(session.metadata);
-    const parsedCustomer = customerSchema.safeParse(session.customer_details);
-    const paymentIntentId = getPaymentIntentId(session);
-
-    if (
-        session.status === "complete" &&
-        session.payment_status === "paid" &&
-        parsedMetadata.success &&
-        parsedCustomer.success
-    ) {
-        const isOk = await bookEvent(parsedMetadata.data.eventType, {
-            datetime: parsedMetadata.data.sessionTime,
-            email: parsedCustomer.data.email,
-            name: parsedCustomer.data.individual_name,
-            phone: parsedCustomer.data.phone,
-            comment: formatEventComment(
-                paymentIntentId,
-                parsedMetadata.data.sessionTitle,
-            ),
-        });
-
+    if (session.status === "complete" && session.payment_status === "paid") {
         status = "success";
-        sessionTitle = parsedMetadata.data.sessionTitle;
-        if (isOk) {
-            resetCache();
-        } else {
-            console.log("error while booking an event", session.id);
-        }
+        sessionTitle = session.metadata?.sessionTitle || "";
     } else if (session.status === "open") {
         status = "processing";
     } else {
