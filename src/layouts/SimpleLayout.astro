@@ -1,0 +1,79 @@
+---
+import Layout from "./Layout.astro";
+import { Image } from "astro:assets";
+import Logo from "../assets/splash-play-logo.svg";
+
+interface Props {
+    title: string;
+    homeHref: string;
+}
+
+const { title, homeHref } = Astro.props;
+---
+
+<Layout title={title}>
+    <main class="container">
+        <a href={homeHref} class="logo-link">
+            <Image src={Logo} alt="Splash Play Logo" class="logo" />
+        </a>
+        <div class="content">
+            <slot />
+        </div>
+    </main>
+</Layout>
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .logo-link {
+        display: block;
+    }
+
+    .logo {
+        width: 200px;
+        height: auto;
+        margin-bottom: 2rem;
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+        max-width: 1200px;
+    }
+
+    :global(.container h1) {
+        font-size: 2.5rem;
+        color: var(--purple);
+        margin-bottom: 1rem;
+    }
+
+    :global(.container p) {
+        font-size: 1.25rem;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+    }
+
+    :global(.container .home-link) {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background-color: var(--purple);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+    }
+
+    :global(.container .home-link:hover) {
+        background-color: var(--purple-dark, #5a2d82);
+    }
+</style>
