@@ -336,5 +336,8 @@
     "message": "We're sorry, an unexpected error occurred.",
     "contactMessage": "If this issue persists, please contact us via WhatsApp.",
     "homeLink": "Go to homepage"
+  },
+  "giftcard": {
+    "title": "Gift Certificates - SplashPlay"
   }
 }

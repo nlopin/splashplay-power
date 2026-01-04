@@ -336,5 +336,8 @@
     "message": "Ha ocurrido un error inesperado.",
     "contactMessage": "Si el problema persiste, contáctanos por WhatsApp.",
     "homeLink": "Ir a la página principal"
+  },
+  "giftcard": {
+    "title": "Tarjetas Regalo - SplashPlay"
   }
 }

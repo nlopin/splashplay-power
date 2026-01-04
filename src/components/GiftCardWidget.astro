@@ -1,0 +1,38 @@
+---
+interface Props {
+    language: string;
+}
+
+const { language } = Astro.props;
+---
+
+<div
+    class="gift-up-target"
+    data-site-id="c09bc3e5-6b45-4560-d13a-08de3d7a1e24"
+    data-platform="Other"
+    data-language={language}
+    style={{
+        width: "100%",
+    }}
+>
+</div>
+<script type="text/javascript">
+    (function (g, i, f, t, u, p, s) {
+        g[u] =
+            g[u] ||
+            function () {
+                (g[u].q = g[u].q || []).push(arguments);
+            };
+        p = i.createElement(f);
+        p.async = 1;
+        p.src = t;
+        s = i.getElementsByTagName(f)[0];
+        s.parentNode.insertBefore(p, s);
+    })(
+        window,
+        document,
+        "script",
+        "https://cdn.giftup.app/dist/gift-up.js",
+        "giftup",
+    );
+</script>

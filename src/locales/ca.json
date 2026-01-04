@@ -337,5 +337,8 @@
     "message": "Ho sentim, ha ocorregut un error inesperat.",
     "contactMessage": "Si el problema persisteix, contacta'ns per WhatsApp.",
     "homeLink": "Anar a la pàgina principal"
+  },
+  "giftcard": {
+    "title": "Targetes Regal - SplashPlay"
   }
 }
