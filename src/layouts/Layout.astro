@@ -34,12 +34,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         <meta name="generator" content={Astro.generator} />
         <meta name="description" content={pageDescription} />
         <title>{pageTitle}</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-            rel="stylesheet"
-        />
+
 
         <!-- Add alternate language links for SEO -->
         <link
@@ -69,6 +64,30 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
 </html>
 
 <style is:global>
+    @font-face {
+        font-family: 'Montserrat';
+        font-style: normal;
+        font-weight: 400;
+        font-display: optional;
+        src: url('/fonts/montserrat-v31-latin-regular.woff2') format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Montserrat';
+        font-style: normal;
+        font-weight: 600;
+        font-display: optional;
+        src: url('/fonts/montserrat-v31-latin-600.woff2') format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Montserrat';
+        font-style: normal;
+        font-weight: 700;
+        font-display: optional;
+        src: url('/fonts/montserrat-v31-latin-700.woff2') format('woff2');
+    }
+
     html,
     body {
         margin: 0;
