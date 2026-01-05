@@ -4,6 +4,7 @@ import { defineConfig, envField } from "astro/config";
 import netlify from "@astrojs/netlify";
 
 import react from "@astrojs/react";
+import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
@@ -67,5 +68,5 @@ export default defineConfig({
   },
 
   adapter: netlify(),
-  integrations: [react()],
+  integrations: [react(), sitemap()],
 });
