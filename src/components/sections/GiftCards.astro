@@ -1,39 +1,27 @@
 ---
 import { Image } from "astro:assets";
 import Logo from "../../assets/splash-play-logo.svg";
+import CTAButton from "../CTAButton.astro";
 import {
     createAstroTranslator,
-    type TranslationNamespace,
+    getCurrentLanguage,
+    getLocalizedPath,
 } from "../../utils/i18n";
 
 interface Props {
-    translationNamespace?: TranslationNamespace;
-    giftCardOptions?: Array<{ descriptionKey: string; price: string }>;
+    translationNamespace?: "main" | "couples" | "family" | "friends";
 }
 
-const {
-    translationNamespace = "main",
-    giftCardOptions = [
-        { descriptionKey: "gift_cards_option1", price: "€60" },
-        { descriptionKey: "gift_cards_option2", price: "€80" },
-        { descriptionKey: "gift_cards_option3", price: "€90" },
-        { descriptionKey: "gift_cards_option4", price: "€120" },
-    ],
-} = Astro.props;
+const { translationNamespace = "main" } = Astro.props;
 
 const t = createAstroTranslator(Astro.currentLocale, translationNamespace);
+const lang = getCurrentLanguage(Astro.currentLocale);
+const giftCardUrl = getLocalizedPath("/giftcard", lang);
 ---
 
 <section id="gift-cards" class="gift-certificates">
     <div class="container">
         <h2 class="section-title">{t("gift_cards")}</h2>
-
-        <div class="gift-certificates-intro">
-            <p
-                class="gift-certificates-description"
-                set:html={t("gift_cards_intro")}
-            />
-        </div>
 
         <div class="gift-certificate-container">
             <div class="gift-certificate-image">
@@ -63,26 +51,16 @@ const t = createAstroTranslator(Astro.currentLocale, translationNamespace);
             </div>
 
             <div class="gift-certificate-info">
-                <ul class="gift-certificate-prices">
-                    {
-                        giftCardOptions.map((option) => (
-                            <li class="gift-price-row">
-                                <span class="gift-canvases">
-                                    {t(option.descriptionKey)}
-                                </span>
-                                <span class="gift-price">{option.price}</span>
-                                <a
-                                    href={t("gift_cards_buy_url")}
-                                    class="btn btn-small"
-                                >
-                                    {t("gift_cards_buy")}
-                                </a>
-                            </li>
-                        ))
-                    }
-                </ul>
-                <div class="gift-certificate-validity">
-                    <p>{t("gift_cards_validity")}</p>
+                <div
+                    class="gift-certificates-description"
+                    set:html={t("gift_cards_intro")}
+                />
+                <div class="button-wrapper">
+                    <CTAButton
+                        text={t("gift_cards_buy")}
+                        href={giftCardUrl}
+                        size="md"
+                    />
                 </div>
             </div>
         </div>
@@ -96,33 +74,29 @@ const t = createAstroTranslator(Astro.currentLocale, translationNamespace);
         scroll-margin-top: 60px;
     }
 
-    .gift-certificates-intro {
-        text-align: center;
-        max-width: 700px;
-        margin: 0 auto 2rem;
-    }
-
     .gift-certificates-description {
         font-size: 1.1rem;
         color: var(--dark-text);
+        line-height: 1.6;
+        margin-bottom: 2rem;
     }
 
     .gift-certificate-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-        max-width: 900px;
+        gap: 3rem;
+        max-width: var(--max-one-column-width);
         margin: 0 auto;
         align-items: start;
     }
 
     .gift-certificate-image {
         position: sticky;
-        top: 110px;
+        top: 100px;
     }
 
     .gift-certificate {
-        background-color: white;
+        background-color: var(--white);
         border-radius: 12px;
         padding: 40px 30px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -193,7 +167,7 @@ const t = createAstroTranslator(Astro.currentLocale, translationNamespace);
     }
 
     .gift-certificate-text {
-        font-size: 16px;
+        font-size: 1;
         line-height: 1.4;
         max-width: 280px;
         color: var(--dark-text);
@@ -202,95 +176,26 @@ const t = createAstroTranslator(Astro.currentLocale, translationNamespace);
     .gift-certificate-info {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        justify-content: center;
     }
 
-    .gift-certificate-validity {
-        font-size: 0.9rem;
-        color: var(--dark-text);
-        opacity: 0.8;
-        padding-left: 1rem;
-    }
-
-    .gift-certificate-validity p {
-        margin: 0;
-    }
-
-    .gift-certificate-prices {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    .gift-price-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem 1rem;
-        border-bottom: 1px solid #eee;
-    }
-
-    .gift-price-row:last-child {
-        border-bottom: none;
-    }
-
-    .gift-canvases {
-        font-weight: 600;
-        color: var(--purple);
-        flex: 1;
-        text-align: left;
-    }
-
-    .gift-price {
-        font-weight: 700;
-        color: var(--orange);
-        font-size: 1.1rem;
-        margin: 0 1rem;
-        white-space: nowrap;
-    }
-
-    .btn {
+    .button-wrapper {
         display: inline-block;
-        background-color: var(--orange);
-        color: var(--white);
-        padding: 0.8rem 1.5rem;
-        border-radius: 30px;
-        font-weight: bold;
-        text-transform: uppercase;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
-
-    .btn:hover {
-        background-color: var(--purple);
-        color: var(--white);
-        transform: translateY(-3px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-small {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+        width: fit-content;
     }
 
     @media (max-width: 768px) {
         .gift-certificate-container {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .gift-certificate-image {
             position: static;
-            order: -1;
         }
 
         .gift-certificate {
-            max-width: 100%;
+            max-width: min(100%, 400px);
             padding: 30px 20px;
             margin: 0 auto;
         }
@@ -305,30 +210,19 @@ const t = createAstroTranslator(Astro.currentLocale, translationNamespace);
         }
 
         .gift-certificate-text {
-            font-size: 14px;
+            font-size: 16px;
             max-width: none;
         }
 
-        .gift-certificate-info {
-            gap: 1.25rem;
-        }
-
-        .gift-certificate-prices {
-            gap: 0.5rem;
-        }
-
-        .gift-price-row {
-            padding: 0.5rem 0.75rem;
-        }
-
-        .gift-certificate-validity {
-            font-size: 0.85rem;
+        .gift-certificates-description {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
         }
     }
 
     @media (max-width: 1024px) and (min-width: 769px) {
         .gift-certificate-container {
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .gift-certificate {
