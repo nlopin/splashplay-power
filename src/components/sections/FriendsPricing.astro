@@ -131,7 +131,7 @@ const pricingOptions = [
     .techniques-info {
         margin-bottom: 2rem;
         color: var(--dark-text);
-        font-size: 1rem;
+        font-size: var(--font-base);
         line-height: 1.6;
         text-align: center;
     }
@@ -172,7 +172,7 @@ const pricingOptions = [
     .price-table td:nth-child(2),
     .price-table td:nth-child(3) {
         font-weight: 700;
-        font-size: 1.25rem;
+        font-size: var(--font-lg);
     }
 
     /* Price per group (column 2) in orange */
@@ -197,7 +197,7 @@ const pricingOptions = [
         cursor: pointer;
         transition: all 0.3s ease;
         text-decoration: none;
-        font-size: 0.9rem;
+        font-size: var(--font-sm);
     }
 
     .btn:hover {
@@ -208,7 +208,7 @@ const pricingOptions = [
 
     .btn-small {
         padding: 0.5rem 1rem;
-        font-size: 0.85rem;
+        font-size: var(--font-sm);
     }
 
     /* Mobile Table Styles */
@@ -245,14 +245,14 @@ const pricingOptions = [
             align-items: center;
             padding: 0.5rem 0;
             border-bottom: none;
-            font-size: 0.95rem;
+            font-size: var(--font-sm);
         }
 
         .price-table td::before {
             content: attr(data-label);
             font-weight: 600;
             color: var(--purple);
-            font-size: 0.9rem;
+            font-size: var(--font-sm);
             text-align: left;
             white-space: normal;
             word-break: break-word;

@@ -95,7 +95,7 @@ const techniques = [
         text-align: center;
         max-width: 700px;
         margin: 0 auto 2rem;
-        font-size: 1rem;
+        font-size: var(--font-base);
         color: var(--dark-text);
         line-height: 1.6;
     }
@@ -142,14 +142,14 @@ const techniques = [
     .technique-title {
         color: var(--purple);
         margin: 1rem 1rem 0.5rem;
-        font-size: 1.3rem;
+        font-size: var(--font-lg);
         font-weight: 700;
     }
 
     .technique-description {
         margin: 0 1rem 1rem;
         color: var(--dark-text);
-        font-size: 0.95rem;
+        font-size: var(--font-sm);
         line-height: 1.6;
     }
 
@@ -163,7 +163,7 @@ const techniques = [
     /* Desktop and up */
     @media (min-width: 992px) {
         .techniques-intro {
-            font-size: 1.2rem;
+            font-size: var(--font-lg);
             margin-bottom: 3rem;
         }
 
@@ -173,12 +173,12 @@ const techniques = [
         }
 
         .technique-title {
-            font-size: 1.5rem;
+            font-size: var(--font-xl);
             margin: 1.2rem 1.5rem 0.5rem;
         }
 
         .technique-description {
-            font-size: 1rem;
+            font-size: var(--font-base);
             margin: 0 1.5rem 1.5rem;
         }
     }

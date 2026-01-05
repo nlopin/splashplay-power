@@ -65,7 +65,7 @@ const availability = availableTimes.map((time) => time.start_time);
         border: 1px solid var(--border-color);
         background: var(--white);
         border-radius: 6px;
-        font-size: 1rem;
+        font-size: var(--font-base);
         text-align: right;
         color: var(--dark-text);
         padding: 6px 8px;
@@ -80,12 +80,12 @@ const availability = availableTimes.map((time) => time.start_time);
 
     .limit-info {
         color: #666;
-        font-size: 0.85rem;
+        font-size: var(--font-sm);
     }
 
     .canvas-price-info {
         display: block;
-        font-size: 0.85rem;
+        font-size: var(--font-sm);
         color: #666;
         margin-top: 4px;
         font-weight: normal;
@@ -138,7 +138,7 @@ const availability = availableTimes.map((time) => time.start_time);
     }
 
     .option-price {
-        font-size: 1.25rem;
+        font-size: var(--font-lg);
         font-weight: bold;
         color: var(--purple);
         transition: color 0.2s;

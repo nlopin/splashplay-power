@@ -165,7 +165,7 @@ const priceCards = [
         max-width: 600px;
         margin: 0 auto;
         color: var(--dark-text);
-        font-size: 1rem;
+        font-size: var(--font-base);
         line-height: 1.6;
     }
 
@@ -222,7 +222,7 @@ const priceCards = [
         width: 100%;
         text-align: center;
         padding: 0.75rem 1rem;
-        font-size: 0.9rem;
+        font-size: var(--font-sm);
         font-weight: 600;
     }
 
@@ -234,11 +234,11 @@ const priceCards = [
     }
 
     .price-card-icon {
-        font-size: 1.5rem;
+        font-size: var(--font-xl);
     }
 
     .price-card-title {
-        font-size: 1.2rem;
+        font-size: var(--font-lg);
         color: var(--purple);
         margin: 0;
         text-decoration: none;
@@ -258,19 +258,18 @@ const priceCards = [
     }
 
     .price-card-price {
-        font-size: 2rem;
+        font-size: var(--font-2xl);
         font-weight: 700;
         color: var(--orange);
         line-height: 1;
     }
 
     .price-card-duration {
-        font-size: 1rem;
+        font-size: var(--font-base);
         color: var(--dark-text);
     }
 
     .price-card-note {
-        font-size: 0.85rem;
         color: var(--dark-text);
         opacity: 0.7;
         line-height: 1.6;
@@ -279,7 +278,7 @@ const priceCards = [
     .btn-small {
         display: inline-block;
         padding: 0.5rem 1rem;
-        font-size: 0.9rem;
+        font-size: var(--font-sm);
         background-color: transparent;
         color: var(--purple);
         text-decoration: none;
@@ -364,11 +363,11 @@ const priceCards = [
     /* Desktop and up */
     @media (min-width: 992px) {
         .price-description {
-            font-size: 1.1rem;
+            font-size: var(--font-md);
         }
 
         .price-card-title {
-            font-size: 1.3rem;
+            font-size: var(--font-lg);
         }
     }
 </style>

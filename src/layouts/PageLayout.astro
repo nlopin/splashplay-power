@@ -29,7 +29,7 @@ const alternateLinks = getAlternateLanguageLinks(
 <style is:global>
     .section-title {
         text-align: center;
-        font-size: 2.5rem; /* 40px converted to rem (40/16) */
+        font-size: var(--font-3xl); /* 40px converted to rem (40/16) */
         color: var(--purple);
         margin-bottom: 2rem;
         font-weight: 700;
@@ -37,7 +37,7 @@ const alternateLinks = getAlternateLanguageLinks(
 
     @media (max-width: 768px) {
         .section-title {
-            font-size: 1.8rem;
+            font-size: var(--font-2xl);
         }
     }
 </style>

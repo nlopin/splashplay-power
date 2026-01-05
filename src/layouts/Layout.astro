@@ -111,6 +111,26 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         --border-color-light: #f0f0f0;
         --shadow-color: rgba(0, 0, 0, 0.1);
         --max-one-column-width: 1140px;
+
+        /* Font Size Scale - Desktop */
+        --font-xs: 0.75rem;   /* 12px - disclaimers, captions, fine print */
+        --font-sm: 0.875rem;  /* 14px - secondary text, labels */
+        --font-base: 1rem;    /* 16px - default body text */
+        --font-md: 1.125rem;  /* 18px - emphasized body text, lead paragraphs */
+        --font-lg: 1.25rem;   /* 20px - h4, small headings */
+        --font-xl: 1.5rem;    /* 24px - h3 */
+        --font-2xl: 2rem;     /* 32px - h2 */
+        --font-3xl: 2.5rem;   /* 40px - h1 */
+    }
+
+    /* Mobile font sizes - scale down headings for smaller screens */
+    @media (max-width: 768px) {
+        :root {
+            --font-lg: 1.125rem;  /* 20px → 18px */
+            --font-xl: 1.25rem;   /* 24px → 20px */
+            --font-2xl: 1.5rem;   /* 32px → 24px */
+            --font-3xl: 2rem;     /* 40px → 32px */
+        }
     }
 
     * {
@@ -149,7 +169,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
     }
 
     h1 {
-        font-size: 1.5rem;
+        font-size: var(--font-xl);
         color: var(--purple);
     }
 
@@ -219,19 +239,6 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         color: var(--white);
     }
 
-    .busy-label {
-        background-color: var(--orange);
-        color: var(--white);
-        font-size: 0.6rem;
-        font-weight: bold;
-        padding: 2px 6px;
-        border-radius: 10px;
-        margin-top: 4px;
-        display: inline-block;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
     /* Busy label override for calendar cells */
     .header-cell .busy-label {
         position: absolute;
@@ -240,7 +247,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         transform: translateX(-50%);
         background-color: var(--orange);
         color: var(--white);
-        font-size: 0.5rem;
+        font-size: 0.6rem; /* exception from the scale. if we use the smallest font, the label will be too big */
         font-weight: 600;
         padding: 2px 6px;
         border-radius: 10px;
@@ -281,7 +288,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         text-align: center;
         font-weight: 600;
         border-bottom: 1px solid #e0e0e0;
-        font-size: 0.8rem;
+        font-size: var(--font-sm);
     }
 
     .header-cell .weekday {
@@ -304,7 +311,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         appearance: none;
         width: 100%;
         padding: 2px;
-        font-size: 0.8rem;
+        font-size: var(--font-sm);
         background-color: transparent;
         color: var(--purple);
         border: none;
@@ -348,7 +355,11 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
 
         .header-cell {
             padding: 0.1rem;
-            font-size: 0.7rem;
+            font-size: var(--font-xs);
+        }
+
+        .header-cell .busy-label {
+            display: none;
         }
 
         .availability-calendar {
@@ -433,7 +444,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
 
     .event-type-trigger .current-selection {
         margin: 0;
-        font-size: 2rem;
+        font-size: var(--font-2xl);
         font-weight: bold;
     }
 
@@ -503,24 +514,24 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
 
     .event-type-option .option-label {
         font-weight: 500;
-        font-size: 1rem;
+        font-size: var(--font-base);
         margin-bottom: 4px;
         color: var(--dark-text);
     }
 
     .event-type-option .option-description {
-        font-size: 0.875rem;
+        font-size: var(--font-sm);
         color: #666;
         line-height: 1.4;
     }
 
     @media (max-width: 768px) {
         .event-type-trigger .current-selection {
-            font-size: 1.8rem;
+            font-size: var(--font-2xl);
         }
 
         .dropdown-arrow {
-            font-size: 1rem;
+            font-size: var(--font-base);
         }
     }
 
@@ -536,7 +547,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
 
     .schedule-step h2 {
         color: var(--dark-text);
-        font-size: 2rem;
+        font-size: var(--font-2xl);
         margin: 0;
     }
 
@@ -554,7 +565,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
     .pay-to-book-btn {
         width: auto;
         padding: 12px 32px;
-        font-size: 1rem;
+        font-size: var(--font-base);
         font-weight: bold;
         background-color: var(--orange);
         color: var(--white);
@@ -578,7 +589,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
 
     .schedule-error {
         color: #666;
-        font-size: 0.875rem;
+        font-size: var(--font-sm);
         margin: 0;
     }
 
@@ -590,7 +601,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         background-color: transparent;
         color: var(--purple);
         cursor: pointer;
-        font-size: 1.1rem;
+        font-size: var(--font-md);
         font-weight: bold;
         display: flex;
         align-items: center;
@@ -628,11 +639,11 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         text-align: center;
         margin-bottom: 20px;
         color: #333;
-        font-size: 1.5rem;
+        font-size: var(--font-xl);
     }
 
     .booking-summary.preview h2 {
-        font-size: 1.2rem;
+        font-size: var(--font-lg);
     }
 
     .selected-info {
@@ -644,7 +655,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         padding: 8px 12px;
         border-radius: 8px;
         margin-bottom: 8px;
-        font-size: 0.9rem;
+        font-size: var(--font-sm);
     }
 
     .booking-summary.preview .selected-time {
@@ -690,7 +701,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         border: 2px solid var(--purple);
         border-radius: 8px;
         cursor: pointer;
-        font-size: 1rem;
+        font-size: var(--font-base);
         font-weight: 500;
         transition: all 0.2s ease;
     }
@@ -704,7 +715,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         background-color: var(--light-bg);
         border-radius: 8px;
         padding: 12px 16px;
-        font-size: 0.9rem;
+        font-size: var(--font-sm);
     }
 
     .booking-summary-text p {
@@ -728,7 +739,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
     }
 
     .payment-step h2 {
-        font-size: 2rem;
+        font-size: var(--font-2xl);
         margin: 0;
     }
 
@@ -737,7 +748,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         border: none;
         padding: 0;
         font-weight: 600;
-        font-size: 1rem;
+        font-size: var(--font-base);
         cursor: pointer;
         transition: all 0.2s ease;
         text-decoration: underline;
@@ -764,7 +775,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
 
     .stripe-loading-text {
         color: var(--dark-text);
-        font-size: 1.1rem;
+        font-size: var(--font-md);
         font-weight: 500;
     }
 
@@ -789,11 +800,11 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         }
 
         .payment-step h2 {
-            font-size: 1.5rem;
+            font-size: var(--font-xl);
         }
 
         .change-selection-link {
-            font-size: 0.95rem;
+            font-size: var(--font-sm);
         }
     }
 
@@ -813,7 +824,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
     }
 
     .stripe-loading-text {
-        font-size: 1.125rem;
+        font-size: var(--font-md);
         color: #666;
         margin-bottom: 16px;
     }
@@ -862,7 +873,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
     }
 
     .option-price {
-        font-size: 1.25rem;
+        font-size: var(--font-lg);
         font-weight: bold;
         color: var(--purple);
         transition: color 0.2s;
@@ -877,7 +888,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         }
 
         .total-price {
-            font-size: 1.5rem;
+            font-size: var(--font-xl);
             text-align: right;
             color: var(--purple);
             position: relative;
@@ -893,7 +904,7 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         background: none;
         border: none;
         color: var(--purple);
-        font-size: 1rem;
+        font-size: var(--font-base);
         font-weight: 600;
         cursor: pointer;
         padding: 0.5rem 0;

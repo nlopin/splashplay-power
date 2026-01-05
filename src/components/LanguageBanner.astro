@@ -101,7 +101,7 @@ const banners: z.infer<typeof BannersDescriptionSchema> = alternateLinks
         background-color: var(--purple);
         color: var(--white);
         padding: 4px 16px;
-        font-size: 0.875rem;
+        font-size: var(--font-sm);
     }
 
     #banner-content {
@@ -139,7 +139,7 @@ const banners: z.infer<typeof BannersDescriptionSchema> = alternateLinks
         background: none;
         border: none;
         color: var(--white);
-        font-size: 1rem;
+        font-size: var(--font-base);
         cursor: pointer;
         padding: 0.2rem;
         display: flex;

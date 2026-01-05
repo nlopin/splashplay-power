@@ -83,7 +83,7 @@ const t = createAstroTranslator(Astro.currentLocale, "main");
     }
 
     h1 {
-        font-size: clamp(2.5rem, 5vw, 3rem);
+        font-size: clamp(var(--font-3xl), 5vw, 3rem);
         color: var(--purple);
         line-height: 1.5;
         margin-bottom: 8px;
@@ -91,7 +91,7 @@ const t = createAstroTranslator(Astro.currentLocale, "main");
     }
 
     .subtitle {
-        font-size: clamp(1rem, 2vw, 1.25rem);
+        font-size: clamp(var(--font-base), 2vw, var(--font-lg));
         color: var(--dark-text);
         margin-bottom: 32px;
         line-height: 1.5;
