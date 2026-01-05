@@ -13,13 +13,6 @@ import Contact from "./sections/Contact.astro";
 
 const currentPath = Astro.url.pathname;
 
-const familyGiftCardOptions = [
-    { descriptionKey: "gift_cards_option1", price: "€60" },
-    { descriptionKey: "gift_cards_option2", price: "€80" },
-    { descriptionKey: "gift_cards_option3", price: "€90" },
-    { descriptionKey: "gift_cards_option4", price: "€120" },
-];
-
 const includedKeys = [
     "included_1",
     "included_2",
@@ -39,10 +32,7 @@ const includedKeys = [
         includedKeys={includedKeys}
         emoji="🧑‍🧑‍🧒‍🧒"
     />
-    <GiftCard
-        translationNamespace="family"
-        giftCardOptions={familyGiftCardOptions}
-    />
+    <GiftCard translationNamespace="family" />
     <ExperienceSteps />
     <Gallery />
     <Contact />
