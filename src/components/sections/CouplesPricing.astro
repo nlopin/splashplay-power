@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import {
     createAstroTranslator,
     getCurrentLanguage,
@@ -65,8 +64,8 @@ const pricingOptions = [
                                 ]}
                             >
                                 <div class="price-card-image-container">
-                                    <Image
-                                        src={option.image}
+                                    <img
+                                        src={option.image.src}
                                         alt={option.title}
                                         class="price-card-image"
                                     />

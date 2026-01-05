@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import { getPageTranslations } from "../../utils/i18n";
 import sveta1 from "../../assets/photo/reviews/sveta1.webp";
 import mario from "../../assets/photo/reviews/mario.webp";
@@ -56,8 +55,8 @@ const reviews = [
                                 <div class="review-item-header">
                                     {"avatar" in review ? (
                                         <div class="review-item-header-avatar">
-                                            <Image
-                                                src={review.avatar}
+                                            <img
+                                                src={review.avatar.src}
                                                 alt={`${review.name}'s Avatar`}
                                                 width={64}
                                                 height={64}

@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import CTAButton from "../CTAButton.astro";
 
 interface Props {
@@ -34,7 +33,7 @@ const {
         </div>
         <div class="hero__media">
             <div class="hero__image-container">
-                <Image src={image} alt={imageAlt} class="hero__image" />
+                <img src={image.src} alt={imageAlt} class="hero__image" />
             </div>
         </div>
     </div>

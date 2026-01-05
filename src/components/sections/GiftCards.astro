@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import Logo from "../../assets/splash-play-logo.svg";
 import CTAButton from "../CTAButton.astro";
 import {
@@ -26,8 +25,8 @@ const giftCardUrl = getLocalizedPath("/giftcard", lang);
         <div class="gift-certificate-container">
             <div class="gift-certificate-image">
                 <div class="gift-certificate">
-                    <Image
-                        src={Logo}
+                    <img
+                        src={Logo.src}
                         alt={t("gift_cards_logo_alt")}
                         class="gift-certificate-logo-img"
                     />

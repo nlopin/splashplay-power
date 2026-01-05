@@ -1,6 +1,5 @@
 ---
 import Layout from "./Layout.astro";
-import { Image } from "astro:assets";
 import Logo from "../assets/splash-play-logo.svg";
 
 interface Props {
@@ -14,7 +13,7 @@ const { title, homeHref } = Astro.props;
 <Layout title={title}>
     <main class="container">
         <a href={homeHref} class="logo-link">
-            <Image src={Logo} alt="Splash Play Logo" class="logo" />
+            <img src={Logo.src} alt="Splash Play Logo" class="logo" />
         </a>
         <div class="content">
             <slot />
