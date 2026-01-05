@@ -2,7 +2,8 @@
 import {
     createAstroTranslator,
     getCurrentLanguage,
-    languagePrefixes,
+    getLocalizedPath,
+    getPathWithoutLanguage,
 } from "../utils/i18n";
 
 interface Props {
@@ -17,6 +18,9 @@ const t = createAstroTranslator(Astro.currentLocale, "home");
 
 const pageTitle = title || t("title");
 const pageDescription = description || t("description");
+
+const basePath = getPathWithoutLanguage(Astro.url.pathname);
+const siteUrl = Astro.site?.toString() || "https://splashplay.es";
 ---
 
 <!doctype html>
@@ -40,22 +44,22 @@ const pageDescription = description || t("description");
         <link
             rel="alternate"
             hreflang="es"
-            href={`${Astro.site}${languagePrefixes.es}${Astro.url.pathname.replace(/^\/(en|ca)/, "") || "/"}`}
+            href={`${siteUrl}${getLocalizedPath(basePath, "es")}`}
         />
         <link
             rel="alternate"
             hreflang="en"
-            href={`${Astro.site}${languagePrefixes.en}${Astro.url.pathname.replace(/^\/(en|ca)/, "") || "/"}`}
+            href={`${siteUrl}${getLocalizedPath(basePath, "en")}`}
         />
         <link
             rel="alternate"
             hreflang="ca"
-            href={`${Astro.site}${languagePrefixes.ca}${Astro.url.pathname.replace(/^\/(en|ca)/, "") || "/"}`}
+            href={`${siteUrl}${getLocalizedPath(basePath, "ca")}`}
         />
         <link
             rel="alternate"
             hreflang="x-default"
-            href={`${Astro.site}${Astro.url.pathname.replace(/^\/(en|ca)/, "") || "/"}`}
+            href={`${siteUrl}${getLocalizedPath(basePath, "es")}`}
         />
     </head>
     <body>
