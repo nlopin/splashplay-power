@@ -1,5 +1,6 @@
 import { getStore } from "@netlify/blobs";
 import type { EventType } from "@/components/booking/types";
+import { createAndLogEvent } from "@/services/logger";
 import type { AvailableTime } from "./types";
 
 type CachedAvailability = {
@@ -32,43 +33,31 @@ export async function getCachedAvailability(
   try {
     const cached = await availabilityStore.get(eventType, { type: "json" });
     if (!cached || !isCachedAvailability(cached)) {
-      console.log(
-        JSON.stringify({
-          timestamp: new Date().toISOString(),
-          event: "availability_cache_read",
-          eventType,
-          status: "miss",
-          durationMs: Date.now() - startTime,
-        }),
-      );
+      createAndLogEvent("availability_cache_read", {
+        eventType,
+        status: "miss",
+        durationMs: Date.now() - startTime,
+      });
       return null;
     }
 
-    console.log(
-      JSON.stringify({
-        timestamp: new Date().toISOString(),
-        event: "availability_cache_read",
-        eventType,
-        status: "hit",
-        cacheAgeMs: Date.now() - cached.timestamp,
-        slotsCount: cached.availableTimes.length,
-        durationMs: Date.now() - startTime,
-      }),
-    );
+    createAndLogEvent("availability_cache_read", {
+      eventType,
+      status: "hit",
+      cacheAgeMs: Date.now() - cached.timestamp,
+      slotsCount: cached.availableTimes.length,
+      durationMs: Date.now() - startTime,
+    });
     return cached.availableTimes;
   } catch (error) {
-    console.log(
-      JSON.stringify({
-        timestamp: new Date().toISOString(),
-        event: "availability_cache_read",
-        eventType,
-        status: "error",
-        error: {
-          message: error instanceof Error ? error.message : "Unknown error",
-        },
-        durationMs: Date.now() - startTime,
-      }),
-    );
+    createAndLogEvent("availability_cache_read", {
+      eventType,
+      status: "error",
+      error: {
+        message: error instanceof Error ? error.message : "Unknown error",
+      },
+      durationMs: Date.now() - startTime,
+    });
     return null;
   }
 }
@@ -90,30 +79,22 @@ export async function setCachedAvailability(
     };
     await availabilityStore.setJSON(eventType, cacheData);
 
-    console.log(
-      JSON.stringify({
-        timestamp: new Date().toISOString(),
-        event: "availability_cache_write",
-        eventType,
-        status: "success",
-        slotsCount: availableTimes.length,
-        durationMs: Date.now() - startTime,
-      }),
-    );
+    createAndLogEvent("availability_cache_write", {
+      eventType,
+      status: "success",
+      slotsCount: availableTimes.length,
+      durationMs: Date.now() - startTime,
+    });
   } catch (error) {
-    console.log(
-      JSON.stringify({
-        timestamp: new Date().toISOString(),
-        event: "availability_cache_write",
-        eventType,
-        status: "error",
-        slotsCount: availableTimes.length,
-        error: {
-          message: error instanceof Error ? error.message : "Unknown error",
-        },
-        durationMs: Date.now() - startTime,
-      }),
-    );
+    createAndLogEvent("availability_cache_write", {
+      eventType,
+      status: "error",
+      slotsCount: availableTimes.length,
+      error: {
+        message: error instanceof Error ? error.message : "Unknown error",
+      },
+      durationMs: Date.now() - startTime,
+    });
     throw error;
   }
 }
@@ -127,25 +108,17 @@ export async function clearCache(eventType?: EventType): Promise<void> {
   if (eventType) {
     await availabilityStore.delete(eventType);
 
-    console.log(
-      JSON.stringify({
-        timestamp: new Date().toISOString(),
-        event: "availability_cache_clear",
-        eventType,
-        scope: "single",
-        durationMs: Date.now() - startTime,
-      }),
-    );
+    createAndLogEvent("availability_cache_clear", {
+      eventType,
+      scope: "single",
+      durationMs: Date.now() - startTime,
+    });
   } else {
     await availabilityStore.deleteAll();
 
-    console.log(
-      JSON.stringify({
-        timestamp: new Date().toISOString(),
-        event: "availability_cache_clear",
-        scope: "all",
-        durationMs: Date.now() - startTime,
-      }),
-    );
+    createAndLogEvent("availability_cache_clear", {
+      scope: "all",
+      durationMs: Date.now() - startTime,
+    });
   }
 }

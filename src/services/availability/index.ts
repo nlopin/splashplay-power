@@ -1,5 +1,6 @@
 import { EVENT_TYPE, type EventType } from "@/components/booking/types";
 import { fetchAvailability } from "@/services/calendly";
+import { createAndLogEvent } from "@/services/logger";
 import { getCachedAvailability, setCachedAvailability } from "./cache";
 import type { AvailableTime } from "./types";
 
@@ -35,18 +36,14 @@ export async function refreshAvailability(
 
   await setCachedAvailability(eventType, availableTimes);
 
-  console.log(
-    JSON.stringify({
-      timestamp: new Date().toISOString(),
-      event: "availability_fetch",
-      event_type: eventType,
-      source: "calendly_api",
-      status: "success",
-      slots_count: availableTimes.length,
-      days_requested: days,
-      duration_ms: Date.now() - startTime,
-    }),
-  );
+  createAndLogEvent("availability_fetch", {
+    eventType,
+    source: "calendly_api",
+    status: "success",
+    slotsCount: availableTimes.length,
+    daysRequested: days,
+    durationMs: Date.now() - startTime,
+  });
 
   return availableTimes;
 }
