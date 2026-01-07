@@ -1,3 +1,4 @@
+import { NETLIFY_SITE_ID, NETLIFY_TOKEN } from "astro:env/server";
 import { getStore } from "@netlify/blobs";
 import type { EventType } from "@/components/booking/types";
 import { createAndLogEvent } from "@/services/logger";
@@ -9,7 +10,10 @@ type CachedAvailability = {
   fetchedAt: string;
 };
 
-const availabilityStore = getStore("availability");
+const availabilityStore = getStore("availability", {
+  siteID: NETLIFY_SITE_ID,
+  token: NETLIFY_TOKEN,
+});
 
 function isCachedAvailability(value: unknown): value is CachedAvailability {
   return (

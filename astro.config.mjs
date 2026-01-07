@@ -60,6 +60,14 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
+      NETLIFY_SITE_ID: envField.string({
+        context: "server",
+        access: "secret",
+      }),
+      NETLIFY_TOKEN: envField.string({
+        context: "server",
+        access: "secret",
+      }),
       PUBLIC_STRIPE_PUBLISHABLE_KEY: envField.string({
         context: "client",
         access: "public",
