@@ -577,28 +577,18 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         position: relative;
     }
 
-    .pay-to-book-btn:not(:disabled)::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 8px;
-        padding: 2px;
-        background: linear-gradient(45deg, var(--orange), var(--orange-light), var(--orange));
-        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        animation: pulse 2s ease-in-out infinite;
-        pointer-events: none;
+    .pay-to-book-btn.loading {
+        background: linear-gradient(90deg, var(--orange), var(--orange-light), var(--orange));
+        background-size: 300% 100%;
+        animation: gradient-move 1.5s linear infinite;
     }
 
-    @keyframes pulse {
-        0%, 100% {
-            opacity: 1;
-            transform: scale(1);
+    @keyframes gradient-move {
+        0% {
+            background-position: 0% 50%;
         }
-        50% {
-            opacity: 0.6;
-            transform: scale(1.02);
+        100% {
+            background-position: 150% 50%;
         }
     }
 

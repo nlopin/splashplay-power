@@ -63,7 +63,7 @@ export function ScheduleStep({
 
       <div className="book-button-container">
         <button
-          className="pay-to-book-btn"
+          className={`pay-to-book-btn ${isLoading ? "loading" : ""}`}
           disabled={!(selectedTimeSlot !== null) || isLoading}
           onClick={onPayToBook}
         >
