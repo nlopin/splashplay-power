@@ -9,7 +9,7 @@ import {
   sendTelegramSticker,
 } from "@/services/telegram";
 import { getPaymentIntentId } from "@/services/stripe";
-import { bookEvent, resetCache } from "@/services/calendly";
+import { bookEvent } from "@/services/calendly";
 import { formatEventComment } from "@/components/booking/eventMessage";
 import { EVENT_TYPE } from "@/components/booking/types";
 
@@ -82,9 +82,7 @@ export const POST: APIRoute = async ({ request }) => {
           ),
         });
 
-        if (isOk) {
-          resetCache();
-        } else {
+        if (!isOk) {
           console.error("Failed to book Calendly event", session.id);
         }
       } else {

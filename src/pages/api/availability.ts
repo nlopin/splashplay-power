@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { getAvailableTime } from "@/services/calendly";
+import { getAvailability } from "@/services/availability";
 import { isEventType } from "@/components/booking/types";
 
 export const GET: APIRoute = async ({ url }) => {
@@ -18,14 +18,8 @@ export const GET: APIRoute = async ({ url }) => {
       );
     }
 
-    const availableTimes = await getAvailableTime(maybeEventType);
-    const camelCaseTimes = availableTimes.map((time) => ({
-      inviteesRemaining: time.invitees_remaining,
-      schedulingUrl: time.scheduling_url,
-      startTime: time.start_time,
-      status: time.status,
-    }));
-    return new Response(JSON.stringify(camelCaseTimes), {
+    const availableTimes = await getAvailability(maybeEventType);
+    return new Response(JSON.stringify(availableTimes), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

@@ -7,9 +7,10 @@ import {
   CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
 } from "astro:env/server";
 
-import type { EventType } from "@/components/booking/types";
+import { type EventType } from "@/components/booking/types";
 import { type ISODatetime } from "@/types";
 import { getSunday } from "@/utils/datetime";
+import type { AvailableTime } from "@/services/availability/types";
 
 const CALENDLY_URL = "https://api.calendly.com";
 const EVENT_TYPE_IDS: Record<EventType, string> = {
@@ -33,45 +34,13 @@ const EventTypeAvailableTimesSchema = z.looseObject({
   ),
 });
 
-let cache: Record<
-  EventType,
-  {
-    data: z.infer<typeof EventTypeAvailableTimesSchema>["collection"];
-    timestamp: number;
-  } | null
-> = {
-  couples: null,
-  family: null,
-  friends: null,
-  individual: null,
-};
-
-const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
-
-export function resetCache(eventType?: EventType) {
-  if (eventType) {
-    cache[eventType] = null;
-  } else {
-    cache = {
-      couples: null,
-      family: null,
-      friends: null,
-      individual: null,
-    };
-  }
-}
-
-// requests available times from today + n days, rouded up to get full weeks
-export async function getAvailableTime(
+/**
+ * Fetch available times from Calendly API
+ */
+export async function fetchAvailability(
   eventType: EventType,
   days = BOOK_IN_ADVANCE,
-) {
-  const eventCache = cache[eventType];
-  if (eventCache && Date.now() - eventCache.timestamp < CACHE_DURATION) {
-    console.log(`Cache hit for ${eventType}`);
-    return eventCache.data;
-  }
-
+): Promise<AvailableTime[]> {
   const batchCount = Math.ceil(days / BATCH_SIZE_IN_DAYS) + 1; // we need +1 to get the rest of the last week
   const now = new Date();
   const startDate = new Date(
@@ -104,16 +73,16 @@ export async function getAvailableTime(
   });
 
   const responses = await Promise.all(fetchPromises);
-  const availableTimes: z.infer<
-    typeof EventTypeAvailableTimesSchema
-  >["collection"] = [];
+  const availableTimes: AvailableTime[] = [];
 
   for (const response of responses) {
     if (response.status === 200) {
       const responseJson = await response.json();
       const parsedData = EventTypeAvailableTimesSchema.safeParse(responseJson);
       if (parsedData.success) {
-        availableTimes.push(...parsedData.data.collection);
+        availableTimes.push(
+          ...parsedData.data.collection.map((v) => v.start_time),
+        );
       } else {
         console.error(
           "Unexpected server answer",
@@ -122,11 +91,6 @@ export async function getAvailableTime(
       }
     }
   }
-
-  cache[eventType] = {
-    data: availableTimes,
-    timestamp: Date.now(),
-  };
 
   return availableTimes;
 }

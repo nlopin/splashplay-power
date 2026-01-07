@@ -1,7 +1,7 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { getPageTranslations, isSupportedLanguage } from "@/utils/i18n";
-import { getAvailableTime } from "@/services/calendly";
+import { getAvailability } from "@/services/availability";
 import BookingForm from "@/components/booking/BookingForm.tsx";
 import type { EventType } from "@/components/booking/types";
 
@@ -16,8 +16,7 @@ if (!lang || !isSupportedLanguage(lang)) {
 const eventType: EventType = "friends";
 const translations = getPageTranslations(lang, "book");
 
-const availableTimes = await getAvailableTime(eventType);
-const availability = availableTimes.map((time) => time.start_time);
+const availability = await getAvailability(eventType);
 ---
 
 <Layout>

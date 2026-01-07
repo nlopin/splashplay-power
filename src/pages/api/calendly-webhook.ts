@@ -8,8 +8,8 @@ import {
   getSessionTitleFromEventComment,
   getTransactionIdFromEventComment,
 } from "@/components/booking/eventMessage";
-import type { ISODatetime } from "@/types";
 import { formatVisitDateTime } from "@/utils/formatters";
+import { refreshAllAvailability } from "@/services/availability";
 
 export const prerender = false;
 
@@ -160,6 +160,8 @@ async function handleInviteeCreated({
   message += `Time: ${escapeMarkdown(formattedTime)}\n`;
 
   await sendTelegramMessage(message);
+
+  refreshAllAvailability();
 }
 
 async function handleInviteeCanceled({
@@ -194,4 +196,6 @@ async function handleInviteeCanceled({
   }
 
   await sendTelegramMessage(message);
+
+  refreshAllAvailability();
 }
