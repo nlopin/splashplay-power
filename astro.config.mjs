@@ -8,7 +8,7 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://splashplay.netlify.app",
+  site: "https://splashplay.es",
 
   i18n: {
     defaultLocale: "es",
