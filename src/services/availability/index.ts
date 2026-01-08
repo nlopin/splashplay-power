@@ -1,9 +1,6 @@
 import { EVENT_TYPE, type EventType } from "@/components/booking/types";
 import { fetchAvailability } from "@/services/calendly";
 import { createAndLogEvent } from "@/services/logger";
-
-import astroConfig from "../../../astro.config.mjs";
-
 import { getCachedAvailability, setCachedAvailability } from "./cache";
 import type { AvailableTime } from "./types";
 
@@ -72,7 +69,7 @@ export async function refreshAllAvailability(): Promise<
  * The background function runs independently and can take up to 15 minutes.
  */
 export function triggerAvailabilityRefresh(): void {
-  const siteUrl = astroConfig.site;
+  const siteUrl = import.meta.env.SITE;
 
   if (!siteUrl) {
     console.error(
