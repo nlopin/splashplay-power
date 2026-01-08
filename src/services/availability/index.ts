@@ -68,7 +68,7 @@ export async function refreshAllAvailability(): Promise<
  * This is fire-and-forget - we don't await the result.
  * The background function runs independently and can take up to 15 minutes.
  */
-export function triggerAvailabilityRefresh(): void {
+export async function triggerAvailabilityRefresh() {
   const siteUrl = import.meta.env.SITE;
 
   if (!siteUrl) {
@@ -81,14 +81,18 @@ export function triggerAvailabilityRefresh(): void {
 
   const functionUrl = `${siteUrl}/.netlify/functions/refresh-availability-background`;
 
-  fetch(functionUrl, {
+  console.log(`Triggering availability refresh at ${functionUrl}`);
+
+  await fetch(functionUrl, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
   }).catch((error) => {
-    console.error("Failed to trigger availability refresh:", error);
+    console.error("Failed to trigiger availability refresh:", error);
   });
+
+  console.log("Availability refresh triggered");
 }
 
 export { clearCache } from "./cache";

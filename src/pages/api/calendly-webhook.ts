@@ -220,8 +220,10 @@ async function handleInviteeCreated({
   message += `Time: ${escapeMarkdown(formattedTime)}\n`;
 
   try {
-    await sendTelegramMessage(message);
-    triggerAvailabilityRefresh();
+    await Promise.allSettled([
+      sendTelegramMessage(message),
+      triggerAvailabilityRefresh(),
+    ]);
     return true;
   } catch {
     return false;
@@ -259,8 +261,11 @@ async function handleInviteeCanceled({
   }
 
   try {
-    await sendTelegramMessage(message);
-    triggerAvailabilityRefresh();
+    await Promise.allSettled([
+      sendTelegramMessage(message),
+      triggerAvailabilityRefresh(),
+    ]);
+
     return { transactionId, notificationSent: true };
   } catch {
     return { transactionId, notificationSent: false };
