@@ -4,7 +4,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && pnpm run build:functions",
+    "build:functions": "tsx scripts/build-netlify-functions.ts",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest"
@@ -29,6 +30,8 @@
   },
   "devDependencies": {
     "@total-typescript/ts-reset": "^0.6.1",
+    "esbuild": "^0.27.2",
+    "tsx": "^4.21.0",
     "vitest": "^4.0.13"
   }
 }

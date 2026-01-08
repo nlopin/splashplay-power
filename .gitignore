@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # Local Netlify folder
 .netlify
+
+# Generated Netlify functions (built from src/netlify-functions/)
+netlify/functions/*.mjs
