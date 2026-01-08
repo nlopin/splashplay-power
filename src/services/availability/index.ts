@@ -54,10 +54,13 @@ export async function refreshAvailability(
 export async function refreshAllAvailability(): Promise<
   PromiseSettledResult<AvailableTime[]>[]
 > {
+  console.log("Refresh all availability started", new Date().toISOString());
   const eventTypes: EventType[] = Object.values(EVENT_TYPE);
   const results = await Promise.allSettled(
     eventTypes.map((type) => refreshAvailability(type)),
   );
+
+  console.log("Refresh all availability completed", new Date().toISOString());
 
   return results;
 }
