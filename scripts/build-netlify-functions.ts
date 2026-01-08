@@ -48,6 +48,10 @@ async function build() {
       ROOT_DIR,
       "src/netlify-functions/scheduled-availability-refresh.ts",
     ),
+    path.resolve(
+      ROOT_DIR,
+      "src/netlify-functions/refresh-availability-background.ts",
+    ),
   ];
 
   try {

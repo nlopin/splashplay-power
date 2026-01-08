@@ -1,10 +1,11 @@
 import { EVENT_TYPE, type EventType } from "@/components/booking/types";
 import { fetchAvailability } from "@/services/calendly";
 import { createAndLogEvent } from "@/services/logger";
+
+import astroConfig from "../../../astro.config.mjs";
+
 import { getCachedAvailability, setCachedAvailability } from "./cache";
 import type { AvailableTime } from "./types";
-
-export { clearCache } from "./cache";
 
 const BOOK_IN_ADVANCE = 30;
 
@@ -64,3 +65,33 @@ export async function refreshAllAvailability(): Promise<
 
   return results;
 }
+
+/**
+ * Trigger availability refresh via background function.
+ * This is fire-and-forget - we don't await the result.
+ * The background function runs independently and can take up to 15 minutes.
+ */
+export function triggerAvailabilityRefresh(): void {
+  const siteUrl = astroConfig.site;
+
+  if (!siteUrl) {
+    console.error(
+      "Cannot trigger availability refresh: URL environment variable not set",
+      process.env,
+    );
+    return;
+  }
+
+  const functionUrl = `${siteUrl}/.netlify/functions/refresh-availability-background`;
+
+  fetch(functionUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).catch((error) => {
+    console.error("Failed to trigger availability refresh:", error);
+  });
+}
+
+export { clearCache } from "./cache";

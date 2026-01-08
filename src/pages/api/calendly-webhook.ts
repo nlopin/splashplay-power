@@ -9,7 +9,7 @@ import {
   getTransactionIdFromEventComment,
 } from "@/components/booking/eventMessage";
 import { formatVisitDateTime } from "@/utils/formatters";
-import { refreshAllAvailability } from "@/services/availability";
+import { triggerAvailabilityRefresh } from "@/services/availability";
 import { createEvent, logEvent } from "@/services/logger";
 
 export const prerender = false;
@@ -221,7 +221,7 @@ async function handleInviteeCreated({
 
   try {
     await sendTelegramMessage(message);
-    refreshAllAvailability();
+    triggerAvailabilityRefresh();
     return true;
   } catch {
     return false;
@@ -260,7 +260,7 @@ async function handleInviteeCanceled({
 
   try {
     await sendTelegramMessage(message);
-    refreshAllAvailability();
+    triggerAvailabilityRefresh();
     return { transactionId, notificationSent: true };
   } catch {
     return { transactionId, notificationSent: false };
