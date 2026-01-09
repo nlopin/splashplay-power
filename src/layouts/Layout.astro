@@ -5,6 +5,7 @@ import {
     getLocalizedPath,
     getPathWithoutLanguage,
 } from "../utils/i18n";
+import gallery1 from "../assets/photo/gallery/gallery1.jpg"
 
 interface Props {
     title?: string;
@@ -26,8 +27,23 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
 <!doctype html>
 <html lang={language}>
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://splashplay.es/">
+        <meta property="og:title" content="SplashPlay - sesiones de arte lúdicas en Barcelona">
+        <meta property="og:description"
+                content="Crea obras maestras abstractas con técnicas divertidas como vertido, giro y boxeo. ¡Cero experiencia artística necesaria! Perfecto para individuos, parejas y grupos.">
+        <meta property="og:image" content={gallery1.src}>
+        <meta property="og:site_name" content="SplashPlay Studio">
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="https://splashplay.es/">
+        <meta name="twitter:title" content="SplashPlay - sesiones de arte lúdicas en Barcelona">
+        <meta name="twitter:description"
+                content="Crea obras maestras abstractas con técnicas divertidas como vertido, giro y boxeo. ¡Cero experiencia artística necesaria! Perfecto para individuos, parejas y grupos.">
+        <meta name="twitter:image" content={gallery1.src}>
         <link rel="sitemap" href="/sitemap-index.xml" />
         <link rel="icon" href="/favicon.ico" sizes="32x32" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
@@ -57,6 +73,27 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
             hreflang="x-default"
             href={`${siteUrl}${getLocalizedPath(basePath, "es")}`}
         />
+        <script is:inline src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"></script>
+        <script is:inline src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.8.0-min.js.gz"></script>
+        <script is:inline>window.amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
+        window.amplitude.init('5eca8b4e2674622d9489bf466cdab71a', { 'autocapture': { 'elementInteractions': true } });</script>
+        <!-- Meta Pixel Code -->
+        <script is:inline>
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '1853018198982722');
+          fbq('track', 'PageView');
+        </script>
+        <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=1853018198982722&ev=PageView&noscript=1"
+        /></noscript>
+        <!-- End Meta Pixel Code -->
     </head>
     <body>
         <slot />
