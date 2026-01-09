@@ -74,7 +74,22 @@ export default defineConfig({
       }),
     },
   },
-
+  redirects: {
+    "/cat": "/ca",
+    "/cat.html": "/ca",
+    "/friends/en": "/en/friends",
+    "/friends/en.html": "/en/friends.html",
+    "/friends/cat": "/ca/friends",
+    "/friends/cat.html": "/ca/friends.html",
+    "/couples/en": "/en/couples",
+    "/couples/en.html": "/en/couples.html",
+    "/couples/cat": "/ca/couples",
+    "/couples/cat.html": "/ca/couples.html",
+    "/family/en": "/en/family",
+    "/family/en.html": "/en/family.html",
+    "/family/cat": "/ca/family",
+    "/family/cat.html": "/ca/family.html",
+  },
   adapter: netlify(),
   integrations: [react(), sitemap()],
 });
