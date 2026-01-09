@@ -1,1 +1,4 @@
-## Meta description per promo page
+# ToDo
+
+- [] Meta description per promo page
+- [] Update Amplitude funnel
