@@ -75,6 +75,7 @@ export default defineConfig({
     },
   },
   redirects: {
+    // paths from the old website https://github.com/nlopin/splashplay-web
     "/cat": "/ca",
     "/cat.html": "/ca",
     "/friends/en": "/en/friends",
