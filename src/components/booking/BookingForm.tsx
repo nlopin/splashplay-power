@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { TranslatorProvider } from "@/components/TranslatorContext";
 import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
 import { formatVisitDateTime } from "@/utils/formatters";
+import { isServer } from "@/utils/environment";
 import { trackEvent, AnalyticsEvents } from "@/services/analytics";
 import type { ISODatetime } from "@/types";
 
@@ -48,7 +49,7 @@ export default function BookingForm({
 
   // Unified URL state management and validation
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (isServer()) return;
 
     // Validate payment step access - redirect if no selection
     if (shouldRedirectToSchedule(currentStep, selectedTimeSlot)) {
@@ -240,14 +241,14 @@ export default function BookingForm({
 }
 
 function getCurrentStepFromURL(): Step {
-  if (typeof window === "undefined") return "schedule";
+  if (isServer()) return "schedule";
 
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get("step") === "payment" ? "payment" : "schedule";
 }
 
 function updateURLForStep(step: Step): void {
-  if (typeof window === "undefined") return;
+  if (isServer()) return;
 
   const url = new URL(window.location.href);
   if (step === "schedule") {
@@ -261,7 +262,7 @@ function updateURLForStep(step: Step): void {
 }
 
 function redirectToSchedule(): void {
-  if (typeof window === "undefined") return;
+  if (isServer()) return;
 
   const url = new URL(window.location.href);
   url.searchParams.delete("step");

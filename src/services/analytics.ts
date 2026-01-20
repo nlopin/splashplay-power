@@ -1,3 +1,5 @@
+import { isClient } from "@/utils/environment";
+
 declare global {
   interface Window {
     amplitude?: {
@@ -24,7 +26,7 @@ export function trackEvent(
   eventName: AnalyticsEvent,
   properties?: Record<string, unknown>,
 ): void {
-  if (typeof window !== "undefined" && window.amplitude) {
+  if (isClient() && window.amplitude) {
     window.amplitude.track(eventName, properties);
   }
 }

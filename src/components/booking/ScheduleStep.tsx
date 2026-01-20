@@ -1,4 +1,5 @@
 import { usePageLanguage, useTranslator } from "@/components/TranslatorContext";
+import { isServer } from "@/utils/environment";
 
 import type {
   SelectedTimeSlot,
@@ -33,7 +34,7 @@ export function ScheduleStep({
   const lang = usePageLanguage();
 
   const handleBackClick = () => {
-    if (typeof window === "undefined") return;
+    if (isServer()) return;
 
     const langPrefix = lang === "es" ? "/" : `/${lang}`;
     window.location.href = langPrefix;
