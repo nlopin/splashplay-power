@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { TranslatorProvider } from "@/components/TranslatorContext";
 import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
 import { formatVisitDateTime } from "@/utils/formatters";
+import { trackEvent, AnalyticsEvents } from "@/services/analytics";
 import type { ISODatetime } from "@/types";
 
 import { PaymentStep } from "./PaymentStep";
@@ -39,6 +40,11 @@ export default function BookingForm({
   const [error, setError] = useState<string | null>(null);
 
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Track ScheduleStepOpened on initial mount
+  useEffect(() => {
+    trackEvent(AnalyticsEvents.ScheduleStepOpened);
+  }, []);
 
   // Unified URL state management and validation
   useEffect(() => {
@@ -157,6 +163,12 @@ export default function BookingForm({
     slot,
   ) => {
     setSelectedTimeSlot(slot);
+    if (slot) {
+      trackEvent(AnalyticsEvents.SessionDateSelected, {
+        sessionDate: slot,
+        eventType,
+      });
+    }
   };
 
   const handlePayToBook: ScheduleStepProps["onPayToBook"] = async () => {

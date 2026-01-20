@@ -985,3 +985,15 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         color: var(--orange);
     }
 </style>
+
+<script>
+    document.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        const bookLink = target.closest<HTMLAnchorElement>("a[href*='/book']");
+        if (bookLink && window.amplitude) {
+            window.amplitude.track("BookButtonClicked", {
+                link: bookLink.href,
+            });
+        }
+    });
+</script>

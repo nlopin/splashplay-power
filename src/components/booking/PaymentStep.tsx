@@ -1,7 +1,8 @@
-import type { FC } from "react";
+import { useEffect, type FC } from "react";
 
 import { StripeCheckoutWrapper } from "./StripeCheckoutWrapper";
 import { useTranslator } from "@/components/TranslatorContext";
+import { AnalyticsEvents, trackEvent } from "@/services/analytics";
 
 interface PaymentStepProps {
   clientSecret: string | null;
@@ -15,6 +16,10 @@ export const PaymentStep: FC<PaymentStepProps> = ({
   onEditSelections,
 }) => {
   const t = useTranslator();
+
+  useEffect(() => {
+    trackEvent(AnalyticsEvents.PaymentPageOpened);
+  }, []);
 
   return (
     <div className="payment-step">
