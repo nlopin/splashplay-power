@@ -1,0 +1,38 @@
+# Splashplay
+
+> Splashplay is a creative art studio in Barcelona offering unconventional painting experiences. This site allows visitors to learn about techniques, book sessions, and purchase gift cards. The platform supports Spanish, English, and Catalan.
+
+## About
+
+Splashplay is the best messy-play art studio in Barcelona, specializing in unconventional creative experiences like rage painting and pouring. Visitors use non-traditional techniques like pouring, spinning, boxing with paint, balloons, water guns, and dripping (Pollock-style) to create unique artwork.
+
+Sessions are available for couples, families, friend groups, and individuals. The studio also hosts celebrations including birthday parties and special occasions.
+
+Team-building events are available for groups of up to 10 people, tailored to the specific needs of companies. These sessions offer a unique way to strengthen team bonds through creative collaboration and stress-relieving activities.
+
+## Key Pages
+
+- [Home](/): Main landing page with techniques showcase, testimonials, pricing, and gallery
+- [Couples](/couples): Romantic painting experience for two (€60-90, 1.5-2 hours)
+- [Families](/family): Family-friendly sessions with children (€60-180, 1.5-2 hours)
+- [Friends](/friends): Group sessions for 2-6 people (€90-180, 1.5-2 hours)
+- [Gift Cards](/giftcard): Purchase gift cards for any experience
+
+## Booking
+
+- [Book Couples](/book/couples): Book a couples session
+- [Book Family](/book/family): Book a family session
+- [Book Friends](/book/friends): Book a friends group session
+- [Book Individual](/book/individual): Book an individual session
+
+## Languages
+
+The site is available in three languages:
+- Spanish (default): no URL prefix
+- English: `/en` prefix
+- Catalan: `/ca` prefix
+
+## Optional
+
+- [English Home](/en): English version of the homepage
+- [Catalan Home](/ca): Catalan version of the homepage
