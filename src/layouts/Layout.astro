@@ -51,6 +51,16 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         <meta name="description" content={pageDescription} />
         <title>{pageTitle}</title>
 
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17912034827"></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'AW-17912034827');
+        </script>
+
 
         <!-- Add alternate language links for SEO -->
         <link
