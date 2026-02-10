@@ -14,7 +14,11 @@ const t = createAstroTranslator(Astro.currentLocale, "main");
 const links = [
     { href: "#techniques", label: t("nav_techniques") },
     { href: "#pricing", label: t("nav_pricing") },
-    { href: "#gift-cards", label: t("nav_gift_cards") },
+    {
+        href: "#gift-cards",
+        label: t("nav_gift_cards"),
+        hideOnCorporate: true,
+    },
     { href: "#experience", label: t("nav_experience") },
     { href: "#gallery", label: t("nav_gallery") },
     { href: "#contact", label: t("nav_contact") },
@@ -73,11 +77,18 @@ const links = [
         <div class="nav-links-container">
             <ul class="nav-links">
                 {
-                    links.map((link) => (
-                        <li>
-                            <a href={link.href}>{link.label}</a>
-                        </li>
-                    ))
+                    links
+                        .filter(
+                            (link) =>
+                                !("hideOnCorporate" in link &&
+                                    link.hideOnCorporate &&
+                                    currentPath.includes("/corporate")),
+                        )
+                        .map((link) => (
+                            <li>
+                                <a href={link.href}>{link.label}</a>
+                            </li>
+                        ))
                 }
             </ul>
             <div class="lang-switcher-wrapper">

@@ -43,13 +43,13 @@ const steps = [
 </section>
 
 <style>
-    .experience {
+    :global(.experience) {
         padding: 3rem 0;
         background-color: var(--white);
         scroll-margin-top: 60px;
     }
 
-    .steps {
+    :global(.steps) {
         list-style: none;
         counter-reset: step-counter;
         padding: 0;
@@ -57,14 +57,14 @@ const steps = [
         margin: 0 auto 2rem;
     }
 
-    .step-item {
+    :global(.step-item) {
         counter-increment: step-counter;
         position: relative;
         padding-left: 3.5rem;
         margin-bottom: 2rem;
     }
 
-    .step-item::before {
+    :global(.step-item)::before {
         content: counter(step-counter);
         position: absolute;
         left: 0;
@@ -81,30 +81,35 @@ const steps = [
         font-size: var(--font-lg);
     }
 
-    .step-title {
+    :global(.step-item.no-counter)::before {
+        content: none;
+        display: none;
+    }
+
+    :global(.step-title) {
         font-size: var(--font-lg);
         color: var(--purple);
         margin-bottom: 0.5rem;
     }
 
-    .step-description {
+    :global(.step-description) {
         font-size: var(--font-base);
         color: var(--dark-text);
         line-height: 1.5;
         margin: 0;
     }
 
-    .experience-cta {
+    :global(.experience-cta) {
         text-align: center;
         margin-top: 3rem;
     }
 
-    .cta-container {
+    :global(.cta-container) {
         max-width: 300px;
         margin: 0 auto;
     }
 
-    .experience-prompt {
+    :global(.experience-prompt) {
         font-size: var(--font-lg);
         font-weight: 600;
         color: var(--dark-text);
@@ -112,54 +117,54 @@ const steps = [
     }
 
     @media (min-width: 769px) {
-        .steps {
+        :global(.steps) {
             max-width: 800px;
         }
 
-        .step-item {
+        :global(.step-item) {
             padding-left: 5rem;
             margin-bottom: 3rem;
         }
 
-        .step-item::before {
+        :global(.step-item)::before {
             width: 3.5rem;
             height: 3.5rem;
             font-size: var(--font-xl);
         }
 
-        .step-title {
+        :global(.step-title) {
             font-size: var(--font-xl);
         }
 
-        .step-description {
+        :global(.step-description) {
             font-size: var(--font-md);
         }
 
-        .experience-prompt {
+        :global(.experience-prompt) {
             font-size: var(--font-xl);
         }
     }
 
     @media (max-width: 768px) {
-        .step-item {
+        :global(.step-item) {
             padding-left: 3.5rem;
         }
 
-        .step-item::before {
+        :global(.step-item)::before {
             width: 2.5rem;
             height: 2.5rem;
             font-size: var(--font-lg);
         }
 
-        .step-title {
+        :global(.step-title) {
             font-size: var(--font-lg);
         }
 
-        .step-description {
+        :global(.step-description) {
             font-size: var(--font-base);
         }
 
-        .experience-prompt {
+        :global(.experience-prompt) {
             font-size: var(--font-lg);
         }
     }

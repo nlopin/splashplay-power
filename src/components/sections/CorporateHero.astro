@@ -1,0 +1,22 @@
+---
+import friends from "../../assets/photo/friends.jpg";
+import {
+    createAstroTranslator,
+    getCurrentLanguage,
+    getLocalizedPath,
+} from "../../utils/i18n";
+import PromoHero from "./PromoHero.astro";
+
+const t = createAstroTranslator(Astro.currentLocale, "corporate");
+const lang = getCurrentLanguage(Astro.currentLocale);
+---
+
+<PromoHero
+    title={t("hero_title")}
+    subtitle={t("hero_subtitle")}
+    image={friends}
+    imageAlt={t("hero_image_alt")}
+    ctaText={t("cta_book")}
+    ctaHref={getLocalizedPath("/book/friends", lang)}
+    variant="corporate"
+/>

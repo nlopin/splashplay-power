@@ -1,0 +1,142 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+
+import CorporateHero from "./sections/CorporateHero.astro";
+import Techniques from "./sections/Techniques.astro";
+import Testimonials from "./sections/Testimonials.astro";
+import CorporatePricing from "./sections/CorporatePricing.astro";
+import ExperienceSteps from "./sections/ExperienceSteps.astro";
+import Gallery from "./sections/Gallery.astro";
+import Contact from "./sections/Contact.astro";
+import WhatsIncluded from "./sections/WhatsIncluded.astro";
+
+const currentPath = Astro.url.pathname;
+const includedKeys = [
+    "included_1",
+    "included_2",
+    "included_3",
+    "included_4",
+    "included_5",
+];
+---
+
+<PageLayout currentPath={currentPath}>
+    <CorporateHero />
+    <Techniques />
+    <Testimonials />
+    <CorporatePricing />
+    <WhatsIncluded translationNamespace="corporate" 
+    includedKeys={includedKeys}
+    emoji="🎨"
+     />
+    <ExperienceSteps />
+
+    <section id="creative-challenge" class="experience">
+        <div class="container">
+            <h2 class="section-title">🎨 The Creative Challenge Example</h2>
+
+            <ol class="steps">
+                <li class="step-item no-counter">
+                    <div class="step-content">
+                        
+                        <p class="step-description">
+                            
+                             This dynamic painting experience combines creativity,
+                collaboration, and a touch of surprise — perfect for groups who
+                want to connect, laugh, and create something unique together.
+                            
+                        </p>
+                    </div>
+                </li>
+
+                       <li class="step-item no-counter">
+                    <div class="step-content">
+                        <h3 class="step-title">How it works</h3>
+                        <p class="step-description">
+                            
+                                🙋‍♀️ There is an equal number of tools, people, and
+                                canvases.<br>
+                                🔨 At the beginning, each participant draws a random
+                                tool — it could be a brush, sponge, roller, straw,
+                                or even something unexpected, like a ball or water
+                                gun.<br>
+                                ⏲️ Everyone paints for 5 minutes using their
+                                assigned tool.
+                            
+                        </p>
+                    </div>
+                </li>
+
+                <li class="step-item no-counter">
+                    <div class="step-content">
+                        <h3 class="step-title">Then the magic begins</h3>
+                        <p class="step-description">
+                            
+                                🕰️ Canvases rotate clockwise, and tools rotate
+                                counterclockwise. In the end, each person will have
+                                tried every tool, and every artwork becomes a
+                                collective creation touched by everyone’s style and
+                                energy.
+                            
+                        </p>
+                    </div>
+                </li>
+
+                <li class="step-item no-counter">
+                    <div class="step-content">
+                        <h3 class="step-title">
+                            After the rotations
+                        </h3>
+                        <p class="step-description">
+                            
+                                🖌️ Each participant will have5 final minutes to add finishing touches with any
+                                tool they like.<br>
+                           
+                                Then each participant draws a number and receives
+                                one of the paintings as a keepsake. If they wish,
+                                they can swap artworks with another teammate —
+                                because sometimes you fall in love with someone
+                                else’s piece.
+                            
+                        </p>
+                    </div>
+                </li>
+
+                <li class="step-item no-counter">
+                    <div class="step-content">
+                        <h3 class="step-title">To close the experience</h3>
+                        <p class="step-description">
+                            
+                                📷 We take photos of all the paintings and upload them
+                                to AI to generate fun and unexpected
+                                interpretations. Then we read them aloud — a
+                                playful and inspiring way to end the session, full
+                                of laughter and meaning.
+                            
+                        </p>
+                    </div>
+                </li>
+
+                       <li class="step-item no-counter">
+                    <div class="step-content">
+                        
+                        <p class="step-description">
+                            
+                            It’s creative, collaborative, and absolutely one of a kind — a
+                perfect way to build connection, spark creativity, and take home
+                a memory of the team’s shared energy. At the end, each
+                participant takes home one artwork created together with their
+                team.<br>
+                We look forward to welcoming your team to this colourful
+                experience!
+                            
+                        </p>
+                    </div>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <Gallery />
+    <Contact />
+</PageLayout>
