@@ -1,94 +1,22 @@
 ---
 import { getPageTranslations } from "../../utils/i18n";
-import sveta1 from "../../assets/photo/reviews/sveta1.webp";
-import mario from "../../assets/photo/reviews/mario.webp";
-import eliseo from "../../assets/photo/reviews/eliseo.webp";
-import anastasia from "../../assets/photo/reviews/anastasia.webp";
-import sergio from "../../assets/photo/reviews/sergio.webp";
-import jorje from "../../assets/photo/reviews/jorje.webp";
-import jordi from "../../assets/photo/reviews/jordi.webp";
-import aleix from "../../assets/photo/reviews/aleix.webp";
-import aurora from "../../assets/photo/reviews/aurora.webp";
-import semih from "../../assets/photo/reviews/semih.webp";
-import kate from "../../assets/photo/reviews/kate.webp";
-import marie from "../../assets/photo/reviews/marie.webp";
-import alina from "../../assets/photo/reviews/alina.webp";
-import katia from "../../assets/photo/reviews/katia.webp";
+import { testimonialOrder, type TestimonalGroup } from "./TestimonialsData";
 
 const t = getPageTranslations(Astro.currentLocale, "main");
 
-const reviews = [
-    {
-        name: "Sveta",
-        avatar: sveta1,
-        contentKey: "sveta",
-    },
-    {
-        name: "Mario",
-        avatar: mario,
-        contentKey: "mario",
-    },
-    {
-        name: "Eliseo",
-        avatar: eliseo,
-        contentKey: "eliseo",
-    },
-    {
-        name: "Anastasia",
-        avatar: anastasia,
-        contentKey: "anastasia",
-    },
-    {
-        name: "Jorje",
-        avatar: jorje,
-        contentKey: "jorje",
-    },
-    {
-        name: "Sergio",
-        avatar: sergio,
-        contentKey: "sergio",
-    },
-    {
-        name: "Jordi",
-        avatar: jordi,
-        contentKey: "jordi",
-    },
-    {
-        name: "Aleix",
-        avatar: aleix,
-        contentKey: "aleix",
-    },
-    {
-        name: "Aurora",
-        avatar: aurora,
-        contentKey: "aurora",
-    },
-    {
-        name: "Semih",
-        avatar: semih,
-        contentKey: "semih",
-    },
-    {
-        name: "Kate",
-        avatar: kate,
-        contentKey: "kate",
-    },
-    {
-        name: "Marie",
-        avatar: marie,
-        contentKey: "marie",
-    },
-    {
-        name: "Alina",
-        avatar: alina,
-        contentKey: "alina",
-    },
-    {
-        name: "Katia",
-        avatar: katia,
-        contentKey: "katia",
-    },
-] as const;
+interface Props {
+    category?: TestimonalGroup;
+}
+
+const { category = "friends" } = Astro.props;
+const reviews = testimonialOrder[category]
+
+type ReviewKey = keyof typeof t.reviews;
+
+function isCorrectContentKey(contentKey: string): contentKey is ReviewKey {
+    return contentKey in t.reviews;
+}
+
 ---
 
 <section id="reviews" class="reviews">
@@ -99,7 +27,7 @@ const reviews = [
             <div class="reviews-grid">
                 {
                     reviews.map((review) => {
-                        const content = t.reviews[review.contentKey];
+                        const content = isCorrectContentKey(review.contentKey) ? t.reviews[review.contentKey] : "no key";
                         return (
                             <div class="review-item">
                                 <div class="review-item-header">

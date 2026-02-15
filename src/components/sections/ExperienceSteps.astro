@@ -8,6 +8,7 @@ const steps = [
     { titleKey: "step1_title", descriptionKey: "step1_description" },
     { titleKey: "step2_title", descriptionKey: "step2_description" },
     { titleKey: "step3_title", descriptionKey: "step3_description" },
+    { titleKey: "step3b_title", descriptionKey: "step3b_description" },
     { titleKey: "step4_title", descriptionKey: "step4_description" },
     { titleKey: "step5_title", descriptionKey: "step5_description" },
     { titleKey: "step6_title", descriptionKey: "step6_description" },
@@ -24,9 +25,10 @@ const steps = [
                     <li class="step-item">
                         <div class="step-content">
                             <h3 class="step-title">{t(step.titleKey)}</h3>
-                            <p class="step-description">
-                                {t(step.descriptionKey)}
-                            </p>
+                            <p
+                                class="step-description"
+                                set:html={t(step.descriptionKey)}
+                            />
                         </div>
                     </li>
                 ))

@@ -12,7 +12,8 @@ import sorpresaVideo from "../../assets/video/techniques/sorpresa.mp4";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
 
-const techniques = [
+// Zona Pouring: Vertido, Giro, Goteo, Sorpresa
+const zonaPouring = [
     {
         id: "pouring",
         video: pouringVideo,
@@ -21,6 +22,18 @@ const techniques = [
         id: "spinning",
         video: spinningVideo,
     },
+    {
+        id: "dripping",
+        video: drippingVideo,
+    },
+    {
+        id: "surprise",
+        video: sorpresaVideo,
+    },
+];
+
+// Zona Splash: все остальные
+const zonaSplash = [
     {
         id: "boxing",
         video: boxingVideo,
@@ -37,14 +50,6 @@ const techniques = [
         id: "guns",
         video: pistolasVideo,
     },
-    {
-        id: "dripping",
-        video: drippingVideo,
-    },
-    {
-        id: "surprise",
-        video: sorpresaVideo,
-    },
 ];
 ---
 
@@ -53,31 +58,72 @@ const techniques = [
         <h2 class="section-title">{t("why_fun")}</h2>
         <p class="techniques-intro">{t("why_fun_description")}</p>
 
-        <div class="techniques-grid">
-            {
-                techniques.map((tech) => (
-                    <div class="technique-item">
-                        <div class="technique-video-container">
-                            <video
-                                class="technique-video"
-                                muted
-                                loop
-                                playsinline
-                                autoplay
-                            >
-                                <source src={tech.video} type="video/mp4" />
-                            </video>
+        <!-- Zona Pouring -->
+        <div class="zona-container">
+            <h3 class="zona-title">{t("techniques.zona_pouring_title")}</h3>
+            <p class="zona-description">
+                {t("techniques.zona_pouring_description")}
+            </p>
+            <div class="techniques-grid">
+                {
+                    zonaPouring.map((tech) => (
+                        <div class="technique-item">
+                            <div class="technique-video-container">
+                                <video
+                                    class="technique-video"
+                                    muted
+                                    loop
+                                    playsinline
+                                    autoplay
+                                >
+                                    <source src={tech.video} type="video/mp4" />
+                                </video>
+                            </div>
+                            <h4 class="technique-title">
+                                {t(`techniques.${tech.id}.title`)}
+                            </h4>
+                            <p class="technique-description">
+                                {t(`techniques.${tech.id}.description`)}
+                            </p>
                         </div>
-                        <h3 class="technique-title">
-                            {t(`techniques.${tech.id}.title`)}
-                        </h3>
-                        <p class="technique-description">
-                            {t(`techniques.${tech.id}.description`)}
-                        </p>
-                    </div>
-                ))
-            }
+                    ))
+                }
+            </div>
         </div>
+
+        <!-- Zona Splash -->
+        <div class="zona-container">
+            <h3 class="zona-title">{t("techniques.zona_splash_title")}</h3>
+            <p class="zona-description">
+                {t("techniques.zona_splash_description")}
+            </p>
+            <div class="techniques-grid">
+                {
+                    zonaSplash.map((tech) => (
+                        <div class="technique-item">
+                            <div class="technique-video-container">
+                                <video
+                                    class="technique-video"
+                                    muted
+                                    loop
+                                    playsinline
+                                    autoplay
+                                >
+                                    <source src={tech.video} type="video/mp4" />
+                                </video>
+                            </div>
+                            <h4 class="technique-title">
+                                {t(`techniques.${tech.id}.title`)}
+                            </h4>
+                            <p class="technique-description">
+                                {t(`techniques.${tech.id}.description`)}
+                            </p>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+
         <br />
         <p class="techniques-intro">{t("techniques.more")}</p>
     </div>
@@ -92,6 +138,27 @@ const techniques = [
     }
 
     .techniques-intro {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        font-size: var(--font-base);
+        color: var(--dark-text);
+        line-height: 1.6;
+    }
+
+    .zona-container {
+        margin-bottom: 3rem;
+    }
+
+    .zona-title {
+        text-align: center;
+        font-size: var(--font-2xl);
+        color: var(--purple);
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .zona-description {
         text-align: center;
         max-width: 700px;
         margin: 0 auto 2rem;
@@ -167,6 +234,11 @@ const techniques = [
             margin-bottom: 3rem;
         }
 
+        .zona-description {
+            font-size: var(--font-lg);
+            margin-bottom: 2.5rem;
+        }
+
         .techniques-grid {
             grid-template-columns: repeat(4, 1fr);
             gap: 2.5rem;
@@ -180,6 +252,12 @@ const techniques = [
         .technique-description {
             font-size: var(--font-base);
             margin: 0 1.5rem 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .zona-title {
+            font-size: var(--font-xl);
         }
     }
 </style>
