@@ -1,6 +1,5 @@
 ---
 import Logo from "../assets/splash-play-logo.svg";
-import { createAstroTranslator } from "../utils/i18n";
 
 import LanguageSwitcher from "./LanguageSwitcher.astro";
 
@@ -9,16 +8,6 @@ interface Props {
 }
 
 const { currentPath } = Astro.props;
-const t = createAstroTranslator(Astro.currentLocale, "main");
-
-const links = [
-    { href: "#techniques", label: t("nav_techniques") },
-    { href: "#pricing", label: t("nav_pricing") },
-    { href: "#gift-cards", label: t("nav_gift_cards") },
-    { href: "#experience", label: t("nav_experience") },
-    { href: "#gallery", label: t("nav_gallery") },
-    { href: "#contact", label: t("nav_contact") },
-];
 ---
 
 <header class="site-header">
@@ -71,14 +60,7 @@ const links = [
         </div>
 
         <div class="nav-links-container">
-            <ul class="nav-links">
-                {
-                    links.map((link) => (
-                        <li>
-                            <a href={link.href}>{link.label}</a>
-                        </li>
-                    ))
-                }
+            <ul class="nav-links" id="nav-links">
             </ul>
             <div class="lang-switcher-wrapper">
                 <LanguageSwitcher currentPath={currentPath} />
@@ -113,16 +95,39 @@ const links = [
 </header>
 
 <script>
-    const toggle = document.querySelector(".mobile-menu-toggle");
-    const navContainer = document.querySelector(".nav-links-container");
-    const navLinks = document.querySelectorAll(".nav-links a");
+    function buildNavFromSections() {
+        const navLinksList = document.getElementById("nav-links");
+        const sections = document.querySelectorAll("[data-menu-title]");
 
-    if (toggle && navContainer) {
+        sections.forEach((section) => {
+            const title = section.getAttribute("data-menu-title");
+            if (!title) return;
+
+            if (!section.id) {
+                section.id = title.toLowerCase().replace(/\s+/g, "-");
+            }
+
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = `#${section.id}`;
+            a.textContent = title;
+            li.appendChild(a);
+            navLinksList?.appendChild(li);
+        });
+    }
+
+    function setupMobileMenu() {
+        const toggle = document.querySelector(".mobile-menu-toggle");
+        const navContainer = document.querySelector(".nav-links-container");
+
+        if (!toggle || !navContainer) return;
+
         toggle.addEventListener("click", () => {
             navContainer.classList.toggle("open");
             toggle.classList.toggle("open");
         });
 
+        const navLinks = document.querySelectorAll(".nav-links a");
         navLinks.forEach((link) => {
             link.addEventListener("click", () => {
                 navContainer.classList.remove("open");
@@ -130,6 +135,9 @@ const links = [
             });
         });
     }
+
+    buildNavFromSections();
+    setupMobileMenu();
 </script>
 
 <style>
@@ -178,7 +186,7 @@ const links = [
         gap: 8px;
     }
 
-    .nav-links a {
+    .nav-links :global(a) {
         text-decoration: none;
         color: rgb(102, 51, 153);
         font-family: "Montserrat", sans-serif;
@@ -189,7 +197,7 @@ const links = [
         white-space: nowrap;
     }
 
-    .nav-links a:hover {
+    .nav-links :global(a:hover) {
         color: rgb(80, 40, 120);
     }
 
@@ -292,12 +300,12 @@ const links = [
             width: 100%;
         }
 
-        .nav-links li {
+        .nav-links :global(li) {
             width: 100%;
             text-align: center;
         }
 
-        .nav-links a {
+        .nav-links :global(a) {
             display: block;
             padding: 12px;
         }
