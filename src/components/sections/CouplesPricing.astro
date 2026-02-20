@@ -9,6 +9,7 @@ import largeCanvas from "../../assets/img/60x80_compartido.jpg";
 import smallCanvas from "../../assets/img/30x40_compartido.jpg";
 
 const t = createAstroTranslator(Astro.currentLocale, "couples");
+const tMain = createAstroTranslator(Astro.currentLocale, "main");
 const lang = getCurrentLanguage(Astro.currentLocale);
 
 const pricingOptions = [
@@ -44,7 +45,7 @@ const pricingOptions = [
 
 <section id="prices" class="prices prices--couples">
     <div class="container">
-        <h2 class="section-title" id="pricing">{t("pricing_title")}</h2>
+        <h2 class="section-title" id="pricing" data-menu-title={tMain("nav_pricing")}>{t("pricing_title")}</h2>
 
         <div class="price-header">
             <div class="price-summary">

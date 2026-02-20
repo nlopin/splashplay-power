@@ -6,6 +6,7 @@ import {
 } from "../../utils/i18n";
 
 const t = createAstroTranslator(Astro.currentLocale, "friends");
+const tMain = createAstroTranslator(Astro.currentLocale, "main");
 const lang = getCurrentLanguage(Astro.currentLocale);
 
 const pricingOptions = [
@@ -56,7 +57,7 @@ const pricingOptions = [
 
 <section id="prices" class="prices prices--friends">
     <div class="container">
-        <h2 class="section-title" id="pricing">{t("pricing_title")}</h2>
+        <h2 class="section-title" id="pricing" data-menu-title={tMain("nav_pricing")}>{t("pricing_title")}</h2>
 
         <div class="price-header">
             <div class="price-summary">

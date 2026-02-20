@@ -14,11 +14,12 @@ interface Props {
 const { translationNamespace = "main" } = Astro.props;
 
 const t = createAstroTranslator(Astro.currentLocale, translationNamespace);
+const tMain = createAstroTranslator(Astro.currentLocale, "main");
 const lang = getCurrentLanguage(Astro.currentLocale);
 const giftCardUrl = getLocalizedPath("/giftcard", lang);
 ---
 
-<section id="gift-cards" class="gift-certificates">
+<section id="gift-cards" class="gift-certificates" data-menu-title={tMain("nav_gift_cards")}>
     <div class="container">
         <h2 class="section-title">{t("gift_cards")}</h2>
 
