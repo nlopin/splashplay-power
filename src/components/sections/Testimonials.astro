@@ -1,8 +1,10 @@
 ---
 import { getPageTranslations } from "../../utils/i18n";
 import { testimonialOrder, type TestimonalGroup } from "./TestimonialsData";
+import { createAstroTranslator, getCurrentLanguage, getLocalizedPath } from "../../utils/i18n";
 
 const t = getPageTranslations(Astro.currentLocale, "main");
+const tMain = createAstroTranslator(Astro.currentLocale, "main");
 
 interface Props {
     category?: TestimonalGroup;
@@ -19,7 +21,7 @@ function isCorrectContentKey(contentKey: string): contentKey is ReviewKey {
 
 ---
 
-<section id="reviews" class="reviews">
+<section id="reviews" class="reviews" data-menu-title={tMain("nav_reviews")}>
     <div class="container">
         <h2 class="section-title">{t.testimonials_title}</h2>
 

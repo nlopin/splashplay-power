@@ -2,12 +2,14 @@
 import PageLayout from "../layouts/PageLayout.astro";
 
 import Hero from "./sections/Hero.astro";
+import HomeWhatWeOffer from "./sections/HomeWhatWeOffer.astro";
 import Techniques from "./sections/Techniques.astro";
 import Testimonials from "./sections/Testimonials.astro";
 import Pricing from "./sections/Pricing.astro";
 import GiftCard from "./sections/GiftCards.astro";
 import ExperienceSteps from "./sections/ExperienceSteps.astro";
 import Gallery from "./sections/Gallery.astro";
+import OurTeam from "./sections/OurTeam.astro";
 import Contact from "./sections/Contact.astro";
 
 const currentPath = Astro.url.pathname;
@@ -15,11 +17,13 @@ const currentPath = Astro.url.pathname;
 
 <PageLayout currentPath={currentPath}>
     <Hero />
+    <HomeWhatWeOffer />
     <Techniques />
     <Testimonials />
     <Pricing />
     <GiftCard />
     <ExperienceSteps />
     <Gallery />
+    <OurTeam />
     <Contact />
 </PageLayout>

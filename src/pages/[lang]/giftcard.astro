@@ -27,6 +27,18 @@ const languageMap: Record<Language, string> = {
 const giftUpLanguage = languageMap[lang];
 ---
 
-<SimpleLayout title={translations.title} homeHref={homeHref}>
+<SimpleLayout title={translations.title} description={translations.meta_description} homeHref={homeHref}>
+    <p class="giftcard-intro">{translations.intro}</p>
     <GiftCardWidget language={giftUpLanguage} />
 </SimpleLayout>
+
+<style>
+    .giftcard-intro {
+        max-width: 500px;
+        margin: 0 auto 2rem;
+        text-align: center;
+        font-size: var(--font-md);
+        color: var(--dark-text);
+        line-height: 1.6;
+    }
+</style>

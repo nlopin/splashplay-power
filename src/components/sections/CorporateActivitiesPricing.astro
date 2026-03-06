@@ -2,7 +2,6 @@
 import {
     createAstroTranslator,
     getCurrentLanguage,
-    getLocalizedPath,
 } from "../../utils/i18n";
 import smallCanvas from "../../assets/img/30x40_compartido.jpg";
 import largeCanvas from "../../assets/img/60x80_compartido.jpg";
@@ -12,92 +11,54 @@ import clothing2 from "../../assets/photo/clothing/clothing2-71fec5c8-abb0-43c7-
 import clothing3 from "../../assets/photo/clothing/clothing3-f0f01b38-f4ca-4930-9a3b-163e191923ce.png";
 import clothing4 from "../../assets/photo/clothing/clothing4-848c4160-7c5c-43f9-83ce-2ce5febb0bb6.png";
 
-const t = createAstroTranslator(Astro.currentLocale, "family");
+const t = createAstroTranslator(Astro.currentLocale, "friends");
+const tCorporate = createAstroTranslator(Astro.currentLocale, "corporate");
 const tMain = createAstroTranslator(Astro.currentLocale, "main");
 const tHome = createAstroTranslator(Astro.currentLocale, "home");
-const lang = getCurrentLanguage(Astro.currentLocale);
 
 const clothingPhotos = [clothing1, clothing2, clothing3, clothing4];
 
-const activity2Columns = [
-    { headerKey: "activity_2_table_1_header", priceKey: "activity_2_table_1_price", descKey: "activity_2_table_1_desc" },
-    { headerKey: "activity_2_table_2_header", priceKey: "activity_2_table_2_price", descKey: "activity_2_table_2_desc" },
-    { headerKey: "activity_2_table_3_header", priceKey: "activity_2_table_3_price", descKey: "activity_2_table_3_desc" },
-];
-
-const activity3Columns = [
-    { headerKey: "activity_3_table_1_header", priceKey: "activity_3_table_1_price", descKey: "activity_3_table_1_desc" },
-    { headerKey: "activity_3_table_2_header", priceKey: "activity_3_table_2_price", descKey: "activity_3_table_2_desc" },
-    { headerKey: "activity_3_table_3_header", priceKey: "activity_3_table_3_price", descKey: "activity_3_table_3_desc" },
-];
-
-// Table: columns = group sizes (2,3,4,5,6 people), rows = canvas count options
-// null means this option is not available for that group
+// Only 4, 5, 6 people (removed 2 and 3 people)
 const activity1Groups = [
-    { headerKey: "pt_group_2_header", subheaderKey: "pt_group_2_sub" },
-    { headerKey: "pt_group_3_header", subheaderKey: "pt_group_3_sub" },
     { headerKey: "pt_group_4_header", subheaderKey: "pt_group_4_sub" },
     { headerKey: "pt_group_5_header", subheaderKey: "pt_group_5_sub" },
     { headerKey: "pt_group_6_header", subheaderKey: "pt_group_6_sub" },
 ];
 
-// Each row: one canvas-count option. Per group: [labelKey, priceKey] or null if unavailable.
 type OptCell = { labelKey: string; priceKey: string } | null;
 const activity1Rows: { cells: OptCell[] }[] = [
+    { cells: [null, null, null] },
     { cells: [
-        { labelKey: "pt_2_opt1", priceKey: "pt_2_opt1_pp" },
-        { labelKey: "pt_3_opt1", priceKey: "pt_3_opt1_pp" },
-        null,
-        null,
-        null,
-    ]},
-    { cells: [
-        { labelKey: "pt_2_opt2", priceKey: "pt_2_opt2_pp" },
-        { labelKey: "pt_3_opt2", priceKey: "pt_3_opt2_pp" },
         { labelKey: "pt_4_opt2", priceKey: "pt_4_opt2_pp" },
-        null,
-        null,
+        null, null,
     ]},
     { cells: [
-        null,
-        { labelKey: "pt_3_opt3", priceKey: "pt_3_opt3_pp" },
         { labelKey: "pt_4_opt3", priceKey: "pt_4_opt3_pp" },
         { labelKey: "pt_5_opt3", priceKey: "pt_5_opt3_pp" },
         { labelKey: "pt_6_opt3", priceKey: "pt_6_opt3_pp" },
     ]},
     { cells: [
-        null,
-        null,
         { labelKey: "pt_4_opt4", priceKey: "pt_4_opt4_pp" },
         { labelKey: "pt_5_opt4", priceKey: "pt_5_opt4_pp" },
         { labelKey: "pt_6_opt4", priceKey: "pt_6_opt4_pp" },
     ]},
     { cells: [
         null,
-        null,
-        null,
         { labelKey: "pt_5_opt5", priceKey: "pt_5_opt5_pp" },
         { labelKey: "pt_6_opt5", priceKey: "pt_6_opt5_pp" },
     ]},
     { cells: [
-        null,
-        null,
-        null,
-        null,
+        null, null,
         { labelKey: "pt_6_opt6", priceKey: "pt_6_opt6_pp" },
     ]},
 ];
 
-// Big canvas row (always last, separator above)
 const activity1BigRow: OptCell[] = [
-    { labelKey: "pt_2_big", priceKey: "pt_2_big_pp" },
-    { labelKey: "pt_3_big", priceKey: "pt_3_big_pp" },
     { labelKey: "pt_4_big", priceKey: "pt_4_big_pp" },
     { labelKey: "pt_5_big", priceKey: "pt_5_big_pp" },
     { labelKey: "pt_6_big", priceKey: "pt_6_big_pp" },
 ];
 
-// For mobile cards, reconstruct per-group options list
 const activity1GroupsWithOptions = activity1Groups.map((group, gi) => ({
     ...group,
     options: [
@@ -105,10 +66,6 @@ const activity1GroupsWithOptions = activity1Groups.map((group, gi) => ({
         activity1BigRow[gi] as { labelKey: string; priceKey: string },
     ],
 }));
-
-const bookBaseUrl = getLocalizedPath("/book/family", lang);
-const bookThrowPaintUrl = getLocalizedPath("/book/throw-paint", lang);
-const bookCustomizeClothesUrl = getLocalizedPath("/book/customize-clothes", lang);
 
 function headerWithHighlightedNum(text: string) {
     const match = text.match(/^(\d+)(.*)$/);
@@ -124,7 +81,6 @@ function renderHeaderHtml(raw: string) {
     return parsed ? `<span class="header-num">${parsed.num}</span>${parsed.rest}` : withSize;
 }
 
-// Splits "1 canvas — €60" into { canvasLabel: "1 canvas", price: "€60" }
 function parseOptLabel(text: string): { canvasLabel: string; price: string } | null {
     const match = text.match(/^(.+?)\s*[—–-]\s*(€\S+)$/);
     if (match) {
@@ -134,15 +90,25 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
 }
 ---
 
-<section id="pricing" class="prices prices--friends" data-menu-title={tMain("nav_pricing")}>
+<section id="pricing" class="prices prices--corporate-activities" data-menu-title={tMain("nav_pricing")}>
     <div class="container">
         <h2 class="section-title">{t("pricing_title")}</h2>
 
+        <!-- Team Building Special -->
+        <div id="pricing-teambuilding" class="pricing-activity pricing-activity--simple">
+            <h3 class="pricing-activity-title">
+                {tCorporate("activity_teambuilding_title")}
+                <span class="pricing-activity-meta">{tCorporate("activity_teambuilding_meta")}</span>
+            </h3>
+            <p class="pricing-activity-description">{tCorporate("activity_teambuilding_description")}</p>
+            <p class="pricing-simple-price">{tCorporate("activity_teambuilding_price")}</p>
+        </div>
+
         <!-- Activity 1: Create your abstract masterpiece -->
-        <div class="pricing-activity pricing-activity--wide">
+        <div id="pricing-activity1" class="pricing-activity pricing-activity--wide">
             <h3 class="pricing-activity-title">
                 {tHome("activity_1_title")}
-                <span class="pricing-activity-meta">{t("activity_1_meta")}</span>
+                <span class="pricing-activity-meta">{tCorporate("activity_1_meta")}</span>
             </h3>
             <p class="pricing-activity-description" set:html={t("pricing_activity1_description")} />
             <!-- Mobile: one card per group size -->
@@ -165,7 +131,6 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                                 );
                             })}
                         </ul>
-                        <a href={bookBaseUrl} class="pricing-btn pricing-btn--mobile">{t("cta_book_button")}</a>
                     </div>
                 ))}
             </div>
@@ -218,9 +183,6 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                     </tbody>
                 </table>
             </div>
-            <div class="pricing-table-cta">
-                <a href={bookBaseUrl} class="pricing-btn pricing-btn--standalone">{t("cta_book_button")}</a>
-            </div>
             <h4 class="canvas-reference-title">{t("canvas_size_reference")}</h4>
             <div class="canvas-examples">
                 <div class="canvas-example">
@@ -245,49 +207,20 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         </div>
 
         <!-- Activity 2: Throw paint & have fun! -->
-        <div class="pricing-activity">
+        <div id="pricing-activity2" class="pricing-activity pricing-activity--simple">
             <h3 class="pricing-activity-title">
                 {tHome("activity_2_title")}
-                <span class="pricing-activity-meta">{t("activity_2_meta")}</span>
+                <span class="pricing-activity-meta">{tCorporate("activity_2_meta")}</span>
             </h3>
             <p class="pricing-activity-description">{t("activity_2_description")}</p>
-            <div class="pricing-cards-mobile pricing-cards-mobile--activity2">
-                {activity2Columns.map((col) => (
-                    <div class="pricing-card-mobile">
-                        <div class="pricing-card-mobile-header">{t(col.headerKey)}</div>
-                        <div class="pricing-card-mobile-price">{t(col.priceKey)}</div>
-                        <a href={bookThrowPaintUrl} class="pricing-btn pricing-btn--mobile">{t("cta_book_button")}</a>
-                    </div>
-                ))}
-            </div>
-            <div class="pricing-table-wrap pricing-table-wrap--simple">
-                <table class="pricing-table pricing-table--simple">
-                    <thead>
-                        <tr>
-                            {activity2Columns.map((col) => (
-                                <th scope="col">{t(col.headerKey)}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="pricing-row-price">
-                            {activity2Columns.map((col) => (
-                                <td data-label={t(col.headerKey)} class="price-total">{t(col.priceKey)}</td>
-                            ))}
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="pricing-table-cta">
-                <a href={bookThrowPaintUrl} class="pricing-btn pricing-btn--standalone">{t("cta_book_button")}</a>
-            </div>
+            <p class="pricing-simple-price">{tCorporate("activity_simple_price")}</p>
         </div>
 
         <!-- Activity 3: Customize your clothes -->
-        <div class="pricing-activity">
+        <div id="pricing-activity3" class="pricing-activity pricing-activity--simple">
             <h3 class="pricing-activity-title">
                 {tHome("activity_3_title")}
-                <span class="pricing-activity-meta">{t("activity_3_meta")}</span>
+                <span class="pricing-activity-meta">{tCorporate("activity_3_meta")}</span>
             </h3>
             <p class="pricing-activity-description">{t("activity_3_description")}</p>
             <div class="clothing-photos">
@@ -297,48 +230,19 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                     </span>
                 ))}
             </div>
-            <div class="pricing-cards-mobile pricing-cards-mobile--activity3">
-                {activity3Columns.map((col) => (
-                    <div class="pricing-card-mobile">
-                        <div class="pricing-card-mobile-header">{t(col.headerKey)}</div>
-                        <div class="pricing-card-mobile-price">{t(col.priceKey)}</div>
-                        <a href={bookCustomizeClothesUrl} class="pricing-btn pricing-btn--mobile">{t("cta_book_button")}</a>
-                    </div>
-                ))}
-            </div>
-            <div class="pricing-table-wrap pricing-table-wrap--simple">
-                <table class="pricing-table pricing-table--simple">
-                    <thead>
-                        <tr>
-                            {activity3Columns.map((col) => (
-                                <th scope="col">{t(col.headerKey)}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="pricing-row-price">
-                            {activity3Columns.map((col) => (
-                                <td data-label={t(col.headerKey)} class="price-total">{t(col.priceKey)}</td>
-                            ))}
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="pricing-table-cta">
-                <a href={bookCustomizeClothesUrl} class="pricing-btn pricing-btn--standalone">{t("cta_book_button")}</a>
-            </div>
+            <p class="pricing-simple-price">{tCorporate("activity_simple_price")}</p>
         </div>
     </div>
 </section>
 
 <style>
-    .prices--friends {
+    .prices--corporate-activities {
         padding: 3rem 0;
         background-color: var(--white);
         scroll-margin-top: 60px;
     }
 
-    .prices--friends .section-title {
+    .prices--corporate-activities .section-title {
         text-align: center;
     }
 
@@ -377,6 +281,67 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         color: var(--dark-text);
         line-height: 1.6;
         margin: 0 0 1.5rem;
+    }
+
+    .pricing-simple-price {
+        font-size: var(--font-2xl);
+        font-weight: 700;
+        color: var(--orange);
+        margin: 0;
+    }
+
+    .howitworks-details {
+        margin-top: 1.5rem;
+        text-align: center;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .howitworks-summary {
+        font-size: var(--font-base);
+        font-weight: 600;
+        color: var(--purple);
+        cursor: pointer;
+        list-style: none;
+        padding: 0.75rem 0;
+        user-select: none;
+        text-transform: uppercase;
+    }
+
+    .howitworks-summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .howitworks-summary::after {
+        content: " ▼";
+        font-size: 1.2em;
+        display: inline-block;
+        margin-left: 0.25rem;
+        transition: transform 0.2s;
+    }
+
+    .howitworks-details[open] .howitworks-summary::after {
+        transform: rotate(-180deg);
+    }
+
+    .howitworks-content {
+        font-size: var(--font-sm);
+        color: var(--dark-text);
+        line-height: 1.6;
+        padding-bottom: 0.5rem;
+    }
+
+    .howitworks-content :global(p) {
+        margin: 0 0 0.75rem;
+    }
+
+    .howitworks-content :global(p:last-child) {
+        margin-bottom: 0;
+    }
+
+    .howitworks-content :global(strong) {
+        color: var(--purple);
     }
 
     .clothing-photos {
@@ -477,7 +442,6 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         font-size: var(--font-sm);
     }
 
-    /* Groups table (activity 1 new layout) */
     .pricing-table-wrap--groups {
         border-radius: 12px;
         border: 1px solid rgba(102, 51, 153, 0.12);
@@ -512,13 +476,6 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         background: #fffaf5;
     }
 
-    .td-big-option {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.15rem;
-    }
-
     .th-header {
         font-size: var(--font-base);
         font-weight: 800;
@@ -538,10 +495,6 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         padding: 0.6rem 0.75rem;
         text-align: center;
         vertical-align: middle;
-    }
-
-    .td-empty {
-        /* inherits column color from nth-child */
     }
 
     .tr-big-canvas td {
@@ -574,7 +527,6 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         color: var(--dark-text);
     }
 
-    /* Mobile cards for groups table */
     .pricing-card-mobile--group .pricing-card-mobile-subheader {
         font-size: var(--font-xs);
         color: var(--dark-text);
@@ -675,53 +627,10 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         border-bottom: none;
     }
 
-    .pricing-table .price-per-person-highlight {
-        font-size: var(--font-base);
-        font-weight: 700;
-        color: var(--orange);
-    }
-
     .pricing-table .price-total {
         font-size: var(--font-base);
         font-weight: 700;
         color: var(--purple);
-    }
-
-    .pricing-table-cta {
-        text-align: center;
-        margin-top: 1.5rem;
-    }
-
-    .pricing-btn {
-        display: inline-block;
-        background-color: var(--orange);
-        color: var(--white);
-        padding: 0.5rem 1rem;
-        border-radius: 30px;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: var(--font-sm);
-        letter-spacing: 0.02em;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        white-space: nowrap;
-    }
-
-    .pricing-btn:hover {
-        background-color: var(--purple);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 51, 153, 0.3);
-    }
-
-    .pricing-btn--standalone {
-        padding: 0.6rem 1.25rem;
-    }
-
-    @media (min-width: 768px) {
-        .pricing-btn--standalone {
-            padding: 0.9rem 2.5rem;
-            font-size: var(--font-base);
-        }
     }
 
     .pricing-card-mobile {
@@ -755,24 +664,6 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         margin-bottom: 0.5rem;
     }
 
-    .pricing-card-mobile-row {
-        font-size: var(--font-sm);
-        color: var(--dark-text);
-        margin-bottom: 0.25rem;
-    }
-
-    .pricing-card-mobile-total {
-        font-size: var(--font-sm);
-        font-weight: 700;
-        color: var(--purple);
-        margin-bottom: 1rem;
-    }
-
-    .pricing-btn--mobile {
-        display: block;
-        text-align: center;
-    }
-
     @media (max-width: 767px) {
         .pricing-cards-mobile {
             display: block;
@@ -782,14 +673,6 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         .pricing-table-wrap,
         .pricing-table-wrap--groups {
             display: none;
-        }
-
-        .pricing-table-cta {
-            display: none;
-        }
-
-        .pricing-table-cta--visible-mobile {
-            display: block;
         }
     }
 

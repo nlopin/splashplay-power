@@ -1,0 +1,97 @@
+---
+import { createAstroTranslator } from "../../utils/i18n";
+import alexandraImg from "../../assets/photo/alexandra.png";
+
+const t = createAstroTranslator(Astro.currentLocale, "home");
+---
+
+<section id="our-team" class="our-team">
+    <div class="container">
+        <h2 class="section-title">{t("our_team_title")}</h2>
+
+        <div class="our-team-content">
+            <div class="our-team-image-wrap">
+                <img
+                    src={alexandraImg.src}
+                    alt={t("our_team_image_alt")}
+                    class="our-team-image"
+                    width={400}
+                    height={500}
+                />
+            </div>
+            <div class="our-team-text">
+                <p class="our-team-greeting">{t("our_team_greeting")}</p>
+                <p class="our-team-story">{t("our_team_story")}</p>
+                <p class="our-team-invitation">{t("our_team_invitation")}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .our-team {
+        padding: 3rem 0;
+        background-color: var(--white);
+        scroll-margin-top: 60px;
+    }
+
+    .our-team .container {
+        max-width: 900px;
+    }
+
+    .our-team-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    .our-team-image-wrap {
+        flex-shrink: 0;
+    }
+
+    .our-team-image {
+        width: 100%;
+        max-width: 360px;
+        height: auto;
+        border-radius: 12px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .our-team-text {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .our-team-greeting,
+    .our-team-story,
+    .our-team-invitation {
+        margin: 0;
+        color: var(--dark-text);
+        line-height: 1.7;
+        font-size: var(--font-base);
+    }
+
+    .our-team-greeting {
+        font-weight: 600;
+        color: var(--purple);
+    }
+
+    .our-team-invitation {
+        font-weight: 600;
+    }
+
+    @media (min-width: 600px) {
+        .our-team-content {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 2.5rem;
+        }
+
+        .our-team-image {
+            max-width: 300px;
+        }
+    }
+</style>

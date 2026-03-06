@@ -4,13 +4,14 @@ import Logo from "../assets/splash-play-logo.svg";
 
 interface Props {
     title: string;
+    description?: string;
     homeHref: string;
 }
 
-const { title, homeHref } = Astro.props;
+const { title, description, homeHref } = Astro.props;
 ---
 
-<Layout title={title}>
+<Layout title={title} description={description}>
     <main class="container">
         <a href={homeHref} class="logo-link">
             <img src={Logo.src} alt="Splash Play Logo" class="logo" />
