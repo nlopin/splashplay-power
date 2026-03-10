@@ -1,0 +1,41 @@
+---
+import { createAstroTranslator } from "../../utils/i18n";
+import CTAButton from "../CTAButton.astro";
+
+const t = createAstroTranslator(Astro.currentLocale, "corporate");
+---
+
+<section class="corporate-book-cta">
+    <div class="container">
+        <p class="corporate-book-cta__prompt">{t("cta_ready_booking")}</p>
+        <div class="corporate-book-cta__button">
+            <CTAButton text={t("cta_text_us")} href="#contact" />
+        </div>
+    </div>
+</section>
+
+<style>
+    .corporate-book-cta {
+        padding: 2.5rem 0;
+        background-color: var(--light-bg);
+        text-align: center;
+    }
+
+    .corporate-book-cta__prompt {
+        font-size: var(--font-lg);
+        font-weight: 600;
+        color: var(--dark-text);
+        margin: 0 0 1rem;
+    }
+
+    .corporate-book-cta__button {
+        max-width: 280px;
+        margin: 0 auto;
+    }
+
+    @media (min-width: 769px) {
+        .corporate-book-cta__prompt {
+            font-size: var(--font-xl);
+        }
+    }
+</style>

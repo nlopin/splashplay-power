@@ -16,12 +16,49 @@ interface Props {
 const { title, description } = Astro.props;
 const language = getCurrentLanguage(Astro.currentLocale);
 const t = createAstroTranslator(Astro.currentLocale, "home");
+const tSchema = createAstroTranslator(Astro.currentLocale, "schema");
 
 const pageTitle = title || t("title");
 const pageDescription = description || t("description");
 
 const basePath = getPathWithoutLanguage(Astro.url.pathname);
 const siteUrl = Astro.site?.toString() || "https://splashplay.es";
+
+// Schema.org LocalBusiness JSON-LD for AI discoverability (ChatGPT, Perplexity, Claude, etc.)
+const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": "https://splashplay.es/#organization",
+    "name": "SplashPlay Studio",
+    "alternateName": "SplashPlay",
+    "description": tSchema("business_description"),
+    "url": "https://splashplay.es",
+    "image": new URL("/icon.svg", Astro.site || "https://splashplay.es").toString(),
+    "telephone": "+34641671670",
+    "email": "info@splashplay.es",
+    "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Carrer del Concili de Trento, 7",
+        "addressLocality": "Barcelona",
+        "postalCode": "08018",
+        "addressRegion": tSchema("address_region"),
+        "addressCountry": "ES"
+    },
+    "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 41.4108197,
+        "longitude": 2.1916897
+    },
+    "sameAs": [
+        "https://www.instagram.com/splashplaystudio"
+    ],
+    "areaServed": {
+        "@type": "City",
+        "name": "Barcelona"
+    },
+    "priceRange": "€€",
+    "inLanguage": language
+};
 ---
 
 <!doctype html>
@@ -50,6 +87,9 @@ const siteUrl = Astro.site?.toString() || "https://splashplay.es";
         <meta name="generator" content={Astro.generator} />
         <meta name="description" content={pageDescription} />
         <title>{pageTitle}</title>
+
+        <!-- Schema.org JSON-LD for AI discoverability -->
+        <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
 
         <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

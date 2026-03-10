@@ -1,101 +1,53 @@
 import { describe, it, expect } from "vitest";
-import {
-  calculateFamilyPrice,
-  getDefaultCanvasCount,
-  validatePeopleCount,
-  calculateNewCanvasCount,
-} from "./FamilyOptions";
+import { calculateFamilyPrice } from "./FamilyOptions";
 
-describe("calculateFamilyPrice", () => {
-  it("should return price for one canvas for invalid canvas count", () => {
-    expect(calculateFamilyPrice(0)).toBe(6000);
-    expect(calculateFamilyPrice(-1)).toBe(6000);
-  });
-
-  it("should calculate correct prices for 1-6 canvases", () => {
-    expect(calculateFamilyPrice(1)).toBe(6000); // €60
-    expect(calculateFamilyPrice(2)).toBe(9000); // €90
-    expect(calculateFamilyPrice(3)).toBe(12000); // €120
-    expect(calculateFamilyPrice(4)).toBe(14000); // €140
-    expect(calculateFamilyPrice(5)).toBe(16000); // €160
-    expect(calculateFamilyPrice(6)).toBe(18000); // €180
-  });
-
-  it("should calculate correct prices for more than 6 canvases", () => {
-    expect(calculateFamilyPrice(7)).toBe(21000); // €180 + €30
-    expect(calculateFamilyPrice(8)).toBe(24000); // €180 + €60
-    expect(calculateFamilyPrice(10)).toBe(30000); // €180 + €120
-  });
+describe("calculateFamilyPrice — big canvas", () => {
+  it("2 people → €80", () => expect(calculateFamilyPrice(1, 2, "big")).toBe(8000));
+  it("3 people → €85", () => expect(calculateFamilyPrice(1, 3, "big")).toBe(8500));
+  it("4 people → €90", () => expect(calculateFamilyPrice(1, 4, "big")).toBe(9000));
+  it("5 people → €100", () => expect(calculateFamilyPrice(1, 5, "big")).toBe(10000));
+  it("6 people → €110", () => expect(calculateFamilyPrice(1, 6, "big")).toBe(11000));
 });
 
-describe("getDefaultCanvasCount", () => {
-  it("should return kids count when kids >= 1", () => {
-    expect(getDefaultCanvasCount(1)).toBe(1);
-    expect(getDefaultCanvasCount(3)).toBe(3);
-    expect(getDefaultCanvasCount(5)).toBe(5);
-  });
-
-  it("should return 1 for invalid kids count", () => {
-    expect(getDefaultCanvasCount(0)).toBe(1);
-    expect(getDefaultCanvasCount(-1)).toBe(1);
-  });
+describe("calculateFamilyPrice — standard canvas, 1 person", () => {
+  it("1 person, 1 canvas → €60", () => expect(calculateFamilyPrice(1, 1)).toBe(6000));
 });
 
-describe("validatePeopleCount", () => {
-  it("should validate correct people counts", () => {
-    expect(validatePeopleCount(2, 1)).toBe(true);
-    expect(validatePeopleCount(3, 4)).toBe(true);
-    expect(validatePeopleCount(1, 6)).toBe(true);
-    expect(validatePeopleCount(4, 3)).toBe(true);
-  });
-
-  it("should reject invalid adult counts", () => {
-    expect(validatePeopleCount(0, 1)).toBe(false);
-    expect(validatePeopleCount(-1, 1)).toBe(false);
-  });
-
-  it("should reject invalid kids counts", () => {
-    expect(validatePeopleCount(2, 0)).toBe(false);
-    expect(validatePeopleCount(2, -1)).toBe(false);
-  });
-
-  it("should reject total people > 7", () => {
-    expect(validatePeopleCount(4, 4)).toBe(false);
-    expect(validatePeopleCount(6, 2)).toBe(false);
-    expect(validatePeopleCount(1, 7)).toBe(false);
-  });
+describe("calculateFamilyPrice — standard canvas, 2 people", () => {
+  it("2 people, 1 canvas → €60", () => expect(calculateFamilyPrice(1, 2)).toBe(6000));
+  it("2 people, 2 canvases → €90", () => expect(calculateFamilyPrice(2, 2)).toBe(9000));
 });
 
-describe("calculateNewCanvasCount", () => {
-  it("should update canvases when they match kids count", () => {
-    // When canvases equal kids, always update to match new kids count
-    expect(calculateNewCanvasCount(3, 3, 5)).toBe(5); // increase
-    expect(calculateNewCanvasCount(4, 4, 2)).toBe(2); // decrease
-    expect(calculateNewCanvasCount(1, 1, 1)).toBe(1); // no change
-  });
+describe("calculateFamilyPrice — standard canvas, 3 people", () => {
+  it("3 people, 1 canvas → €60", () => expect(calculateFamilyPrice(1, 3)).toBe(6000));
+  it("3 people, 2 canvases → €90", () => expect(calculateFamilyPrice(2, 3)).toBe(9000));
+  it("3 people, 3 canvases → €120", () => expect(calculateFamilyPrice(3, 3)).toBe(12000));
+});
 
-  it("should update canvases when less than kids and kids increase", () => {
-    // When canvases < kids and kids increase, update canvases to match
-    expect(calculateNewCanvasCount(2, 4, 5)).toBe(5);
-    expect(calculateNewCanvasCount(1, 3, 6)).toBe(6);
-  });
+describe("calculateFamilyPrice — standard canvas, 4 people", () => {
+  it("4 people, 2 canvases → €95", () => expect(calculateFamilyPrice(2, 4)).toBe(9500));
+  it("4 people, 3 canvases → €125", () => expect(calculateFamilyPrice(3, 4)).toBe(12500));
+  it("4 people, 4 canvases → €140", () => expect(calculateFamilyPrice(4, 4)).toBe(14000));
+});
 
-  it("should not update canvases when user has set more than kids", () => {
-    // When canvases > kids, don't change canvases (user preference)
-    expect(calculateNewCanvasCount(5, 3, 2)).toBe(5); // kids decreased
-    expect(calculateNewCanvasCount(6, 4, 5)).toBe(6); // kids increased but still less than canvases
-    expect(calculateNewCanvasCount(3, 2, 1)).toBe(3); // kids decreased
-  });
+describe("calculateFamilyPrice — standard canvas, 5 people", () => {
+  it("5 people, 3 canvases → €130", () => expect(calculateFamilyPrice(3, 5)).toBe(13000));
+  it("5 people, 4 canvases → €145", () => expect(calculateFamilyPrice(4, 5)).toBe(14500));
+  it("5 people, 5 canvases → €160", () => expect(calculateFamilyPrice(5, 5)).toBe(16000));
+});
 
-  it("should not update canvases when less than kids but kids decrease", () => {
-    // When canvases < kids but kids decrease, don't change canvases
-    expect(calculateNewCanvasCount(2, 5, 3)).toBe(2);
-    expect(calculateNewCanvasCount(1, 4, 2)).toBe(1);
-  });
+describe("calculateFamilyPrice — standard canvas, 6 people", () => {
+  it("6 people, 3 canvases → €135", () => expect(calculateFamilyPrice(3, 6)).toBe(13500));
+  it("6 people, 4 canvases → €150", () => expect(calculateFamilyPrice(4, 6)).toBe(15000));
+  it("6 people, 5 canvases → €165", () => expect(calculateFamilyPrice(5, 6)).toBe(16500));
+  it("6 people, 6 canvases → €180", () => expect(calculateFamilyPrice(6, 6)).toBe(18000));
+});
 
-  it("should handle minimum canvas count", () => {
-    // Should never go below 1 canvas
-    expect(calculateNewCanvasCount(1, 1, 0)).toBe(1);
-    expect(calculateNewCanvasCount(2, 2, -1)).toBe(1);
-  });
+describe("calculateFamilyPrice — clamping", () => {
+  it("clamps canvases below min for 4 people (min=2)", () =>
+    expect(calculateFamilyPrice(1, 4)).toBe(9500));
+  it("clamps canvases above max for 2 people (max=2)", () =>
+    expect(calculateFamilyPrice(5, 2)).toBe(9000));
+  it("clamps total guests above 6", () =>
+    expect(calculateFamilyPrice(6, 7)).toBe(18000));
 });

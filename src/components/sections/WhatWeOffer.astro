@@ -1,0 +1,414 @@
+---
+import type { ImageMetadata } from "astro";
+import { createAstroTranslator, getCurrentLanguage } from "../../utils/i18n";
+import { getWhatWeOfferConfig, type WhatWeOfferVariant } from "../../config/whatWeOffer";
+import type { ImageKey } from "../../config/whatWeOffer";
+import CTAButton from "../CTAButton.astro";
+
+import activity1Image from "../../assets/photo/gallery/creacuadroabstracto.png";
+import gallery4 from "../../assets/photo/gallery/gallery4.jpg";
+import activity3Image from "../../assets/photo/gallery/crearopa.png";
+import gallery1 from "../../assets/photo/gallery/gallery1.jpg";
+
+const IMAGES: Record<ImageKey, ImageMetadata> = {
+  activity1: activity1Image,
+  gallery4,
+  activity3: activity3Image,
+  gallery1,
+};
+
+interface Props {
+  variant: WhatWeOfferVariant;
+}
+
+const { variant } = Astro.props;
+
+const lang = getCurrentLanguage(Astro.currentLocale);
+const config = getWhatWeOfferConfig(variant, lang);
+
+const tMain = createAstroTranslator(Astro.currentLocale, "main");
+const tSection = createAstroTranslator(Astro.currentLocale, config.sectionTitleNamespace);
+const tIntro = createAstroTranslator(Astro.currentLocale, config.introNamespace);
+const tIncluded = createAstroTranslator(Astro.currentLocale, config.includedTitleNamespace);
+const tDetails = createAstroTranslator(Astro.currentLocale, config.detailsNamespace);
+const tContent = createAstroTranslator(Astro.currentLocale, config.activityContentNamespace);
+const tCorporate = createAstroTranslator(Astro.currentLocale, "corporate");
+
+const activities = config.activities.map((a) => ({
+  ...a,
+  image: IMAGES[a.imageKey],
+}));
+---
+
+<section id="what-we-offer" class="what-we-offer" data-menu-title={tMain("nav_offer")}>
+    <div class="container">
+        <h2 class="section-title">{tSection("what_we_offer")}</h2>
+        <p class="what-we-offer-intro">{tIntro("what_we_offer_intro")}</p>
+        <div class="activities-list">
+            {
+                activities.map((activity, index) => (
+                    <>
+                        <article class={`activity-card activity-card--${index % 2 === 0 ? "left" : "right"}`}>
+                            <div class="activity-image-wrap">
+                                <img
+                                    src={activity.image.src}
+                                    alt={activity.imageAlt}
+                                    class="activity-image"
+                                    loading="lazy"
+                                />
+                            </div>
+                            <div class="activity-content">
+                                <h3 class="activity-title">
+                                    {activity.corporateOnly
+                                        ? tCorporate(activity.titleKey)
+                                        : tContent(activity.titleKey)}
+                                </h3>
+                                <p
+                                    class="activity-details"
+                                    set:html={
+                                        activity.corporateOnly
+                                            ? tCorporate(activity.detailsKey)
+                                            : tDetails(activity.detailsKey)
+                                    }
+                                />
+                                <p class="activity-description">
+                                    {activity.corporateOnly
+                                        ? tCorporate(activity.descriptionKey)
+                                        : tContent(activity.descriptionKey)}
+                                </p>
+                                <p class="activity-included">
+                                    <strong>{tIncluded("included_title")}:</strong>{" "}
+                                    {activity.corporateOnly
+                                        ? tCorporate(activity.includedKey)
+                                        : tContent(activity.includedKey)}
+                                </p>
+                                {config.bookingMode === "table" && activity.bookingRows && (
+                                    <div class="activity-booking">
+                                        <table class="activity-booking-table">
+                                            <tbody>
+                                                {activity.bookingRows.map((row) => (
+                                                    <tr>
+                                                        <td class="activity-booking-audience">
+                                                            <a href={row.pageHref} class="activity-booking-audience-link">
+                                                                {tContent(row.audienceKey)}
+                                                            </a>
+                                                        </td>
+                                                        <td class="activity-booking-cell">
+                                                            <a href={row.href} class="activity-booking-btn">
+                                                                {tContent(row.ctaKey)}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                                {config.bookingMode === "single-cta" && activity.bookUrl && config.ctaKey && (
+                                    <div class="activity-booking">
+                                        <CTAButton href={activity.bookUrl} text={tSection(config.ctaKey)} size="sm" />
+                                    </div>
+                                )}
+                                {config.bookingMode === "contact" && config.ctaKey && (
+                                    <div class="activity-actions">
+                                        <CTAButton href="#contact" text={tCorporate(config.ctaKey)} size="sm" />
+                                    </div>
+                                )}
+                            </div>
+                        </article>
+                        {config.showHowItWorks && index === 0 && (
+                            <div class="howitworks-wrap">
+                                <details class="howitworks-details howitworks-details--offer">
+                                    <summary class="howitworks-summary">{tCorporate("howitworks_toggle")}</summary>
+                                    <div class="howitworks-content" set:html={tCorporate("howitworks_content")} />
+                                </details>
+                            </div>
+                        )}
+                    </>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .what-we-offer {
+        padding: 3rem 0;
+        background-color: var(--light-bg);
+        scroll-margin-top: 60px;
+    }
+
+    .what-we-offer-intro {
+        max-width: 600px;
+        margin: 0 auto 3.5rem;
+        text-align: center;
+        font-size: var(--font-lg);
+        line-height: 1.6;
+        color: var(--dark-text);
+    }
+
+    .activities-list {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .activity-card {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .activity-image-wrap {
+        flex: 0 0 auto;
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        overflow: hidden;
+        position: relative;
+        border-radius: 12px;
+    }
+
+    .activity-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .activity-content {
+        padding: 1.5rem 1.25rem 2rem;
+    }
+
+    .activity-title {
+        font-size: var(--font-xl);
+        color: var(--purple);
+        margin: 0 0 0.75rem;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+
+    .activity-description {
+        font-size: var(--font-base);
+        color: var(--dark-text);
+        line-height: 1.6;
+        margin: 0 0 1rem;
+    }
+
+    .activity-details {
+        font-size: var(--font-sm);
+        color: #000;
+        margin: 0 0 0.75rem;
+        line-height: 1.4;
+    }
+
+    .activity-included {
+        font-size: var(--font-sm);
+        color: var(--dark-text);
+        line-height: 1.6;
+        margin: 0 0 0.5rem;
+    }
+
+    .activity-booking {
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(102, 51, 153, 0.15);
+    }
+
+    .activity-booking:has(.cta-button) {
+        padding-top: 0;
+        border-top: none;
+        text-align: center;
+    }
+
+    .activity-booking :global(.cta-button) {
+        width: auto;
+        display: inline-block;
+        min-width: 10rem;
+    }
+
+    .activity-booking-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: var(--font-sm);
+    }
+
+    .activity-booking-table tr:not(:last-child) {
+        border-bottom: 1px solid rgba(102, 51, 153, 0.1);
+    }
+
+    .activity-booking-audience {
+        padding: 0.5rem 0.75rem 0.5rem 0;
+        font-size: var(--font-base);
+        font-weight: 700;
+        vertical-align: middle;
+    }
+
+    .activity-booking-audience-link {
+        color: var(--purple);
+        text-decoration: none;
+    }
+
+    .activity-booking-audience-link:hover {
+        color: var(--orange);
+    }
+
+    .activity-booking-cell {
+        padding: 0.5rem 0;
+        text-align: right;
+        vertical-align: middle;
+    }
+
+    .activity-booking-btn {
+        display: inline-block;
+        width: 7.5rem;
+        padding: 0.5rem 1rem;
+        font-size: var(--font-sm);
+        font-weight: 700;
+        color: var(--white);
+        background-color: var(--orange);
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(255, 107, 53, 0.35);
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .activity-booking-btn:hover {
+        background-color: var(--purple);
+        box-shadow: 0 4px 10px rgba(102, 51, 153, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .activity-included strong {
+        color: var(--purple);
+        font-weight: 600;
+    }
+
+    .activity-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+    }
+
+    .activity-actions :global(.cta-button) {
+        max-width: 200px;
+    }
+
+    .howitworks-wrap {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin: 0 0 2rem;
+    }
+
+    .howitworks-details--offer {
+        margin: 0;
+        text-align: center;
+    }
+
+    .howitworks-details--offer .howitworks-summary {
+        font-size: var(--font-sm);
+        padding: 0.5rem 0;
+    }
+
+    .howitworks-details--offer .howitworks-content {
+        font-size: var(--font-sm);
+        padding: 0.5rem 0;
+        text-align: left;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .howitworks-details--offer .howitworks-content :global(p) {
+        margin: 0 0 0.5rem;
+    }
+
+    .howitworks-details--offer .howitworks-content :global(strong) {
+        color: var(--purple);
+    }
+
+    .howitworks-summary {
+        font-weight: 600;
+        color: var(--purple);
+        cursor: pointer;
+        list-style: none;
+        text-transform: uppercase;
+    }
+
+    .howitworks-summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .howitworks-summary::after {
+        content: " ▼";
+        font-size: 1.2em;
+        display: inline-block;
+        margin-left: 0.25rem;
+        transition: transform 0.2s;
+    }
+
+    .howitworks-details[open] .howitworks-summary::after {
+        transform: rotate(-180deg);
+    }
+
+    @media (min-width: 768px) {
+        .activity-card {
+            flex-direction: row;
+            min-height: 280px;
+        }
+
+        .activity-card--left .activity-image-wrap {
+            order: 0;
+        }
+
+        .activity-card--right .activity-image-wrap {
+            order: 1;
+        }
+
+        .activity-image-wrap {
+            flex: 0 0 45%;
+            width: 45%;
+            aspect-ratio: 3 / 4;
+            min-height: 280px;
+        }
+
+        .activity-content {
+            flex: 1;
+            padding: 0 2.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .activity-title {
+            font-size: var(--font-2xl);
+        }
+
+        .activity-description {
+            font-size: var(--font-base);
+            margin-bottom: 1rem;
+        }
+
+        .activity-details {
+            font-size: var(--font-base);
+        }
+
+        .activity-included {
+            font-size: var(--font-base);
+        }
+
+        .activity-actions {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+    }
+</style>

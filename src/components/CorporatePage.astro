@@ -1,0 +1,33 @@
+---
+import { createAstroTranslator } from "../utils/i18n";
+import PageLayout from "../layouts/PageLayout.astro";
+
+import CorporateHero from "./sections/CorporateHero.astro";
+import WhatWeOffer from "./sections/WhatWeOffer.astro";
+import CorporateBookCTA from "./sections/CorporateBookCTA.astro";
+import OurTeam from "./sections/OurTeam.astro";
+import Testimonials from "./sections/Testimonials.astro";
+import ExperienceSteps from "./sections/ExperienceSteps.astro";
+import Gallery from "./sections/Gallery.astro";
+import Contact from "./sections/Contact.astro";
+
+const t = createAstroTranslator(Astro.currentLocale, "corporate");
+const currentPath = Astro.url.pathname;
+const showExperienceSteps = Astro.currentLocale !== "en";
+---
+
+<PageLayout currentPath={currentPath} title={t("meta_title")} description={t("meta_description")}>
+    <CorporateHero />
+    <WhatWeOffer variant="corporate" />
+    <CorporateBookCTA />
+    <Testimonials
+    category="company"
+     />
+    {showExperienceSteps && <ExperienceSteps />}
+
+
+
+    <Gallery />
+    <OurTeam />
+    <Contact />
+</PageLayout>

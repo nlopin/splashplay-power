@@ -5,29 +5,63 @@ import {
     getLocalizedPath,
 } from "../../utils/i18n";
 import CTAButton from "../CTAButton.astro";
+import couplesImg from "../../assets/photo/couples.jpg";
+import friendsImg from "../../assets/photo/friends.jpg";
+import familyImg from "../../assets/photo/family.jpg";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
 const lang = getCurrentLanguage(Astro.currentLocale);
+
+const couplesActivities = [
+    { nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
+    { nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
+    { nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
+];
+
+const friendsActivities = [
+    { nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: getLocalizedPath("/book/friends", lang) },
+    { nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: getLocalizedPath("/book/throw-paint", lang) },
+    { nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/customize-clothes", lang) },
+];
+
+const familyActivities = [
+    { nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: getLocalizedPath("/book/family", lang) },
+    { nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: getLocalizedPath("/book/throw-paint", lang) },
+    { nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/customize-clothes", lang) },
+];
+
+const teamsContactUrl = "#contact";
+const teamActivities = [
+    { nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: teamsContactUrl },
+    { nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: teamsContactUrl },
+    { nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: teamsContactUrl },
+    { nameKey: "activity_special_name", durationKey: "activity_special_duration", priceKey: "activity_special_price", bookingUrl: teamsContactUrl },
+];
 
 const priceCards = [
     {
         id: "friends",
         link: getLocalizedPath("/friends", lang),
         bookingLink: getLocalizedPath("/book/friends", lang),
+        activities: friendsActivities,
     },
     {
         id: "couples",
         link: getLocalizedPath("/couples", lang),
         bookingLink: getLocalizedPath("/book/couples", lang),
+        activities: couplesActivities,
     },
     {
         id: "families",
         link: getLocalizedPath("/family", lang),
         bookingLink: getLocalizedPath("/book/family", lang),
+        activities: familyActivities,
     },
     {
         id: "teams",
+        link: getLocalizedPath("/corporate", lang),
         bookingLink: "#contact",
+        activities: teamActivities,
     },
     {
         id: "individual",
@@ -36,7 +70,7 @@ const priceCards = [
 ];
 ---
 
-<section id="pricing" class="prices" data-menu-title={t("nav_pricing")}>
+<section id="pricing" class="prices prices--en" data-menu-title={t("nav_pricing")}>
     <div class="container">
         <h2 class="section-title">{t("pricing_title")}</h2>
 
@@ -51,67 +85,107 @@ const priceCards = [
 
                     <div class="pricing-cards">
                         {
-                            priceCards.map((card) => (
-                                <div class="price-card">
-                                    <div class="price-card-content">
-                                        <div class="price-card-header">
-                                            <span class="price-card-icon">
-                                                {t(`pricing.${card.id}.icon`)}
-                                            </span>
-                                            <h4>
-                                                <a
-                                                    href={card.link}
-                                                    class="price-card-title"
-                                                >
-                                                    {t(
-                                                        `pricing.${card.id}.title`,
+                            priceCards.filter((c) => c.id === "couples" || c.id === "friends" || c.id === "families" || c.id === "teams").map((card) => (
+                                <div class={`price-card ${card.id === "teams" ? "price-card--teams" : ""}`}>
+                                    <div class={card.activities ? "price-card-content--with-image" : "price-card-content"}>
+                                        {card.activities ? (
+                                            <>
+                                                <div class="price-card-image-wrap">
+                                                    <img src={card.id === "friends" ? friendsImg.src : card.id === "families" ? familyImg.src : card.id === "teams" ? friendsImg.src : couplesImg.src} alt={t(`pricing.${card.id}.image_alt`)} class="price-card-image" />
+                                                </div>
+                                                <div class="price-card-content-inner">
+                                                    <div class="price-card-top">
+                                                        <div class="price-card-header">
+                                                            <span class="price-card-icon">{t(`pricing.${card.id}.icon`)}</span>
+                                                            <h4>
+                                                                <a href={card.link} class="price-card-title">{t(`pricing.${card.id}.title_card`)}</a>
+                                                                {card.id !== "teams" && (
+                                                                    <span class="price-card-age">| {t(`pricing.${card.id}.age`)}</span>
+                                                                )}
+                                                            </h4>
+                                                        </div>
+                                                        <table class="price-activity-table">
+                                                            <tbody>
+                                                                {card.activities.map((activity) => (
+                                                                    <tr>
+                                                                        <td class="price-activity-name">{t(`pricing.${card.id}.${activity.nameKey}`)}</td>
+                                                                        <td class="price-activity-duration">{t(`pricing.${card.id}.${activity.durationKey}`)}</td>
+                                                                        <td class="price-activity-price">{t(`pricing.${card.id}.${activity.priceKey}`)}</td>
+                                                                        {card.id !== "teams" && (
+                                                                            <td class="price-activity-cta">
+                                                                                <a href={activity.bookingUrl} class="price-activity-btn">{t(`pricing.${card.id}.cta`)}</a>
+                                                                            </td>
+                                                                        )}
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    {card.id === "teams" ? (
+                                                        <div class="price-card-actions--single price-card-actions--stacked">
+                                                            <a href="#contact" class="price-activity-btn">{t("pricing.teams.cta")}</a>
+                                                            <a href={card.link} class="btn-small btn-more">
+                                                                <strong>{t("cta_more_info")}<span class="visually-hidden"> {t("cta_more_info_sr_teams")}</span></strong>
+                                                            </a>
+                                                        </div>
+                                                    ) : (
+                                                        <div class="price-card-actions--single">
+                                                            <a href={card.link} class="btn-small btn-more">
+                                                                <strong>{t("cta_more_info")}<span class="visually-hidden"> {t(`cta_more_info_sr_${card.id}`)}</span></strong>
+                                                            </a>
+                                                        </div>
                                                     )}
-                                                </a>
-                                            </h4>
-                                        </div>
-                                        <div class="price-card-body">
-                                            <div class="price-card-price">
-                                                {t(`pricing.${card.id}.price`)}
-                                            </div>
-                                            <div class="price-card-duration">
-                                                {t(
-                                                    `pricing.${card.id}.duration`,
-                                                )}
-                                            </div>
-                                            <div
-                                                class="price-card-note"
-                                                set:html={t(
-                                                    `pricing.${card.id}.description`,
-                                                )}
-                                            />
-                                        </div>
-                                        <div class="price-card-actions">
-                                            {card.bookingLink && (
-                                                <CTAButton
-                                                    href={card.bookingLink}
-                                                    text={t(
-                                                        `pricing.${card.id}.cta`,
-                                                    )}
-                                                    size="sm"
-                                                />
-                                            )}
-                                            {card.link && (
-                                                <a
-                                                    href={card.link}
-                                                    class="btn-small btn-more"
-                                                >
-                                                    <strong>
-                                                        {t("cta_more_info")}
-                                                        <span class="visually-hidden">
-                                                            {" "}
-                                                            {t(
-                                                                `cta_more_info_sr_${card.id}`,
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div class="price-card-main">
+                                            <>
+                                                <div class="price-card-body">
+                                                    <div class="price-card-price">
+                                                        {t(`pricing.${card.id}.price`)}
+                                                    </div>
+                                                    <div class="price-card-duration">
+                                                        {t(
+                                                            `pricing.${card.id}.duration`,
+                                                        )}
+                                                    </div>
+                                                    <div
+                                                        class="price-card-note"
+                                                        set:html={t(
+                                                            `pricing.${card.id}.description`,
+                                                        )}
+                                                    />
+                                                </div>
+                                                <div class="price-card-actions">
+                                                    {card.bookingLink && (
+                                                        <CTAButton
+                                                            href={card.bookingLink}
+                                                            text={t(
+                                                                `pricing.${card.id}.cta`,
                                                             )}
-                                                        </span>
-                                                    </strong>
-                                                </a>
-                                            )}
+                                                            size="sm"
+                                                        />
+                                                    )}
+                                                    {card.link && (
+                                                        <a
+                                                            href={card.link}
+                                                            class="btn-small btn-more"
+                                                        >
+                                                            <strong>
+                                                                {t("cta_more_info")}
+                                                                <span class="visually-hidden">
+                                                                    {" "}
+                                                                    {t(
+                                                                        `cta_more_info_sr_${card.id}`,
+                                                                    )}
+                                                                </span>
+                                                            </strong>
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            </>
                                         </div>
+                                        )}
                                     </div>
                                 </div>
                             ))
@@ -178,19 +252,8 @@ const priceCards = [
     }
 
     .price-card {
-        background-color: var(--white);
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        transition:
-            transform 0.3s ease,
-            box-shadow 0.3s ease;
         position: relative;
         width: 100%;
-    }
-
-    .price-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     }
 
     .price-card-content {
@@ -198,6 +261,91 @@ const priceCards = [
         display: flex;
         flex-direction: column;
         height: 100%;
+    }
+
+    .price-activity-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: var(--font-sm);
+        margin-bottom: 1rem;
+    }
+
+    .price-activity-table tr {
+        border-bottom: 1px solid rgba(102, 51, 153, 0.12);
+    }
+
+    .price-activity-table tr:last-child {
+        border-bottom: none;
+    }
+
+    .price-activity-table td {
+        padding: 0.5rem 0.5rem 0.5rem 0;
+        vertical-align: middle;
+    }
+
+    .price-activity-name {
+        color: var(--purple);
+        font-weight: 600;
+    }
+
+    .price-activity-duration {
+        color: var(--dark-text);
+        white-space: nowrap;
+    }
+
+    .price-activity-price {
+        color: var(--dark-text);
+        font-size: 0.85em;
+    }
+
+    .price-activity-cta {
+        text-align: right;
+    }
+
+    .price-activity-btn {
+        display: inline-block;
+        padding: 0.4rem 0.75rem;
+        font-size: var(--font-sm);
+        font-weight: 700;
+        color: var(--white);
+        background-color: var(--orange);
+        border-radius: 8px;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: all 0.2s ease;
+    }
+
+    .price-activity-btn:hover {
+        background-color: var(--purple);
+        transform: translateY(-2px);
+    }
+
+    .price-card-actions--single.price-card-actions--stacked {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .price-card-actions--single {
+        display: block;
+        padding-top: 0.75rem;
+        margin-top: 0;
+        min-height: auto;
+        text-align: center;
+    }
+
+    .price-card-actions--single .btn-small {
+        font-weight: 600;
+        text-decoration: underline;
+    }
+
+    .price-card-actions--single .btn-small:hover {
+        text-decoration: underline;
+    }
+
+    .price-card-content--with-image .price-activity-table {
+        margin-bottom: 0.1rem;
     }
 
     .price-card-actions {
@@ -247,6 +395,13 @@ const priceCards = [
 
     .price-card-title:hover {
         color: var(--orange);
+    }
+
+    .price-card-age {
+        color: var(--purple);
+        font-size: 1.2em;
+        font-weight: 600;
+        margin-left: 1rem;
     }
 
     .price-card-body {
@@ -329,34 +484,151 @@ const priceCards = [
         }
     }
 
-    /* Tablet and up */
+    /* English homepage: horizontal stacked layout */
+    .prices--en .pricing-tabs {
+        max-width: 1000px;
+    }
+
+    .prices--en .pricing-cards {
+        flex-direction: column;
+        gap: 2rem;
+        align-items: stretch;
+    }
+
+    .prices--en .price-card {
+        width: 100%;
+        max-width: none;
+        min-width: auto;
+        padding: 0;
+    }
+
+    .prices--en .price-card-content {
+        padding: 1.5rem 2rem;
+    }
+
+    .prices--en .price-card:has(.price-card-content--with-image) {
+        overflow: hidden;
+    }
+
+    .price-card-content--with-image {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+    }
+
+    .price-card-content--with-image .price-card-image-wrap {
+        flex: 0 0 auto;
+        width: 100%;
+        aspect-ratio: 3 / 4;
+        overflow: hidden;
+        border-radius: 12px;
+    }
+
+    .price-card-content--with-image .price-card-content-inner {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 0 1.5rem 1.25rem 1.25rem;
+    }
+
+    .price-card-content--with-image .price-card-top {
+        padding: 0;
+    }
+
+    .price-card-content--with-image .price-card-actions--single {
+        padding: 0.75rem 0 0;
+    }
+
+    .price-card--teams .price-card-actions--single {
+        padding-top: 1.5rem;
+    }
+
+    .price-card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    @media (min-width: 600px) {
+        .price-card-content--with-image {
+            flex-direction: row;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        .price-card-content--with-image .price-card-image-wrap {
+            flex: 0 0 45%;
+            width: 45%;
+            max-width: 220px;
+        }
+
+        .price-card-content--with-image .price-card-content-inner {
+            flex: 1;
+        }
+    }
+
+    .price-card-content--with-image .price-card-header {
+        margin-bottom: 0.75rem;
+    }
+
+    .prices--en .price-card-title {
+        font-size: var(--font-2xl);
+    }
+
+    .prices--en .price-activity-table {
+        font-size: var(--font-base);
+    }
+
+    .price-card-content--with-image .price-activity-table td {
+        padding: 0.4rem 0.5rem 0.4rem 0;
+    }
+
+    .price-card--teams .price-activity-table td {
+        padding: 0.75rem 0.5rem 0.75rem 0;
+    }
+
+    .prices--en .price-activity-name {
+        font-size: var(--font-base);
+    }
+
+    .prices--en .price-activity-btn {
+        padding: 0.5rem 1rem;
+    }
+
+    /* Tablet and up - default layout (non-English) */
     @media (min-width: 768px) {
-        .pricing-cards {
+        .prices:not(.prices--en) .pricing-cards {
             flex-direction: row;
             flex-wrap: wrap;
             justify-content: center;
             overflow-x: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--orange) #f0f0f0;
         }
 
-        .pricing-cards::-webkit-scrollbar {
+        .prices:not(.prices--en) .pricing-cards::-webkit-scrollbar {
             height: 8px;
         }
 
-        .pricing-cards::-webkit-scrollbar-track {
+        .prices:not(.prices--en) .pricing-cards::-webkit-scrollbar-track {
             background: #f0f0f0;
             border-radius: 4px;
         }
 
-        .pricing-cards::-webkit-scrollbar-thumb {
+        .prices:not(.prices--en) .pricing-cards::-webkit-scrollbar-thumb {
             background-color: var(--orange);
             border-radius: 4px;
         }
 
-        .price-card {
+        .prices:not(.prices--en) .price-card {
             min-width: 280px;
             max-width: 300px;
+        }
+
+        .prices:not(.prices--en) .price-card:has(.price-activity-table) {
+            min-width: 320px;
+            max-width: 380px;
         }
     }
 

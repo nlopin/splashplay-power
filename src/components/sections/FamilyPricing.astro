@@ -4,105 +4,328 @@ import {
     getCurrentLanguage,
     getLocalizedPath,
 } from "../../utils/i18n";
+import smallCanvas from "../../assets/img/30x40_compartido.jpg";
+import largeCanvas from "../../assets/img/60x80_compartido.jpg";
+import twoCanvases from "../../assets/img/30x40_2individuales.jpg";
+import clothing1 from "../../assets/photo/clothing/clothing1-074c0620-2ca8-40fd-b3b0-c18bdfb1199c.png";
+import clothing2 from "../../assets/photo/clothing/clothing2-71fec5c8-abb0-43c7-b790-5d926bd3b104.png";
+import clothing3 from "../../assets/photo/clothing/clothing3-f0f01b38-f4ca-4930-9a3b-163e191923ce.png";
+import clothing4 from "../../assets/photo/clothing/clothing4-848c4160-7c5c-43f9-83ce-2ce5febb0bb6.png";
 
 const t = createAstroTranslator(Astro.currentLocale, "family");
 const tMain = createAstroTranslator(Astro.currentLocale, "main");
+const tHome = createAstroTranslator(Astro.currentLocale, "home");
 const lang = getCurrentLanguage(Astro.currentLocale);
 
-const pricingOptions = [
-    {
-        canvasKey: "option1_canvas",
-        price: 60,
-        pricePerPerson: null,
-        peopleKey: "option1_people",
-        peopleCount: 1,
-    },
-    {
-        canvasKey: "option2_canvas",
-        price: 90,
-        pricePerPerson: 45,
-        peopleKey: "option2_people",
-        peopleCount: 2,
-    },
-    {
-        canvasKey: "option3_canvas",
-        price: 120,
-        pricePerPerson: 40,
-        peopleKey: "option3_people",
-        peopleCount: 3,
-    },
-    {
-        canvasKey: "option4_canvas",
-        price: 140,
-        pricePerPerson: 35,
-        peopleKey: "option4_people",
-        peopleCount: 4,
-    },
-    {
-        canvasKey: "option5_canvas",
-        price: 160,
-        pricePerPerson: 32,
-        peopleKey: "option5_people",
-        peopleCount: 5,
-    },
-    {
-        canvasKey: "option6_canvas",
-        price: 180,
-        pricePerPerson: 30,
-        peopleKey: "option6_people",
-        peopleCount: 6,
-    },
+const clothingPhotos = [clothing1, clothing2, clothing3, clothing4];
+
+const activity2Columns = [
+    { headerKey: "activity_2_table_1_header", priceKey: "activity_2_table_1_price", descKey: "activity_2_table_1_desc" },
+    { headerKey: "activity_2_table_2_header", priceKey: "activity_2_table_2_price", descKey: "activity_2_table_2_desc" },
+    { headerKey: "activity_2_table_3_header", priceKey: "activity_2_table_3_price", descKey: "activity_2_table_3_desc" },
 ];
+
+const activity3Columns = [
+    { headerKey: "activity_3_table_1_header", priceKey: "activity_3_table_1_price", descKey: "activity_3_table_1_desc" },
+    { headerKey: "activity_3_table_2_header", priceKey: "activity_3_table_2_price", descKey: "activity_3_table_2_desc" },
+    { headerKey: "activity_3_table_3_header", priceKey: "activity_3_table_3_price", descKey: "activity_3_table_3_desc" },
+];
+
+// Table: columns = group sizes (2,3,4,5,6 people), rows = canvas count options
+// null means this option is not available for that group
+const activity1Groups = [
+    { headerKey: "pt_group_2_header", subheaderKey: "pt_group_2_sub" },
+    { headerKey: "pt_group_3_header", subheaderKey: "pt_group_3_sub" },
+    { headerKey: "pt_group_4_header", subheaderKey: "pt_group_4_sub" },
+    { headerKey: "pt_group_5_header", subheaderKey: "pt_group_5_sub" },
+    { headerKey: "pt_group_6_header", subheaderKey: "pt_group_6_sub" },
+];
+
+// Each row: one canvas-count option. Per group: [labelKey, priceKey] or null if unavailable.
+type OptCell = { labelKey: string; priceKey: string } | null;
+const activity1Rows: { cells: OptCell[] }[] = [
+    { cells: [
+        { labelKey: "pt_2_opt1", priceKey: "pt_2_opt1_pp" },
+        { labelKey: "pt_3_opt1", priceKey: "pt_3_opt1_pp" },
+        null,
+        null,
+        null,
+    ]},
+    { cells: [
+        { labelKey: "pt_2_opt2", priceKey: "pt_2_opt2_pp" },
+        { labelKey: "pt_3_opt2", priceKey: "pt_3_opt2_pp" },
+        { labelKey: "pt_4_opt2", priceKey: "pt_4_opt2_pp" },
+        null,
+        null,
+    ]},
+    { cells: [
+        null,
+        { labelKey: "pt_3_opt3", priceKey: "pt_3_opt3_pp" },
+        { labelKey: "pt_4_opt3", priceKey: "pt_4_opt3_pp" },
+        { labelKey: "pt_5_opt3", priceKey: "pt_5_opt3_pp" },
+        { labelKey: "pt_6_opt3", priceKey: "pt_6_opt3_pp" },
+    ]},
+    { cells: [
+        null,
+        null,
+        { labelKey: "pt_4_opt4", priceKey: "pt_4_opt4_pp" },
+        { labelKey: "pt_5_opt4", priceKey: "pt_5_opt4_pp" },
+        { labelKey: "pt_6_opt4", priceKey: "pt_6_opt4_pp" },
+    ]},
+    { cells: [
+        null,
+        null,
+        null,
+        { labelKey: "pt_5_opt5", priceKey: "pt_5_opt5_pp" },
+        { labelKey: "pt_6_opt5", priceKey: "pt_6_opt5_pp" },
+    ]},
+    { cells: [
+        null,
+        null,
+        null,
+        null,
+        { labelKey: "pt_6_opt6", priceKey: "pt_6_opt6_pp" },
+    ]},
+];
+
+// Big canvas row (always last, separator above)
+const activity1BigRow: OptCell[] = [
+    { labelKey: "pt_2_big", priceKey: "pt_2_big_pp" },
+    { labelKey: "pt_3_big", priceKey: "pt_3_big_pp" },
+    { labelKey: "pt_4_big", priceKey: "pt_4_big_pp" },
+    { labelKey: "pt_5_big", priceKey: "pt_5_big_pp" },
+    { labelKey: "pt_6_big", priceKey: "pt_6_big_pp" },
+];
+
+// For mobile cards, reconstruct per-group options list
+const activity1GroupsWithOptions = activity1Groups.map((group, gi) => ({
+    ...group,
+    options: [
+        ...activity1Rows.map(row => row.cells[gi]).filter(Boolean) as { labelKey: string; priceKey: string }[],
+        activity1BigRow[gi] as { labelKey: string; priceKey: string },
+    ],
+}));
+
+const bookBaseUrl = getLocalizedPath("/book/family", lang);
+const bookThrowPaintUrl = getLocalizedPath("/book/throw-paint", lang);
+const bookCustomizeClothesUrl = getLocalizedPath("/book/customize-clothes", lang);
+
+function headerWithHighlightedNum(text: string) {
+    const match = text.match(/^(\d+)(.*)$/);
+    if (match) {
+        return { num: match[1], rest: match[2] };
+    }
+    return null;
+}
+
+function renderHeaderHtml(raw: string) {
+    const withSize = raw.replace(/(\d+[x×]\d+)/g, '<span class="header-size">$1</span>');
+    const parsed = headerWithHighlightedNum(withSize);
+    return parsed ? `<span class="header-num">${parsed.num}</span>${parsed.rest}` : withSize;
+}
+
+// Splits "1 canvas — €60" into { canvasLabel: "1 canvas", price: "€60" }
+function parseOptLabel(text: string): { canvasLabel: string; price: string } | null {
+    const match = text.match(/^(.+?)\s*[—–-]\s*(€\S+)$/);
+    if (match) {
+        return { canvasLabel: match[1].trim(), price: match[2].trim() };
+    }
+    return null;
+}
 ---
 
-<section id="prices" class="prices prices--friends">
+<section id="pricing" class="prices prices--friends" data-menu-title={tMain("nav_pricing")}>
     <div class="container">
-        <h2 class="section-title" id="pricing" data-menu-title={tMain("nav_pricing")}>{t("pricing_title")}</h2>
+        <h2 class="section-title">{t("pricing_title")}</h2>
 
-        <div class="price-header">
-            <div class="price-summary">
-                <p class="techniques-info" set:html={t("pricing_intro")} />
-                <table class="price-table">
+        <!-- Activity 1: Create your abstract masterpiece -->
+        <div class="pricing-activity pricing-activity--wide">
+            <h3 class="pricing-activity-title">
+                {tHome("activity_1_title")}
+                <span class="pricing-activity-meta">{t("activity_1_meta")}</span>
+            </h3>
+            <p class="pricing-activity-description" set:html={t("pricing_activity1_description")} />
+            <!-- Mobile: one card per group size -->
+            <div class="pricing-cards-mobile">
+                {activity1GroupsWithOptions.map((group) => (
+                    <div class="pricing-card-mobile pricing-card-mobile--group">
+                        <div class="pricing-card-mobile-header">{t(group.headerKey)}</div>
+                        <div class="pricing-card-mobile-subheader">{t(group.subheaderKey)}</div>
+                        <ul class="pricing-card-mobile-options">
+                            {group.options.map((opt) => {
+                                const parsed = parseOptLabel(t(opt.labelKey));
+                                return (
+                                    <li>
+                                        <span class="opt-row-main">
+                                            <span class="opt-canvas-label">{parsed ? parsed.canvasLabel : t(opt.labelKey)}</span>
+                                            {parsed && <span class="opt-canvas-price">{parsed.price}</span>}
+                                        </span>
+                                        <span class="opt-price">{t(opt.priceKey)}</span>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                        <a href={bookBaseUrl} class="pricing-btn pricing-btn--mobile">{t("cta_book_button")}</a>
+                    </div>
+                ))}
+            </div>
+            <!-- Desktop table: columns = group sizes, rows = canvas options -->
+            <div class="pricing-table-wrap pricing-table-wrap--groups">
+                <table class="pricing-table pricing-table--groups">
                     <thead>
                         <tr>
-                            <th>{t("table_canvases")}</th>
-                            <th>{t("table_price")}</th>
-                            <th>{t("table_price_per")}</th>
-                            <th>{t("table_recommended")}</th>
-                            <th></th>
+                            {activity1Groups.map((group) => (
+                                <th scope="col" style="background: #ddd0f0; color: var(--purple);">
+                                    <div class="th-header" style="color: var(--purple);">{t(group.headerKey)}</div>
+                                    <div class="th-sub" style="color: rgba(80,40,120,0.65);">{t(group.subheaderKey)}</div>
+                                </th>
+                            ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            pricingOptions.map((option) => (
-                                <tr>
-                                    <td data-label={t("table_canvases")}>
-                                        {t(option.canvasKey)}
-                                    </td>
-                                    <td data-label={t("table_price")}>
-                                        €{option.price}
-                                    </td>
-                                    <td data-label={t("table_price_per")}>
-                                        {option.pricePerPerson
-                                            ? `€${option.pricePerPerson}`
-                                            : ""}
-                                    </td>
-                                    <td data-label={t("table_recommended")}>
-                                        {t(option.peopleKey)}
-                                    </td>
+                        {activity1Rows.map((row) => (
+                            <tr>
+                                {row.cells.map((cell) => {
+                                    if (!cell) return <td class="td-empty" />;
+                                    const parsed = parseOptLabel(t(cell.labelKey));
+                                    return (
+                                        <td>
+                                            <span class="opt-row-main">
+                                                <span class="opt-canvas-label">{parsed ? parsed.canvasLabel : t(cell.labelKey)}</span>
+                                                {parsed && <span class="opt-canvas-price">{parsed.price}</span>}
+                                            </span>
+                                            <span class="opt-price">{t(cell.priceKey)}</span>
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                        <tr class="tr-big-canvas">
+                            {activity1BigRow.map((cell) => {
+                                if (!cell) return <td class="td-empty" />;
+                                const parsed = parseOptLabel(t(cell.labelKey));
+                                return (
                                     <td>
-                                        <a
-                                            href={`${getLocalizedPath("/book/family", lang)}`}
-                                            class="btn btn-small"
-                                        >
-                                            {t("cta_book_button")}
-                                        </a>
+                                        <span class="opt-row-main">
+                                            <span class="opt-canvas-label">{parsed ? parsed.canvasLabel : t(cell.labelKey)}</span>
+                                            {parsed && <span class="opt-canvas-price">{parsed.price}</span>}
+                                        </span>
+                                        <span class="opt-price">{t(cell.priceKey)}</span>
                                     </td>
-                                </tr>
-                            ))
-                        }
+                                );
+                            })}
+                        </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="pricing-table-cta">
+                <a href={bookBaseUrl} class="pricing-btn pricing-btn--standalone">{t("cta_book_button")}</a>
+            </div>
+            <h4 class="canvas-reference-title">{t("canvas_size_reference")}</h4>
+            <div class="canvas-examples">
+                <div class="canvas-example">
+                    <span class="canvas-example-img-wrap">
+                        <img src={smallCanvas.src} alt="30×40 cm" class="canvas-example-image" />
+                    </span>
+                    <span class="canvas-example-caption">Standard 30×40 cm</span>
+                </div>
+                <div class="canvas-example">
+                    <span class="canvas-example-img-wrap">
+                        <img src={largeCanvas.src} alt="60×80 cm" class="canvas-example-image" />
+                    </span>
+                    <span class="canvas-example-caption">Big 60×80 cm</span>
+                </div>
+                <div class="canvas-example">
+                    <span class="canvas-example-img-wrap">
+                        <img src={twoCanvases.src} alt="2× 30×40 cm" class="canvas-example-image" />
+                    </span>
+                    <span class="canvas-example-caption">2 standard 30×40 cm</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity 2: Throw paint & have fun! -->
+        <div class="pricing-activity">
+            <h3 class="pricing-activity-title">
+                {tHome("activity_2_title")}
+                <span class="pricing-activity-meta">{t("activity_2_meta")}</span>
+            </h3>
+            <p class="pricing-activity-description">{t("activity_2_description")}</p>
+            <div class="pricing-cards-mobile pricing-cards-mobile--activity2">
+                {activity2Columns.map((col) => (
+                    <div class="pricing-card-mobile">
+                        <div class="pricing-card-mobile-header">{t(col.headerKey)}</div>
+                        <div class="pricing-card-mobile-price">{t(col.priceKey)}</div>
+                        <a href={bookThrowPaintUrl} class="pricing-btn pricing-btn--mobile">{t("cta_book_button")}</a>
+                    </div>
+                ))}
+            </div>
+            <div class="pricing-table-wrap pricing-table-wrap--simple">
+                <table class="pricing-table pricing-table--simple">
+                    <thead>
+                        <tr>
+                            {activity2Columns.map((col) => (
+                                <th scope="col">{t(col.headerKey)}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="pricing-row-price">
+                            {activity2Columns.map((col) => (
+                                <td data-label={t(col.headerKey)} class="price-total">{t(col.priceKey)}</td>
+                            ))}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pricing-table-cta">
+                <a href={bookThrowPaintUrl} class="pricing-btn pricing-btn--standalone">{t("cta_book_button")}</a>
+            </div>
+        </div>
+
+        <!-- Activity 3: Customize your clothes -->
+        <div class="pricing-activity">
+            <h3 class="pricing-activity-title">
+                {tHome("activity_3_title")}
+                <span class="pricing-activity-meta">{t("activity_3_meta")}</span>
+            </h3>
+            <p class="pricing-activity-description">{t("activity_3_description")}</p>
+            <div class="clothing-photos">
+                {clothingPhotos.map((img) => (
+                    <span class="clothing-photo-wrap">
+                        <img src={img.src} alt="Customized clothing" class="clothing-photo" />
+                    </span>
+                ))}
+            </div>
+            <div class="pricing-cards-mobile pricing-cards-mobile--activity3">
+                {activity3Columns.map((col) => (
+                    <div class="pricing-card-mobile">
+                        <div class="pricing-card-mobile-header">{t(col.headerKey)}</div>
+                        <div class="pricing-card-mobile-price">{t(col.priceKey)}</div>
+                        <a href={bookCustomizeClothesUrl} class="pricing-btn pricing-btn--mobile">{t("cta_book_button")}</a>
+                    </div>
+                ))}
+            </div>
+            <div class="pricing-table-wrap pricing-table-wrap--simple">
+                <table class="pricing-table pricing-table--simple">
+                    <thead>
+                        <tr>
+                            {activity3Columns.map((col) => (
+                                <th scope="col">{t(col.headerKey)}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="pricing-row-price">
+                            {activity3Columns.map((col) => (
+                                <td data-label={t(col.headerKey)} class="price-total">{t(col.priceKey)}</td>
+                            ))}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pricing-table-cta">
+                <a href={bookCustomizeClothesUrl} class="pricing-btn pricing-btn--standalone">{t("cta_book_button")}</a>
             </div>
         </div>
     </div>
@@ -115,167 +338,465 @@ const pricingOptions = [
         scroll-margin-top: 60px;
     }
 
-    .price-header {
+    .prices--friends .section-title {
         text-align: center;
-        margin-bottom: 1rem;
+    }
+
+    .pricing-activity {
         max-width: 900px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .price-summary {
-        max-width: 720px;
-        margin: 0.5rem auto 0;
+        margin: 0 auto 3rem;
         text-align: center;
     }
 
-    .techniques-info {
-        margin-bottom: 2rem;
-        color: var(--dark-text);
-        font-size: var(--font-base);
-        line-height: 1.6;
-        text-align: center;
+    .pricing-activity:last-child {
+        margin-bottom: 0;
     }
 
-    .price-table {
-        width: 100%;
-        max-width: 720px;
-        margin: 0.75rem auto 1rem;
-        border-collapse: collapse;
-        background: var(--white);
-        border: 1px solid #eee;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    .pricing-activity--wide {
+        max-width: 1100px;
     }
 
-    .price-table th,
-    .price-table td {
-        padding: 0.9rem 1rem;
-        text-align: left;
-    }
-
-    .price-table th:last-child,
-    .price-table td:last-child {
-        text-align: center;
-    }
-
-    .price-table thead th {
-        background: rgba(102, 51, 153, 0.06);
+    .pricing-activity-title {
+        font-size: var(--font-xl);
         color: var(--purple);
         font-weight: 700;
+        margin: 0 0 1rem;
+        line-height: 1.3;
     }
 
-    .price-table tbody tr:not(:last-child) td {
-        border-bottom: 1px solid #eee;
-    }
-
-    .price-table td:nth-child(2),
-    .price-table td:nth-child(3) {
+    .pricing-activity-meta {
+        display: inline;
+        font-size: var(--font-base);
         font-weight: 700;
-        font-size: var(--font-lg);
+        color: var(--dark-text);
+        margin-left: 0.5rem;
     }
 
-    /* Price per group (column 2) in orange */
-    .price-table td:nth-child(2) {
+    .pricing-activity-description {
+        font-size: var(--font-base);
+        color: var(--dark-text);
+        line-height: 1.6;
+        margin: 0 0 1.5rem;
+    }
+
+    .clothing-photos {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .clothing-photo-wrap {
+        display: block;
+        border-radius: 12px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .clothing-photo {
+        display: block;
+        width: 100%;
+        max-width: 140px;
+        height: auto;
+        object-fit: contain;
+        vertical-align: top;
+    }
+
+    @media (max-width: 600px) {
+        .clothing-photo {
+            max-width: 100px;
+        }
+    }
+
+    .canvas-reference-title {
+        font-size: var(--font-sm);
+        font-weight: 600;
+        color: var(--purple);
+        margin: 2rem 0 1rem;
+        text-align: center;
+    }
+
+    .canvas-examples {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        max-width: 560px;
+        margin: 0 auto 1.5rem;
+    }
+
+    .canvas-example {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .canvas-example-img-wrap {
+        display: block;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .canvas-example-image {
+        display: block;
+        width: 100%;
+        height: auto;
+        vertical-align: top;
+    }
+
+    .canvas-example-caption {
+        font-size: var(--font-xs);
+        color: var(--purple);
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+        .canvas-examples {
+            grid-template-columns: 1fr;
+            max-width: 280px;
+        }
+    }
+
+    .pricing-cards-mobile {
+        display: none;
+    }
+
+    .pricing-table-wrap {
+        overflow-x: auto;
+        border-radius: 12px;
+        border: 1px solid rgba(102, 51, 153, 0.12);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .pricing-table {
+        width: 100%;
+        min-width: 600px;
+        border-collapse: collapse;
+        background: var(--white);
+        font-size: var(--font-sm);
+    }
+
+    /* Groups table (activity 1 new layout) */
+    .pricing-table-wrap--groups {
+        border-radius: 12px;
+        border: 1px solid rgba(102, 51, 153, 0.12);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        overflow-x: auto;
+    }
+
+    .pricing-table--groups {
+        width: 100%;
+        min-width: 700px;
+        border-collapse: collapse;
+        background: var(--white);
+        font-size: var(--font-sm);
+        table-layout: fixed;
+    }
+
+    .pricing-table--groups th {
+        padding: 0.85rem 0.75rem;
+        text-align: center;
+        font-weight: 700;
+        font-size: var(--font-sm);
+        vertical-align: top;
+        background: var(--purple);
+        color: var(--white);
+    }
+
+    .pricing-table--groups td:nth-child(odd) {
+        background: #f7f3fd;
+    }
+
+    .pricing-table--groups td:nth-child(even) {
+        background: #fffaf5;
+    }
+
+    .td-big-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.15rem;
+    }
+
+    .th-header {
+        font-size: var(--font-base);
+        font-weight: 800;
+        color: var(--purple);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        margin-bottom: 0.25rem;
+    }
+
+    .th-sub {
+        font-size: var(--font-xs);
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    .pricing-table--groups td {
+        padding: 0.6rem 0.75rem;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .td-empty {
+        /* inherits column color from nth-child */
+    }
+
+    .tr-big-canvas td {
+        border-top: 1px dashed rgba(102, 51, 153, 0.25) !important;
+    }
+
+    .opt-row-main {
+        display: flex;
+        align-items: baseline;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .opt-canvas-label {
+        font-size: var(--font-base);
+        font-weight: 700;
+        color: var(--purple);
+    }
+
+    .opt-canvas-price {
+        font-size: var(--font-base);
+        font-weight: 800;
         color: var(--orange);
     }
 
-    /* Price per person (column 3) in purple */
-    .price-table td:nth-child(3) {
+    .opt-price {
+        font-size: var(--font-sm);
+        font-weight: 400;
+        color: var(--dark-text);
+    }
+
+    /* Mobile cards for groups table */
+    .pricing-card-mobile--group .pricing-card-mobile-subheader {
+        font-size: var(--font-xs);
+        color: var(--dark-text);
+        opacity: 0.7;
+        margin-bottom: 0.75rem;
+    }
+
+    .pricing-card-mobile-options {
+        list-style: none;
+        margin: 0 0 1rem;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: left;
+    }
+
+    .pricing-card-mobile-options li {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.15rem;
+        padding: 0.4rem 0;
+        border-bottom: 1px solid rgba(102, 51, 153, 0.07);
+        font-size: var(--font-sm);
+    }
+
+    .pricing-card-mobile-options li:last-child {
+        border-bottom: none;
+    }
+
+    .pricing-card-mobile-options .opt-canvas-label {
+        font-weight: 700;
         color: var(--purple);
     }
 
-    .btn {
+    .pricing-card-mobile-options .opt-canvas-price {
+        font-weight: 800;
+        color: var(--orange);
+    }
+
+    .pricing-card-mobile-options .opt-price {
+        font-weight: 400;
+        color: var(--dark-text);
+        white-space: nowrap;
+        margin-left: 0.25rem;
+    }
+
+    .pricing-table--simple {
+        table-layout: fixed;
+        min-width: 400px;
+    }
+
+    .pricing-table--simple th,
+    .pricing-table--simple td {
+        width: 33.333%;
+    }
+
+    .pricing-table:not(.pricing-table--groups) th {
+        padding: 1rem 0.75rem;
+        text-align: center;
+        color: var(--purple);
+    }
+
+    .pricing-table:not(.pricing-table--groups) th:nth-child(odd) {
+        background: #66339908;
+    }
+
+    .pricing-table:not(.pricing-table--groups) th:nth-child(even) {
+        background: var(--white);
+    }
+
+    .pricing-table:not(.pricing-table--groups) td:nth-child(odd) {
+        background: #66339908;
+    }
+
+    .pricing-table:not(.pricing-table--groups) td:nth-child(even) {
+        background: var(--white);
+    }
+
+    .pricing-table th :global(.header-num) {
+        color: var(--orange);
+        font-weight: 900;
+        font-size: 1.25em;
+    }
+
+    .pricing-table th :global(.header-size) {
+        font-weight: 900;
+    }
+
+    .pricing-table td {
+        padding: 0.75rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(102, 51, 153, 0.08);
+    }
+
+    .pricing-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .pricing-table .price-per-person-highlight {
+        font-size: var(--font-base);
+        font-weight: 700;
+        color: var(--orange);
+    }
+
+    .pricing-table .price-total {
+        font-size: var(--font-base);
+        font-weight: 700;
+        color: var(--purple);
+    }
+
+    .pricing-table-cta {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .pricing-btn {
         display: inline-block;
         background-color: var(--orange);
         color: var(--white);
-        padding: 0.6rem 1.2rem;
+        padding: 0.5rem 1rem;
         border-radius: 30px;
-        font-weight: bold;
+        font-weight: 700;
         text-transform: uppercase;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
         font-size: var(--font-sm);
+        letter-spacing: 0.02em;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        white-space: nowrap;
     }
 
-    .btn:hover {
+    .pricing-btn:hover {
         background-color: var(--purple);
         transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 12px rgba(102, 51, 153, 0.3);
     }
 
-    .btn-small {
-        padding: 0.5rem 1rem;
+    .pricing-btn--standalone {
+        padding: 0.6rem 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+        .pricing-btn--standalone {
+            padding: 0.9rem 2.5rem;
+            font-size: var(--font-base);
+        }
+    }
+
+    .pricing-card-mobile {
+        background: var(--white);
+        border: 1px solid rgba(102, 51, 153, 0.12);
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .pricing-card-mobile:last-child {
+        margin-bottom: 0;
+    }
+
+    .pricing-card-mobile-header {
+        font-size: var(--font-base);
+        font-weight: 700;
+        color: var(--purple);
+        margin-bottom: 0.75rem;
+    }
+
+    .pricing-card-mobile-header :global(.header-num) {
+        color: var(--orange);
+    }
+
+    .pricing-card-mobile-price {
+        font-size: var(--font-2xl);
+        font-weight: 700;
+        color: var(--orange);
+        margin-bottom: 0.5rem;
+    }
+
+    .pricing-card-mobile-row {
         font-size: var(--font-sm);
+        color: var(--dark-text);
+        margin-bottom: 0.25rem;
     }
 
-    /* Mobile Table Styles */
+    .pricing-card-mobile-total {
+        font-size: var(--font-sm);
+        font-weight: 700;
+        color: var(--purple);
+        margin-bottom: 1rem;
+    }
+
+    .pricing-btn--mobile {
+        display: block;
+        text-align: center;
+    }
+
     @media (max-width: 767px) {
-        .price-table,
-        .price-table tbody,
-        .price-table tr,
-        .price-table th,
-        .price-table td {
+        .pricing-cards-mobile {
             display: block;
-            width: 100%;
-            background-color: transparent;
-            box-shadow: none;
-            border: none;
-            border-radius: 0;
+            margin-bottom: 1.5rem;
         }
 
-        .price-table thead {
+        .pricing-table-wrap,
+        .pricing-table-wrap--groups {
             display: none;
         }
 
-        .price-table tr {
-            margin-bottom: 1rem;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            background-color: var(--white);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            padding: 1rem;
-        }
-
-        .price-table td {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 0;
-            border-bottom: none;
-            font-size: var(--font-sm);
-        }
-
-        .price-table td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: var(--purple);
-            font-size: var(--font-sm);
-            text-align: left;
-            white-space: normal;
-            word-break: break-word;
-            flex-shrink: 0;
-            padding-right: 0.5rem;
-        }
-
-        .price-table td:last-of-type {
-            border-bottom: none;
-        }
-
-        .price-table td:last-child {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-top: 1px solid #eee;
-            margin-top: 0.5rem;
-        }
-
-        .price-table td:last-child::before {
+        .pricing-table-cta {
             display: none;
+        }
+
+        .pricing-table-cta--visible-mobile {
+            display: block;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .pricing-table-wrap,
+        .pricing-table-wrap--groups {
+            display: block;
         }
     }
 </style>

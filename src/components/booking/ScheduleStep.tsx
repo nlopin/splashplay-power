@@ -14,6 +14,7 @@ import { EventTypeOptions } from "./eventTypeOptions";
 export interface ScheduleStepProps {
   availability: Availability;
   selectedTimeSlot: SelectedTimeSlot | null;
+  currentAmount: number | null;
   isLoading: boolean;
   eventType: EventType;
   onTimeSlotSelect: (slot: SelectedTimeSlot | null) => void;
@@ -24,6 +25,7 @@ export interface ScheduleStepProps {
 export function ScheduleStep({
   availability,
   selectedTimeSlot,
+  currentAmount,
   isLoading,
   eventType,
   onTimeSlotSelect,
@@ -65,14 +67,23 @@ export function ScheduleStep({
       <div className="book-button-container">
         <button
           className={`pay-to-book-btn ${isLoading ? "loading" : ""}`}
-          disabled={!(selectedTimeSlot !== null) || isLoading}
+          disabled={
+            !selectedTimeSlot ||
+            isLoading ||
+            (currentAmount != null && currentAmount <= 0)
+          }
           onClick={onPayToBook}
         >
           {isLoading ? t("loading") : `${t("pay_to_book")}`}
         </button>
-        {!(selectedTimeSlot !== null) && (
+        {!selectedTimeSlot && (
           <p className="schedule-error">{t("select_time_to_continue")}</p>
         )}
+        {selectedTimeSlot &&
+          currentAmount != null &&
+          currentAmount <= 0 && (
+            <p className="schedule-error">{t("select_min_participants")}</p>
+          )}
       </div>
     </div>
   );

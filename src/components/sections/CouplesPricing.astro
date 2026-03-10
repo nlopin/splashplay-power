@@ -7,10 +7,18 @@ import {
 import twoCanvases from "../../assets/img/30x40_2individuales.jpg";
 import largeCanvas from "../../assets/img/60x80_compartido.jpg";
 import smallCanvas from "../../assets/img/30x40_compartido.jpg";
+import clothing1 from "../../assets/photo/clothing/clothing1-074c0620-2ca8-40fd-b3b0-c18bdfb1199c.png";
+import clothing2 from "../../assets/photo/clothing/clothing2-71fec5c8-abb0-43c7-b790-5d926bd3b104.png";
+import clothing3 from "../../assets/photo/clothing/clothing3-f0f01b38-f4ca-4930-9a3b-163e191923ce.png";
+import clothing4 from "../../assets/photo/clothing/clothing4-848c4160-7c5c-43f9-83ce-2ce5febb0bb6.png";
 
 const t = createAstroTranslator(Astro.currentLocale, "couples");
+const tHome = createAstroTranslator(Astro.currentLocale, "home");
 const tMain = createAstroTranslator(Astro.currentLocale, "main");
 const lang = getCurrentLanguage(Astro.currentLocale);
+
+const clothingPhotos = [clothing1, clothing2, clothing3, clothing4];
+const bookUrl = getLocalizedPath("/book/couples", lang);
 
 const pricingOptions = [
     {
@@ -46,6 +54,11 @@ const pricingOptions = [
 <section id="prices" class="prices prices--couples">
     <div class="container">
         <h2 class="section-title" id="pricing" data-menu-title={tMain("nav_pricing")}>{t("pricing_title")}</h2>
+
+        <h3 class="pricing-activity-title">
+            {t("pricing_activity_title")}
+            <span class="pricing-activity-meta">{t("pricing_activity_meta")}</span>
+        </h3>
 
         <div class="price-header">
             <div class="price-summary">
@@ -90,6 +103,46 @@ const pricingOptions = [
                 </div>
             </div>
         </div>
+
+        <!-- Activity 2: Throw paint & have fun! -->
+        <div class="pricing-activity">
+            <h3 class="pricing-activity-title">
+                {tHome("activity_2_title")}
+                <span class="pricing-activity-meta">{t("pricing_activity2_meta")}</span>
+            </h3>
+            <p class="pricing-activity-description">{t("pricing_activity2_description")}</p>
+            <div class="couple-price-display">
+                <div class="couple-price-amount">{t("pricing_activity2_price")}</div>
+                <div class="couple-price-per">{t("pricing_activity2_per")}</div>
+            </div>
+            <div class="pricing-table-cta">
+                <a href={bookUrl} class="btn btn-cta">{t("cta_book")}</a>
+            </div>
+        </div>
+
+        <!-- Activity 3: Customize your clothes -->
+        <div class="pricing-activity">
+            <h3 class="pricing-activity-title">
+                {tHome("activity_3_title")}
+                <span class="pricing-activity-meta">{t("pricing_activity3_meta")}</span>
+            </h3>
+            <p class="pricing-activity-description">{t("pricing_activity3_description")}</p>
+            <div class="clothing-photos">
+                {clothingPhotos.map((img) => (
+                    <span class="clothing-photo-wrap">
+                        <img src={img.src} alt="Customized clothing" class="clothing-photo" loading="lazy" />
+                    </span>
+                ))}
+            </div>
+            <div class="couple-price-display">
+                <div class="couple-price-amount">{t("pricing_activity3_price")}</div>
+                <div class="couple-price-per">{t("pricing_activity3_per")}</div>
+            </div>
+            <div class="pricing-table-cta">
+                <a href={bookUrl} class="btn btn-cta">{t("cta_book")}</a>
+            </div>
+        </div>
+
     </div>
 </section>
 
@@ -98,6 +151,23 @@ const pricingOptions = [
         padding: 3rem 0;
         background-color: var(--white);
         scroll-margin-top: 60px;
+    }
+
+    .pricing-activity-title {
+        font-size: var(--font-xl);
+        color: var(--purple);
+        font-weight: 700;
+        margin: 0 0 1.5rem;
+        line-height: 1.3;
+        text-align: center;
+    }
+
+    .pricing-activity-meta {
+        display: inline;
+        font-size: var(--font-base);
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-left: 0.5rem;
     }
 
     .price-header {
@@ -301,5 +371,72 @@ const pricingOptions = [
             padding: 0.6rem 1.25rem;
             margin-top: 0.75rem;
         }
+    }
+
+    .pricing-activity {
+        max-width: 700px;
+        margin: 3rem auto 0;
+        text-align: center;
+    }
+
+    .pricing-activity-description {
+        font-size: var(--font-base);
+        color: var(--dark-text);
+        line-height: 1.6;
+        margin: 0 0 1.5rem;
+    }
+
+    .couple-price-display {
+        margin: 1.5rem auto;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .couple-price-amount {
+        font-size: var(--font-4xl, 3rem);
+        font-weight: 800;
+        color: var(--orange);
+        line-height: 1;
+    }
+
+    .couple-price-per {
+        font-size: var(--font-base);
+        color: var(--dark-text);
+        font-weight: 400;
+    }
+
+    .pricing-table-cta {
+        margin-top: 1.5rem;
+    }
+
+    .btn-cta {
+        padding: 0.9rem 2.5rem;
+        font-size: var(--font-base);
+    }
+
+    .clothing-photos {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 1rem 0 1.5rem;
+    }
+
+    .clothing-photo-wrap {
+        width: calc(25% - 0.4rem);
+        min-width: 80px;
+        max-width: 140px;
+        border-radius: 8px;
+        overflow: hidden;
+        aspect-ratio: 3 / 4;
+    }
+
+    .clothing-photo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
 </style>

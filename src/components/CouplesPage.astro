@@ -1,7 +1,9 @@
 ---
+import { createAstroTranslator } from "../utils/i18n";
 import PageLayout from "../layouts/PageLayout.astro";
 
 import CouplesHero from "./sections/CouplesHero.astro";
+import WhatWeOffer from "./sections/WhatWeOffer.astro";
 import Techniques from "./sections/Techniques.astro";
 import Testimonials from "./sections/Testimonials.astro";
 import CouplesPricing from "./sections/CouplesPricing.astro";
@@ -9,8 +11,10 @@ import WhatsIncluded from "./sections/WhatsIncluded.astro";
 import GiftCard from "./sections/GiftCards.astro";
 import ExperienceSteps from "./sections/ExperienceSteps.astro";
 import Gallery from "./sections/Gallery.astro";
+import OurTeam from "./sections/OurTeam.astro";
 import Contact from "./sections/Contact.astro";
 
+const t = createAstroTranslator(Astro.currentLocale, "couples");
 const currentPath = Astro.url.pathname;
 
 const includedKeys = [
@@ -22,8 +26,9 @@ const includedKeys = [
 ];
 ---
 
-<PageLayout currentPath={currentPath}>
+<PageLayout currentPath={currentPath} title={t("meta_title")} description={t("meta_description")}>
     <CouplesHero />
+    <WhatWeOffer variant="couples" />
     <Techniques />
     <Testimonials category="couples" />
     <CouplesPricing />
@@ -35,5 +40,6 @@ const includedKeys = [
     <GiftCard translationNamespace="couples" />
     <ExperienceSteps />
     <Gallery />
+    <OurTeam />
     <Contact />
 </PageLayout>
