@@ -20,26 +20,26 @@ export interface FriendsFormData {
 const BIG_CANVAS_PRICES: Record<number, number> = {
   1: 8000,
   2: 8000,
-  3: 8500,
-  4: 9000,
-  5: 10000,
-  6: 11000,
+  3: 9000,
+  4: 10000,
+  5: 11000,
+  6: 12000,
 };
 
 // Standard canvas price table: [guests][canvases] → price in cents
 // guests 1: canvases 1→6000
 // guests 2: canvases 1→6000, 2→9000
-// guests 3: canvases 1→6000, 2→9000, 3→12000
-// guests 4: canvases 2→9500, 3→12500, 4→14000
-// guests 5: canvases 3→13000, 4→14500, 5→16000
-// guests 6: canvases 3→13500, 4→15000, 5→16500, 6→18000
+// guests 3: canvases 1→6500, 2→9500, 3→12000
+// guests 4: canvases 2→10000, 3→12800, 4→14000
+// guests 5: canvases 3→13500, 4→14900, 5→16000
+// guests 6: canvases 3→14000, 4→15200, 5→16500, 6→18000
 const STANDARD_PRICES: Record<number, Record<number, number>> = {
   1: { 1: 6000 },
   2: { 1: 6000, 2: 9000 },
-  3: { 1: 6000, 2: 9000, 3: 12000 },
-  4: { 2: 9500, 3: 12500, 4: 14000 },
-  5: { 3: 13000, 4: 14500, 5: 16000 },
-  6: { 3: 13500, 4: 15000, 5: 16500, 6: 18000 },
+  3: { 1: 6500, 2: 9500, 3: 12000 },
+  4: { 2: 10000, 3: 12800, 4: 14000 },
+  5: { 3: 13500, 4: 14900, 5: 16000 },
+  6: { 3: 14000, 4: 15200, 5: 16500, 6: 18000 },
 };
 
 // Min/max canvases for standard canvas per guests count

@@ -4,6 +4,7 @@ import {
     getCurrentLanguage,
     getLocalizedPath,
 } from "../../utils/i18n";
+import { isActivityHidden } from "../../config/activities";
 import twoCanvases from "../../assets/img/30x40_2individuales.jpg";
 import largeCanvas from "../../assets/img/60x80_compartido.jpg";
 import smallCanvas from "../../assets/img/30x40_compartido.jpg";
@@ -19,6 +20,7 @@ const lang = getCurrentLanguage(Astro.currentLocale);
 
 const clothingPhotos = [clothing1, clothing2, clothing3, clothing4];
 const bookUrl = getLocalizedPath("/book/couples", lang);
+const bookCustomizeClothesUrl = getLocalizedPath("/book/customize-clothes", lang);
 
 const pricingOptions = [
     {
@@ -104,7 +106,7 @@ const pricingOptions = [
             </div>
         </div>
 
-        <!-- Activity 2: Throw paint & have fun! -->
+        {!isActivityHidden("activity_2") && (
         <div class="pricing-activity">
             <h3 class="pricing-activity-title">
                 {tHome("activity_2_title")}
@@ -119,6 +121,7 @@ const pricingOptions = [
                 <a href={bookUrl} class="btn btn-cta">{t("cta_book")}</a>
             </div>
         </div>
+        )}
 
         <!-- Activity 3: Customize your clothes -->
         <div class="pricing-activity">
@@ -139,7 +142,7 @@ const pricingOptions = [
                 <div class="couple-price-per">{t("pricing_activity3_per")}</div>
             </div>
             <div class="pricing-table-cta">
-                <a href={bookUrl} class="btn btn-cta">{t("cta_book")}</a>
+                <a href={bookCustomizeClothesUrl} class="btn btn-cta">{t("cta_book")}</a>
             </div>
         </div>
 

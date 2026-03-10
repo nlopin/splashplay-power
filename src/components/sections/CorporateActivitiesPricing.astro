@@ -3,6 +3,7 @@ import {
     createAstroTranslator,
     getCurrentLanguage,
 } from "../../utils/i18n";
+import { isActivityHidden } from "../../config/activities";
 import smallCanvas from "../../assets/img/30x40_compartido.jpg";
 import largeCanvas from "../../assets/img/60x80_compartido.jpg";
 import twoCanvases from "../../assets/img/30x40_2individuales.jpg";
@@ -206,7 +207,7 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
             </div>
         </div>
 
-        <!-- Activity 2: Throw paint & have fun! -->
+        {!isActivityHidden("activity_2") && (
         <div id="pricing-activity2" class="pricing-activity pricing-activity--simple">
             <h3 class="pricing-activity-title">
                 {tHome("activity_2_title")}
@@ -215,6 +216,7 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
             <p class="pricing-activity-description">{t("activity_2_description")}</p>
             <p class="pricing-simple-price">{tCorporate("activity_simple_price")}</p>
         </div>
+        )}
 
         <!-- Activity 3: Customize your clothes -->
         <div id="pricing-activity3" class="pricing-activity pricing-activity--simple">

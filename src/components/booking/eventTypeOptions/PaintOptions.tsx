@@ -16,7 +16,8 @@ export interface PaintFormData {
 }
 
 // Price table indexed by total guests (1–6)
-const PRICES: Record<number, number> = {
+// customize_clothes: individual (1) = €60; throw_paint: individual (1) = €45
+const PRICES_THROW_PAINT: Record<number, number> = {
   1: 4500,
   2: 7000,
   3: 10500,
@@ -25,9 +26,23 @@ const PRICES: Record<number, number> = {
   6: 18000,
 };
 
-export function calculatePaintPrice(totalGuests: number): number {
+const PRICES_CUSTOMIZE_CLOTHES: Record<number, number> = {
+  1: 6000,
+  2: 7000,
+  3: 10500,
+  4: 12000,
+  5: 15000,
+  6: 18000,
+};
+
+export function calculatePaintPrice(
+  totalGuests: number,
+  eventType?: EventType
+): number {
   const clamped = Math.max(1, Math.min(totalGuests, MAX_TOTAL));
-  return PRICES[clamped] ?? 4500;
+  const prices =
+    eventType === "customize_clothes" ? PRICES_CUSTOMIZE_CLOTHES : PRICES_THROW_PAINT;
+  return prices[clamped] ?? (eventType === "customize_clothes" ? 6000 : 4500);
 }
 
 const KIDS_AGE_HINT_BY_EVENT: Record<EventType, string> = {
@@ -51,7 +66,7 @@ export function PaintOptions({ eventType, onChange }: EventTypeOptionsProps) {
   useEffect(() => {
     const totalGuests = formData.adults + formData.kids;
     const totalAmount =
-      totalGuests === 0 ? 0 : calculatePaintPrice(totalGuests);
+      totalGuests === 0 ? 0 : calculatePaintPrice(totalGuests, eventType);
     const productName = `${formData.adults} ${formData.adults === 1 ? "adult" : "adults"}, ${formData.kids} ${formData.kids === 1 ? "kid" : "kids"}`;
 
     onChangeRef.current({ amount: totalAmount, productName });
@@ -75,7 +90,7 @@ export function PaintOptions({ eventType, onChange }: EventTypeOptionsProps) {
 
   const totalGuests = formData.adults + formData.kids;
   const totalPrice =
-    totalGuests === 0 ? 0 : calculatePaintPrice(totalGuests);
+    totalGuests === 0 ? 0 : calculatePaintPrice(totalGuests, eventType);
 
   return (
     <div className="paint-options">
