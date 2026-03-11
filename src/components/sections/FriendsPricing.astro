@@ -4,6 +4,7 @@ import {
     getCurrentLanguage,
     getLocalizedPath,
 } from "../../utils/i18n";
+import { isActivityHidden } from "../../config/activities";
 import smallCanvas from "../../assets/img/30x40_compartido.jpg";
 import largeCanvas from "../../assets/img/60x80_compartido.jpg";
 import twoCanvases from "../../assets/img/30x40_2individuales.jpg";
@@ -244,7 +245,7 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
             </div>
         </div>
 
-        <!-- Activity 2: Throw paint & have fun! -->
+        {!isActivityHidden("throw_paint") && (
         <div class="pricing-activity">
             <h3 class="pricing-activity-title">
                 {tHome("activity_2_title")}
@@ -282,6 +283,7 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                 <a href={bookThrowPaintUrl} class="pricing-btn pricing-btn--standalone">{t("cta_book_button")}</a>
             </div>
         </div>
+        )}
 
         <!-- Activity 3: Customize your clothes -->
         <div class="pricing-activity">

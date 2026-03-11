@@ -1,5 +1,6 @@
 import type { Language } from "../utils/i18n";
 import { getLocalizedPath } from "../utils/i18n";
+import { isActivityHidden, type ActivityId } from "./activities";
 
 export type WhatWeOfferVariant =
   | "home"
@@ -18,6 +19,7 @@ export interface BookingRow {
 }
 
 export interface ActivityConfig {
+  id: ActivityId;
   titleKey: string;
   descriptionKey: string;
   detailsKey: string;
@@ -88,18 +90,21 @@ export function getWhatWeOfferConfig(
   const bookCustomizeClothes = getLocalizedPath("/book/customize-clothes", lang);
 
   const baseActivity1: Omit<ActivityConfig, "imageKey" | "imageAlt" | "bookingRows" | "bookUrl"> = {
+    id: "abstract_masterpiece",
     titleKey: "activity_1_title",
     descriptionKey: "activity_1_description",
     detailsKey: "activity_1_details",
     includedKey: "activity_1_included",
   };
-  const baseActivity2 = {
+  const baseActivity2: typeof baseActivity1 = {
+    id: "throw_paint",
     titleKey: "activity_2_title",
     descriptionKey: "activity_2_description",
     detailsKey: "activity_2_details",
     includedKey: "activity_2_included",
   };
-  const baseActivity3 = {
+  const baseActivity3: typeof baseActivity1 = {
+    id: "customize_clothes",
     titleKey: "activity_3_title",
     descriptionKey: "activity_3_description",
     detailsKey: "activity_3_details",
@@ -148,7 +153,7 @@ export function getWhatWeOfferConfig(
           detailsKey: "activity_3_details",
           bookingRows: rows.activity3,
         },
-      ],
+      ].filter((a) => !isActivityHidden(a.id)),
     };
   }
 
@@ -166,7 +171,7 @@ export function getWhatWeOfferConfig(
         { ...standardActivity1, detailsKey: "activity_1_details", bookUrl: bookFriends },
         { ...standardActivity2, detailsKey: "activity_2_details", bookUrl: bookThrowPaint },
         { ...standardActivity3, detailsKey: "activity_3_details", bookUrl: bookCustomizeClothes },
-      ],
+      ].filter((a) => !isActivityHidden(a.id)),
     };
   }
 
@@ -184,7 +189,7 @@ export function getWhatWeOfferConfig(
         { ...standardActivity1, detailsKey: "activity_1_details_family", bookUrl: bookFamily },
         { ...standardActivity2, detailsKey: "activity_2_details_family", bookUrl: bookThrowPaint },
         { ...standardActivity3, detailsKey: "activity_3_details_family", bookUrl: bookCustomizeClothes },
-      ],
+      ].filter((a) => !isActivityHidden(a.id)),
     };
   }
 
@@ -202,13 +207,14 @@ export function getWhatWeOfferConfig(
       activities: [
         { ...standardActivity1, detailsKey: "activity_1_details_couples", bookUrl: bookCouplesUrl },
         { ...standardActivity2, detailsKey: "activity_2_details_couples", bookUrl: bookCouplesUrl },
-        { ...standardActivity3, detailsKey: "activity_3_details_couples", bookUrl: bookCouplesUrl },
-      ],
+        { ...standardActivity3, detailsKey: "activity_3_details_couples", bookUrl: bookCustomizeClothes },
+      ].filter((a) => !isActivityHidden(a.id)),
     };
   }
 
   // corporate
   const teambuildingActivity: ActivityConfig = {
+    id: "teambuilding",
     titleKey: "activity_teambuilding_title",
     descriptionKey: "activity_teambuilding_description",
     detailsKey: "activity_teambuilding_details",
@@ -233,6 +239,6 @@ export function getWhatWeOfferConfig(
       { ...standardActivity1, detailsKey: "activity_1_details" },
       { ...standardActivity2, detailsKey: "activity_2_details" },
       { ...standardActivity3, detailsKey: "activity_3_details" },
-    ],
+    ].filter((a) => !isActivityHidden(a.id)),
   };
 }
