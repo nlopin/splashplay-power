@@ -101,4 +101,9 @@ export default defineConfig({
   },
   adapter: netlify(),
   integrations: [react(), sitemap()],
+  vite: {
+    optimizeDeps: {
+      include: ["zod"],
+    },
+  },
 });

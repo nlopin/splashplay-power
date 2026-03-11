@@ -132,8 +132,12 @@ const localBusinessSchema = {
         />
         <script is:inline src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"></script>
         <script is:inline src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.8.0-min.js.gz"></script>
-        <script is:inline>window.amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
-        window.amplitude.init('5eca8b4e2674622d9489bf466cdab71a', { 'autocapture': { 'elementInteractions': true } });</script>
+        <script is:inline>
+          if (typeof window.amplitude !== 'undefined' && typeof window.sessionReplay !== 'undefined') {
+            window.amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
+            window.amplitude.init('5eca8b4e2674622d9489bf466cdab71a', { autocapture: { elementInteractions: true } });
+          }
+        </script>
         <!-- Meta Pixel Code -->
         <script is:inline>
           !function(f,b,e,v,n,t,s)
