@@ -4,7 +4,7 @@ import {
     getCurrentLanguage,
     getLocalizedPath,
 } from "../../utils/i18n";
-import { isActivityHidden } from "../../config/activities";
+import { isActivityHidden, type ActivityId } from "../../config/activities";
 import CTAButton from "../CTAButton.astro";
 import couplesImg from "../../assets/photo/couples.jpg";
 import friendsImg from "../../assets/photo/friends.jpg";
@@ -13,33 +13,41 @@ import familyImg from "../../assets/photo/family.jpg";
 const t = createAstroTranslator(Astro.currentLocale, "main");
 const lang = getCurrentLanguage(Astro.currentLocale);
 
-const allCouplesActivities = [
-    { activityId: "activity_1" as const, nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
-    { activityId: "activity_2" as const, nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
-    { activityId: "activity_3" as const, nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
+interface PricingActivity {
+    activityId: ActivityId;
+    nameKey: string;
+    durationKey: string;
+    priceKey: string;
+    bookingUrl: string;
+}
+
+const allCouplesActivities: PricingActivity[] = [
+    { activityId: "abstract_masterpiece", nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
+    { activityId: "throw_paint", nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
+    { activityId: "customize_clothes", nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
 ];
 const couplesActivities = allCouplesActivities.filter((a) => !isActivityHidden(a.activityId));
 
-const allFriendsActivities = [
-    { activityId: "activity_1" as const, nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: getLocalizedPath("/book/friends", lang) },
-    { activityId: "activity_2" as const, nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: getLocalizedPath("/book/throw-paint", lang) },
-    { activityId: "activity_3" as const, nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/customize-clothes", lang) },
+const allFriendsActivities: PricingActivity[] = [
+    { activityId: "abstract_masterpiece", nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: getLocalizedPath("/book/friends", lang) },
+    { activityId: "throw_paint", nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: getLocalizedPath("/book/throw-paint", lang) },
+    { activityId: "customize_clothes", nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/customize-clothes", lang) },
 ];
 const friendsActivities = allFriendsActivities.filter((a) => !isActivityHidden(a.activityId));
 
-const allFamilyActivities = [
-    { activityId: "activity_1" as const, nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: getLocalizedPath("/book/family", lang) },
-    { activityId: "activity_2" as const, nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: getLocalizedPath("/book/throw-paint", lang) },
-    { activityId: "activity_3" as const, nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/customize-clothes", lang) },
+const allFamilyActivities: PricingActivity[] = [
+    { activityId: "abstract_masterpiece", nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: getLocalizedPath("/book/family", lang) },
+    { activityId: "throw_paint", nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: getLocalizedPath("/book/throw-paint", lang) },
+    { activityId: "customize_clothes", nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/customize-clothes", lang) },
 ];
 const familyActivities = allFamilyActivities.filter((a) => !isActivityHidden(a.activityId));
 
 const teamsContactUrl = "#contact";
-const allTeamActivities = [
-    { activityId: "activity_1" as const, nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: teamsContactUrl },
-    { activityId: "activity_2" as const, nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: teamsContactUrl },
-    { activityId: "activity_3" as const, nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: teamsContactUrl },
-    { activityId: "activity_teambuilding" as const, nameKey: "activity_special_name", durationKey: "activity_special_duration", priceKey: "activity_special_price", bookingUrl: teamsContactUrl },
+const allTeamActivities: PricingActivity[] = [
+    { activityId: "abstract_masterpiece", nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: teamsContactUrl },
+    { activityId: "throw_paint", nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: teamsContactUrl },
+    { activityId: "customize_clothes", nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: teamsContactUrl },
+    { activityId: "teambuilding", nameKey: "activity_special_name", durationKey: "activity_special_duration", priceKey: "activity_special_price", bookingUrl: teamsContactUrl },
 ];
 const teamActivities = allTeamActivities.filter((a) => !isActivityHidden(a.activityId));
 
