@@ -42,7 +42,7 @@ export function calculatePaintPrice(
   const clamped = Math.max(1, Math.min(totalGuests, MAX_TOTAL));
   const prices =
     eventType === "customize_clothes" ? PRICES_CUSTOMIZE_CLOTHES : PRICES_THROW_PAINT;
-  return prices[clamped] ?? (eventType === "customize_clothes" ? 6000 : 4500);
+  return prices[clamped];
 }
 
 const KIDS_AGE_HINT_BY_EVENT: Record<EventType, string> = {
