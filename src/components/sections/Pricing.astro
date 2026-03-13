@@ -24,7 +24,7 @@ interface PricingActivity {
 const allCouplesActivities: PricingActivity[] = [
     { activityId: "abstract_masterpiece", nameKey: "activity_1_name", durationKey: "activity_1_duration", priceKey: "activity_1_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
     { activityId: "throw_paint", nameKey: "activity_2_name", durationKey: "activity_2_duration", priceKey: "activity_2_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
-    { activityId: "customize_clothes", nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/couples", lang) },
+    { activityId: "customize_clothes", nameKey: "activity_3_name", durationKey: "activity_3_duration", priceKey: "activity_3_price", bookingUrl: getLocalizedPath("/book/customize-clothes", lang) },
 ];
 const couplesActivities = allCouplesActivities.filter((a) => !isActivityHidden(a.activityId));
 
