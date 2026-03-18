@@ -573,13 +573,82 @@ const priceCards = [
         }
 
         .price-card-content--with-image .price-card-image-wrap {
-            flex: 0 0 45%;
-            width: 45%;
-            max-width: 220px;
+        flex: 0 0 45%;
+        width: 45%;
+        max-width: 220px;
         }
 
         .price-card-content--with-image .price-card-content-inner {
             flex: 1;
+        }
+    }
+
+    /* Mobile: stack table rows so CTA buttons are full width and not cut off */
+    @media (max-width: 599px) {
+        .prices--en .price-card:has(.price-card-content--with-image) {
+            overflow: visible;
+        }
+
+        .pricing-cards {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .price-card-content--with-image .price-card-content-inner {
+            padding-left: 1rem;
+            padding-right: 1rem;
+            min-width: 0;
+        }
+
+        .prices--en .price-card-content {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .price-activity-table,
+        .price-activity-table tbody,
+        .price-activity-table tr {
+            display: block;
+        }
+
+        .price-activity-table tr {
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(102, 51, 153, 0.12);
+        }
+
+        .price-activity-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .price-activity-table td {
+            display: block;
+            padding: 0.15rem 0;
+        }
+
+        .price-activity-name {
+            margin-bottom: 0.2rem;
+        }
+
+        .price-activity-duration,
+        .price-activity-price {
+            display: inline;
+            font-size: 0.875em;
+        }
+
+        .price-activity-duration::after {
+            content: " · ";
+        }
+
+        .price-activity-cta {
+            text-align: left;
+            padding-top: 0.5rem;
+        }
+
+        .price-activity-cta .price-activity-btn {
+            display: block;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
         }
     }
 
