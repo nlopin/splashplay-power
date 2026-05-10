@@ -20,21 +20,21 @@ export interface FamilyFormData {
 
 // Big canvas price table: indexed by total guests (2–6)
 const BIG_CANVAS_PRICES: Record<number, number> = {
-  2: 8000,
-  3: 9000,
-  4: 10000,
-  5: 11000,
-  6: 12000,
+  2: 9000,
+  3: 9500,
+  4: 10500,
+  5: 11500,
+  6: 12500,
 };
 
 // Standard canvas price table: [totalGuests][canvases] → price in cents
 const STANDARD_PRICES: Record<number, Record<number, number>> = {
   1: { 1: 6000 },
-  2: { 1: 6000, 2: 9000 },
-  3: { 1: 6500, 2: 9500, 3: 12000 },
-  4: { 2: 10000, 3: 12800, 4: 14000 },
+  2: { 1: 7500, 2: 9000 },
+  3: { 1: 8000, 2: 9500, 3: 12000 },
+  4: { 2: 10500, 3: 12800, 4: 14000 },
   5: { 3: 13500, 4: 14900, 5: 16000 },
-  6: { 3: 14000, 4: 15200, 5: 16500, 6: 18000 },
+  6: { 3: 14500, 4: 15500, 5: 16500, 6: 18000 },
 };
 
 // Min/max canvases for standard canvas per total guests count

@@ -125,9 +125,9 @@ function renderHeaderHtml(raw: string) {
     return parsed ? `<span class="header-num">${parsed.num}</span>${parsed.rest}` : withSize;
 }
 
-// Splits "1 canvas — €60" into { canvasLabel: "1 canvas", price: "€60" }
+// Splits "1 canvas — 75€" into { canvasLabel: "1 canvas", price: "75€" }
 function parseOptLabel(text: string): { canvasLabel: string; price: string } | null {
-    const match = text.match(/^(.+?)\s*[—–-]\s*(€\S+)$/);
+    const match = text.match(/^(.+?)\s*[—–-]\s*(\S+€)$/);
     if (match) {
         return { canvasLabel: match[1].trim(), price: match[2].trim() };
     }

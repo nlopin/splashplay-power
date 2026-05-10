@@ -11,8 +11,8 @@ import type { EventTypeOptionsProps } from "./EventTypeOptions";
 type PictureType = "one_small" | "one_big" | "individual";
 
 const PRICE: Record<PictureType, number> = {
-  one_small: 6000,
-  one_big: 8000,
+  one_small: 7500,
+  one_big: 9000,
   individual: 9000,
 };
 
