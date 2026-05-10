@@ -18,7 +18,7 @@ export interface FriendsFormData {
 
 // Big canvas price table: indexed by guests (1–6)
 const BIG_CANVAS_PRICES: Record<number, number> = {
-  1: 8000,
+  1: 8500,
   2: 9000,
   3: 9500,
   4: 10500,
@@ -34,7 +34,7 @@ const BIG_CANVAS_PRICES: Record<number, number> = {
 // guests 5: canvases 3→13500, 4→14900, 5→16000
 // guests 6: canvases 3→14500, 4→15500, 5→16500, 6→18000
 const STANDARD_PRICES: Record<number, Record<number, number>> = {
-  1: { 1: 6000 },
+  1: { 1: 6500 },
   2: { 1: 7500, 2: 9000 },
   3: { 1: 8000, 2: 9500, 3: 12000 },
   4: { 2: 10500, 3: 12800, 4: 14000 },
