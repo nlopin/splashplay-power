@@ -316,7 +316,9 @@
     "most_popular": "Popular",
     "last_spots": "Últims torns!",
     "choose_canvas": "Tria Llenç",
-    "back_to_main": "Tornar a la pàgina principal"
+    "back_to_main": "Tornar a la pàgina principal",
+    "previous_week": "Setmana anterior",
+    "next_week": "Setmana següent"
   },
   "complete": {
     "title": "Pagament Realitzat!",

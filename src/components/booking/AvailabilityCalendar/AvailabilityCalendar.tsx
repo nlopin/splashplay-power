@@ -73,6 +73,7 @@ export function AvailabilityCalendar({
           onClick={() => setSelectedWeekIndex((cur) => cur - 1)}
           disabled={selectedWeekIndex === 0}
           className="nav-button"
+          aria-label={t("previous_week")}
         >
           ←
         </button>
@@ -84,95 +85,118 @@ export function AvailabilityCalendar({
           disabled={selectedWeekIndex === weeks.length - 1}
           onClick={() => setSelectedWeekIndex((cur) => cur + 1)}
           className="nav-button"
+          aria-label={t("next_week")}
         >
           →
         </button>
       </div>
 
-      <div className="calendar-grid">
-        {currentWeek.map((day) => {
-          const [longWeekday, longDate] = formatWeekday(
-            day.date,
-            language,
-            "long",
-          );
-          const [shortWeekday, shortDate] = formatWeekday(
-            day.date,
-            language,
-            "short",
-          );
-          const isAlmostFilled = day.times.length > 0 && day.times.length < 5;
+      <div className="calendar-body">
+        <button
+          type="button"
+          onClick={() => setSelectedWeekIndex((cur) => cur - 1)}
+          disabled={selectedWeekIndex === 0}
+          className="nav-button nav-button-side"
+          aria-label={t("previous_week")}
+        >
+          ‹
+        </button>
 
-          return (
-            <div key={longDate} className="grid-cell header-cell">
-              <div className="weekday desktop-only">{longWeekday}</div>
-              <div className="weekday mobile-only">{shortWeekday}</div>
-              <div className="date desktop-only">{longDate}</div>
-              <div className="date mobile-only">{shortDate}</div>
-              {isAlmostFilled && (
-                <div className="busy-label">{t("last_spots")}</div>
-              )}
-            </div>
-          );
-        })}
+        <div className="calendar-grid">
+          {currentWeek.map((day) => {
+            const [longWeekday, longDate] = formatWeekday(
+              day.date,
+              language,
+              "long",
+            );
+            const [shortWeekday, shortDate] = formatWeekday(
+              day.date,
+              language,
+              "short",
+            );
+            const isAlmostFilled = day.times.length > 0 && day.times.length < 5;
 
-        {/* Time Rows */}
-        {hours.map((hour) => (
-          <Fragment key={hour}>
-            {currentWeek.map((day, dayIndex) => {
-              const slotsInHour: ISODatetime[] = [];
-              let idx = dayIndices[dayIndex];
+            return (
+              <div key={longDate} className="grid-cell header-cell">
+                <div className="weekday desktop-only">{longWeekday}</div>
+                <div className="weekday mobile-only">{shortWeekday}</div>
+                <div className="date desktop-only">{longDate}</div>
+                <div className="date mobile-only">{shortDate}</div>
+                {isAlmostFilled && (
+                  <div className="busy-label">{t("last_spots")}</div>
+                )}
+              </div>
+            );
+          })}
 
-              // Consume slots that belong to the current hour
-              // assumes day.times is sorted ascending
-              while (idx < day.times.length) {
-                const time = day.times[idx];
-                const timeStr = formatTime(time);
-                const [h] = timeStr.split(":").map(Number);
+          {/* Time Rows */}
+          {hours.map((hour) => (
+            <Fragment key={hour}>
+              {currentWeek.map((day, dayIndex) => {
+                const slotsInHour: ISODatetime[] = [];
+                let idx = dayIndices[dayIndex];
 
-                if (h === hour) {
-                  slotsInHour.push(time);
-                  idx++;
-                } else if (h < hour) {
-                  // Skip past times (shouldn't happen if sorted and starting from 9)
-                  idx++;
-                } else {
-                  // Future time, stop for this hour
-                  break;
+                // Consume slots that belong to the current hour
+                // assumes day.times is sorted ascending
+                while (idx < day.times.length) {
+                  const time = day.times[idx];
+                  const timeStr = formatTime(time);
+                  const [h] = timeStr.split(":").map(Number);
+
+                  if (h === hour) {
+                    slotsInHour.push(time);
+                    idx++;
+                  } else if (h < hour) {
+                    // Skip past times (shouldn't happen if sorted and starting from 9)
+                    idx++;
+                  } else {
+                    // Future time, stop for this hour
+                    break;
+                  }
                 }
-              }
 
-              // Update the index for the next hour iteration
-              dayIndices[dayIndex] = idx;
+                // Update the index for the next hour iteration
+                dayIndices[dayIndex] = idx;
 
-              return (
-                <div
-                  key={`cell-${dayIndex}-${hour}`}
-                  className="grid-cell slot-cell"
-                >
-                  {slotsInHour.map((time) => {
-                    const formattedTime = formatTime(time);
+                return (
+                  <div
+                    key={`cell-${dayIndex}-${hour}`}
+                    className="grid-cell slot-cell"
+                  >
+                    {slotsInHour.map((time) => {
+                      const formattedTime = formatTime(time);
 
-                    return (
-                      <button
-                        key={time}
-                        type="button"
-                        onClick={() => {
-                          setInternalSelectedSlot(time);
-                          onTimeSlotSelect?.(time);
-                        }}
-                        data-minute={formattedTime.split(":")[1]}
-                        className={`time-slot-button ${internalSelectedSlot === time ? "selected" : ""}`}
-                      >
-                        {formattedTime}
-                      </button>
-                    );
-                  })}
-                </div>
-              );
-            })}
-          </Fragment>
-        ))}
+                      return (
+                        <button
+                          key={time}
+                          type="button"
+                          onClick={() => {
+                            setInternalSelectedSlot(time);
+                            onTimeSlotSelect?.(time);
+                          }}
+                          data-minute={formattedTime.split(":")[1]}
+                          className={`time-slot-button ${internalSelectedSlot === time ? "selected" : ""}`}
+                        >
+                          {formattedTime}
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </Fragment>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          disabled={selectedWeekIndex === weeks.length - 1}
+          onClick={() => setSelectedWeekIndex((cur) => cur + 1)}
+          className="nav-button nav-button-side"
+          aria-label={t("next_week")}
+        >
+          ›
+        </button>
       </div>
     </div>
   );

@@ -315,6 +315,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         gap: 8px;
     }
 
+    .calendar-body {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .calendar-body .calendar-grid {
+        flex: 1;
+        min-width: 0;
+    }
+
     .nav-button {
         background: none;
         border: 1px solid transparent;
@@ -335,6 +346,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     .nav-button:hover:not(:disabled) {
         background-color: var(--purple);
         color: var(--white);
+    }
+
+    .nav-button-side {
+        display: none;
+        aspect-ratio: auto;
+        width: 56px;
+        align-self: stretch;
+        font-size: 2.5rem;
+        line-height: 1;
+        font-weight: 300;
+        border: 1px solid var(--purple);
+        background-color: var(--light-bg);
+        flex-shrink: 0;
+    }
+
+    @media (min-width: 1024px) {
+        .nav-button-side {
+            display: block;
+        }
     }
 
     /* Busy label override for calendar cells */

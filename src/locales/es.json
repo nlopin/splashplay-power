@@ -316,7 +316,9 @@
     "most_popular": "Popular",
     "last_spots": "Últimos turnos!",
     "choose_canvas": "Elige Lienzo",
-    "back_to_main": "Volver a la página principal"
+    "back_to_main": "Volver a la página principal",
+    "previous_week": "Semana anterior",
+    "next_week": "Semana siguiente"
   },
   "complete": {
     "title": "¡Pago Exitoso!",

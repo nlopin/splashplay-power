@@ -316,7 +316,9 @@
     "most_popular": "Popular",
     "last_spots": "Last spots!",
     "choose_canvas": "Choose Canvas",
-    "back_to_main": "Back to main page"
+    "back_to_main": "Back to main page",
+    "previous_week": "Previous week",
+    "next_week": "Next week"
   },
   "complete": {
     "title": "Payment Successful!",
