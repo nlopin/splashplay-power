@@ -27,7 +27,7 @@ const EVENT_TYPE_OPTIONS: ReadonlyArray<{
     value: "friends",
     labelKey: "friends_session",
     descriptionKey: "event_type_friends_desc",
-    duration: 2,
+    duration: 1.5,
   },
   {
     value: "individual",
