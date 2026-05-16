@@ -8,7 +8,7 @@ import {
 
 export type Week = Day[]; //Monday through Sunday
 
-type Day = {
+export type Day = {
   date: Date;
   times: ISODatetime[];
 };

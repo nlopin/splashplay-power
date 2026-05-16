@@ -348,11 +348,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         color: var(--white);
     }
 
-    .nav-button-side {
-        display: none;
+    .nav-button-side,
+    .nav-button-bar {
         aspect-ratio: auto;
-        width: 56px;
-        align-self: stretch;
         font-size: 2.5rem;
         line-height: 1;
         font-weight: 300;
@@ -361,10 +359,113 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         flex-shrink: 0;
     }
 
+    .nav-button-side {
+        display: none;
+        width: 56px;
+        align-self: stretch;
+    }
+
     @media (min-width: 1024px) {
         .nav-button-side {
             display: block;
         }
+    }
+
+    .nav-button-bar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 56px;
+        padding: 0;
+        line-height: 1;
+    }
+
+    .nav-button-bar .chevron {
+        display: block;
+        width: 32px;
+        height: 32px;
+    }
+
+    .calendar-day-list {
+        display: none;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    @media (max-width: 768px) {
+        .calendar-header {
+            display: none;
+        }
+
+        .calendar-body {
+            display: none;
+        }
+
+        .calendar-day-list {
+            display: flex;
+        }
+    }
+
+    .day-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background-color: var(--white);
+        overflow: hidden;
+    }
+
+    .day-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background-color: var(--light-bg);
+        border-bottom: 1px solid #e0e0e0;
+        font-size: var(--font-sm);
+    }
+
+    .day-card-header .weekday {
+        color: var(--purple);
+        font-weight: 600;
+    }
+
+    .day-card-header .date {
+        color: var(--dark-text);
+    }
+
+    .day-card-header .busy-label {
+        margin-left: auto;
+        background-color: var(--orange);
+        color: var(--white);
+        font-size: 0.6rem;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .day-card-slots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 8px 12px;
+    }
+
+    .day-card-slots .time-slot-button {
+        width: auto;
+        min-width: 56px;
+        padding: 10px;
+        border: 1px solid var(--purple);
+        font-variant: tabular-nums;
+    }
+
+    .day-card-empty {
+        display: block;
+        padding: 12px;
+        text-align: center;
+        color: #aaa;
+        font-size: var(--font-sm);
     }
 
     /* Busy label override for calendar cells */
