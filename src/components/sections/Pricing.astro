@@ -5,9 +5,8 @@ import {
     getLocalizedPath,
 } from "../../utils/i18n";
 import { isActivityHidden, type ActivityId } from "../../config/activities";
-import CTAButton from "../CTAButton.astro";
-import couplesImg from "../../assets/photo/couples.jpg";
 import friendsImg from "../../assets/photo/friends.jpg";
+import couplesImg from "../../assets/photo/couples.jpg";
 import familyImg from "../../assets/photo/family.jpg";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
@@ -54,31 +53,27 @@ const teamActivities = allTeamActivities.filter((a) => !isActivityHidden(a.activ
 const priceCards = [
     {
         id: "friends",
+        img: friendsImg,
         link: getLocalizedPath("/friends", lang),
-        bookingLink: getLocalizedPath("/book/friends", lang),
         activities: friendsActivities,
     },
     {
         id: "couples",
+        img: couplesImg,
         link: getLocalizedPath("/couples", lang),
-        bookingLink: getLocalizedPath("/book/couples", lang),
         activities: couplesActivities,
     },
     {
         id: "families",
+        img: familyImg,
         link: getLocalizedPath("/family", lang),
-        bookingLink: getLocalizedPath("/book/family", lang),
         activities: familyActivities,
     },
     {
         id: "teams",
+        img: friendsImg,
         link: getLocalizedPath("/corporate", lang),
-        bookingLink: "#contact",
         activities: teamActivities,
-    },
-    {
-        id: "individual",
-        bookingLink: getLocalizedPath("/book/individual", lang),
     },
 ];
 ---
@@ -86,130 +81,63 @@ const priceCards = [
 <section id="pricing" class="prices prices--en" data-menu-title={t("nav_pricing")}>
     <div class="container">
         <h2 class="section-title">{t("pricing_title")}</h2>
+        <p class="price-description">{t("pricing_subtitle")}</p>
 
-        <div class="pricing-tabs">
-            <div class="pricing-content">
-                <div class="pricing-tab active" id="sessions-tab">
-                    <div class="price-header">
-                        <p class="price-description">
-                            {t("pricing_subtitle")}
-                        </p>
+        <div class="pricing-cards">
+            {priceCards.map((card) => (
+                <div class={`price-card ${card.id === "teams" ? "price-card--teams" : ""}`}>
+                    <div class="price-card-image-wrap">
+                        <img
+                            src={card.img.src}
+                            alt={t(`pricing.${card.id}.image_alt`)}
+                            class="price-card-image"
+                            loading="lazy"
+                        />
                     </div>
+                    <div class="price-card-body">
+                        <div class="price-card-header">
+                            <span class="price-card-icon">{t(`pricing.${card.id}.icon`)}</span>
+                            <h4>
+                                <a href={card.link} class="price-card-title">{t(`pricing.${card.id}.title_card`)}</a>
+                                {card.id !== "teams" && (
+                                    <span class="price-card-age">| {t(`pricing.${card.id}.age`)}</span>
+                                )}
+                            </h4>
+                        </div>
 
-                    <div class="pricing-cards">
-                        {
-                            priceCards.filter((c) => c.id === "couples" || c.id === "friends" || c.id === "families" || c.id === "teams").map((card) => (
-                                <div class={`price-card ${card.id === "teams" ? "price-card--teams" : ""}`}>
-                                    <div class={card.activities ? "price-card-content--with-image" : "price-card-content"}>
-                                        {card.activities ? (
-                                            <>
-                                                <div class="price-card-image-wrap">
-                                                    <img src={card.id === "friends" ? friendsImg.src : card.id === "families" ? familyImg.src : card.id === "teams" ? friendsImg.src : couplesImg.src} alt={t(`pricing.${card.id}.image_alt`)} class="price-card-image" />
-                                                </div>
-                                                <div class="price-card-content-inner">
-                                                    <div class="price-card-top">
-                                                        <div class="price-card-header">
-                                                            <span class="price-card-icon">{t(`pricing.${card.id}.icon`)}</span>
-                                                            <h4>
-                                                                <a href={card.link} class="price-card-title">{t(`pricing.${card.id}.title_card`)}</a>
-                                                                {card.id !== "teams" && (
-                                                                    <span class="price-card-age">| {t(`pricing.${card.id}.age`)}</span>
-                                                                )}
-                                                            </h4>
-                                                        </div>
-                                                        <table class="price-activity-table">
-                                                            <tbody>
-                                                                {card.activities.map((activity) => (
-                                                                    <tr>
-                                                                        <td class="price-activity-name">{t(`pricing.${card.id}.${activity.nameKey}`)}</td>
-                                                                        <td class="price-activity-duration">{t(`pricing.${card.id}.${activity.durationKey}`)}</td>
-                                                                        <td class="price-activity-price">{t(`pricing.${card.id}.${activity.priceKey}`)}</td>
-                                                                        {card.id !== "teams" && (
-                                                                            <td class="price-activity-cta">
-                                                                                <a href={activity.bookingUrl} class="price-activity-btn">{t(`pricing.${card.id}.cta`)}</a>
-                                                                            </td>
-                                                                        )}
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    {card.id === "teams" ? (
-                                                        <div class="price-card-actions--single price-card-actions--stacked">
-                                                            <a href="#contact" class="price-activity-btn">{t("pricing.teams.cta")}</a>
-                                                            <a href={card.link} class="btn-small btn-more">
-                                                                <strong>{t("cta_more_info")}<span class="visually-hidden"> {t("cta_more_info_sr_teams")}</span></strong>
-                                                            </a>
-                                                        </div>
-                                                    ) : (
-                                                        <div class="price-card-actions--single">
-                                                            <a href={card.link} class="btn-small btn-more">
-                                                                <strong>{t("cta_more_info")}<span class="visually-hidden"> {t(`cta_more_info_sr_${card.id}`)}</span></strong>
-                                                            </a>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div class="price-card-main">
-                                            <>
-                                                <div class="price-card-body">
-                                                    <div class="price-card-price">
-                                                        {t(`pricing.${card.id}.price`)}
-                                                    </div>
-                                                    <div class="price-card-duration">
-                                                        {t(
-                                                            `pricing.${card.id}.duration`,
-                                                        )}
-                                                    </div>
-                                                    <div
-                                                        class="price-card-note"
-                                                        set:html={t(
-                                                            `pricing.${card.id}.description`,
-                                                        )}
-                                                    />
-                                                </div>
-                                                <div class="price-card-actions">
-                                                    {card.bookingLink && (
-                                                        <CTAButton
-                                                            href={card.bookingLink}
-                                                            text={t(
-                                                                `pricing.${card.id}.cta`,
-                                                            )}
-                                                            size="sm"
-                                                        />
-                                                    )}
-                                                    {card.link && (
-                                                        <a
-                                                            href={card.link}
-                                                            class="btn-small btn-more"
-                                                        >
-                                                            <strong>
-                                                                {t("cta_more_info")}
-                                                                <span class="visually-hidden">
-                                                                    {" "}
-                                                                    {t(
-                                                                        `cta_more_info_sr_${card.id}`,
-                                                                    )}
-                                                                </span>
-                                                            </strong>
-                                                        </a>
-                                                    )}
-                                                </div>
-                                            </>
-                                        </div>
-                                        )}
-                                    </div>
+                        {card.activities.length === 1 ? (
+                            <div class="price-single">
+                                <div class="price-single-value">
+                                    {t(`pricing.${card.id}.${card.activities[0].priceKey}`)} · {t(`pricing.${card.id}.${card.activities[0].durationKey}`)}
                                 </div>
-                            ))
-                        }
-                    </div>
+                            </div>
+                        ) : (
+                            <table class="price-activity-table">
+                                <tbody>
+                                    {card.activities.map((activity) => (
+                                        <tr>
+                                            <td class="price-activity-name">{t(`pricing.${card.id}.${activity.nameKey}`)}</td>
+                                            <td class="price-activity-duration">{t(`pricing.${card.id}.${activity.durationKey}`)}</td>
+                                            <td class="price-activity-price">{t(`pricing.${card.id}.${activity.priceKey}`)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
 
-                    <div class="sessions-cta">
-                        <a href="#pricing" class="btn">{t("cta_book")}</a>
+                        <div class="price-card-footer">
+                            {card.activities.length === 1 ? (
+                                <a href={card.activities[0].bookingUrl} class="price-activity-btn">{t(`pricing.${card.id}.cta`)}</a>
+                            ) : (
+                                <a href="#contact" class="price-activity-btn">{t("pricing.teams.cta")}</a>
+                            )}
+                            <a href={card.link} class="btn-small btn-more">
+                                <strong>{t("cta_more_info")}<span class="visually-hidden"> {t(`cta_more_info_sr_${card.id}`)}</span></strong>
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            ))}
         </div>
     </div>
 </section>
@@ -221,61 +149,139 @@ const priceCards = [
         scroll-margin-top: 60px;
     }
 
-    .pricing-tabs {
-        max-width: 900px;
-        margin: 0 auto;
-    }
-
-    .pricing-content {
-        position: relative;
-        min-height: 300px;
-    }
-
-    .pricing-tab {
-        display: none;
-        animation: fadeIn 0.5s ease forwards;
-    }
-
-    .pricing-tab.active {
-        display: block;
-    }
-
-    .price-header {
+    .section-title {
         text-align: center;
-        margin-bottom: 1rem;
-        max-width: 900px;
-        margin-left: auto;
-        margin-right: auto;
+        margin-bottom: 0.5rem;
     }
 
     .price-description {
+        text-align: center;
         max-width: 600px;
-        margin: 0 auto;
+        margin: 0 auto 2rem;
         color: var(--dark-text);
         font-size: var(--font-base);
         line-height: 1.6;
     }
 
     .pricing-cards {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 1.5rem;
-        margin-bottom: 2rem;
-        padding: 1rem 0;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 599px) {
+        .pricing-cards {
+            grid-template-columns: 1fr;
+        }
+
+        .price-card-footer {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-more {
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .price-activity-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
     }
 
     .price-card {
-        position: relative;
-        width: 100%;
-    }
-
-    .price-card-content {
-        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid rgba(102, 51, 153, 0.12);
         display: flex;
         flex-direction: column;
-        height: 100%;
+        overflow: hidden;
     }
 
+    .price-card-image-wrap {
+        width: 100%;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    @media (min-width: 600px) {
+        .price-card-image-wrap {
+            max-height: 530px;
+        }
+    }
+
+    .price-card-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        max-height: 530px;
+    }
+
+    .price-card-body {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    .price-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.35rem;
+    }
+
+    .price-card-icon {
+        font-size: var(--font-xl);
+    }
+
+    .price-card-header h4 {
+        margin: 0;
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .price-card-title {
+        font-size: var(--font-lg);
+        color: var(--purple);
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .price-card-title:hover {
+        color: var(--orange);
+    }
+
+    .price-card-age {
+        color: var(--purple);
+        font-size: var(--font-sm);
+        font-weight: 500;
+        opacity: 0.8;
+    }
+
+    /* Single-activity cards */
+    .price-single {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    .price-single-value {
+        font-size: var(--font-xl);
+        font-weight: 700;
+        color: var(--orange);
+    }
+
+
+    /* Multi-activity table (teams) */
     .price-activity-table {
         width: 100%;
         border-collapse: collapse;
@@ -292,7 +298,7 @@ const priceCards = [
     }
 
     .price-activity-table td {
-        padding: 0.5rem 0.5rem 0.5rem 0;
+        padding: 0.4rem 0.4rem 0.4rem 0;
         vertical-align: middle;
     }
 
@@ -311,13 +317,20 @@ const priceCards = [
         font-size: 0.85em;
     }
 
-    .price-activity-cta {
-        text-align: right;
+    /* Footer / CTAs */
+    .price-card-footer {
+        padding-top: 1.5rem;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
     }
 
     .price-activity-btn {
         display: inline-block;
-        padding: 0.4rem 0.75rem;
+        padding: 0.5rem 1.25rem;
         font-size: var(--font-sm);
         font-weight: 700;
         color: var(--white);
@@ -333,119 +346,9 @@ const priceCards = [
         transform: translateY(-2px);
     }
 
-    .price-card-actions--single.price-card-actions--stacked {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .price-card-actions--single {
-        display: block;
-        padding-top: 0.75rem;
-        margin-top: 0;
-        min-height: auto;
-        text-align: center;
-    }
-
-    .price-card-actions--single .btn-small {
-        font-weight: 600;
-        text-decoration: underline;
-    }
-
-    .price-card-actions--single .btn-small:hover {
-        text-decoration: underline;
-    }
-
-    .price-card-content--with-image .price-activity-table {
-        margin-bottom: 0.1rem;
-    }
-
-    .price-card-actions {
-        display: grid;
-        grid-template-rows: repeat(2, 3rem);
-        gap: 0.5rem;
-        margin-top: auto;
-        padding-top: 1rem;
-        min-height: 120px;
-        align-content: start;
-    }
-
-    .btn-booking {
-        grid-row: 1;
-    }
-
-    .btn-more {
-        grid-row: 2;
-    }
-
-    .price-card-actions .btn-small {
-        width: 100%;
-        text-align: center;
-        padding: 0.75rem 1rem;
-        font-size: var(--font-sm);
-        font-weight: 600;
-    }
-
-    .price-card-header {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .price-card-icon {
-        font-size: var(--font-xl);
-    }
-
-    .price-card-title {
-        font-size: var(--font-lg);
-        color: var(--purple);
-        margin: 0;
-        text-decoration: none;
-        font-weight: 700;
-    }
-
-    .price-card-title:hover {
-        color: var(--orange);
-    }
-
-    .price-card-age {
-        color: var(--purple);
-        font-size: 1.2em;
-        font-weight: 600;
-        margin-left: 1rem;
-    }
-
-    .price-card-body {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        margin-bottom: 0;
-        flex: 1;
-    }
-
-    .price-card-price {
-        font-size: var(--font-2xl);
-        font-weight: 700;
-        color: var(--orange);
-        line-height: 1;
-    }
-
-    .price-card-duration {
-        font-size: var(--font-base);
-        color: var(--dark-text);
-    }
-
-    .price-card-note {
-        color: var(--dark-text);
-        opacity: 0.7;
-        line-height: 1.6;
-    }
-
     .btn-small {
         display: inline-block;
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 0.75rem;
         font-size: var(--font-sm);
         background-color: transparent;
         color: var(--purple);
@@ -459,269 +362,9 @@ const priceCards = [
         color: var(--orange);
     }
 
-    .btn {
-        display: inline-block;
-        background-color: var(--orange);
-        color: var(--white);
-        padding: 0.8rem 1.5rem;
-        border-radius: 30px;
-        font-weight: bold;
-        text-transform: uppercase;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
+    .btn-more strong {
+        font-weight: 600;
+        text-decoration: underline;
     }
 
-    .btn:hover {
-        background-color: var(--purple);
-        color: var(--white);
-        transform: translateY(-3px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .sessions-cta {
-        text-align: center;
-        margin-top: 2rem;
-        display: none;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* English homepage: horizontal stacked layout */
-    .prices--en .pricing-tabs {
-        max-width: 1000px;
-    }
-
-    .prices--en .pricing-cards {
-        flex-direction: column;
-        gap: 2rem;
-        align-items: stretch;
-    }
-
-    .prices--en .price-card {
-        width: 100%;
-        max-width: none;
-        min-width: auto;
-        padding: 0;
-    }
-
-    .prices--en .price-card-content {
-        padding: 1.5rem 2rem;
-    }
-
-    .prices--en .price-card:has(.price-card-content--with-image) {
-        overflow: hidden;
-    }
-
-    .price-card-content--with-image {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        padding: 0;
-    }
-
-    .price-card-content--with-image .price-card-image-wrap {
-        flex: 0 0 auto;
-        width: 100%;
-        aspect-ratio: 3 / 4;
-        overflow: hidden;
-        border-radius: 12px;
-    }
-
-    .price-card-content--with-image .price-card-content-inner {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        padding: 0 1.5rem 1.25rem 1.25rem;
-    }
-
-    .price-card-content--with-image .price-card-top {
-        padding: 0;
-    }
-
-    .price-card-content--with-image .price-card-actions--single {
-        padding: 0.75rem 0 0;
-    }
-
-    .price-card--teams .price-card-actions--single {
-        padding-top: 1.5rem;
-    }
-
-    .price-card-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-
-    @media (min-width: 600px) {
-        .price-card-content--with-image {
-            flex-direction: row;
-            align-items: stretch;
-            gap: 0;
-        }
-
-        .price-card-content--with-image .price-card-image-wrap {
-        flex: 0 0 45%;
-        width: 45%;
-        max-width: 220px;
-        }
-
-        .price-card-content--with-image .price-card-content-inner {
-            flex: 1;
-        }
-    }
-
-    /* Mobile: stack table rows so CTA buttons are full width and not cut off */
-    @media (max-width: 599px) {
-        .prices--en .price-card:has(.price-card-content--with-image) {
-            overflow: visible;
-        }
-
-        .pricing-cards {
-            padding-left: 0;
-            padding-right: 0;
-        }
-
-        .price-card-content--with-image .price-card-content-inner {
-            padding-left: 1rem;
-            padding-right: 1rem;
-            min-width: 0;
-        }
-
-        .prices--en .price-card-content {
-            padding-left: 1rem;
-            padding-right: 1rem;
-        }
-
-        .price-activity-table,
-        .price-activity-table tbody,
-        .price-activity-table tr {
-            display: block;
-        }
-
-        .price-activity-table tr {
-            padding: 0.6rem 0;
-            border-bottom: 1px solid rgba(102, 51, 153, 0.12);
-        }
-
-        .price-activity-table tr:last-child {
-            border-bottom: none;
-        }
-
-        .price-activity-table td {
-            display: block;
-            padding: 0.15rem 0;
-        }
-
-        .price-activity-name {
-            margin-bottom: 0.2rem;
-        }
-
-        .price-activity-duration,
-        .price-activity-price {
-            display: inline;
-            font-size: 0.875em;
-        }
-
-        .price-activity-duration::after {
-            content: " · ";
-        }
-
-        .price-activity-cta {
-            text-align: left;
-            padding-top: 0.5rem;
-        }
-
-        .price-activity-cta .price-activity-btn {
-            display: block;
-            text-align: center;
-            width: 100%;
-            box-sizing: border-box;
-        }
-    }
-
-    .price-card-content--with-image .price-card-header {
-        margin-bottom: 0.75rem;
-    }
-
-    .prices--en .price-card-title {
-        font-size: var(--font-2xl);
-    }
-
-    .prices--en .price-activity-table {
-        font-size: var(--font-base);
-    }
-
-    .price-card-content--with-image .price-activity-table td {
-        padding: 0.4rem 0.5rem 0.4rem 0;
-    }
-
-    .price-card--teams .price-activity-table td {
-        padding: 0.75rem 0.5rem 0.75rem 0;
-    }
-
-    .prices--en .price-activity-name {
-        font-size: var(--font-base);
-    }
-
-    .prices--en .price-activity-btn {
-        padding: 0.5rem 1rem;
-    }
-
-    /* Tablet and up - default layout (non-English) */
-    @media (min-width: 768px) {
-        .prices:not(.prices--en) .pricing-cards {
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: center;
-            overflow-x: auto;
-        }
-
-        .prices:not(.prices--en) .pricing-cards::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .prices:not(.prices--en) .pricing-cards::-webkit-scrollbar-track {
-            background: #f0f0f0;
-            border-radius: 4px;
-        }
-
-        .prices:not(.prices--en) .pricing-cards::-webkit-scrollbar-thumb {
-            background-color: var(--orange);
-            border-radius: 4px;
-        }
-
-        .prices:not(.prices--en) .price-card {
-            min-width: 280px;
-            max-width: 300px;
-        }
-
-        .prices:not(.prices--en) .price-card:has(.price-activity-table) {
-            min-width: 320px;
-            max-width: 380px;
-        }
-    }
-
-    /* Desktop and up */
-    @media (min-width: 992px) {
-        .price-description {
-            font-size: var(--font-md);
-        }
-
-        .price-card-title {
-            font-size: var(--font-lg);
-        }
-    }
 </style>
