@@ -2,6 +2,7 @@ import { EVENT_TYPE, type EventType } from "@/components/booking/types";
 import { fetchAvailability } from "@/services/calendly";
 import { createAndLogEvent } from "@/services/logger";
 import { getCachedAvailability, setCachedAvailability } from "./cache";
+import { filterToSchedule } from "./schedule";
 import type { AvailableTime } from "./types";
 
 const BOOK_IN_ADVANCE = 30;
@@ -14,12 +15,8 @@ export async function getAvailability(
   days = BOOK_IN_ADVANCE,
 ): Promise<AvailableTime[]> {
   const cached = await getCachedAvailability(eventType);
-
-  if (cached) {
-    return cached;
-  }
-
-  return await refreshAvailability(eventType, days);
+  const slots = cached ?? (await refreshAvailability(eventType, days));
+  return filterToSchedule(slots);
 }
 
 /**
