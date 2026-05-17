@@ -218,7 +218,7 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         </div>
         )}
 
-        <!-- Activity 3: Customize your clothes -->
+        {!isActivityHidden("customize_clothes") && (
         <div id="pricing-activity3" class="pricing-activity pricing-activity--simple">
             <h3 class="pricing-activity-title">
                 {tHome("activity_3_title")}
@@ -234,6 +234,7 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
             </div>
             <p class="pricing-simple-price">{tCorporate("activity_simple_price")}</p>
         </div>
+        )}
     </div>
 </section>
 

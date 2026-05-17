@@ -123,7 +123,7 @@ const pricingOptions = [
         </div>
         )}
 
-        <!-- Activity 3: Customize your clothes -->
+        {!isActivityHidden("customize_clothes") && (
         <div class="pricing-activity">
             <h3 class="pricing-activity-title">
                 {tHome("activity_3_title")}
@@ -145,6 +145,7 @@ const pricingOptions = [
                 <a href={bookCustomizeClothesUrl} class="btn btn-cta">{t("cta_book")}</a>
             </div>
         </div>
+        )}
 
     </div>
 </section>
