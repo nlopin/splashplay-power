@@ -1,5 +1,5 @@
 import { BUSINESS_TIMEZONE } from "@/constants";
-import { NON_DISCOUNT_DATES, WEEKLY_SLOTS } from "@/constants.server";
+import { HOLIDAYS, WEEKLY_SLOTS } from "@/constants.server";
 import type { AvailableTime } from "./types";
 
 const formatter = new Intl.DateTimeFormat("en-US", {
@@ -20,7 +20,7 @@ function isHoliday(iso: string): boolean {
   const parts = Object.fromEntries(
     dateFormatter.formatToParts(new Date(iso)).map((p) => [p.type, p.value]),
   );
-  return NON_DISCOUNT_DATES.has(`${parts.month}-${parts.day}`);
+  return HOLIDAYS.has(`${parts.day}-${parts.month}`);
 }
 
 export function filterToSchedule(slots: string[]): AvailableTime[] {
@@ -43,7 +43,10 @@ export function filterToSchedule(slots: string[]): AvailableTime[] {
       (s) => s.time === `${hour}:${minute}`,
     );
     if (match) {
-      result.push({ time: iso, discount: holiday ? undefined : match.discount });
+      result.push({
+        time: iso,
+        discount: holiday ? undefined : match.discount,
+      });
     }
   }
 
