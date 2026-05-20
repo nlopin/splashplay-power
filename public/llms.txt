@@ -13,9 +13,9 @@ Team-building events are available for groups of up to 10 people, tailored to th
 ## Key Pages
 
 - [Home](/): Main landing page with techniques showcase, testimonials, pricing, and gallery
-- [Couples](/couples): Romantic painting experience for two (€75-90, 1.5 hours)
-- [Families](/family): Family-friendly sessions with children (€75-180, 1.5 hours)
-- [Friends](/friends): Group sessions for 2-6 people (€90-180, 1.5 hours)
+- [Couples](/couples): Romantic painting experience for two (€60-90, 1.5 hours)
+- [Families](/family): Family-friendly sessions with children (from €17 per person, 45 min – 2 hours)
+- [Friends](/friends): Group sessions for 2-6 people (from €17 per person, 45 min – 2 hours)
 - [Gift Cards](/giftcard): Purchase gift cards for any experience
 
 ## Booking
