@@ -182,10 +182,15 @@ export default function BookingForm({
       lang,
     );
 
+    const slotDiscount = availability.find((a) => a.time === selectedTimeSlot)?.discount;
+    const amount = slotDiscount
+      ? Math.round(currentAmount * (1 - slotDiscount / 100))
+      : currentAmount;
+
     setIsLoading(true);
     try {
       await createSession({
-        amount: currentAmount,
+        amount,
         formattedProductName,
         eventType,
         datetime: selectedTimeSlot,

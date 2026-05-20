@@ -62,7 +62,7 @@ export function calculateFamilyPrice(
   return STANDARD_PRICES[clampedTotal]?.[clampedCanvases] ?? 6000;
 }
 
-export function FamilyOptions({ onChange }: EventTypeOptionsProps) {
+export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOptionsProps) {
   const [formData, setFormData] = useState<FamilyFormData>({
     adults: 2,
     kids: 1,
@@ -269,10 +269,25 @@ export function FamilyOptions({ onChange }: EventTypeOptionsProps) {
         </button>
 
         {/* Total price */}
-        <div className="option-label total-price-label">{t("total_price")}</div>
-        <div></div>
-        <div className="total-price">{formatPrice(totalPrice)}</div>
-        <div></div>
+        {showPrice && (
+          <>
+            <div className="option-label total-price-label">{t("total_price")}</div>
+            <div></div>
+            <div className="total-price">
+              {discount ? (
+                <>
+                  <span className="price-before">
+                    <span className="price-original">{formatPrice(totalPrice)}</span>
+                  </span>
+                  <span className="price-final">{formatPrice(Math.round(totalPrice * (1 - discount / 100)))}</span>
+                </>
+              ) : (
+                formatPrice(totalPrice)
+              )}
+            </div>
+            <div></div>
+          </>
+        )}
       </div>
     </div>
   );

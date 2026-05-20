@@ -22,7 +22,7 @@ const IMAGES: Record<PictureType, string> = {
   individual: individual.src,
 };
 
-export function CouplesOptions({ onChange }: EventTypeOptionsProps) {
+export function CouplesOptions({ onChange, showPrice, discount }: EventTypeOptionsProps) {
   const [pictureType, setPictureType] = useState<PictureType>("one_big");
   const t = useTranslator();
 
@@ -56,24 +56,28 @@ export function CouplesOptions({ onChange }: EventTypeOptionsProps) {
     value: PictureType;
     label: string;
     price: string;
+    discountedPrice: string | null;
     image: string;
   }> = [
     {
       value: "one_small",
       label: t("couples_one_small"),
       price: formatPrice(PRICE.one_small),
+      discountedPrice: discount ? formatPrice(Math.round(PRICE.one_small * (1 - discount / 100))) : null,
       image: IMAGES.one_small,
     },
     {
       value: "one_big",
       label: t("couples_one_big"),
       price: formatPrice(PRICE.one_big),
+      discountedPrice: discount ? formatPrice(Math.round(PRICE.one_big * (1 - discount / 100))) : null,
       image: IMAGES.one_big,
     },
     {
       value: "individual",
       label: t("couples_individual"),
       price: formatPrice(PRICE.individual),
+      discountedPrice: discount ? formatPrice(Math.round(PRICE.individual * (1 - discount / 100))) : null,
       image: IMAGES.individual,
     },
   ];
@@ -110,7 +114,21 @@ export function CouplesOptions({ onChange }: EventTypeOptionsProps) {
             </div>
             <div className="option-content">
               <div className="option-label">{option.label}</div>
-              <div className="option-price">{option.price}</div>
+              {showPrice && (
+                <div className="option-price">
+                  {option.discountedPrice ? (
+                    <>
+                      <span className="price-before">
+                        <span className="price-original">{option.price}</span>
+                        <span className="discount-badge">-{discount}%</span>
+                      </span>
+                      <span className="price-final">{option.discountedPrice}</span>
+                    </>
+                  ) : (
+                    option.price
+                  )}
+                </div>
+              )}
             </div>
           </label>
         ))}

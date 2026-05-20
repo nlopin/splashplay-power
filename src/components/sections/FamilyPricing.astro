@@ -285,7 +285,7 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         </div>
         )}
 
-        <!-- Activity 3: Customize your clothes -->
+        {!isActivityHidden("customize_clothes") && (
         <div class="pricing-activity">
             <h3 class="pricing-activity-title">
                 {tHome("activity_3_title")}
@@ -330,6 +330,7 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                 <a href={bookCustomizeClothesUrl} class="pricing-btn pricing-btn--standalone">{t("cta_book_button")}</a>
             </div>
         </div>
+        )}
     </div>
 </section>
 

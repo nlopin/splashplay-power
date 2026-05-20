@@ -61,7 +61,12 @@ export function ScheduleStep({
       )}
 
       <div className="canvas-options">
-        <EventTypeOptions eventType={eventType} onChange={onPriceChange} />
+        <EventTypeOptions
+          eventType={eventType}
+          onChange={onPriceChange}
+          showPrice={!!selectedTimeSlot}
+          discount={selectedTimeSlot ? availability.find((a) => a.time === selectedTimeSlot)?.discount : undefined}
+        />
       </div>
 
       <div className="book-button-container">
