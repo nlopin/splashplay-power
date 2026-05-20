@@ -69,7 +69,7 @@ export function calculateFriendsPrice(
   return STANDARD_PRICES[clampedGuests]?.[clampedCanvases] ?? 6000;
 }
 
-export function FriendsOptions({ onChange }: EventTypeOptionsProps) {
+export function FriendsOptions({ onChange, showPrice, discount }: EventTypeOptionsProps) {
   const [formData, setFormData] = useState<FriendsFormData>({
     guests: 2,
     canvases: 2,
@@ -265,10 +265,25 @@ export function FriendsOptions({ onChange }: EventTypeOptionsProps) {
         </button>
 
         {/* Total price */}
-        <div className="option-label total-price-label">{t("total_price")}</div>
-        <div></div>
-        <div className="total-price">{formatPrice(totalPrice)}</div>
-        <div></div>
+        {showPrice && (
+          <>
+            <div className="option-label total-price-label">{t("total_price")}</div>
+            <div></div>
+            <div className="total-price">
+              {discount ? (
+                <>
+                  <span className="price-before">
+                    <span className="price-original">{formatPrice(totalPrice)}</span>
+                  </span>
+                  <span className="price-final">{formatPrice(Math.round(totalPrice * (1 - discount / 100)))}</span>
+                </>
+              ) : (
+                formatPrice(totalPrice)
+              )}
+            </div>
+            <div></div>
+          </>
+        )}
       </div>
     </div>
   );

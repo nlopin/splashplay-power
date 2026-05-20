@@ -12,7 +12,6 @@ import {
 import { type EventType } from "@/components/booking/types";
 import { type ISODatetime } from "@/types";
 import { getSunday } from "@/utils/datetime";
-import type { AvailableTime } from "@/services/availability/types";
 
 const CALENDLY_URL = "https://api.calendly.com";
 const EVENT_TYPE_IDS: Record<EventType, string> = {
@@ -44,7 +43,7 @@ const EventTypeAvailableTimesSchema = z.looseObject({
 export async function fetchAvailability(
   eventType: EventType,
   days = BOOK_IN_ADVANCE,
-): Promise<AvailableTime[]> {
+): Promise<ISODatetime[]> {
   const batchCount = Math.ceil(days / BATCH_SIZE_IN_DAYS) + 1; // we need +1 to get the rest of the last week
   const now = new Date();
   const startDate = new Date(
@@ -77,7 +76,7 @@ export async function fetchAvailability(
   });
 
   const responses = await Promise.all(fetchPromises);
-  const availableTimes: AvailableTime[] = [];
+  const availableTimes: ISODatetime[] = [];
 
   for (const response of responses) {
     if (response.status === 200) {

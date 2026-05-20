@@ -326,39 +326,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         min-width: 0;
     }
 
-    .nav-button {
-        background: none;
-        border: 1px solid transparent;
-        aspect-ratio: 1 / 1;
-        color: var(--purple);
-        border-radius: 4px;
-        padding: 4px 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-
-    .nav-button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        color: #ccc;
-    }
-
-    .nav-button:hover:not(:disabled) {
-        background-color: var(--purple);
-        color: var(--white);
-    }
-
-    .nav-button-side,
-    .nav-button-bar {
-        aspect-ratio: auto;
-        font-size: 2.5rem;
-        line-height: 1;
-        font-weight: 300;
-        border: 1px solid var(--purple);
-        background-color: var(--light-bg);
-        flex-shrink: 0;
-    }
-
     .nav-button-side {
         display: none;
         width: 56px;
@@ -369,127 +336,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         .nav-button-side {
             display: block;
         }
-    }
-
-    .nav-button-bar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 56px;
-        padding: 0;
-        line-height: 1;
-    }
-
-    .nav-button-bar .chevron {
-        display: block;
-        width: 32px;
-        height: 32px;
-    }
-
-    .calendar-day-list {
-        display: none;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    @media (max-width: 768px) {
-        .calendar-header {
-            display: none;
-        }
-
-        .calendar-body {
-            display: none;
-        }
-
-        .calendar-day-list {
-            display: flex;
-        }
-    }
-
-    .day-card {
-        border: 1px solid #e0e0e0;
-        border-radius: 6px;
-        background-color: var(--white);
-        overflow: hidden;
-    }
-
-    .day-card-header {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 12px;
-        background-color: var(--light-bg);
-        border-bottom: 1px solid #e0e0e0;
-        font-size: var(--font-sm);
-    }
-
-    .day-card-header .weekday {
-        color: var(--purple);
-        font-weight: 600;
-    }
-
-    .day-card-header .date {
-        color: var(--dark-text);
-    }
-
-    .day-card-header .busy-label {
-        margin-left: auto;
-        background-color: var(--orange);
-        color: var(--white);
-        font-size: 0.6rem;
-        font-weight: 600;
-        padding: 2px 6px;
-        border-radius: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .day-card-slots {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 8px 12px;
-    }
-
-    .day-card-slots .time-slot-button {
-        width: auto;
-        min-width: 56px;
-        padding: 10px;
-        border: 1px solid var(--purple);
-        font-variant: tabular-nums;
-    }
-
-    .day-card-empty {
-        display: block;
-        padding: 12px;
-        text-align: center;
-        color: #aaa;
-        font-size: var(--font-sm);
-    }
-
-    /* Busy label override for calendar cells */
-    .header-cell .busy-label {
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: var(--orange);
-        color: var(--white);
-        font-size: 0.6rem; /* exception from the scale. if we use the smallest font, the label will be too big */
-        font-weight: 600;
-        padding: 2px 6px;
-        border-radius: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
-        z-index: 10;
-        pointer-events: none;
-    }
-
-    .week-display {
-        font-weight: bold;
-        color: var(--dark-text);
     }
 
     .calendar-grid {
@@ -528,67 +374,95 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         color: var(--dark-text);
     }
 
+    .header-cell.popular {
+        background-color: #ede5ff;
+    }
+
+    .slot-cell.popular {
+        background-color: #f7f3ff;
+    }
+
     .slot-cell {
-        padding: 1px;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2px;
-        min-height: 36px;
-    }
-
-    .time-slot-button {
-        appearance: none;
-        width: 100%;
-        padding: 2px;
-        font-size: var(--font-sm);
-        background-color: transparent;
-        color: var(--purple);
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        text-align: center;
-        transition: all 0.2s;
-    }
-
-    .time-slot-button:hover {
-        background-color: var(--purple-light);
-        color: var(--white);
-    }
-
-    .time-slot-button.selected {
-        background-color: var(--purple);
-        color: var(--white);
-        border-color: var(--purple);
-    }
-
-    .time-slot-button[data-minute="00"] {
-        grid-column: 1;
-    }
-
-    .time-slot-button[data-minute="30"] {
-        grid-column: 2;
+        padding: 4px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-height: 60px;
     }
 
     .mobile-only {
         display: none;
     }
 
+    .nav-button {
+        background: none;
+        border: 1px solid transparent;
+        aspect-ratio: 1 / 1;
+        color: var(--purple);
+        border-radius: 4px;
+        padding: 4px 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .nav-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        color: #ccc;
+    }
+
+    .nav-button:hover:not(:disabled) {
+        background-color: var(--purple);
+        color: var(--white);
+    }
+
+    .nav-button-bar {
+        aspect-ratio: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 56px;
+        padding: 0;
+        font-size: 2.5rem;
+        line-height: 1;
+        font-weight: 300;
+        border: 1px solid var(--purple);
+        background-color: var(--light-bg);
+        flex-shrink: 0;
+    }
+
+    .nav-button-bar .chevron {
+        display: block;
+        width: 32px;
+        height: 32px;
+    }
+
+    .calendar-day-list {
+        display: none;
+        flex-direction: column;
+        gap: 12px;
+    }
+
     @media (max-width: 768px) {
+        .calendar-header {
+            display: none;
+        }
+
+        .calendar-body {
+            display: none;
+        }
+
+        .calendar-day-list {
+            display: flex;
+        }
+
         .desktop-only {
             display: none;
         }
 
         .mobile-only {
             display: block;
-        }
-
-        .header-cell {
-            padding: 0.1rem;
-            font-size: var(--font-xs);
-        }
-
-        .header-cell .busy-label {
-            display: none;
         }
 
         .availability-calendar {
@@ -602,27 +476,118 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         }
 
         .slot-cell {
-            grid-template-columns: 1fr;
-            grid-template-rows: 1fr 1fr;
             min-height: 80px;
-            gap: 4px;
         }
 
         .time-slot-button {
             width: 100%;
             padding: 8px 0;
         }
-
-        .time-slot-button[data-minute="00"] {
-            grid-column: 1;
-            grid-row: 1;
-        }
-
-        .time-slot-button[data-minute="30"] {
-            grid-column: 1;
-            grid-row: 2;
-        }
     }
+
+    .day-card {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background-color: var(--white);
+        overflow: hidden;
+    }
+
+    .day-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background-color: var(--light-bg);
+        border-bottom: 1px solid #e0e0e0;
+        font-size: var(--font-sm);
+    }
+
+    .day-card-header .weekday {
+        color: var(--purple);
+        font-weight: 600;
+    }
+
+    .day-card-header .date {
+        color: var(--dark-text);
+    }
+
+
+    .day-card-slots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 8px 12px;
+    }
+
+    .day-card-slots .time-slot-button {
+        width: auto;
+        min-width: 56px;
+        padding: 10px;
+        border: 1px solid var(--purple);
+        font-variant: tabular-nums;
+    }
+
+    .day-card-empty {
+        display: block;
+        padding: 12px;
+        text-align: center;
+        color: #aaa;
+        font-size: var(--font-sm);
+    }
+
+
+    .week-display {
+        font-weight: bold;
+        color: var(--dark-text);
+    }
+
+
+    .time-slot-button {
+        appearance: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 8px 4px;
+        font-size: var(--font-base);
+        background-color: transparent;
+        color: var(--purple);
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.2s;
+        gap: 3px;
+    }
+
+    .time-slot-button:hover {
+        background-color: var(--purple-light);
+        color: var(--white);
+    }
+
+    .time-slot-button.selected {
+        background-color: var(--purple);
+        color: var(--white);
+        border-color: var(--purple);
+    }
+
+    .discount-badge {
+        display: inline-block;
+        font-size: var(--font-xs);
+        font-weight: 700;
+        color: var(--white);
+        background-color: var(--orange);
+        padding: 1px 5px;
+        border-radius: 8px;
+        line-height: 1.4;
+        letter-spacing: 0.02em;
+    }
+
+    .time-slot-button.selected .discount-badge {
+        background-color: rgba(255,255,255,0.25);
+    }
+
 
     .options-grid {
         display: grid;
@@ -781,7 +746,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     .schedule-step .book-button-container {
-        margin-top: -16px;
+        margin-top: 8px;
     }
 
     .book-button-container {
@@ -1137,7 +1102,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         font-weight: bold;
         color: var(--purple);
         transition: color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
     }
+
+    .price-original {
+        text-decoration: line-through;
+        color: var(--gray, #999);
+        font-weight: 400;
+        font-size: 0.85em;
+    }
+
+    .price-before {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
 
     /* Standard total price styles */
     .options-grid-unified {
@@ -1153,8 +1136,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             color: var(--purple);
             position: relative;
             right: -2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
     }
+
 
     /* Back link styles */
     .back-link {

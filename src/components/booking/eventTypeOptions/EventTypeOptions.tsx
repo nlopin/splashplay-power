@@ -9,6 +9,8 @@ import { PaintOptions } from "./PaintOptions";
 export type EventTypeOptionsProps = {
   eventType: EventType;
   onChange: (data: PricingData) => void;
+  showPrice?: boolean;
+  discount?: number;
 };
 
 export function EventTypeOptions(props: EventTypeOptionsProps) {

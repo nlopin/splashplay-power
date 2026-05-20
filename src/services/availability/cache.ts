@@ -2,10 +2,10 @@ import { NETLIFY_SITE_ID, NETLIFY_TOKEN } from "astro:env/server";
 import { getStore } from "@netlify/blobs";
 import type { EventType } from "@/components/booking/types";
 import { createAndLogEvent } from "@/services/logger";
-import type { AvailableTime } from "./types";
+import type { ISODatetime } from "@/types";
 
 type CachedAvailability = {
-  availableTimes: AvailableTime[];
+  availableTimes: ISODatetime[];
   timestamp: number;
   fetchedAt: string;
 };
@@ -31,7 +31,7 @@ function isCachedAvailability(value: unknown): value is CachedAvailability {
  */
 export async function getCachedAvailability(
   eventType: EventType,
-): Promise<AvailableTime[] | null> {
+): Promise<ISODatetime[] | null> {
   const startTime = Date.now();
 
   try {
@@ -71,7 +71,7 @@ export async function getCachedAvailability(
  */
 export async function setCachedAvailability(
   eventType: EventType,
-  availableTimes: AvailableTime[],
+  availableTimes: ISODatetime[],
 ): Promise<void> {
   const startTime = Date.now();
 

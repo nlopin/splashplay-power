@@ -1,6 +1,7 @@
 import { EVENT_TYPE, type EventType } from "@/components/booking/types";
 import { fetchAvailability } from "@/services/calendly";
 import { createAndLogEvent } from "@/services/logger";
+import type { ISODatetime } from "@/types";
 import { getCachedAvailability, setCachedAvailability } from "./cache";
 import { filterToSchedule } from "./schedule";
 import type { AvailableTime } from "./types";
@@ -25,7 +26,7 @@ export async function getAvailability(
 export async function refreshAvailability(
   eventType: EventType,
   days = BOOK_IN_ADVANCE,
-): Promise<AvailableTime[]> {
+): Promise<ISODatetime[]> {
   const startTime = Date.now();
   const availableTimes = await fetchAvailability(eventType, days);
 
@@ -47,7 +48,7 @@ export async function refreshAvailability(
  * Refresh availability for all event types
  */
 export async function refreshAllAvailability(): Promise<
-  PromiseSettledResult<AvailableTime[]>[]
+  PromiseSettledResult<ISODatetime[]>[]
 > {
   console.log("Refresh all availability started", new Date().toISOString());
   const eventTypes: EventType[] = Object.values(EVENT_TYPE);

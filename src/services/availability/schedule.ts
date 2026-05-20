@@ -1,5 +1,6 @@
 import { BUSINESS_TIMEZONE } from "@/constants";
 import { WEEKLY_SLOTS } from "@/constants.server";
+import type { AvailableTime } from "./types";
 
 const formatter = new Intl.DateTimeFormat("en-US", {
   timeZone: BUSINESS_TIMEZONE,
@@ -9,8 +10,10 @@ const formatter = new Intl.DateTimeFormat("en-US", {
   hour12: false,
 });
 
-export function filterToSchedule(slots: string[]): string[] {
-  return slots.filter((iso) => {
+export function filterToSchedule(slots: string[]): AvailableTime[] {
+  const result: AvailableTime[] = [];
+
+  for (const iso of slots) {
     let dayAbbr = "";
     let hour = "";
     let minute = "";
@@ -21,6 +24,11 @@ export function filterToSchedule(slots: string[]): string[] {
       else if (part.type === "minute") minute = part.value;
     }
 
-    return WEEKLY_SLOTS[dayAbbr]?.includes(`${hour}:${minute}`) ?? false;
-  });
+    const match = WEEKLY_SLOTS[dayAbbr]?.find((s) => s.time === `${hour}:${minute}`);
+    if (match) {
+      result.push({ time: iso, discount: match.discount });
+    }
+  }
+
+  return result;
 }

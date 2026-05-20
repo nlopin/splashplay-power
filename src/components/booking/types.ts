@@ -1,4 +1,5 @@
 import type { ISODatetime } from "@/types";
+import type { AvailableTime } from "@/services/availability/types";
 
 export type SelectedTimeSlot = ISODatetime;
 
@@ -17,7 +18,7 @@ export function isEventType(value: string): value is EventType {
   return Object.values(EVENT_TYPE).includes(value);
 }
 
-export type Availability = ISODatetime[];
+export type Availability = AvailableTime[];
 
 // todo: review if needed
 export interface PricingData {
