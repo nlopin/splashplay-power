@@ -10,7 +10,7 @@ The default language is Spanish.
 ## Requirements
 
 Translations are stored in one or several translation files. A translation file is a JSON with an object
- containing translation keys and corresponding translations to each language.
+containing translation keys and corresponding translations to each language.
 
 Page template is written only once. No duplication allowed.
 If there is an `about.astro` it must serve all languages. There must be no `en/about.astro` or `cat/about.astro`.
@@ -19,6 +19,7 @@ If there is an `about.astro` it must serve all languages. There must be no `en/a
 
 There must be unprefixed URLs, they correspond to the default language. Other languages are prefixed.
 Examples:
+
 - `/` shows home page in Spanish, `/en` shows homepage in English;
 - `/about` shows about page in Spanish, `/en/about` shows about page in English;
 
@@ -29,23 +30,25 @@ Translations must be scoped by page to facilitate the loading
 
 Each translation file should follow this format:
 {
-  "home": {
-    "key1": "value1",
-    "key2": "value2"
-  },
-  "about" : {
-    "about_key1": "value3"
-  }
+"home": {
+"key1": "value1",
+"key2": "value2"
+},
+"about" : {
+"about_key1": "value3"
+}
 }
 
 ### Language Configuration
 
 Supported languages configuration:
+
 - Spanish (es): Default language, no URL prefix
 - English (en): URL prefix `/en`
 - Catalan (ca): URL prefix `/ca`
 
 Language detection priority:
+
 1. URL prefix (highest priority)
 2. Browser Accept-Language header
 3. Default to Spanish if no match
@@ -53,10 +56,12 @@ Language detection priority:
 ### Fallback Strategy
 
 When a translation is missing:
+
 1. return the translation key
 2. log error in development mode
 
 For missing pages:
+
 - Return 404 page in the requested language
 - If 404 translation missing, use Spanish 404
 
@@ -67,6 +72,7 @@ For missing pages:
 - Hot reload support for translation file changes
 
 Testing requirements:
+
 - All pages must render in all three languages
 - URL routing must work correctly
 - Language switching must preserve page context
@@ -76,6 +82,7 @@ Consider using default Astro i18n or alternatives like astro-i18n (https://githu
 ### Performance Considerations
 
 Translation loading:
+
 - All translations loaded at build time (static generation)
 - No runtime translation loading required
 - Minimize bundle size by only including necessary translations per page

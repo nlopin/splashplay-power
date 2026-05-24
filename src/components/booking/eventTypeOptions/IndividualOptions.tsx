@@ -8,7 +8,11 @@ import type { EventTypeOptionsProps } from "./EventTypeOptions";
 // Fixed price for individual booking
 const INDIVIDUAL_PRICE = 6000;
 
-export function IndividualOptions({ onChange, showPrice, discount }: EventTypeOptionsProps) {
+export function IndividualOptions({
+  onChange,
+  showPrice,
+  discount,
+}: EventTypeOptionsProps) {
   const t = useTranslator();
 
   // Set the fixed price on mount and notify parent
@@ -27,15 +31,21 @@ export function IndividualOptions({ onChange, showPrice, discount }: EventTypeOp
     <div className="options-grid-unified">
       {showPrice && (
         <>
-          <div className="option-label total-price-label">{t("total_price")}</div>
+          <div className="option-label total-price-label">
+            {t("total_price")}
+          </div>
           <div></div>
           <div className="total-price">
             {discount ? (
               <>
                 <span className="price-before">
-                  <span className="price-original">{formatPrice(INDIVIDUAL_PRICE)}</span>
+                  <span className="price-original">
+                    {formatPrice(INDIVIDUAL_PRICE)}
+                  </span>
                 </span>
-                <span className="price-final">{formatPrice(discountedPrice)}</span>
+                <span className="price-final">
+                  {formatPrice(discountedPrice)}
+                </span>
               </>
             ) : (
               formatPrice(INDIVIDUAL_PRICE)

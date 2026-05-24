@@ -55,7 +55,7 @@ const CANVAS_LIMITS: Record<number, { min: number; max: number }> = {
 export function calculateFriendsPrice(
   canvases: number,
   guests: number = canvases,
-  canvasType: CanvasType = "standard"
+  canvasType: CanvasType = "standard",
 ): number {
   if (canvasType === "big") {
     const clampedGuests = Math.max(MIN_GUESTS, Math.min(guests, MAX_GUESTS));
@@ -69,7 +69,11 @@ export function calculateFriendsPrice(
   return STANDARD_PRICES[clampedGuests]?.[clampedCanvases] ?? 6000;
 }
 
-export function FriendsOptions({ onChange, showPrice, discount }: EventTypeOptionsProps) {
+export function FriendsOptions({
+  onChange,
+  showPrice,
+  discount,
+}: EventTypeOptionsProps) {
   const [formData, setFormData] = useState<FriendsFormData>({
     guests: 2,
     canvases: 2,
@@ -87,7 +91,11 @@ export function FriendsOptions({ onChange, showPrice, discount }: EventTypeOptio
 
     if (canvasParam) {
       const canvasValue = parseInt(canvasParam, 10);
-      if (!isNaN(canvasValue) && canvasValue >= 1 && canvasValue <= MAX_GUESTS) {
+      if (
+        !isNaN(canvasValue) &&
+        canvasValue >= 1 &&
+        canvasValue <= MAX_GUESTS
+      ) {
         const guests = Math.max(MIN_GUESTS, Math.min(canvasValue, MAX_GUESTS));
         setFormData((prev) => ({
           ...prev,
@@ -103,7 +111,7 @@ export function FriendsOptions({ onChange, showPrice, discount }: EventTypeOptio
     const totalAmount = calculateFriendsPrice(
       formData.canvases,
       formData.guests,
-      formData.canvasType
+      formData.canvasType,
     );
     const canvasLabel =
       formData.canvasType === "big"
@@ -164,7 +172,7 @@ export function FriendsOptions({ onChange, showPrice, discount }: EventTypeOptio
   const totalPrice = calculateFriendsPrice(
     formData.canvases,
     formData.guests,
-    formData.canvasType
+    formData.canvasType,
   );
 
   const isBig = formData.canvasType === "big";
@@ -176,7 +184,9 @@ export function FriendsOptions({ onChange, showPrice, discount }: EventTypeOptio
       <div className="canvas-type-selector">
         <div className="canvas-type-label">{t("friends_canvas_type")}</div>
         <div className="canvas-type-options">
-          <label className={`canvas-type-option${!isBig ? " canvas-type-option--selected" : ""}`}>
+          <label
+            className={`canvas-type-option${!isBig ? " canvas-type-option--selected" : ""}`}
+          >
             <input
               type="radio"
               name="canvasType"
@@ -186,7 +196,9 @@ export function FriendsOptions({ onChange, showPrice, discount }: EventTypeOptio
             />
             {t("friends_canvas_standard")}
           </label>
-          <label className={`canvas-type-option${isBig ? " canvas-type-option--selected" : ""}`}>
+          <label
+            className={`canvas-type-option${isBig ? " canvas-type-option--selected" : ""}`}
+          >
             <input
               type="radio"
               name="canvasType"
@@ -199,7 +211,13 @@ export function FriendsOptions({ onChange, showPrice, discount }: EventTypeOptio
         </div>
       </div>
 
-      <div className="options-grid-unified" style={{ gridTemplateColumns: "max-content max-content minmax(70px, max-content) max-content" }}>
+      <div
+        className="options-grid-unified"
+        style={{
+          gridTemplateColumns:
+            "max-content max-content minmax(70px, max-content) max-content",
+        }}
+      >
         {/* Guests */}
         <div className="option-label-with-hint">
           <span className="option-label">{t("friends_guests_count")}</span>
@@ -233,7 +251,9 @@ export function FriendsOptions({ onChange, showPrice, discount }: EventTypeOptio
         </button>
 
         {/* Canvases */}
-        <div className={`option-label${isBig ? " option-label--disabled" : ""}`}>
+        <div
+          className={`option-label${isBig ? " option-label--disabled" : ""}`}
+        >
           {t("friends_canvases_count")}
         </div>
         <button
@@ -267,15 +287,21 @@ export function FriendsOptions({ onChange, showPrice, discount }: EventTypeOptio
         {/* Total price */}
         {showPrice && (
           <>
-            <div className="option-label total-price-label">{t("total_price")}</div>
+            <div className="option-label total-price-label">
+              {t("total_price")}
+            </div>
             <div></div>
             <div className="total-price">
               {discount ? (
                 <>
                   <span className="price-before">
-                    <span className="price-original">{formatPrice(totalPrice)}</span>
+                    <span className="price-original">
+                      {formatPrice(totalPrice)}
+                    </span>
                   </span>
-                  <span className="price-final">{formatPrice(Math.round(totalPrice * (1 - discount / 100)))}</span>
+                  <span className="price-final">
+                    {formatPrice(Math.round(totalPrice * (1 - discount / 100)))}
+                  </span>
                 </>
               ) : (
                 formatPrice(totalPrice)

@@ -59,22 +59,82 @@ function buildHomeBookingRows(lang: Language): {
 } {
   return {
     activity1: [
-      { audienceKey: "booking_for_couples", pageHref: getLocalizedPath("/couples", lang), href: getLocalizedPath("/book/couples", lang), ctaKey: "booking_cta_book" },
-      { audienceKey: "booking_for_friends", pageHref: getLocalizedPath("/friends", lang), href: getLocalizedPath("/book/friends", lang), ctaKey: "booking_cta_book" },
-      { audienceKey: "booking_for_families", pageHref: getLocalizedPath("/family", lang), href: getLocalizedPath("/book/family", lang), ctaKey: "booking_cta_book" },
-      { audienceKey: "booking_for_teams", pageHref: getLocalizedPath("/corporate", lang), href: "#contact", ctaKey: "booking_cta_contact" },
+      {
+        audienceKey: "booking_for_couples",
+        pageHref: getLocalizedPath("/couples", lang),
+        href: getLocalizedPath("/book/couples", lang),
+        ctaKey: "booking_cta_book",
+      },
+      {
+        audienceKey: "booking_for_friends",
+        pageHref: getLocalizedPath("/friends", lang),
+        href: getLocalizedPath("/book/friends", lang),
+        ctaKey: "booking_cta_book",
+      },
+      {
+        audienceKey: "booking_for_families",
+        pageHref: getLocalizedPath("/family", lang),
+        href: getLocalizedPath("/book/family", lang),
+        ctaKey: "booking_cta_book",
+      },
+      {
+        audienceKey: "booking_for_teams",
+        pageHref: getLocalizedPath("/corporate", lang),
+        href: "#contact",
+        ctaKey: "booking_cta_contact",
+      },
     ],
     activity2: [
-      { audienceKey: "booking_for_couples", pageHref: getLocalizedPath("/couples", lang), href: getLocalizedPath("/book/throw-paint", lang), ctaKey: "booking_cta_book" },
-      { audienceKey: "booking_for_friends", pageHref: getLocalizedPath("/friends", lang), href: getLocalizedPath("/book/throw-paint", lang), ctaKey: "booking_cta_book" },
-      { audienceKey: "booking_for_families", pageHref: getLocalizedPath("/family", lang), href: getLocalizedPath("/book/throw-paint", lang), ctaKey: "booking_cta_book" },
-      { audienceKey: "booking_for_teams", pageHref: getLocalizedPath("/corporate", lang), href: "#contact", ctaKey: "booking_cta_contact" },
+      {
+        audienceKey: "booking_for_couples",
+        pageHref: getLocalizedPath("/couples", lang),
+        href: getLocalizedPath("/book/throw-paint", lang),
+        ctaKey: "booking_cta_book",
+      },
+      {
+        audienceKey: "booking_for_friends",
+        pageHref: getLocalizedPath("/friends", lang),
+        href: getLocalizedPath("/book/throw-paint", lang),
+        ctaKey: "booking_cta_book",
+      },
+      {
+        audienceKey: "booking_for_families",
+        pageHref: getLocalizedPath("/family", lang),
+        href: getLocalizedPath("/book/throw-paint", lang),
+        ctaKey: "booking_cta_book",
+      },
+      {
+        audienceKey: "booking_for_teams",
+        pageHref: getLocalizedPath("/corporate", lang),
+        href: "#contact",
+        ctaKey: "booking_cta_contact",
+      },
     ],
     activity3: [
-      { audienceKey: "booking_for_couples", pageHref: getLocalizedPath("/couples", lang), href: getLocalizedPath("/book/customize-clothes", lang), ctaKey: "booking_cta_book" },
-      { audienceKey: "booking_for_friends", pageHref: getLocalizedPath("/friends", lang), href: getLocalizedPath("/book/customize-clothes", lang), ctaKey: "booking_cta_book" },
-      { audienceKey: "booking_for_families", pageHref: getLocalizedPath("/family", lang), href: getLocalizedPath("/book/customize-clothes", lang), ctaKey: "booking_cta_book" },
-      { audienceKey: "booking_for_teams", pageHref: getLocalizedPath("/corporate", lang), href: "#contact", ctaKey: "booking_cta_contact" },
+      {
+        audienceKey: "booking_for_couples",
+        pageHref: getLocalizedPath("/couples", lang),
+        href: getLocalizedPath("/book/customize-clothes", lang),
+        ctaKey: "booking_cta_book",
+      },
+      {
+        audienceKey: "booking_for_friends",
+        pageHref: getLocalizedPath("/friends", lang),
+        href: getLocalizedPath("/book/customize-clothes", lang),
+        ctaKey: "booking_cta_book",
+      },
+      {
+        audienceKey: "booking_for_families",
+        pageHref: getLocalizedPath("/family", lang),
+        href: getLocalizedPath("/book/customize-clothes", lang),
+        ctaKey: "booking_cta_book",
+      },
+      {
+        audienceKey: "booking_for_teams",
+        pageHref: getLocalizedPath("/corporate", lang),
+        href: "#contact",
+        ctaKey: "booking_cta_contact",
+      },
     ],
   };
 }
@@ -87,9 +147,15 @@ export function getWhatWeOfferConfig(
   const bookFriends = getLocalizedPath("/book/friends", lang);
   const bookFamily = getLocalizedPath("/book/family", lang);
   const bookThrowPaint = getLocalizedPath("/book/throw-paint", lang);
-  const bookCustomizeClothes = getLocalizedPath("/book/customize-clothes", lang);
+  const bookCustomizeClothes = getLocalizedPath(
+    "/book/customize-clothes",
+    lang,
+  );
 
-  const baseActivity1: Omit<ActivityConfig, "imageKey" | "imageAlt" | "bookingRows" | "bookUrl"> = {
+  const baseActivity1: Omit<
+    ActivityConfig,
+    "imageKey" | "imageAlt" | "bookingRows" | "bookUrl"
+  > = {
     id: "abstract_masterpiece",
     titleKey: "activity_1_title",
     descriptionKey: "activity_1_description",
@@ -168,9 +234,21 @@ export function getWhatWeOfferConfig(
       bookingMode: "single-cta",
       ctaKey: "cta_book",
       activities: [
-        { ...standardActivity1, detailsKey: "activity_1_details", bookUrl: bookFriends },
-        { ...standardActivity2, detailsKey: "activity_2_details", bookUrl: bookThrowPaint },
-        { ...standardActivity3, detailsKey: "activity_3_details", bookUrl: bookCustomizeClothes },
+        {
+          ...standardActivity1,
+          detailsKey: "activity_1_details",
+          bookUrl: bookFriends,
+        },
+        {
+          ...standardActivity2,
+          detailsKey: "activity_2_details",
+          bookUrl: bookThrowPaint,
+        },
+        {
+          ...standardActivity3,
+          detailsKey: "activity_3_details",
+          bookUrl: bookCustomizeClothes,
+        },
       ].filter((a) => !isActivityHidden(a.id)),
     };
   }
@@ -186,9 +264,21 @@ export function getWhatWeOfferConfig(
       bookingMode: "single-cta",
       ctaKey: "cta_book",
       activities: [
-        { ...standardActivity1, detailsKey: "activity_1_details_family", bookUrl: bookFamily },
-        { ...standardActivity2, detailsKey: "activity_2_details_family", bookUrl: bookThrowPaint },
-        { ...standardActivity3, detailsKey: "activity_3_details_family", bookUrl: bookCustomizeClothes },
+        {
+          ...standardActivity1,
+          detailsKey: "activity_1_details_family",
+          bookUrl: bookFamily,
+        },
+        {
+          ...standardActivity2,
+          detailsKey: "activity_2_details_family",
+          bookUrl: bookThrowPaint,
+        },
+        {
+          ...standardActivity3,
+          detailsKey: "activity_3_details_family",
+          bookUrl: bookCustomizeClothes,
+        },
       ].filter((a) => !isActivityHidden(a.id)),
     };
   }
@@ -205,9 +295,21 @@ export function getWhatWeOfferConfig(
       bookingMode: "single-cta",
       ctaKey: "cta_book",
       activities: [
-        { ...standardActivity1, detailsKey: "activity_1_details_couples", bookUrl: bookCouplesUrl },
-        { ...standardActivity2, detailsKey: "activity_2_details_couples", bookUrl: bookCouplesUrl },
-        { ...standardActivity3, detailsKey: "activity_3_details_couples", bookUrl: bookCustomizeClothes },
+        {
+          ...standardActivity1,
+          detailsKey: "activity_1_details_couples",
+          bookUrl: bookCouplesUrl,
+        },
+        {
+          ...standardActivity2,
+          detailsKey: "activity_2_details_couples",
+          bookUrl: bookCouplesUrl,
+        },
+        {
+          ...standardActivity3,
+          detailsKey: "activity_3_details_couples",
+          bookUrl: bookCustomizeClothes,
+        },
       ].filter((a) => !isActivityHidden(a.id)),
     };
   }

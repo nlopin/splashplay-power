@@ -6,8 +6,8 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./src/*"]
     },
-    "target": "ES2023",
-  },
+    "target": "ES2023"
+  }
 }

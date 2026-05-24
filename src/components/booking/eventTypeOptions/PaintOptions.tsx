@@ -37,11 +37,13 @@ const PRICES_CUSTOMIZE_CLOTHES: Record<number, number> = {
 
 export function calculatePaintPrice(
   totalGuests: number,
-  eventType?: EventType
+  eventType?: EventType,
 ): number {
   const clamped = Math.max(1, Math.min(totalGuests, MAX_TOTAL));
   const prices =
-    eventType === "customize_clothes" ? PRICES_CUSTOMIZE_CLOTHES : PRICES_THROW_PAINT;
+    eventType === "customize_clothes"
+      ? PRICES_CUSTOMIZE_CLOTHES
+      : PRICES_THROW_PAINT;
   return prices[clamped];
 }
 
@@ -54,7 +56,12 @@ const KIDS_AGE_HINT_BY_EVENT: Record<EventType, string> = {
   individual: "throw_paint_kids_age_hint",
 };
 
-export function PaintOptions({ eventType, onChange, showPrice, discount }: EventTypeOptionsProps) {
+export function PaintOptions({
+  eventType,
+  onChange,
+  showPrice,
+  discount,
+}: EventTypeOptionsProps) {
   const [formData, setFormData] = useState<PaintFormData>({
     adults: 2,
     kids: 0,
@@ -83,7 +90,10 @@ export function PaintOptions({ eventType, onChange, showPrice, discount }: Event
   const handleKidsChange = (value: number) => {
     const kids = Math.max(MIN_KIDS, value);
     setFormData((prev) => {
-      const adults = Math.max(MIN_ADULTS, Math.min(prev.adults, MAX_TOTAL - kids));
+      const adults = Math.max(
+        MIN_ADULTS,
+        Math.min(prev.adults, MAX_TOTAL - kids),
+      );
       return { adults, kids };
     });
   };
@@ -94,7 +104,13 @@ export function PaintOptions({ eventType, onChange, showPrice, discount }: Event
 
   return (
     <div className="paint-options">
-      <div className="options-grid-unified" style={{ gridTemplateColumns: "max-content max-content minmax(70px, max-content) max-content" }}>
+      <div
+        className="options-grid-unified"
+        style={{
+          gridTemplateColumns:
+            "max-content max-content minmax(70px, max-content) max-content",
+        }}
+      >
         {/* Adults */}
         <div className="option-label">{t("family_adults_count")}</div>
         <button
@@ -127,7 +143,9 @@ export function PaintOptions({ eventType, onChange, showPrice, discount }: Event
         {/* Kids */}
         <div className="option-label-with-hint">
           <span className="option-label">{t("family_kids_count")}</span>
-          <span className="option-hint">{t(KIDS_AGE_HINT_BY_EVENT[eventType])}</span>
+          <span className="option-hint">
+            {t(KIDS_AGE_HINT_BY_EVENT[eventType])}
+          </span>
         </div>
         <button
           type="button"
@@ -159,15 +177,21 @@ export function PaintOptions({ eventType, onChange, showPrice, discount }: Event
         {/* Total price */}
         {showPrice && (
           <>
-            <div className="option-label total-price-label">{t("total_price")}</div>
+            <div className="option-label total-price-label">
+              {t("total_price")}
+            </div>
             <div></div>
             <div className="total-price">
               {discount ? (
                 <>
                   <span className="price-before">
-                    <span className="price-original">{formatPrice(totalPrice)}</span>
+                    <span className="price-original">
+                      {formatPrice(totalPrice)}
+                    </span>
                   </span>
-                  <span className="price-final">{formatPrice(Math.round(totalPrice * (1 - discount / 100)))}</span>
+                  <span className="price-final">
+                    {formatPrice(Math.round(totalPrice * (1 - discount / 100)))}
+                  </span>
                 </>
               ) : (
                 formatPrice(totalPrice)

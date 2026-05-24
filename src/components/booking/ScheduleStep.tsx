@@ -65,7 +65,11 @@ export function ScheduleStep({
           eventType={eventType}
           onChange={onPriceChange}
           showPrice={!!selectedTimeSlot}
-          discount={selectedTimeSlot ? availability.find((a) => a.time === selectedTimeSlot)?.discount : undefined}
+          discount={
+            selectedTimeSlot
+              ? availability.find((a) => a.time === selectedTimeSlot)?.discount
+              : undefined
+          }
         />
       </div>
 
@@ -84,11 +88,9 @@ export function ScheduleStep({
         {!selectedTimeSlot && (
           <p className="schedule-error">{t("select_time_to_continue")}</p>
         )}
-        {selectedTimeSlot &&
-          currentAmount != null &&
-          currentAmount <= 0 && (
-            <p className="schedule-error">{t("select_min_participants")}</p>
-          )}
+        {selectedTimeSlot && currentAmount != null && currentAmount <= 0 && (
+          <p className="schedule-error">{t("select_min_participants")}</p>
+        )}
       </div>
     </div>
   );

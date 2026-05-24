@@ -50,7 +50,7 @@ const CANVAS_LIMITS: Record<number, { min: number; max: number }> = {
 export function calculateFamilyPrice(
   canvases: number,
   totalGuests: number = 2,
-  canvasType: CanvasType = "standard"
+  canvasType: CanvasType = "standard",
 ): number {
   if (canvasType === "big") {
     const clamped = Math.max(2, Math.min(totalGuests, MAX_TOTAL));
@@ -62,7 +62,11 @@ export function calculateFamilyPrice(
   return STANDARD_PRICES[clampedTotal]?.[clampedCanvases] ?? 6000;
 }
 
-export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOptionsProps) {
+export function FamilyOptions({
+  onChange,
+  showPrice,
+  discount,
+}: EventTypeOptionsProps) {
   const [formData, setFormData] = useState<FamilyFormData>({
     adults: 2,
     kids: 1,
@@ -76,7 +80,11 @@ export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOption
   // Calculate total price and notify parent
   useEffect(() => {
     const totalGuests = formData.adults + formData.kids;
-    const totalAmount = calculateFamilyPrice(formData.canvases, totalGuests, formData.canvasType);
+    const totalAmount = calculateFamilyPrice(
+      formData.canvases,
+      totalGuests,
+      formData.canvasType,
+    );
     const canvasLabel =
       formData.canvasType === "big"
         ? "big canvas"
@@ -120,7 +128,10 @@ export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOption
   const handleKidsChange = (value: number) => {
     const kids = Math.max(MIN_KIDS, value);
     setFormData((prev) => {
-      const adults = Math.max(MIN_ADULTS, Math.min(prev.adults, MAX_TOTAL - kids));
+      const adults = Math.max(
+        MIN_ADULTS,
+        Math.min(prev.adults, MAX_TOTAL - kids),
+      );
       if (prev.canvasType === "big") {
         return { ...prev, adults, kids };
       }
@@ -133,7 +144,10 @@ export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOption
 
   const handleCanvasesChange = (value: number) => {
     if (formData.canvasType === "big") return;
-    const total = Math.max(1, Math.min(formData.adults + formData.kids, MAX_TOTAL));
+    const total = Math.max(
+      1,
+      Math.min(formData.adults + formData.kids, MAX_TOTAL),
+    );
     const limits = CANVAS_LIMITS[total];
     const canvases = Math.max(limits.min, Math.min(value, limits.max));
     setFormData((prev) => ({ ...prev, canvases }));
@@ -143,7 +157,11 @@ export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOption
   const clampedTotal = Math.max(1, Math.min(totalGuests, MAX_TOTAL));
   const isBig = formData.canvasType === "big";
   const canvasLimits = CANVAS_LIMITS[clampedTotal];
-  const totalPrice = calculateFamilyPrice(formData.canvases, clampedTotal, formData.canvasType);
+  const totalPrice = calculateFamilyPrice(
+    formData.canvases,
+    clampedTotal,
+    formData.canvasType,
+  );
 
   return (
     <div className="family-options">
@@ -151,7 +169,9 @@ export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOption
       <div className="canvas-type-selector">
         <div className="canvas-type-label">{t("friends_canvas_type")}</div>
         <div className="canvas-type-options">
-          <label className={`canvas-type-option${!isBig ? " canvas-type-option--selected" : ""}`}>
+          <label
+            className={`canvas-type-option${!isBig ? " canvas-type-option--selected" : ""}`}
+          >
             <input
               type="radio"
               name="canvasType"
@@ -161,7 +181,9 @@ export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOption
             />
             {t("friends_canvas_standard")}
           </label>
-          <label className={`canvas-type-option${isBig ? " canvas-type-option--selected" : ""}`}>
+          <label
+            className={`canvas-type-option${isBig ? " canvas-type-option--selected" : ""}`}
+          >
             <input
               type="radio"
               name="canvasType"
@@ -174,7 +196,13 @@ export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOption
         </div>
       </div>
 
-      <div className="options-grid-unified" style={{ gridTemplateColumns: "max-content max-content minmax(70px, max-content) max-content" }}>
+      <div
+        className="options-grid-unified"
+        style={{
+          gridTemplateColumns:
+            "max-content max-content minmax(70px, max-content) max-content",
+        }}
+      >
         {/* Adults */}
         <div className="option-label">{t("family_adults_count")}</div>
         <button
@@ -237,7 +265,9 @@ export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOption
         </button>
 
         {/* Canvases */}
-        <div className={`option-label${isBig ? " option-label--disabled" : ""}`}>
+        <div
+          className={`option-label${isBig ? " option-label--disabled" : ""}`}
+        >
           {t("family_canvas_count")}
         </div>
         <button
@@ -271,15 +301,21 @@ export function FamilyOptions({ onChange, showPrice, discount }: EventTypeOption
         {/* Total price */}
         {showPrice && (
           <>
-            <div className="option-label total-price-label">{t("total_price")}</div>
+            <div className="option-label total-price-label">
+              {t("total_price")}
+            </div>
             <div></div>
             <div className="total-price">
               {discount ? (
                 <>
                   <span className="price-before">
-                    <span className="price-original">{formatPrice(totalPrice)}</span>
+                    <span className="price-original">
+                      {formatPrice(totalPrice)}
+                    </span>
                   </span>
-                  <span className="price-final">{formatPrice(Math.round(totalPrice * (1 - discount / 100)))}</span>
+                  <span className="price-final">
+                    {formatPrice(Math.round(totalPrice * (1 - discount / 100)))}
+                  </span>
                 </>
               ) : (
                 formatPrice(totalPrice)

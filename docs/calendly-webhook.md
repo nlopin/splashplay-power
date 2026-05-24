@@ -3,6 +3,7 @@
 ## Overview
 
 The Calendly webhook handler processes booking events and sends notifications to Telegram. It handles two main event types:
+
 - `invitee.created` - When a new booking is made
 - `invitee.canceled` - When a booking is cancelled
 
@@ -23,6 +24,7 @@ You need to add a webhook by calling [Calendly Webhook API](https://developer.ca
 ### 3. Local Testing via ngrok
 
 #### Prerequisites
+
 - Local server running (`pnpm dev`)
 - Telegram credentials configured
 - ngrok or similar tool for exposing local webhook endpoint (optional)
@@ -74,7 +76,6 @@ The webhook handler verifies the authenticity of incoming requests using HMAC SH
    - Verify the comment format in the booking includes the transaction ID
    - Check that the comment is saved in the first question position
 
-
 ## Integration Flow
 
 ```mermaid
@@ -97,7 +98,7 @@ sequenceDiagram
     W->>W: Extract transaction ID from comment
     W->>T: Send "‼️ Event cancelled" message with refund link
     W->>C: Return 200 OK
-    
+
     Note over T,S: Manual refund process
     T-->>S: Admin clicks transaction link
     S-->>S: Process refund
@@ -124,6 +125,7 @@ src/
 - `/src/components/booking/eventMessage.tsx` - Comment formatting utilities
 
 ### `invitee.created`
+
 ```
 {
   created_at: '2025-12-17T01:59:35.000000Z',
