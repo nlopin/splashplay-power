@@ -38,7 +38,12 @@ const EventTypeAvailableTimesSchema = z.looseObject({
 });
 
 /**
- * Fetch available times from Calendly API
+ * Fetch available times from Calendly API.
+ *
+ * All-or-nothing: if any batch returns a non-200 status or fails schema
+ * validation, this throws. Callers must NOT persist partial results, because
+ * doing so previously silently overwrote the cache with gaps (e.g. the first
+ * week missing after a single 429 from Calendly).
  */
 export async function fetchAvailability(
   eventType: EventType,
@@ -78,24 +83,41 @@ export async function fetchAvailability(
   const responses = await Promise.all(fetchPromises);
   const availableTimes: ISODatetime[] = [];
 
-  for (const response of responses) {
-    if (response.status === 200) {
-      const responseJson = await response.json();
-      const parsedData = EventTypeAvailableTimesSchema.safeParse(responseJson);
-      if (parsedData.success) {
-        availableTimes.push(
-          ...parsedData.data.collection.map((v) => v.start_time),
-        );
-      } else {
-        console.error(
-          "Unexpected server answer",
-          z.flattenError(parsedData.error),
-        );
-      }
+  for (let i = 0; i < responses.length; i++) {
+    const response = responses[i];
+
+    if (response.status !== 200) {
+      const body = await safeReadText(response);
+      throw new Error(
+        `Calendly availability fetch failed for "${eventType}" batch ${i}: ` +
+          `status=${response.status} body=${body.slice(0, 200)}`,
+      );
     }
+
+    const responseJson = await response.json();
+    const parsedData = EventTypeAvailableTimesSchema.safeParse(responseJson);
+
+    if (!parsedData.success) {
+      throw new Error(
+        `Calendly availability response parse failed for "${eventType}" batch ${i}: ` +
+          JSON.stringify(z.flattenError(parsedData.error)).slice(0, 300),
+      );
+    }
+
+    availableTimes.push(
+      ...parsedData.data.collection.map((v) => v.start_time),
+    );
   }
 
   return availableTimes;
+}
+
+async function safeReadText(response: Response): Promise<string> {
+  try {
+    return await response.text();
+  } catch {
+    return "<unreadable body>";
+  }
 }
 
 export async function bookEvent(

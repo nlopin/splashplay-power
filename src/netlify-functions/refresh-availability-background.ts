@@ -11,7 +11,10 @@
  */
 import type { Config } from "@netlify/functions";
 import { EVENT_TYPE, type EventType } from "@/components/booking/types";
-import { refreshAllAvailability } from "@/services/availability";
+import {
+  refreshAllAvailability,
+  reportAvailabilityFailure,
+} from "@/services/availability";
 
 export default async () => {
   const startTime = Date.now();
@@ -21,7 +24,7 @@ export default async () => {
     event: "background_availability_refresh",
     durationMs: 0,
     eventTypesRefreshed: [] as string[],
-    eventTypesFailed: [] as string[],
+    eventTypesFailed: [] as { eventType: string; error: string }[],
   };
 
   try {
@@ -29,10 +32,14 @@ export default async () => {
     const eventTypes: EventType[] = Object.values(EVENT_TYPE);
 
     results.forEach((result, index) => {
+      const eventType = eventTypes[index];
       if (result.status === "fulfilled") {
-        event.eventTypesRefreshed.push(eventTypes[index]);
+        event.eventTypesRefreshed.push(eventType);
       } else {
-        event.eventTypesFailed.push(eventTypes[index]);
+        const reason = result.reason;
+        const message =
+          reason instanceof Error ? reason.message : String(reason);
+        event.eventTypesFailed.push({ eventType, error: message });
       }
     });
 
@@ -41,22 +48,41 @@ export default async () => {
     console.log(
       JSON.stringify({
         ...event,
-        status: "success",
+        status:
+          event.eventTypesFailed.length > 0 ? "partial_failure" : "success",
       }),
     );
+
+    if (event.eventTypesFailed.length > 0) {
+      await reportAvailabilityFailure({
+        source: "background",
+        failures: event.eventTypesFailed.map((f) => ({
+          eventType: f.eventType as EventType,
+          error: f.error,
+        })),
+      });
+    }
   } catch (error) {
     event.durationMs = Date.now() - startTime;
+
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
 
     console.log(
       JSON.stringify({
         ...event,
         status: "error",
         error: {
-          message: error instanceof Error ? error.message : "Unknown error",
+          message: errorMessage,
           stack: error instanceof Error ? error.stack : undefined,
         },
       }),
     );
+
+    await reportAvailabilityFailure({
+      source: "background",
+      generalError: errorMessage,
+    });
   }
 };
 

@@ -10,19 +10,24 @@ type CachedAvailability = {
   fetchedAt: string;
 };
 
+export type CacheReadResult = {
+  availableTimes: ISODatetime[];
+  timestamp: number;
+};
+
 const availabilityStore = getStore("availability", {
   siteID: NETLIFY_SITE_ID,
   token: NETLIFY_TOKEN,
 });
 
 function isCachedAvailability(value: unknown): value is CachedAvailability {
+  if (typeof value !== "object" || value === null) return false;
+  const v = value as Partial<CachedAvailability>;
   return (
-    typeof value === "object" &&
-    value !== null &&
-    "availableTimes" in value &&
-    "timestamp" in value &&
-    "fetchedAt" in value &&
-    Array.isArray((value as CachedAvailability).availableTimes)
+    typeof v.timestamp === "number" &&
+    typeof v.fetchedAt === "string" &&
+    Array.isArray(v.availableTimes) &&
+    v.availableTimes.every((item) => typeof item === "string")
   );
 }
 
@@ -31,7 +36,7 @@ function isCachedAvailability(value: unknown): value is CachedAvailability {
  */
 export async function getCachedAvailability(
   eventType: EventType,
-): Promise<ISODatetime[] | null> {
+): Promise<CacheReadResult | null> {
   const startTime = Date.now();
 
   try {
@@ -52,7 +57,10 @@ export async function getCachedAvailability(
       slotsCount: cached.availableTimes.length,
       durationMs: Date.now() - startTime,
     });
-    return cached.availableTimes;
+    return {
+      availableTimes: cached.availableTimes,
+      timestamp: cached.timestamp,
+    };
   } catch (error) {
     createAndLogEvent("availability_cache_read", {
       eventType,
