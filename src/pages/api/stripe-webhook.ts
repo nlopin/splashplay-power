@@ -9,7 +9,7 @@ import {
   sendTelegramSticker,
 } from "@/services/telegram";
 import { getPaymentIntentId } from "@/services/stripe";
-import { bookEvent } from "@/services/calendly";
+import { bookEvent, type BookEventResult } from "@/services/calendly";
 import { formatEventComment } from "@/components/booking/eventMessage";
 import { EVENT_TYPE } from "@/components/booking/types";
 import { createEvent, logEvent } from "@/services/logger";
@@ -118,15 +118,7 @@ export const POST: APIRoute = async ({ request }) => {
         webhookEvent.customerEmail = parsedCustomer.data.email;
         webhookEvent.customerName = parsedCustomer.data.name;
 
-        if (session.amount_total) {
-          webhookEvent.notificationSent = await sendPaymentNotification(
-            session.amount_total,
-            parsedMetadata.data.sessionTitle,
-            paymentIntentId,
-          );
-        }
-
-        const isOk = await bookEvent(parsedMetadata.data.eventType, {
+        const calendlyResult = await bookEvent(parsedMetadata.data.eventType, {
           datetime: parsedMetadata.data.sessionTime,
           email: parsedCustomer.data.email,
           name: parsedCustomer.data.name,
@@ -137,8 +129,19 @@ export const POST: APIRoute = async ({ request }) => {
           ),
         });
 
-        webhookEvent.calendlyBookingSuccess = isOk;
-        webhookEvent.status = isOk ? "success" : "calendly_booking_failed";
+        webhookEvent.calendlyBookingSuccess = calendlyResult.success;
+        webhookEvent.status = calendlyResult.success
+          ? "success"
+          : "calendly_booking_failed";
+
+        if (session.amount_total) {
+          webhookEvent.notificationSent = await sendPaymentNotification(
+            session.amount_total,
+            parsedMetadata.data.sessionTitle,
+            paymentIntentId,
+            calendlyResult,
+          );
+        }
       } else {
         webhookEvent.status = "parsing_error";
         webhookEvent.error = [
@@ -174,6 +177,7 @@ async function sendPaymentNotification(
   amount: number,
   sessionTitle: string,
   transactionId: string,
+  calendlyResult: BookEventResult,
 ): Promise<boolean> {
   try {
     await sendTelegramSticker(
@@ -182,7 +186,12 @@ async function sendPaymentNotification(
       ],
     );
     await sendTelegramMessage(
-      formatPaymentSuccessMessage(amount, sessionTitle, transactionId),
+      formatPaymentSuccessMessage(
+        amount,
+        sessionTitle,
+        transactionId,
+        calendlyResult,
+      ),
     );
     return true;
   } catch {
@@ -194,6 +203,7 @@ export function formatPaymentSuccessMessage(
   amount: number,
   sessionTitle: string,
   transactionId: string,
+  calendlyResult: BookEventResult,
 ): string {
   const formattedAmount = (amount / 100).toFixed(2);
 
@@ -209,6 +219,15 @@ export function formatPaymentSuccessMessage(
   }
 
   message += `\nStatus: ✅ Payment Successful`;
+
+  if (calendlyResult.success) {
+    message += `\nBooking: ✅ Calendly event created`;
+  } else {
+    message += `\nBooking: ❌ Calendly booking failed`;
+    if (calendlyResult.error) {
+      message += `\nReason: ${escapeMarkdown(calendlyResult.error)}`;
+    }
+  }
 
   return message;
 }

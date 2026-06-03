@@ -13,6 +13,10 @@ import { type EventType } from "@/components/booking/types";
 import { type ISODatetime } from "@/types";
 import { getSunday } from "@/utils/datetime";
 
+export type BookEventResult =
+  | { success: true }
+  | { success: false; error: string };
+
 const CALENDLY_URL = "https://api.calendly.com";
 const EVENT_TYPE_IDS: Record<EventType, string> = {
   couples: CALENDLY_COUPLES_EVENT_TYPE_ID,
@@ -113,7 +117,7 @@ export async function bookEvent(
     email: string;
     comment?: string;
   },
-): Promise<boolean> {
+): Promise<BookEventResult> {
   const body = JSON.stringify({
     event_type: getEventTypeId(eventType),
     start_time: datetime,
@@ -147,13 +151,12 @@ export async function bookEvent(
   });
 
   if (response.status !== 201) {
-    console.error(
-      `Error while creating calendly event ${await response.text()}`,
-    );
-    return false;
+    const errorText = await response.text();
+    console.error(`Error while creating calendly event ${errorText}`);
+    return { success: false, error: errorText };
   }
 
-  return true;
+  return { success: true };
 }
 
 function getEventTypeId(eventType: EventType): string {
