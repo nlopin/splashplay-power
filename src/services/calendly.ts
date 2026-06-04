@@ -94,6 +94,7 @@ export async function fetchAvailability(
         console.error(
           "Unexpected server answer",
           z.flattenError(parsedData.error),
+          responseJson,
         );
       }
     }
