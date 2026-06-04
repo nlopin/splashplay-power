@@ -38,7 +38,7 @@ type StripeWebhookEventData = {
 
 const metadataSchema = z.object({
   eventType: z.enum(Object.values(EVENT_TYPE)),
-  sessionTime: z.iso.datetime(),
+  sessionTime: z.iso.datetime({ offset: true }),
   sessionTitle: z.string(),
 });
 

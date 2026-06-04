@@ -35,7 +35,7 @@ const EventTypeAvailableTimesSchema = z.looseObject({
     z.object({
       invitees_remaining: z.number(),
       scheduling_url: z.string(),
-      start_time: z.iso.datetime(),
+      start_time: z.iso.datetime({ offset: true }),
       status: z.string(),
     }),
   ),

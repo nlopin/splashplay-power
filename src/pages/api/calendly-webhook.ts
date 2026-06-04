@@ -35,7 +35,7 @@ const BaseCalendlyPayload = z.looseObject({
   email: z.string(),
   scheduled_event: z.object({
     uri: z.string(),
-    start_time: z.iso.datetime(),
+    start_time: z.iso.datetime({ offset: true }),
   }),
   rescheduled: z.boolean(),
   questions_and_answers: z.array(
@@ -59,7 +59,7 @@ const CalendlyWebhookEvent = z.discriminatedUnion("event", [
       cancellation: z.object({
         reason: z.string().optional(),
         canceled_by: z.string(),
-        created_at: z.iso.datetime(),
+        created_at: z.iso.datetime({ offset: true }),
       }),
     }),
   }),

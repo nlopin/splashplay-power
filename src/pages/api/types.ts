@@ -4,7 +4,7 @@ import * as z from "zod";
 export const CreatePaymentSessionPayloadSchema = z.object({
   amount: z.number(),
   productName: z.string(),
-  datetime: z.iso.datetime(),
+  datetime: z.iso.datetime({ offset: true }),
   eventType: z.enum(Object.values(EVENT_TYPE)),
   lang: z.enum(["es", "ca", "en"]).optional().default("es"),
   fullName: z.string().optional(),
