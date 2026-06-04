@@ -23,7 +23,7 @@ export default async () => {
   };
 
   try {
-    const results = await refreshAllAvailability();
+    const results = await refreshAllAvailability(startTime);
     const eventTypes: EventType[] = Object.values(EVENT_TYPE);
 
     results.forEach((result, index) => {

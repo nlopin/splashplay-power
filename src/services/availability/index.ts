@@ -21,7 +21,7 @@ export async function getAvailability(
     return filterToSchedule(cached);
   }
 
-  const result = await refreshAvailability(eventType, days);
+  const result = await refreshAvailability(eventType, { days });
 
   return result.success ? filterToSchedule(result.availableTimes) : [];
 }
@@ -31,7 +31,10 @@ export async function getAvailability(
  */
 export async function refreshAvailability(
   eventType: EventType,
-  days = BOOK_IN_ADVANCE,
+  {
+    days = BOOK_IN_ADVANCE,
+    skipIfWrittenAfter,
+  }: { days?: number; skipIfWrittenAfter?: number } = {},
 ): Promise<
   { success: true; availableTimes: ISODatetime[] } | { success: false }
 > {
@@ -39,7 +42,9 @@ export async function refreshAvailability(
   const result = await fetchAvailability(eventType, days);
 
   if (result.success) {
-    await setCachedAvailability(eventType, result.availableTimes);
+    await setCachedAvailability(eventType, result.availableTimes, {
+      skipIfWrittenAfter,
+    });
   }
 
   createAndLogEvent("availability_fetch", {
@@ -57,15 +62,15 @@ export async function refreshAvailability(
 /**
  * Refresh availability for all event types
  */
-export async function refreshAllAvailability(): Promise<
-  PromiseSettledResult<ISODatetime[]>[]
-> {
+export async function refreshAllAvailability(
+  skipIfWrittenAfter?: number,
+): Promise<PromiseSettledResult<ISODatetime[]>[]> {
   const startTime = Date.now();
   createAndLogEvent("availability_refresh_all", { status: "started" });
   const eventTypes: EventType[] = Object.values(EVENT_TYPE);
   const results = await Promise.allSettled(
     eventTypes.map(async (type) => {
-      const result = await refreshAvailability(type);
+      const result = await refreshAvailability(type, { skipIfWrittenAfter });
       if (!result.success) throw new Error(`Failed to refresh ${type}`);
       return result.availableTimes;
     }),

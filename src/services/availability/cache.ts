@@ -72,10 +72,28 @@ export async function getCachedAvailability(
 export async function setCachedAvailability(
   eventType: EventType,
   availableTimes: ISODatetime[],
+  { skipIfWrittenAfter }: { skipIfWrittenAfter?: number },
 ): Promise<void> {
   const startTime = Date.now();
 
   try {
+    if (skipIfWrittenAfter !== undefined) {
+      const existing = await availabilityStore.get(eventType, { type: "json" });
+      if (
+        existing &&
+        isCachedAvailability(existing) &&
+        existing.timestamp >= skipIfWrittenAfter
+      ) {
+        createAndLogEvent("availability_cache_write", {
+          eventType,
+          status: "skipped",
+          reason: "newer_data_exists",
+          durationMs: Date.now() - startTime,
+        });
+        return;
+      }
+    }
+
     const cacheData: CachedAvailability = {
       availableTimes,
       timestamp: Date.now(),
