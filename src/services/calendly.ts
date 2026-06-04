@@ -47,7 +47,9 @@ const EventTypeAvailableTimesSchema = z.looseObject({
 export async function fetchAvailability(
   eventType: EventType,
   days = BOOK_IN_ADVANCE,
-): Promise<ISODatetime[]> {
+): Promise<
+  { success: true; availableTimes: ISODatetime[] } | { success: false }
+> {
   const batchCount = Math.ceil(days / BATCH_SIZE_IN_DAYS) + 1; // we need +1 to get the rest of the last week
   const now = new Date();
   const startDate = new Date(
@@ -78,29 +80,44 @@ export async function fetchAvailability(
       },
     });
   });
-
-  const responses = await Promise.all(fetchPromises);
   const availableTimes: ISODatetime[] = [];
 
-  for (const response of responses) {
-    if (response.status === 200) {
-      const responseJson = await response.json();
-      const parsedData = EventTypeAvailableTimesSchema.safeParse(responseJson);
-      if (parsedData.success) {
-        availableTimes.push(
-          ...parsedData.data.collection.map((v) => v.start_time),
-        );
+  try {
+    const responses = await Promise.all(fetchPromises);
+
+    for (const response of responses) {
+      if (response.status === 200) {
+        const responseJson = await response.json();
+        const parsedData =
+          EventTypeAvailableTimesSchema.safeParse(responseJson);
+        if (parsedData.success) {
+          availableTimes.push(
+            ...parsedData.data.collection.map((v) => v.start_time),
+          );
+        } else {
+          console.error(
+            "Unexpected server answer",
+            z.flattenError(parsedData.error),
+            responseJson,
+          );
+          return { success: false };
+        }
       } else {
         console.error(
-          "Unexpected server answer",
-          z.flattenError(parsedData.error),
-          responseJson,
+          `Calendly API error for ${eventType}: HTTP ${response.status}`,
         );
+        return { success: false };
       }
     }
+  } catch (err) {
+    console.error(
+      `Couldn't fetch available time for event type: ${eventType}`,
+      err instanceof Error ? err.message : String(err),
+    );
+    return { success: false };
   }
 
-  return availableTimes;
+  return { success: true, availableTimes };
 }
 
 export async function bookEvent(

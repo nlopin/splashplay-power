@@ -16,8 +16,14 @@ export async function getAvailability(
   days = BOOK_IN_ADVANCE,
 ): Promise<AvailableTime[]> {
   const cached = await getCachedAvailability(eventType);
-  const slots = cached ?? (await refreshAvailability(eventType, days));
-  return filterToSchedule(slots);
+
+  if (cached) {
+    return filterToSchedule(cached);
+  }
+
+  const result = await refreshAvailability(eventType, days);
+
+  return result.success ? filterToSchedule(result.availableTimes) : [];
 }
 
 /**
@@ -26,22 +32,26 @@ export async function getAvailability(
 export async function refreshAvailability(
   eventType: EventType,
   days = BOOK_IN_ADVANCE,
-): Promise<ISODatetime[]> {
+): Promise<
+  { success: true; availableTimes: ISODatetime[] } | { success: false }
+> {
   const startTime = Date.now();
-  const availableTimes = await fetchAvailability(eventType, days);
+  const result = await fetchAvailability(eventType, days);
 
-  await setCachedAvailability(eventType, availableTimes);
+  if (result.success) {
+    await setCachedAvailability(eventType, result.availableTimes);
+  }
 
   createAndLogEvent("availability_fetch", {
     eventType,
     source: "calendly_api",
-    status: "success",
-    slotsCount: availableTimes.length,
+    status: result.success ? "success" : "error",
+    slotsCount: result.success ? result.availableTimes.length : undefined,
     daysRequested: days,
     durationMs: Date.now() - startTime,
   });
 
-  return availableTimes;
+  return result;
 }
 
 /**
@@ -50,13 +60,21 @@ export async function refreshAvailability(
 export async function refreshAllAvailability(): Promise<
   PromiseSettledResult<ISODatetime[]>[]
 > {
-  console.log("Refresh all availability started", new Date().toISOString());
+  const startTime = Date.now();
+  createAndLogEvent("availability_refresh_all", { status: "started" });
   const eventTypes: EventType[] = Object.values(EVENT_TYPE);
   const results = await Promise.allSettled(
-    eventTypes.map((type) => refreshAvailability(type)),
+    eventTypes.map(async (type) => {
+      const result = await refreshAvailability(type);
+      if (!result.success) throw new Error(`Failed to refresh ${type}`);
+      return result.availableTimes;
+    }),
   );
 
-  console.log("Refresh all availability completed", new Date().toISOString());
+  createAndLogEvent("availability_refresh_all", {
+    status: "completed",
+    durationMs: Date.now() - startTime,
+  });
 
   return results;
 }
@@ -72,7 +90,6 @@ export async function triggerAvailabilityRefresh() {
   if (!siteUrl) {
     console.error(
       "Cannot trigger availability refresh: URL environment variable not set",
-      process.env,
     );
     return;
   }
