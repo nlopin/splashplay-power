@@ -29,12 +29,6 @@ const EVENT_TYPE_OPTIONS: ReadonlyArray<{
     descriptionKey: "event_type_friends_desc",
     duration: 1.5,
   },
-  {
-    value: "individual",
-    labelKey: "individual_session",
-    descriptionKey: "event_type_individual_desc",
-    duration: 1.5,
-  },
 ];
 
 export function EventTypeSelector({

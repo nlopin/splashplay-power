@@ -330,6 +330,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         display: none;
         width: 56px;
         align-self: stretch;
+        font-size: 2rem;
+        aspect-ratio: auto;
     }
 
     @media (min-width: 1024px) {
@@ -570,6 +572,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         background-color: var(--purple);
         color: var(--white);
         border-color: var(--purple);
+    }
+
+    .time-slot-button.booked {
+        color: #bbb;
+        cursor: not-allowed;
+        opacity: 0.6;
+        text-decoration: line-through;
+    }
+
+    .time-slot-button.booked:hover {
+        background-color: transparent;
+        color: #bbb;
     }
 
     .discount-badge {

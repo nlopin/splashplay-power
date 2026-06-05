@@ -34,6 +34,10 @@ export function AvailabilityCalendar({
     () => new Map(availability.map((s) => [s.time, s.discount])),
     [availability],
   );
+  const bookedSet = useMemo(
+    () => new Set(availability.filter((s) => s.booked).map((s) => s.time)),
+    [availability],
+  );
   const weeks = useMemo(
     () => groupWeeks(availability.map((s) => s.time)),
     [availability],
@@ -129,6 +133,7 @@ export function AvailabilityCalendar({
                         isSelected={internalSelectedSlot === slot}
                         onSelect={handleSelect}
                         discount={discountMap.get(slot)}
+                        isBooked={bookedSet.has(slot)}
                       />
                     )}
                   </div>
@@ -167,6 +172,7 @@ export function AvailabilityCalendar({
                       isSelected={internalSelectedSlot === time}
                       onSelect={handleSelect}
                       discount={discountMap.get(time)}
+                      isBooked={bookedSet.has(time)}
                     />
                   ))}
                 </div>
@@ -242,21 +248,24 @@ const TimeSlotButton = ({
   isSelected,
   onSelect,
   discount,
+  isBooked,
 }: {
   time: ISODatetime;
   isSelected: boolean;
   onSelect: (time: ISODatetime) => void;
   discount?: Discount;
+  isBooked?: boolean;
 }) => {
   const formattedTime = formatTime(time);
   return (
     <button
       type="button"
-      onClick={() => onSelect(time)}
-      className={`time-slot-button ${isSelected ? "selected" : ""}`}
+      onClick={isBooked ? undefined : () => onSelect(time)}
+      disabled={isBooked}
+      className={`time-slot-button ${isSelected ? "selected" : ""} ${isBooked ? "booked" : ""}`}
     >
       {formattedTime}
-      {discount && <span className="discount-badge">-{discount}%</span>}
+      {discount && !isBooked && <span className="discount-badge">-{discount}%</span>}
     </button>
   );
 };
