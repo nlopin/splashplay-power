@@ -330,7 +330,7 @@
   },
   "friends": {
     "meta_title": "Activitats creatives per a amics a Barcelona | SplashPlay",
-    "meta_description": "Activitat única per a amics a Barcelona. Sessions de pintura privades per a 2–6 persones. Alternativa als bitlles, escape rooms, art i vi. No cal experiència. Des de 17€ per persona.",
+    "meta_description": "Activitat única per a amics a Barcelona, oberta també els diumenges. Sessions privades per a 2–6 persones, alternativa als bitlles, escape rooms, art i vi. Des de 17€ per persona.",
     "what_we_offer": "Què oferim",
     "what_we_offer_intro": "Aboca-ho, gira-ho, llança-ho: crea sense por. Pinta un llenç abstracte per a la teva paret que tindrà el valor dels records compartits. Joc pur, art real. Cada sessió és privada: l'estudi es reserva exclusivament per al teu grup.",
     "activity_1_details": "<strong>1.5 h</strong> | 👥 <strong>Màx. 6 persones</strong> | <strong>Adults</strong> | Des de <strong>17€ per persona</strong>",
@@ -476,7 +476,7 @@
   },
   "couples": {
     "meta_title": "Idees de cita originals a Barcelona | Sessió d'art en parella | SplashPlay",
-    "meta_description": "Idea de cita divertida i diferent a Barcelona. Sessió d'art privada per a parelles. Alternativa a l'art i vi. Crear junts, no cal experiència. Des de 60€ per parella.",
+    "meta_description": "Idea de cita divertida i diferent a Barcelona, també els diumenges. Sessió d'art privada per a parelles, alternativa a l'art i vi. No cal experiència. Des de 60€ per parella.",
     "hero_title": "Una Cita Única a Barcelona",
     "hero_subtitle": "Busques una idea de cita divertida i diferent a Barcelona?💕 Alguna cosa més juganera i íntima que el típic \"art i vi\"?<br><br>SplashPlay és un estudi d'art amb un ambient amigable al barri d'El Clot. Aquí, tu i la teva parella podeu compartir una experiència privada inoblidable, dissenyada només per a dos.<br><br>Una combinació perfecta per a parelles que volen provar alguna cosa nova a Barcelona. No calen habilitats, només curiositat i ganes de divertir-se junts!",
     "hero_image_alt": "Parelles gaudint d'una sessió d'art a SplashPlay",
@@ -532,7 +532,7 @@
   },
   "family": {
     "meta_title": "Activitats en família a Barcelona | Art creatiu amb nens | SplashPlay",
-    "meta_description": "Activitats divertides amb nens a Barcelona. Creeu la vostra obra abstracta en un espai familiar i sense alcohol al nostre estudi d'El Clot. Pinteu amb pistoles d'aigua, pilotes de tennis i globus, llançeu pintura i diverteix-vos en família sense embrutar la casa. Nens 6+ amb adults. Des de 17€ per persona.",
+    "meta_description": "Activitats divertides amb nens a Barcelona, també els diumenges. Espai familiar i sense alcohol a El Clot per pintar, llançar pintura i crear junts. Nens 6+ amb adults. Des de 17€ per persona.",
     "hero_title": "Temps Creatiu en Família a Barcelona",
     "hero_subtitle": "Busques activitats divertides per fer amb nens a Barcelona?<br><br>A <strong>SplashPlay</strong>, un estudi amb ambient a <strong>El Clot</strong>, us donem tècniques divertides i llibertat per crear junts sense embrutar la casa. Una experiència alegre, original i plena de color per compartir temps en família.<br><br>✅ <strong>Per a qui:</strong><br>• Adults i nens <strong>6+</strong>, acompanyats per adults<br><strong>Filles i fills adults i les seves mares i pares</strong>, que vulguin viure un moment especial junts. Un regal perfecte per al Dia de la Mare i el Dia del Pare.<br><br>No calen habilitats — només ganes de provar i gaudir!",
     "hero_image_alt": "Família gaudint d'una sessió d'art lúdica a SplashPlay",
@@ -658,7 +658,7 @@
   },
   "corporate": {
     "meta_title": "Team Building Barcelona | Sessions d'Art Creatiu | SplashPlay",
-    "meta_description": "Team building divertit a Barcelona. Sessions de pintura creativa per a 4–10 persones. Alternativa als bitlles, escape rooms, art i vi. No cal experiència. Des de 40€ per persona.",
+    "meta_description": "Team building divertit a Barcelona, amb sessions privades també els diumenges. Pintura creativa per a 4–10 persones, alternativa als bitlles i escape rooms. Des de 40€ per persona.",
     "what_we_offer": "Què oferim",
     "what_we_offer_intro": "Aboca-ho, gira-ho, llança-ho, crea sense por. Pinta un llenç abstracte per a la teva paret que tindrà el valor dels records compartits. Joc pur, art real. Cada sessió és privada: l'estudi es reserva exclusivament per al teu grup.",
     "what_we_offer_description": "Segons la mida del teu equip, et podem oferir diferents activitats al nostre estudi.",
@@ -717,7 +717,7 @@
   },
   "giftcard": {
     "title": "Targetes Regal - SplashPlay",
-    "meta_description": "Targetes regal SplashPlay a Barcelona. Ideals per al Dia de la Mare (primer diumenge de maig) i per a qualsevol ocasió — regala una sessió creativa i divertida. Imprimeix o envia per email. Vàlid 6 mesos.",
+    "meta_description": "Targetes regal SplashPlay a Barcelona per a una experiència creativa, privada i divertida, disponible també els diumenges. Imprimeix o envia per email. Vàlid 6 mesos.",
     "intro": "Una targeta regal és temps creatiu plegats a l'estudi. Tria l'import, imprimeix o envia per email en la data que triïs. Ells vindran quan estiguin preparats. Vàlid 6 mesos."
   }
 }
