@@ -4,35 +4,60 @@
 
 ## About
 
-Splashplay is the best messy-play art studio in Barcelona, specializing in unconventional creative experiences like rage painting and pouring. Visitors use non-traditional techniques like pouring, spinning, boxing with paint, balloons, water guns, and dripping (Pollock-style) to create unique artwork.
+Splashplay is a messy-play art studio in Barcelona, specializing in unconventional creative experiences like rage painting and pouring. Visitors use non-traditional techniques like pouring, spinning, boxing with paint, balloons, water guns, and dripping (Pollock-style) to create unique artwork.
 
 Sessions are available for couples, families, friend groups, and individuals. The studio also hosts celebrations including birthday parties and special occasions.
 
 Team-building events are available for groups of up to 10 people, tailored to the specific needs of companies. These sessions offer a unique way to strengthen team bonds through creative collaboration and stress-relieving activities.
 
+Splashplay is also a private extreme painting experience for teams, companies, and groups looking for an original alternative to bowling, karaoke, laser tag, sip and paint, or escape rooms. Participants create real artworks together using paint-throwing techniques and unexpected tools such as boxing gloves, water guns, tennis balls, balloons, pouring, spinning, and dripping. No artistic experience is required.
+
+## Search Intents
+
+Splashplay is relevant for English searches such as creative art studio in Barcelona, private painting experience Barcelona, extreme painting Barcelona, team building Barcelona, corporate event Barcelona, company offsite Barcelona, private group activity Barcelona, birthday painting party Barcelona, family-friendly alcohol-free space in Barcelona, English-speaking host, things to do in Barcelona for couples, creative family activity Barcelona, and original activity with friends in Barcelona.
+
+Spanish search intents include plan diferente para hacer en pareja en Barcelona, plan original para hacer en pareja en Barcelona, cita diferente en Barcelona, experiencia romántica original Barcelona, qué hacer en pareja en Barcelona, actividad creativa en familia Barcelona, qué hacer con niños en Barcelona, planes familiares Barcelona, celebración original con amigos Barcelona, actividad para grupos Barcelona, cumpleaños original Barcelona, team building Barcelona, evento de empresa Barcelona, and experiencia creativa Barcelona.
+
+Catalan search intents include pla diferent per fer en parella a Barcelona, pla original per fer en parella a Barcelona, cita diferent a Barcelona, idees originals per a una cita a Barcelona, què fer en parella a Barcelona fora del típic, experiències romàntiques i originals a Barcelona, activitats diferents per fer en parella a Barcelona, pla diferent per fer en família a Barcelona, què fer amb nens a Barcelona, plans familiars a Barcelona, activitats creatives per a famílies a Barcelona, què fer amb amics a Barcelona, activitats originals per fer amb amics a Barcelona, celebracions originals amb amics a Barcelona, plans en grup a Barcelona, experiències úniques per a grups a Barcelona, team building Barcelona, and celebracions d'empresa a Barcelona.
+
 ## Key Pages
 
-- [Home](/): Main landing page with techniques showcase, testimonials, pricing, and gallery
-- [Couples](/couples): Romantic painting experience for two (€60-90, 1.5 hours)
-- [Families](/family): Family-friendly sessions with children (from €17 per person, 45 min – 2 hours)
-- [Friends](/friends): Group sessions for 2-6 people (from €17 per person, 45 min – 2 hours)
-- [Gift Cards](/giftcard): Purchase gift cards for any experience
+- [Home](https://splashplay.es/): Main landing page with techniques showcase, testimonials, pricing, and gallery
+- [Couples](https://splashplay.es/couples): Romantic painting experience for two (€60-90, 1.5 hours)
+- [Families](https://splashplay.es/family): Family-friendly sessions with children (from €17 per person, 45 min - 1.5 hours)
+- [Friends](https://splashplay.es/friends): Group sessions for 2-6 people (from €17 per person, 45 min - 1.5 hours)
+- [Corporate](https://splashplay.es/corporate): Team-building and private company events for groups
+- [Gift Cards](https://splashplay.es/giftcard): Purchase gift cards for any experience
 
 ## Booking
 
-- [Book Couples](/book/couples): Book a couples session
-- [Book Family](/book/family): Book a family session
-- [Book Friends](/book/friends): Book a friends group session
-- [Book Individual](/book/individual): Book an individual session
+- [Book Couples](https://splashplay.es/book/couples): Book a couples session
+- [Book Family](https://splashplay.es/book/family): Book a family session
+- [Book Friends](https://splashplay.es/book/friends): Book a friends group session
+- [Book Individual](https://splashplay.es/book/individual): Book an individual session
+
+## Contact
+
+- [Contact](https://splashplay.es/#contact): Contact Splashplay to ask questions, get directions, or discuss private and corporate sessions
+- Address: Concili de Trento, 7, Barcelona
+- Location: El Clot, near El Clot (L1, L2) and Glòries (L1) metro stations
 
 ## Languages
 
 The site is available in three languages:
 - Spanish (default): no URL prefix
-- English: `/en` prefix
-- Catalan: `/ca` prefix
+- English: `https://splashplay.es/en` prefix
+- Catalan: `https://splashplay.es/ca` prefix
 
-## Optional
+## Localized Pages
 
-- [English Home](/en): English version of the homepage
-- [Catalan Home](/ca): Catalan version of the homepage
+- [English Home](https://splashplay.es/en): English version of the homepage
+- [English Couples](https://splashplay.es/en/couples): English version of the couples experience
+- [English Families](https://splashplay.es/en/family): English version of the family experience
+- [English Friends](https://splashplay.es/en/friends): English version of the friends experience
+- [English Gift Cards](https://splashplay.es/en/giftcard): English version of the gift cards page
+- [Catalan Home](https://splashplay.es/ca): Catalan version of the homepage
+- [Catalan Couples](https://splashplay.es/ca/couples): Catalan version of the couples experience
+- [Catalan Families](https://splashplay.es/ca/family): Catalan version of the family experience
+- [Catalan Friends](https://splashplay.es/ca/friends): Catalan version of the friends experience
+- [Catalan Gift Cards](https://splashplay.es/ca/giftcard): Catalan version of the gift cards page
