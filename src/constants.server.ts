@@ -34,6 +34,7 @@ export const WEEKLY_SLOTS: Record<string, SlotConfig[]> = {
     { time: "19:45", discount: 10 },
   ],
   Thu: [
+    { time: "12:00", discount: 20 },
     { time: "14:00", discount: 20 },
     { time: "16:00", discount: 20 },
   ],
