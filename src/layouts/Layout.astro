@@ -5,6 +5,7 @@ import {
     getLocalizedPath,
     getPathWithoutLanguage,
 } from "../utils/i18n";
+import { normalizeSeoPath, shouldExcludeFromIndex } from "../utils/seo-paths.mjs";
 import gallery1 from "../assets/photo/gallery/gallery1.jpg"
 
 interface Props {
@@ -21,8 +22,13 @@ const tSchema = createAstroTranslator(Astro.currentLocale, "schema");
 const pageTitle = title || t("title");
 const pageDescription = description || t("description");
 
-const basePath = getPathWithoutLanguage(Astro.url.pathname);
+const basePath = normalizeSeoPath(getPathWithoutLanguage(Astro.url.pathname));
 const siteUrl = Astro.site?.toString() || "https://splashplay.es";
+const canonicalUrl = new URL(getLocalizedPath(basePath, language), siteUrl).toString();
+const ogImageUrl = new URL(gallery1.src, siteUrl).toString();
+const getAbsoluteLocalizedUrl = (targetLanguage: typeof language) =>
+    new URL(getLocalizedPath(basePath, targetLanguage), siteUrl).toString();
+const shouldNoIndex = shouldExcludeFromIndex(basePath);
 
 // Schema.org LocalBusiness JSON-LD for AI discoverability (ChatGPT, Perplexity, Claude, etc.)
 const localBusinessSchema = {
@@ -68,24 +74,24 @@ const localBusinessSchema = {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website">
-        <meta property="og:url" content="https://splashplay.es/">
-        <meta property="og:title" content="SplashPlay - sesiones de arte lúdicas en Barcelona">
-        <meta property="og:description"
-                content="Crea obras maestras abstractas con técnicas divertidas como vertido, giro y boxeo. ¡Cero experiencia artística necesaria! Perfecto para individuos, parejas y grupos.">
-        <meta property="og:image" content={gallery1.src}>
+        <meta property="og:url" content={canonicalUrl}>
+        <meta property="og:title" content={pageTitle}>
+        <meta property="og:description" content={pageDescription}>
+        <meta property="og:image" content={ogImageUrl}>
         <meta property="og:site_name" content="SplashPlay Studio">
         <!-- Twitter -->
         <meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:url" content="https://splashplay.es/">
-        <meta name="twitter:title" content="SplashPlay - sesiones de arte lúdicas en Barcelona">
-        <meta name="twitter:description"
-                content="Crea obras maestras abstractas con técnicas divertidas como vertido, giro y boxeo. ¡Cero experiencia artística necesaria! Perfecto para individuos, parejas y grupos.">
-        <meta name="twitter:image" content={gallery1.src}>
+        <meta name="twitter:url" content={canonicalUrl}>
+        <meta name="twitter:title" content={pageTitle}>
+        <meta name="twitter:description" content={pageDescription}>
+        <meta name="twitter:image" content={ogImageUrl}>
         <link rel="sitemap" href="/sitemap-index.xml" />
         <link rel="icon" href="/favicon.ico" sizes="32x32" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <meta name="generator" content={Astro.generator} />
         <meta name="description" content={pageDescription} />
+        {shouldNoIndex && <meta name="robots" content="noindex, nofollow" />}
+        <link rel="canonical" href={canonicalUrl} />
         <title>{pageTitle}</title>
 
         <!-- Schema.org JSON-LD for AI discoverability -->
@@ -113,22 +119,22 @@ const localBusinessSchema = {
         <link
             rel="alternate"
             hreflang="es"
-            href={`${siteUrl}${getLocalizedPath(basePath, "es")}`}
+            href={getAbsoluteLocalizedUrl("es")}
         />
         <link
             rel="alternate"
             hreflang="en"
-            href={`${siteUrl}${getLocalizedPath(basePath, "en")}`}
+            href={getAbsoluteLocalizedUrl("en")}
         />
         <link
             rel="alternate"
             hreflang="ca"
-            href={`${siteUrl}${getLocalizedPath(basePath, "ca")}`}
+            href={getAbsoluteLocalizedUrl("ca")}
         />
         <link
             rel="alternate"
             hreflang="x-default"
-            href={`${siteUrl}${getLocalizedPath(basePath, "es")}`}
+            href={getAbsoluteLocalizedUrl("es")}
         />
         <script is:inline src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"></script>
         <script is:inline src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.8.0-min.js.gz"></script>

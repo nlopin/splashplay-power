@@ -5,6 +5,7 @@ import netlify from "@astrojs/netlify";
 
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
+import { shouldIncludeInSitemap } from "./src/utils/seo-paths.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -100,5 +101,10 @@ export default defineConfig({
     "/family/cat.html": "/ca/family.html",
   },
   adapter: netlify(),
-  integrations: [react(), sitemap()],
+  integrations: [
+    react(),
+    sitemap({
+      filter: shouldIncludeInSitemap,
+    }),
+  ],
 });
