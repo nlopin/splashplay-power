@@ -6,7 +6,7 @@ import { getCachedAvailability, setCachedAvailability } from "./cache";
 import { filterToSchedule, generateBookedSlots } from "./schedule";
 import type { AvailableTime } from "./types";
 
-const BOOK_IN_ADVANCE = 30;
+const BOOK_IN_ADVANCE = 45;
 
 /**
  * Get availability from cache (fast) or Calendly API (fallback)

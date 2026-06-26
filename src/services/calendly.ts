@@ -26,7 +26,7 @@ const EVENT_TYPE_IDS: Record<EventType, string> = {
   throw_paint: CALENDLY_THROW_PAINT_EVENT_TYPE_ID,
   customize_clothes: CALENDLY_CUSTOMIZE_CLOTHES_EVENT_TYPE_ID,
 };
-const BOOK_IN_ADVANCE = 30;
+const BOOK_IN_ADVANCE = 45;
 const BATCH_SIZE_IN_DAYS = 7;
 const MILLISECONDS_IN_ONE_DAY = 24 * 60 * 60 * 1000;
 
