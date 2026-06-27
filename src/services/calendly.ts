@@ -103,8 +103,9 @@ export async function fetchAvailability(
           return { success: false };
         }
       } else {
+        const errorText = await response.text();
         console.error(
-          `Calendly API error for ${eventType}: HTTP ${response.status}`,
+          `Calendly API error for ${eventType}: HTTP ${response.status}: ${errorText}`,
         );
         return { success: false };
       }
