@@ -1126,6 +1126,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         align-items: center;
         gap: 6px;
         flex-wrap: wrap;
+        font-variant-numeric: tabular-nums;
     }
 
     .price-original {
@@ -1133,6 +1134,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         color: var(--gray, #999);
         font-weight: 400;
         font-size: 0.85em;
+        font-variant-numeric: tabular-nums;
     }
 
     .price-before {
@@ -1141,27 +1143,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         gap: 4px;
     }
 
+    /* Total price row - separate from inputs grid */
+    .total-price-row {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        max-width: 500px;
+        padding-top: 4px;
+        font-weight: 600;
+    }
 
-    /* Standard total price styles */
-    .options-grid-unified {
-        .total-price-label,
-        .total-price {
-            margin-top: 20px;
-            font-weight: 600;
-        }
-
-        .total-price {
-            font-size: var(--font-xl);
-            text-align: right;
-            color: var(--purple);
-            position: relative;
-            right: -2px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
+    .total-price {
+        font-size: var(--font-xl);
+        color: var(--purple);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        font-variant-numeric: tabular-nums;
     }
 
 
