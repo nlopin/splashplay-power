@@ -122,7 +122,9 @@ export const POST: APIRoute = async ({ request }) => {
           datetime: parsedMetadata.data.sessionTime,
           email: parsedCustomer.data.email,
           name: parsedCustomer.data.name,
-          phone: parsedCustomer.data.phone,
+          phone: parsedCustomer.data.phone.startsWith("+")
+            ? parsedCustomer.data.phone
+            : `+34${parsedCustomer.data.phone}`,
           comment: formatEventComment(
             paymentIntentId,
             parsedMetadata.data.sessionTitle,
