@@ -30,21 +30,42 @@ export function AvailabilityCalendar({
     setInternalSelectedSlot(selectedTimeSlot ?? null);
   }, [selectedTimeSlot]);
 
-  const discountMap = useMemo(
-    () => new Map(availability.map((s) => [s.time, s.discount])),
-    [availability],
-  );
-  const bookedSet = useMemo(
-    () => new Set(availability.filter((s) => s.booked).map((s) => s.time)),
-    [availability],
-  );
-  const weeks = useMemo(
-    () => groupWeeks(availability.map((s) => s.time)),
-    [availability],
-  );
+  const { discountMap, bookedSet, weeks, initialWeekIndex } = useMemo(() => {
+    const discountMap = new Map<string, Discount | undefined>();
+    const bookedSet = new Set<string>();
+    const times: ISODatetime[] = [];
 
-  const [selectedWeekIndex, setSelectedWeekIndex] = useState<number>(0);
-  const [mobileWeekCount, setMobileWeekCount] = useState<number>(1);
+    let firstAvailableTime: string | null = null;
+    for (const s of availability) {
+      times.push(s.time);
+      discountMap.set(s.time, s.discount);
+      if (s.booked) {
+        bookedSet.add(s.time);
+      } else if (!firstAvailableTime) {
+        firstAvailableTime = s.time;
+      }
+    }
+
+    const weeks = groupWeeks(times);
+    const initialWeekIndex = firstAvailableTime
+      ? weeks.findIndex((week) =>
+          week.some((day) => day.times.includes(firstAvailableTime)),
+        )
+      : 0;
+
+    return {
+      discountMap,
+      bookedSet,
+      weeks,
+      initialWeekIndex,
+    };
+  }, [availability]);
+
+  const [selectedWeekIndex, setSelectedWeekIndex] =
+    useState<number>(initialWeekIndex);
+  const [mobileWeekCount, setMobileWeekCount] = useState<number>(
+    initialWeekIndex + 1,
+  );
   const currentWeek = weeks[selectedWeekIndex];
 
   const uniqueTimes = useMemo(() => {
@@ -265,7 +286,9 @@ const TimeSlotButton = ({
       className={`time-slot-button ${isSelected ? "selected" : ""} ${isBooked ? "booked" : ""}`}
     >
       {formattedTime}
-      {discount && !isBooked && <span className="discount-badge">-{discount}%</span>}
+      {discount && !isBooked && (
+        <span className="discount-badge">-{discount}%</span>
+      )}
     </button>
   );
 };
