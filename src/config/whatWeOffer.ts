@@ -54,6 +54,8 @@ export interface VariantConfig {
   detailsNamespace: TranslationNamespace;
   /** Home uses "home" for activity content, corporate mixes */
   activityContentNamespace: TranslationNamespace;
+  /** Optional namespace for format card copy; defaults to activityContentNamespace */
+  formatContentNamespace?: TranslationNamespace;
   bookingMode: "none" | "table" | "single-cta" | "contact";
   showHowItWorks?: boolean;
   ctaKey?: string;
@@ -114,6 +116,58 @@ export function getWhatWeOfferConfig(
     imageAlt: "Customizing clothes with abstract painting",
   };
 
+  const splashPouringActivities: ActivityConfig[] = [
+    {
+      id: "splash",
+      titleKey: "activity_splash_title",
+      descriptionKey: "activity_splash_description",
+      detailsKey: "activity_splash_details",
+      includedKey: "activity_1_included",
+      techniqueIds: ["boxing", "balloons", "balls", "guns"],
+      formatCards: [
+        {
+          titleKey: "activity_splash_format_big_title",
+          descriptionKey: "activity_splash_format_big_description",
+          imageKey: "largeCanvas",
+        },
+        {
+          titleKey: "activity_splash_format_standard_title",
+          descriptionKey: "activity_splash_format_standard_description",
+          imageKey: "twoCanvases",
+        },
+        {
+          titleKey: "activity_splash_format_team_title",
+          descriptionKey: "activity_splash_format_team_description",
+          imageKey: "sharedCanvas",
+        },
+      ],
+      imageKey: "gallery4",
+      imageAlt: "Splash painting with playful throwing techniques",
+    },
+    {
+      id: "pouring",
+      titleKey: "activity_pouring_title",
+      descriptionKey: "activity_pouring_description",
+      detailsKey: "activity_pouring_details",
+      includedKey: "activity_1_included",
+      techniqueIds: ["pouring", "spinning", "dripping", "surprise"],
+      formatCards: [
+        {
+          titleKey: "activity_pouring_format_standard_title",
+          descriptionKey: "activity_pouring_format_standard_description",
+          imageKey: "twoCanvasesPouring",
+        },
+        {
+          titleKey: "activity_pouring_format_team_title",
+          descriptionKey: "activity_pouring_format_team_description",
+          imageKey: "sharedCanvasPouring",
+        },
+      ],
+      imageKey: "activity1",
+      imageAlt: "Pouring and spinning abstract painting",
+    },
+  ];
+
   if (variant === "home") {
     return {
       localeNamespace: "home",
@@ -122,58 +176,9 @@ export function getWhatWeOfferConfig(
       includedTitleNamespace: "home",
       detailsNamespace: "home",
       activityContentNamespace: "home",
+      formatContentNamespace: "home",
       bookingMode: "none",
-      activities: ([
-        {
-          id: "splash",
-          titleKey: "activity_splash_title",
-          descriptionKey: "activity_splash_description",
-          detailsKey: "activity_splash_details",
-          includedKey: "activity_1_included",
-          techniqueIds: ["boxing", "balloons", "balls", "guns"],
-          formatCards: [
-            {
-              titleKey: "activity_splash_format_big_title",
-              descriptionKey: "activity_splash_format_big_description",
-              imageKey: "largeCanvas",
-            },
-            {
-              titleKey: "activity_splash_format_standard_title",
-              descriptionKey: "activity_splash_format_standard_description",
-              imageKey: "twoCanvases",
-            },
-            {
-              titleKey: "activity_splash_format_team_title",
-              descriptionKey: "activity_splash_format_team_description",
-              imageKey: "sharedCanvas",
-            },
-          ],
-          imageKey: "gallery4",
-          imageAlt: "Splash painting with playful throwing techniques",
-        },
-        {
-          id: "pouring",
-          titleKey: "activity_pouring_title",
-          descriptionKey: "activity_pouring_description",
-          detailsKey: "activity_pouring_details",
-          includedKey: "activity_1_included",
-          techniqueIds: ["pouring", "spinning", "dripping", "surprise"],
-          formatCards: [
-            {
-              titleKey: "activity_pouring_format_standard_title",
-              descriptionKey: "activity_pouring_format_standard_description",
-              imageKey: "twoCanvasesPouring",
-            },
-            {
-              titleKey: "activity_pouring_format_team_title",
-              descriptionKey: "activity_pouring_format_team_description",
-              imageKey: "sharedCanvasPouring",
-            },
-          ],
-          imageKey: "activity1",
-          imageAlt: "Pouring and spinning abstract painting",
-        },
-      ] satisfies ActivityConfig[]).filter((a) => !isActivityHidden(a.id)),
+      activities: splashPouringActivities.filter((a) => !isActivityHidden(a.id)),
     };
   }
 
@@ -185,25 +190,9 @@ export function getWhatWeOfferConfig(
       includedTitleNamespace: "friends",
       detailsNamespace: "friends",
       activityContentNamespace: "home",
-      bookingMode: "single-cta",
-      ctaKey: "cta_book",
-      activities: [
-        {
-          ...standardActivity1,
-          detailsKey: "activity_1_details",
-          bookUrl: bookFriends,
-        },
-        {
-          ...standardActivity2,
-          detailsKey: "activity_2_details",
-          bookUrl: bookThrowPaint,
-        },
-        {
-          ...standardActivity3,
-          detailsKey: "activity_3_details",
-          bookUrl: bookCustomizeClothes,
-        },
-      ].filter((a) => !isActivityHidden(a.id)),
+      formatContentNamespace: "friends",
+      bookingMode: "none",
+      activities: splashPouringActivities.filter((a) => !isActivityHidden(a.id)),
     };
   }
 
