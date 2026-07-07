@@ -1,5 +1,7 @@
 export type ActivityId =
   | "abstract_masterpiece"
+  | "splash"
+  | "pouring"
   | "throw_paint"
   | "customize_clothes"
   | "teambuilding";

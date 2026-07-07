@@ -8,6 +8,7 @@ import { isActivityHidden, type ActivityId } from "../../config/activities";
 import friendsImg from "../../assets/photo/friends.jpg";
 import couplesImg from "../../assets/photo/couples.jpg";
 import familyImg from "../../assets/photo/family.jpg";
+import teamsImg from "../../assets/photo/equipos.jpg";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
 const lang = getCurrentLanguage(Astro.currentLocale);
@@ -71,7 +72,7 @@ const priceCards = [
     },
     {
         id: "teams",
-        img: friendsImg,
+        img: teamsImg,
         link: getLocalizedPath("/corporate", lang),
         activities: teamActivities,
     },
@@ -105,10 +106,12 @@ const priceCards = [
                             </h4>
                         </div>
 
-                        {card.activities.length === 1 ? (
+                        {card.activities.length === 1 || card.id === "teams" ? (
                             <div class="price-single">
                                 <div class="price-single-value">
-                                    {t(`pricing.${card.id}.${card.activities[0].priceKey}`)} · {t(`pricing.${card.id}.${card.activities[0].durationKey}`)}
+                                    {card.id === "teams"
+                                        ? `${t("pricing.teams.price")} · ${t("pricing.teams.duration")}`
+                                        : `${t(`pricing.${card.id}.${card.activities[0].priceKey}`)} · ${t(`pricing.${card.id}.${card.activities[0].durationKey}`)}`}
                                 </div>
                             </div>
                         ) : (
@@ -228,11 +231,13 @@ const priceCards = [
         display: flex;
         flex-direction: column;
         flex: 1;
+        text-align: center;
     }
 
     .price-card-header {
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 0.5rem;
         margin-bottom: 0.35rem;
     }
@@ -245,12 +250,13 @@ const priceCards = [
         margin: 0;
         display: flex;
         align-items: baseline;
+        justify-content: center;
         flex-wrap: wrap;
         gap: 0.25rem;
     }
 
     .price-card-title {
-        font-size: var(--font-lg);
+        font-size: var(--font-xl);
         color: var(--purple);
         text-decoration: none;
         font-weight: 700;
@@ -275,11 +281,10 @@ const priceCards = [
     }
 
     .price-single-value {
-        font-size: var(--font-xl);
+        font-size: var(--font-base);
         font-weight: 700;
-        color: var(--orange);
+        color: var(--purple);
     }
-
 
     /* Multi-activity table (teams) */
     .price-activity-table {
@@ -287,6 +292,7 @@ const priceCards = [
         border-collapse: collapse;
         font-size: var(--font-sm);
         margin-bottom: 1rem;
+        text-align: left;
     }
 
     .price-activity-table tr {
@@ -321,17 +327,18 @@ const priceCards = [
     .price-card-footer {
         padding-top: 1.5rem;
         display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
+        flex-direction: column;
+        flex-wrap: nowrap;
         align-items: center;
-        justify-content: space-between;
-        gap: 0.5rem;
+        justify-content: center;
+        gap: 0.45rem;
     }
 
     .price-activity-btn {
         display: inline-block;
-        padding: 0.5rem 1.25rem;
-        font-size: var(--font-sm);
+        min-width: 11rem;
+        padding: 0.75rem 1.5rem;
+        font-size: var(--font-base);
         font-weight: 700;
         color: var(--white);
         background-color: var(--orange);
@@ -339,6 +346,8 @@ const priceCards = [
         text-decoration: none;
         text-transform: uppercase;
         transition: all 0.2s ease;
+        text-align: center;
+        box-sizing: border-box;
     }
 
     .price-activity-btn:hover {
@@ -348,7 +357,7 @@ const priceCards = [
 
     .btn-small {
         display: inline-block;
-        padding: 0.4rem 0.75rem;
+        padding: 0.25rem 0.75rem;
         font-size: var(--font-sm);
         background-color: transparent;
         color: var(--purple);

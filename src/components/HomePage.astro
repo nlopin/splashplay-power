@@ -3,7 +3,6 @@ import PageLayout from "../layouts/PageLayout.astro";
 
 import Hero from "./sections/Hero.astro";
 import WhatWeOffer from "./sections/WhatWeOffer.astro";
-import Techniques from "./sections/Techniques.astro";
 import Testimonials from "./sections/Testimonials.astro";
 import Pricing from "./sections/Pricing.astro";
 import GiftCard from "./sections/GiftCards.astro";
@@ -18,9 +17,8 @@ const currentPath = Astro.url.pathname;
 <PageLayout currentPath={currentPath}>
     <Hero />
     <WhatWeOffer variant="home" />
-    <Techniques />
-    <Testimonials />
     <Pricing />
+    <Testimonials />
     <GiftCard />
     <ExperienceSteps />
     <Gallery />

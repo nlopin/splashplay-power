@@ -1,4 +1,4 @@
-import type { Language } from "../utils/i18n";
+import type { Language, TranslationNamespace } from "../utils/i18n";
 import { getLocalizedPath } from "../utils/i18n";
 import { isActivityHidden, type ActivityId } from "./activities";
 
@@ -10,6 +10,7 @@ export type WhatWeOfferVariant =
   | "corporate";
 
 export type ImageKey = "activity1" | "gallery4" | "activity3" | "gallery1";
+export type FormatImageKey = "largeCanvas" | "twoCanvases" | "twoCanvasesPouring" | "sharedCanvas" | "sharedCanvasPouring";
 
 export interface BookingRow {
   audienceKey: string;
@@ -24,6 +25,13 @@ export interface ActivityConfig {
   descriptionKey: string;
   detailsKey: string;
   includedKey: string;
+  techniqueIds?: string[];
+  formatCards?: {
+    titleKey: string;
+    descriptionKey: string;
+    imageKey: FormatImageKey;
+  }[];
+  formatNoteKey?: string;
   imageKey: ImageKey;
   imageAlt: string;
   /** Home: table rows for each audience */
@@ -35,108 +43,21 @@ export interface ActivityConfig {
 }
 
 export interface VariantConfig {
-  localeNamespace: string;
+  localeNamespace: TranslationNamespace;
   /** For section title; corporate uses "friends" */
-  sectionTitleNamespace: string;
+  sectionTitleNamespace: TranslationNamespace;
   /** For intro; corporate uses "corporate" */
-  introNamespace: string;
+  introNamespace: TranslationNamespace;
   /** For included_title label; home uses "home", corporate uses "friends" */
-  includedTitleNamespace: string;
+  includedTitleNamespace: TranslationNamespace;
   /** Namespace for activity details (activity_*_details); corporate has its own */
-  detailsNamespace: string;
+  detailsNamespace: TranslationNamespace;
   /** Home uses "home" for activity content, corporate mixes */
-  activityContentNamespace: string;
-  bookingMode: "table" | "single-cta" | "contact";
+  activityContentNamespace: TranslationNamespace;
+  bookingMode: "none" | "table" | "single-cta" | "contact";
   showHowItWorks?: boolean;
   ctaKey?: string;
   activities: ActivityConfig[];
-}
-
-function buildHomeBookingRows(lang: Language): {
-  activity1: BookingRow[];
-  activity2: BookingRow[];
-  activity3: BookingRow[];
-} {
-  return {
-    activity1: [
-      {
-        audienceKey: "booking_for_couples",
-        pageHref: getLocalizedPath("/couples", lang),
-        href: getLocalizedPath("/book/couples", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_friends",
-        pageHref: getLocalizedPath("/friends", lang),
-        href: getLocalizedPath("/book/friends", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_families",
-        pageHref: getLocalizedPath("/family", lang),
-        href: getLocalizedPath("/book/family", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_teams",
-        pageHref: getLocalizedPath("/corporate", lang),
-        href: "#contact",
-        ctaKey: "booking_cta_contact",
-      },
-    ],
-    activity2: [
-      {
-        audienceKey: "booking_for_couples",
-        pageHref: getLocalizedPath("/couples", lang),
-        href: getLocalizedPath("/book/throw-paint", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_friends",
-        pageHref: getLocalizedPath("/friends", lang),
-        href: getLocalizedPath("/book/throw-paint", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_families",
-        pageHref: getLocalizedPath("/family", lang),
-        href: getLocalizedPath("/book/throw-paint", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_teams",
-        pageHref: getLocalizedPath("/corporate", lang),
-        href: "#contact",
-        ctaKey: "booking_cta_contact",
-      },
-    ],
-    activity3: [
-      {
-        audienceKey: "booking_for_couples",
-        pageHref: getLocalizedPath("/couples", lang),
-        href: getLocalizedPath("/book/customize-clothes", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_friends",
-        pageHref: getLocalizedPath("/friends", lang),
-        href: getLocalizedPath("/book/customize-clothes", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_families",
-        pageHref: getLocalizedPath("/family", lang),
-        href: getLocalizedPath("/book/customize-clothes", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_teams",
-        pageHref: getLocalizedPath("/corporate", lang),
-        href: "#contact",
-        ctaKey: "booking_cta_contact",
-      },
-    ],
-  };
 }
 
 export function getWhatWeOfferConfig(
@@ -194,7 +115,6 @@ export function getWhatWeOfferConfig(
   };
 
   if (variant === "home") {
-    const rows = buildHomeBookingRows(lang);
     return {
       localeNamespace: "home",
       sectionTitleNamespace: "home",
@@ -202,24 +122,58 @@ export function getWhatWeOfferConfig(
       includedTitleNamespace: "home",
       detailsNamespace: "home",
       activityContentNamespace: "home",
-      bookingMode: "table",
-      activities: [
+      bookingMode: "none",
+      activities: ([
         {
-          ...standardActivity1,
-          detailsKey: "activity_1_details",
-          bookingRows: rows.activity1,
+          id: "splash",
+          titleKey: "activity_splash_title",
+          descriptionKey: "activity_splash_description",
+          detailsKey: "activity_splash_details",
+          includedKey: "activity_1_included",
+          techniqueIds: ["boxing", "balloons", "balls", "guns"],
+          formatCards: [
+            {
+              titleKey: "activity_splash_format_big_title",
+              descriptionKey: "activity_splash_format_big_description",
+              imageKey: "largeCanvas",
+            },
+            {
+              titleKey: "activity_splash_format_standard_title",
+              descriptionKey: "activity_splash_format_standard_description",
+              imageKey: "twoCanvases",
+            },
+            {
+              titleKey: "activity_splash_format_team_title",
+              descriptionKey: "activity_splash_format_team_description",
+              imageKey: "sharedCanvas",
+            },
+          ],
+          imageKey: "gallery4",
+          imageAlt: "Splash painting with playful throwing techniques",
         },
         {
-          ...standardActivity2,
-          detailsKey: "activity_2_details",
-          bookingRows: rows.activity2,
+          id: "pouring",
+          titleKey: "activity_pouring_title",
+          descriptionKey: "activity_pouring_description",
+          detailsKey: "activity_pouring_details",
+          includedKey: "activity_1_included",
+          techniqueIds: ["pouring", "spinning", "dripping", "surprise"],
+          formatCards: [
+            {
+              titleKey: "activity_pouring_format_standard_title",
+              descriptionKey: "activity_pouring_format_standard_description",
+              imageKey: "twoCanvasesPouring",
+            },
+            {
+              titleKey: "activity_pouring_format_team_title",
+              descriptionKey: "activity_pouring_format_team_description",
+              imageKey: "sharedCanvasPouring",
+            },
+          ],
+          imageKey: "activity1",
+          imageAlt: "Pouring and spinning abstract painting",
         },
-        {
-          ...standardActivity3,
-          detailsKey: "activity_3_details",
-          bookingRows: rows.activity3,
-        },
-      ].filter((a) => !isActivityHidden(a.id)),
+      ] satisfies ActivityConfig[]).filter((a) => !isActivityHidden(a.id)),
     };
   }
 
