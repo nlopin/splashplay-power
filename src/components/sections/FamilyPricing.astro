@@ -101,10 +101,10 @@ const activity1BigRow: OptCell[] = [
 // For mobile cards, reconstruct per-group options list
 const activity1GroupsWithOptions = activity1Groups.map((group, gi) => ({
     ...group,
-    options: [
-        ...activity1Rows.map(row => row.cells[gi]).filter(Boolean) as { labelKey: string; priceKey: string }[],
-        activity1BigRow[gi] as { labelKey: string; priceKey: string },
-    ],
+    options: activity1Rows
+        .map((row) => row.cells[gi])
+        .filter(Boolean) as { labelKey: string; priceKey: string }[],
+    bigCanvasOption: activity1BigRow[gi] as { labelKey: string; priceKey: string },
 }));
 
 const bookBaseUrl = getLocalizedPath("/book/family", lang);
@@ -142,10 +142,21 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         <!-- Activity 1: Create your abstract masterpiece -->
         <div class="pricing-activity pricing-activity--wide">
             <h3 class="pricing-activity-title">
-                {tHome("activity_1_title")}
+                {t("activity_1_title")}
                 <span class="pricing-activity-meta">{t("activity_1_meta")}</span>
             </h3>
             <p class="pricing-activity-description" set:html={t("pricing_activity1_description")} />
+            <div class="pricing-discount-banner">
+                <div class="pricing-discount-badge-surface pricing-discount-banner__inner">
+                    <span class="pricing-discount-badge__line">{t("pricing_discount_badge_prefix")}</span>
+                    <span class="pricing-discount-badge__percent">{t("pricing_discount_badge_percent")}</span>
+                    <span class="pricing-discount-badge__line">{t("pricing_discount_badge_suffix")}</span>
+                </div>
+            </div>
+            <p class="pricing-discount-note">
+                {t("pricing_discount_note")}{" "}
+                <a href={bookBaseUrl} class="pricing-discount-note__link">{t("pricing_discount_note_link")}</a>
+            </p>
             <!-- Mobile: one card per group size -->
             <div class="pricing-cards-mobile">
                 {activity1GroupsWithOptions.map((group) => (
@@ -165,6 +176,19 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                                     </li>
                                 );
                             })}
+                            <li class="pricing-card-mobile-big-header">{t("pricing_big_canvas_section_title")}</li>
+                            {(() => {
+                                const parsed = parseOptLabel(t(group.bigCanvasOption.labelKey));
+                                return (
+                                    <li>
+                                        <span class="opt-row-main">
+                                            <span class="opt-canvas-label">{parsed ? parsed.canvasLabel : t(group.bigCanvasOption.labelKey)}</span>
+                                            {parsed && <span class="opt-canvas-price">{parsed.price}</span>}
+                                        </span>
+                                        <span class="opt-price">{t(group.bigCanvasOption.priceKey)}</span>
+                                    </li>
+                                );
+                            })()}
                         </ul>
                         <a href={bookBaseUrl} class="pricing-btn pricing-btn--mobile">{t("cta_book_button")}</a>
                     </div>
@@ -175,22 +199,42 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                 <table class="pricing-table pricing-table--groups">
                     <thead>
                         <tr>
-                            {activity1Groups.map((group) => (
-                                <th scope="col" style="background: #ddd0f0; color: var(--purple);">
-                                    <div class="th-header" style="color: var(--purple);">{t(group.headerKey)}</div>
-                                    <div class="th-sub" style="color: rgba(80,40,120,0.65);">{t(group.subheaderKey)}</div>
+                            {activity1Groups.map((group, groupIndex) => (
+                                <th
+                                    scope="col"
+                                    class:list={["pricing-table-col", groupIndex % 2 === 0 ? "pricing-table-col--purple" : "pricing-table-col--yellow"]}
+                                >
+                                    <div class="th-header">{t(group.headerKey)}</div>
+                                    <div class="th-sub">{t(group.subheaderKey)}</div>
                                 </th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
-                        {activity1Rows.map((row) => (
+                        {activity1Rows.map((row, rowIndex) => (
                             <tr>
-                                {row.cells.map((cell) => {
-                                    if (!cell) return <td class="td-empty" />;
+                                {row.cells.map((cell, cellIndex) => {
+                                    const colClass = cellIndex % 2 === 0 ? "pricing-table-col--purple" : "pricing-table-col--yellow";
+                                    if (!cell) {
+                                        if (rowIndex === 3 && cellIndex === 0) {
+                                            return (
+                                                <td class:list={["td-discount-badge-host", "pricing-table-col", colClass]} rowspan="2">
+                                                    <span class="pricing-discount-badge-surface pricing-discount-badge pricing-discount-badge--desktop">
+                                                        <span class="pricing-discount-badge__line">{t("pricing_discount_badge_prefix")}</span>
+                                                        <span class="pricing-discount-badge__percent">{t("pricing_discount_badge_percent")}</span>
+                                                        <span class="pricing-discount-badge__line">{t("pricing_discount_badge_suffix")}</span>
+                                                    </span>
+                                                </td>
+                                            );
+                                        }
+                                        if (rowIndex === 4 && cellIndex === 0) {
+                                            return null;
+                                        }
+                                        return <td class:list={["td-empty", "pricing-table-col", colClass]} />;
+                                    }
                                     const parsed = parseOptLabel(t(cell.labelKey));
                                     return (
-                                        <td>
+                                        <td class:list={["pricing-table-col", colClass]}>
                                             <span class="opt-row-main">
                                                 <span class="opt-canvas-label">{parsed ? parsed.canvasLabel : t(cell.labelKey)}</span>
                                                 {parsed && <span class="opt-canvas-price">{parsed.price}</span>}
@@ -201,12 +245,16 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                                 })}
                             </tr>
                         ))}
+                        <tr class="tr-big-canvas-header">
+                            <td colspan={activity1Groups.length}>{t("pricing_big_canvas_section_title")}</td>
+                        </tr>
                         <tr class="tr-big-canvas">
-                            {activity1BigRow.map((cell) => {
-                                if (!cell) return <td class="td-empty" />;
+                            {activity1BigRow.map((cell, cellIndex) => {
+                                const colClass = cellIndex % 2 === 0 ? "pricing-table-col--purple" : "pricing-table-col--yellow";
+                                if (!cell) return <td class:list={["td-empty", "pricing-table-col", colClass]} />;
                                 const parsed = parseOptLabel(t(cell.labelKey));
                                 return (
-                                    <td>
+                                    <td class:list={["pricing-table-col", colClass]}>
                                         <span class="opt-row-main">
                                             <span class="opt-canvas-label">{parsed ? parsed.canvasLabel : t(cell.labelKey)}</span>
                                             {parsed && <span class="opt-canvas-price">{parsed.price}</span>}
@@ -412,6 +460,13 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         }
     }
 
+    .pricing-activity-brief {
+        font-size: var(--font-base);
+        color: var(--dark-text);
+        line-height: 1.6;
+        margin: 0 0 1rem;
+    }
+
     .canvas-reference-title {
         font-size: var(--font-sm);
         font-weight: 600;
@@ -486,6 +541,7 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         border: 1px solid rgba(102, 51, 153, 0.12);
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
         overflow-x: auto;
+        overflow-y: visible;
     }
 
     .pricing-table--groups {
@@ -503,16 +559,20 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         font-weight: 700;
         font-size: var(--font-sm);
         vertical-align: top;
-        background: var(--purple);
-        color: var(--white);
+        color: var(--purple);
     }
 
-    .pricing-table--groups td:nth-child(odd) {
+    .pricing-table-col--purple {
         background: #f7f3fd;
     }
 
-    .pricing-table--groups td:nth-child(even) {
+    .pricing-table-col--yellow {
         background: #fffaf5;
+    }
+
+    .pricing-table--groups th.pricing-table-col--purple,
+    .pricing-table--groups th.pricing-table-col--yellow {
+        background: #ddd0f0;
     }
 
     .td-big-option {
@@ -534,7 +594,7 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
     .th-sub {
         font-size: var(--font-xs);
         font-weight: 600;
-        color: rgba(255, 255, 255, 0.75);
+        color: rgba(80, 40, 120, 0.65);
     }
 
     .pricing-table--groups td {
@@ -544,11 +604,125 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
     }
 
     .td-empty {
-        /* inherits column color from nth-child */
+        /* inherits column color from pricing-table-col--* */
+    }
+
+    .td-discount-badge-host {
+        position: relative;
+        padding: 0 !important;
+        overflow: visible;
+        vertical-align: middle;
+    }
+
+    .pricing-discount-banner {
+        display: none;
+    }
+
+    .pricing-discount-note {
+        font-size: 14px;
+        color: var(--dark-text);
+        line-height: 1.55;
+        margin: 0 0 1rem;
+        text-align: center;
+    }
+
+    .pricing-discount-note__link {
+        color: inherit;
+        text-decoration: underline;
+        font-weight: 600;
+    }
+
+    .pricing-discount-note__link:hover {
+        color: var(--purple);
+    }
+
+    .pricing-discount-badge-surface {
+        background: linear-gradient(135deg, #ff5c33 0%, #ff8a2a 100%);
+        border: 2px solid rgba(255, 255, 255, 0.85);
+        box-shadow:
+            0 6px 16px rgba(255, 92, 51, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        color: var(--white);
+        font-weight: 800;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .pricing-discount-badge--desktop {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.12rem;
+        width: 9rem;
+        height: 9rem;
+        padding: 0.65rem;
+        transform: translate(-50%, -50%) rotate(-15deg);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .pricing-discount-badge__line {
+        font-size: 0.62rem;
+        line-height: 1.12;
+        letter-spacing: 0.02em;
+        max-width: 6.5rem;
+    }
+
+    .pricing-discount-badge__percent {
+        font-size: 1.86rem;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+    }
+
+    .pricing-discount-banner__inner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+        width: 100%;
+        padding: 0.9rem 1rem;
+        border-radius: 12px;
+    }
+
+    .pricing-discount-banner__inner .pricing-discount-badge__line {
+        font-size: 0.7rem;
+        max-width: none;
+    }
+
+    .pricing-discount-banner__inner .pricing-discount-badge__percent {
+        font-size: 2.1rem;
+    }
+
+    .tr-big-canvas-header td {
+        padding: 0.85rem 0.75rem 0.45rem;
+        border-top: 1px dashed rgba(102, 51, 153, 0.25);
+        background: #f3ecfb !important;
+        color: var(--purple);
+        font-size: var(--font-sm);
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 0.01em;
     }
 
     .tr-big-canvas td {
-        border-top: 1px dashed rgba(102, 51, 153, 0.25) !important;
+        border-top: none !important;
+    }
+
+    .pricing-card-mobile-big-header {
+        margin-top: 0.75rem;
+        padding: 0.65rem 0.5rem 0.35rem;
+        list-style: none;
+        color: var(--purple);
+        font-size: var(--font-sm);
+        font-weight: 700;
+        text-align: center;
     }
 
     .opt-row-main {
@@ -777,6 +951,11 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
     }
 
     @media (max-width: 767px) {
+        .pricing-discount-banner {
+            display: block;
+            margin-bottom: 1rem;
+        }
+
         .pricing-cards-mobile {
             display: block;
             margin-bottom: 1.5rem;

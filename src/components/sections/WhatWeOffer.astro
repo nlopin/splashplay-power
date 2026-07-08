@@ -57,8 +57,16 @@ const { variant } = Astro.props;
 
 const lang = getCurrentLanguage(Astro.currentLocale);
 const config = getWhatWeOfferConfig(variant, lang);
-const showActivityImages = variant !== "home" && variant !== "friends" && variant !== "couples";
-const showCommonIncluded = variant === "home" || variant === "friends" || variant === "couples";
+const showActivityImages =
+    variant !== "home" &&
+    variant !== "friends" &&
+    variant !== "couples" &&
+    variant !== "family";
+const showCommonIncluded =
+    variant === "home" ||
+    variant === "friends" ||
+    variant === "couples" ||
+    variant === "family";
 
 const tMain = createAstroTranslator(Astro.currentLocale, "main");
 const tSection = createAstroTranslator(Astro.currentLocale, config.sectionTitleNamespace);

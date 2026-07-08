@@ -1,5 +1,4 @@
 import type { Language, TranslationNamespace } from "../utils/i18n";
-import { getLocalizedPath } from "../utils/i18n";
 import { isActivityHidden, type ActivityId } from "./activities";
 
 export type WhatWeOfferVariant =
@@ -66,13 +65,6 @@ export function getWhatWeOfferConfig(
   variant: WhatWeOfferVariant,
   lang: Language,
 ): VariantConfig {
-  const bookFamily = getLocalizedPath("/book/family", lang);
-  const bookThrowPaint = getLocalizedPath("/book/throw-paint", lang);
-  const bookCustomizeClothes = getLocalizedPath(
-    "/book/customize-clothes",
-    lang,
-  );
-
   const baseActivity1: Omit<
     ActivityConfig,
     "imageKey" | "imageAlt" | "bookingRows" | "bookUrl"
@@ -195,6 +187,8 @@ export function getWhatWeOfferConfig(
   }
 
   if (variant === "family") {
+    // Copy the friends "Qué ofrecemos" structure (Splash + Pouring with format
+    // cards and technique videos), but use family-specific format copy.
     return {
       localeNamespace: "family",
       sectionTitleNamespace: "family",
@@ -202,25 +196,9 @@ export function getWhatWeOfferConfig(
       includedTitleNamespace: "family",
       detailsNamespace: "family",
       activityContentNamespace: "home",
-      bookingMode: "single-cta",
-      ctaKey: "cta_book",
-      activities: [
-        {
-          ...standardActivity1,
-          detailsKey: "activity_1_details_family",
-          bookUrl: bookFamily,
-        },
-        {
-          ...standardActivity2,
-          detailsKey: "activity_2_details_family",
-          bookUrl: bookThrowPaint,
-        },
-        {
-          ...standardActivity3,
-          detailsKey: "activity_3_details_family",
-          bookUrl: bookCustomizeClothes,
-        },
-      ].filter((a) => !isActivityHidden(a.id)),
+      formatContentNamespace: "family",
+      bookingMode: "none",
+      activities: splashPouringActivities.filter((a) => !isActivityHidden(a.id)),
     };
   }
 
