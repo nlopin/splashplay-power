@@ -66,8 +66,6 @@ export function getWhatWeOfferConfig(
   variant: WhatWeOfferVariant,
   lang: Language,
 ): VariantConfig {
-  const bookCouples = getLocalizedPath("/book/couples", lang);
-  const bookFriends = getLocalizedPath("/book/friends", lang);
   const bookFamily = getLocalizedPath("/book/family", lang);
   const bookThrowPaint = getLocalizedPath("/book/throw-paint", lang);
   const bookCustomizeClothes = getLocalizedPath(
@@ -227,33 +225,24 @@ export function getWhatWeOfferConfig(
   }
 
   if (variant === "couples") {
-    const bookCouplesUrl = bookCouples;
+    // Copy the friends "Qué ofrecemos" structure, but hide formats (already in pricing)
+    // while keeping techniques videos/cards.
     return {
-      localeNamespace: "couples",
-      sectionTitleNamespace: "couples",
-      introNamespace: "couples",
-      includedTitleNamespace: "couples",
+      localeNamespace: "friends",
+      sectionTitleNamespace: "friends",
+      introNamespace: "friends",
+      includedTitleNamespace: "friends",
+      // Couples section pricing lines should be per pareja (not per persona).
       detailsNamespace: "couples",
       activityContentNamespace: "home",
-      bookingMode: "single-cta",
-      ctaKey: "cta_book",
-      activities: [
-        {
-          ...standardActivity1,
-          detailsKey: "activity_1_details_couples",
-          bookUrl: bookCouplesUrl,
-        },
-        {
-          ...standardActivity2,
-          detailsKey: "activity_2_details_couples",
-          bookUrl: bookCouplesUrl,
-        },
-        {
-          ...standardActivity3,
-          detailsKey: "activity_3_details_couples",
-          bookUrl: bookCustomizeClothes,
-        },
-      ].filter((a) => !isActivityHidden(a.id)),
+      bookingMode: "none",
+      activities: splashPouringActivities
+        .filter((a) => !isActivityHidden(a.id))
+        .map((a) => ({
+          ...a,
+          formatCards: undefined,
+          formatNoteKey: undefined,
+        })),
     };
   }
 

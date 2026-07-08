@@ -57,8 +57,8 @@ const { variant } = Astro.props;
 
 const lang = getCurrentLanguage(Astro.currentLocale);
 const config = getWhatWeOfferConfig(variant, lang);
-const showActivityImages = variant !== "home" && variant !== "friends";
-const showCommonIncluded = variant === "home" || variant === "friends";
+const showActivityImages = variant !== "home" && variant !== "friends" && variant !== "couples";
+const showCommonIncluded = variant === "home" || variant === "friends" || variant === "couples";
 
 const tMain = createAstroTranslator(Astro.currentLocale, "main");
 const tSection = createAstroTranslator(Astro.currentLocale, config.sectionTitleNamespace);
@@ -184,7 +184,7 @@ const activities = config.activities.map((a) => ({
                                         {activity.includedKey === "activity_1_included" && (
                                             <>
                                                 <p class="activity-included">
-                                                    <strong>{tContent("common_takeaway_title")}:</strong>{" "}
+                                                    <strong>{tContent("common_takeaway_title")}</strong>{" "}
                                                     {tContent("common_takeaway_text")}
                                                 </p>
                                                 <p class="activity-included-note">{tContent("activity_1_drying_note")}</p>
@@ -239,7 +239,7 @@ const activities = config.activities.map((a) => ({
                         {tContent("activity_1_included")}
                     </p>
                     <p class="common-included-text">
-                        <strong>{tContent("common_takeaway_title")}:</strong>{" "}
+                        <strong>{tContent("common_takeaway_title")}</strong>{" "}
                         {tContent("common_takeaway_text")}
                     </p>
                     <p class="common-included-note">{tContent("activity_1_drying_note")}</p>
