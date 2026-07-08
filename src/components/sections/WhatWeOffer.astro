@@ -57,11 +57,19 @@ const { variant } = Astro.props;
 
 const lang = getCurrentLanguage(Astro.currentLocale);
 const config = getWhatWeOfferConfig(variant, lang);
-const showActivityImages =
-    variant !== "home" &&
-    variant !== "friends" &&
-    variant !== "couples" &&
-    variant !== "family";
+const variantHidesAllActivityImages =
+    variant === "home" ||
+    variant === "friends" ||
+    variant === "couples" ||
+    variant === "family";
+
+function shouldShowActivityImage(activity: { id: string }): boolean {
+    if (variantHidesAllActivityImages) return false;
+    if (variant === "corporate" && (activity.id === "splash" || activity.id === "pouring")) {
+        return false;
+    }
+    return true;
+}
 const showCommonIncluded =
     variant === "home" ||
     variant === "friends" ||
@@ -97,9 +105,9 @@ const activities = config.activities.map((a) => ({
                         <article class:list={[
                             "activity-card",
                             `activity-card--${index % 2 === 0 ? "left" : "right"}`,
-                            { "activity-card--no-image": !showActivityImages },
+                            { "activity-card--no-image": !shouldShowActivityImage(activity) },
                         ]}>
-                            {showActivityImages && (
+                            {shouldShowActivityImage(activity) && (
                                 <div class="activity-image-wrap">
                                     <img
                                         src={activity.image.src}
@@ -181,7 +189,7 @@ const activities = config.activities.map((a) => ({
                                         )}
                                     </div>
                                 )}
-                                {!showCommonIncluded && (
+                                {!showCommonIncluded && activity.includedKey && (
                                     <>
                                         <p class="activity-included">
                                             <strong>{tIncluded("included_title")}:</strong>{" "}
@@ -222,7 +230,7 @@ const activities = config.activities.map((a) => ({
                                         <CTAButton href={activity.bookUrl} text={tSection(config.ctaKey)} size="sm" />
                                     </div>
                                 )}
-                                {config.bookingMode === "contact" && config.ctaKey && (
+                                {config.bookingMode === "contact" && config.ctaKey && activity.id !== "splash" && activity.id !== "pouring" && (
                                     <div class="activity-actions">
                                         <CTAButton href="#contact" text={tCorporate(config.ctaKey)} size="sm" />
                                     </div>

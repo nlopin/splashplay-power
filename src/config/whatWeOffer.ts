@@ -23,7 +23,7 @@ export interface ActivityConfig {
   titleKey: string;
   descriptionKey: string;
   detailsKey: string;
-  includedKey: string;
+  includedKey?: string;
   techniqueIds?: string[];
   formatCards?: {
     titleKey: string;
@@ -39,6 +39,8 @@ export interface ActivityConfig {
   bookUrl?: string;
   /** Corporate: use corporate namespace for this activity */
   corporateOnly?: boolean;
+  /** Override variant detailsNamespace for this activity */
+  detailsNamespace?: TranslationNamespace;
 }
 
 export interface VariantConfig {
@@ -224,7 +226,7 @@ export function getWhatWeOfferConfig(
     };
   }
 
-  // corporate
+  // corporate: Team Building Special + Splash & Pouring (from friends)
   const teambuildingActivity: ActivityConfig = {
     id: "teambuilding",
     titleKey: "activity_teambuilding_title",
@@ -236,6 +238,13 @@ export function getWhatWeOfferConfig(
     corporateOnly: true,
   };
 
+  const splashPouringForCorporate: ActivityConfig[] = splashPouringActivities
+    .filter((a) => !isActivityHidden(a.id))
+    .map((a) => ({
+      ...a,
+      includedKey: undefined,
+    }));
+
   return {
     localeNamespace: "corporate",
     sectionTitleNamespace: "friends",
@@ -243,12 +252,13 @@ export function getWhatWeOfferConfig(
     includedTitleNamespace: "friends",
     detailsNamespace: "corporate",
     activityContentNamespace: "home",
+    formatContentNamespace: "corporate",
     bookingMode: "contact",
     showHowItWorks: true,
     ctaKey: "cta_book",
     activities: [
       teambuildingActivity,
-      { ...standardActivity1, detailsKey: "activity_1_details" },
+      ...splashPouringForCorporate,
       { ...standardActivity2, detailsKey: "activity_2_details" },
       { ...standardActivity3, detailsKey: "activity_3_details" },
     ].filter((a) => !isActivityHidden(a.id)),
