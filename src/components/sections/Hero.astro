@@ -1,16 +1,17 @@
 ---
-import { createAstroTranslator } from "../../utils/i18n";
+import { createAstroTranslator, getCurrentLanguage } from "../../utils/i18n";
 import CTAButton from "../CTAButton.astro";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
+const lang = getCurrentLanguage(Astro.currentLocale);
 ---
 
-<section class="hero" id="hero">
+<section class:list={["hero", { "hero--en-title": lang === "en" }]} id="hero">
     <div class="hero-overlay"></div>
     <div class="container hero-container">
         <div class="hero-content">
             <h1>{t("hero_title")}</h1>
-            <p class="subtitle">{t("hero_subtitle")}</p>
+            <p class="subtitle" set:html={t("hero_subtitle")} />
             <div class="cta-wrapper">
                 <CTAButton text={t("cta_book")} href="#pricing" />
             </div>
@@ -86,6 +87,10 @@ const t = createAstroTranslator(Astro.currentLocale, "main");
         line-height: 1.5;
         margin-bottom: 8px;
         text-transform: capitalize;
+    }
+
+    .hero--en-title h1 {
+        white-space: nowrap;
     }
 
     .subtitle {
