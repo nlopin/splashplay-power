@@ -4,18 +4,24 @@ import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
+import {
+  ActivityFormatSelector,
+  type ActivityFormat,
+} from "./ActivityFormatSelector";
 
 const MIN_ADULTS = 1;
 const MIN_KIDS = 0;
 const MAX_TOTAL = 6;
 
 export type CanvasType = "standard" | "big";
+export type { ActivityFormat } from "./ActivityFormatSelector";
 
 export interface FamilyFormData {
   adults: number;
   kids: number;
   canvases: number;
   canvasType: CanvasType;
+  activityFormat: ActivityFormat;
 }
 
 // Big canvas price table: indexed by total guests (2–6)
@@ -72,6 +78,7 @@ export function FamilyOptions({
     kids: 1,
     canvases: 3,
     canvasType: "standard",
+    activityFormat: "splash",
   });
   const t = useTranslator();
   const onChangeRef = useRef(onChange);
@@ -93,6 +100,27 @@ export function FamilyOptions({
 
     onChangeRef.current({ amount: totalAmount, productName });
   }, [formData]);
+
+  const handleActivityFormatChange = (format: ActivityFormat) => {
+    if (format === "pouring") {
+      setFormData((prev) => {
+        if (prev.canvasType === "big") {
+          const total = Math.max(1, Math.min(prev.adults + prev.kids, MAX_TOTAL));
+          const limits = CANVAS_LIMITS[total];
+          const canvases = Math.max(limits.min, Math.min(total, limits.max));
+          return {
+            ...prev,
+            activityFormat: "pouring",
+            canvasType: "standard",
+            canvases,
+          };
+        }
+        return { ...prev, activityFormat: "pouring" };
+      });
+      return;
+    }
+    setFormData((prev) => ({ ...prev, activityFormat: "splash" }));
+  };
 
   const handleCanvasTypeChange = (type: CanvasType) => {
     if (type === "big") {
@@ -155,6 +183,7 @@ export function FamilyOptions({
 
   const totalGuests = formData.adults + formData.kids;
   const clampedTotal = Math.max(1, Math.min(totalGuests, MAX_TOTAL));
+  const isSplash = formData.activityFormat === "splash";
   const isBig = formData.canvasType === "big";
   const canvasLimits = CANVAS_LIMITS[clampedTotal];
   const totalPrice = calculateFamilyPrice(
@@ -165,6 +194,11 @@ export function FamilyOptions({
 
   return (
     <div className="family-options">
+      <ActivityFormatSelector
+        value={formData.activityFormat}
+        onChange={handleActivityFormatChange}
+      />
+
       {/* Canvas type selector */}
       <div className="canvas-type-selector">
         <div className="canvas-type-label">{t("friends_canvas_type")}</div>
@@ -181,18 +215,20 @@ export function FamilyOptions({
             />
             {t("friends_canvas_standard")}
           </label>
-          <label
-            className={`canvas-type-option${isBig ? " canvas-type-option--selected" : ""}`}
-          >
-            <input
-              type="radio"
-              name="canvasType"
-              value="big"
-              checked={isBig}
-              onChange={() => handleCanvasTypeChange("big")}
-            />
-            {t("friends_canvas_big")}
-          </label>
+          {isSplash && (
+            <label
+              className={`canvas-type-option${isBig ? " canvas-type-option--selected" : ""}`}
+            >
+              <input
+                type="radio"
+                name="canvasType"
+                value="big"
+                checked={isBig}
+                onChange={() => handleCanvasTypeChange("big")}
+              />
+              {t("friends_canvas_big")}
+            </label>
+          )}
         </div>
       </div>
 
