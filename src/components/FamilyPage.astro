@@ -4,7 +4,6 @@ import PageLayout from "../layouts/PageLayout.astro";
 
 import FamilyHero from "./sections/FamilyHero.astro";
 import WhatWeOffer from "./sections/WhatWeOffer.astro";
-import Techniques from "./sections/Techniques.astro";
 import Testimonials from "./sections/Testimonials.astro";
 import FamilyPricing from "./sections/FamilyPricing.astro";
 import WhatsIncluded from "./sections/WhatsIncluded.astro";
@@ -29,7 +28,6 @@ const includedKeys = [
 <PageLayout currentPath={currentPath} title={t("meta_title")} description={t("meta_description")}>
     <FamilyHero />
     <WhatWeOffer variant="family" />
-    <Techniques />
     <Testimonials category="family" />
     <FamilyPricing />
     <WhatsIncluded

@@ -4,7 +4,6 @@ import PageLayout from "../layouts/PageLayout.astro";
 
 import FriendsHero from "./sections/FriendsHero.astro";
 import WhatWeOffer from "./sections/WhatWeOffer.astro";
-import Techniques from "./sections/Techniques.astro";
 import Testimonials from "./sections/Testimonials.astro";
 import FriendsPricing from "./sections/FriendsPricing.astro";
 import GiftCard from "./sections/GiftCards.astro";
@@ -28,7 +27,6 @@ const includedKeys = [
 <PageLayout currentPath={currentPath} title={t("meta_title")} description={t("meta_description")}>
     <FriendsHero />
     <WhatWeOffer variant="friends" />
-    <Techniques />
     <Testimonials category="friends" />
     <FriendsPricing />
     <WhatsIncluded translationNamespace="friends" includedKeys={includedKeys} />

@@ -5,6 +5,8 @@ import {
     getLocalizedPath,
 } from "../../utils/i18n";
 import { isActivityHidden } from "../../config/activities";
+import DiscountWeekdayBadge from "../DiscountWeekdayBadge.astro";
+import DiscountWeekdayNote from "../DiscountWeekdayNote.astro";
 import twoCanvases from "../../assets/img/30x40_2individuales.jpg";
 import largeCanvas from "../../assets/img/60x80_compartido.jpg";
 import smallCanvas from "../../assets/img/30x40_compartido.jpg";
@@ -55,12 +57,21 @@ const pricingOptions = [
 
 <section id="prices" class="prices prices--couples">
     <div class="container">
-        <h2 class="section-title" id="pricing" data-menu-title={tMain("nav_pricing")}>{t("pricing_title")}</h2>
+        <div class="couples-pricing-heading">
+            <h2 class="section-title" id="pricing" data-menu-title={tMain("nav_pricing")}>{t("pricing_title")}</h2>
 
-        <h3 class="pricing-activity-title">
-            {t("pricing_activity_title")}
-            <span class="pricing-activity-meta">{t("pricing_activity_meta")}</span>
-        </h3>
+            <span class="heading-badge-slot">
+                <DiscountWeekdayBadge shape="circle" namespace="couples" />
+            </span>
+
+            <h3 class="pricing-activity-title">
+                {t("pricing_activity_title")}
+                <span class="pricing-activity-meta">{t("pricing_activity_meta")}</span>
+            </h3>
+        </div>
+        <div class="discount-banner-slot">
+            <DiscountWeekdayBadge shape="banner" namespace="couples" />
+        </div>
 
         <div class="price-header">
             <div class="price-summary">
@@ -68,6 +79,9 @@ const pricingOptions = [
                     <p class="gift-certificates-description">
                         {t("pricing_intro")}
                     </p>
+                    <div class="discount-note-slot discount-note-slot--after-intro">
+                        <DiscountWeekdayNote namespace="couples" href={bookUrl} />
+                    </div>
                 </div>
 
                 <div class="price-cards-container">
@@ -222,6 +236,31 @@ const pricingOptions = [
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
     }
 
+    .couples-pricing-heading {
+        position: relative;
+        text-align: center;
+        max-width: 960px;
+        margin: 0 auto 1rem;
+        min-height: 9.5rem;
+    }
+
+    /* Placement of the discount badge/note (components are placement-agnostic). */
+    .heading-badge-slot {
+        position: absolute;
+        top: 50%;
+        left: 4.5rem;
+        z-index: 5;
+        transform: translate(-50%, -50%) rotate(-15deg);
+    }
+
+    .discount-banner-slot {
+        display: none;
+    }
+
+    .discount-note-slot--after-intro {
+        margin: 1rem 0 0;
+    }
+
     .popular-card {
         border-color: var(--purple);
         border-width: 3px;
@@ -315,6 +354,21 @@ const pricingOptions = [
             padding: 2rem 0;
         }
 
+        .couples-pricing-heading {
+            padding-left: 0;
+            min-height: 0;
+            margin-bottom: 0;
+        }
+
+        .heading-badge-slot {
+            display: none;
+        }
+
+        .discount-banner-slot {
+            display: block;
+            margin: 0 0 1rem;
+        }
+
         .gift-certificates-intro {
             margin-bottom: 1rem;
         }
@@ -374,6 +428,18 @@ const pricingOptions = [
         .btn-card {
             padding: 0.6rem 1.25rem;
             margin-top: 0.75rem;
+        }
+    }
+
+    @media (min-width: 769px) and (max-width: 1100px) {
+        .couples-pricing-heading {
+            min-height: 8.5rem;
+        }
+
+        /* Shrink the whole badge (box + text) to ~7.5rem on tablet. */
+        .heading-badge-slot {
+            left: 4rem;
+            transform: translate(-50%, -50%) rotate(-15deg) scale(0.833);
         }
     }
 

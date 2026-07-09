@@ -1,5 +1,4 @@
-import type { Language } from "../utils/i18n";
-import { getLocalizedPath } from "../utils/i18n";
+import type { Language, TranslationNamespace } from "../utils/i18n";
 import { isActivityHidden, type ActivityId } from "./activities";
 
 export type WhatWeOfferVariant =
@@ -10,6 +9,7 @@ export type WhatWeOfferVariant =
   | "corporate";
 
 export type ImageKey = "activity1" | "gallery4" | "activity3" | "gallery1";
+export type FormatImageKey = "largeCanvas" | "twoCanvases" | "twoCanvasesPouring" | "sharedCanvas" | "sharedCanvasPouring";
 
 export interface BookingRow {
   audienceKey: string;
@@ -23,7 +23,14 @@ export interface ActivityConfig {
   titleKey: string;
   descriptionKey: string;
   detailsKey: string;
-  includedKey: string;
+  includedKey?: string;
+  techniqueIds?: string[];
+  formatCards?: {
+    titleKey: string;
+    descriptionKey: string;
+    imageKey: FormatImageKey;
+  }[];
+  formatNoteKey?: string;
   imageKey: ImageKey;
   imageAlt: string;
   /** Home: table rows for each audience */
@@ -32,126 +39,34 @@ export interface ActivityConfig {
   bookUrl?: string;
   /** Corporate: use corporate namespace for this activity */
   corporateOnly?: boolean;
+  /** Override variant detailsNamespace for this activity */
+  detailsNamespace?: TranslationNamespace;
 }
 
 export interface VariantConfig {
-  localeNamespace: string;
+  localeNamespace: TranslationNamespace;
   /** For section title; corporate uses "friends" */
-  sectionTitleNamespace: string;
+  sectionTitleNamespace: TranslationNamespace;
   /** For intro; corporate uses "corporate" */
-  introNamespace: string;
+  introNamespace: TranslationNamespace;
   /** For included_title label; home uses "home", corporate uses "friends" */
-  includedTitleNamespace: string;
+  includedTitleNamespace: TranslationNamespace;
   /** Namespace for activity details (activity_*_details); corporate has its own */
-  detailsNamespace: string;
+  detailsNamespace: TranslationNamespace;
   /** Home uses "home" for activity content, corporate mixes */
-  activityContentNamespace: string;
-  bookingMode: "table" | "single-cta" | "contact";
+  activityContentNamespace: TranslationNamespace;
+  /** Optional namespace for format card copy; defaults to activityContentNamespace */
+  formatContentNamespace?: TranslationNamespace;
+  bookingMode: "none" | "table" | "single-cta" | "contact";
   showHowItWorks?: boolean;
   ctaKey?: string;
   activities: ActivityConfig[];
-}
-
-function buildHomeBookingRows(lang: Language): {
-  activity1: BookingRow[];
-  activity2: BookingRow[];
-  activity3: BookingRow[];
-} {
-  return {
-    activity1: [
-      {
-        audienceKey: "booking_for_couples",
-        pageHref: getLocalizedPath("/couples", lang),
-        href: getLocalizedPath("/book/couples", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_friends",
-        pageHref: getLocalizedPath("/friends", lang),
-        href: getLocalizedPath("/book/friends", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_families",
-        pageHref: getLocalizedPath("/family", lang),
-        href: getLocalizedPath("/book/family", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_teams",
-        pageHref: getLocalizedPath("/corporate", lang),
-        href: "#contact",
-        ctaKey: "booking_cta_contact",
-      },
-    ],
-    activity2: [
-      {
-        audienceKey: "booking_for_couples",
-        pageHref: getLocalizedPath("/couples", lang),
-        href: getLocalizedPath("/book/throw-paint", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_friends",
-        pageHref: getLocalizedPath("/friends", lang),
-        href: getLocalizedPath("/book/throw-paint", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_families",
-        pageHref: getLocalizedPath("/family", lang),
-        href: getLocalizedPath("/book/throw-paint", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_teams",
-        pageHref: getLocalizedPath("/corporate", lang),
-        href: "#contact",
-        ctaKey: "booking_cta_contact",
-      },
-    ],
-    activity3: [
-      {
-        audienceKey: "booking_for_couples",
-        pageHref: getLocalizedPath("/couples", lang),
-        href: getLocalizedPath("/book/customize-clothes", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_friends",
-        pageHref: getLocalizedPath("/friends", lang),
-        href: getLocalizedPath("/book/customize-clothes", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_families",
-        pageHref: getLocalizedPath("/family", lang),
-        href: getLocalizedPath("/book/customize-clothes", lang),
-        ctaKey: "booking_cta_book",
-      },
-      {
-        audienceKey: "booking_for_teams",
-        pageHref: getLocalizedPath("/corporate", lang),
-        href: "#contact",
-        ctaKey: "booking_cta_contact",
-      },
-    ],
-  };
 }
 
 export function getWhatWeOfferConfig(
   variant: WhatWeOfferVariant,
   lang: Language,
 ): VariantConfig {
-  const bookCouples = getLocalizedPath("/book/couples", lang);
-  const bookFriends = getLocalizedPath("/book/friends", lang);
-  const bookFamily = getLocalizedPath("/book/family", lang);
-  const bookThrowPaint = getLocalizedPath("/book/throw-paint", lang);
-  const bookCustomizeClothes = getLocalizedPath(
-    "/book/customize-clothes",
-    lang,
-  );
-
   const baseActivity1: Omit<
     ActivityConfig,
     "imageKey" | "imageAlt" | "bookingRows" | "bookUrl"
@@ -193,8 +108,59 @@ export function getWhatWeOfferConfig(
     imageAlt: "Customizing clothes with abstract painting",
   };
 
+  const splashPouringActivities: ActivityConfig[] = [
+    {
+      id: "splash",
+      titleKey: "activity_splash_title",
+      descriptionKey: "activity_splash_description",
+      detailsKey: "activity_splash_details",
+      includedKey: "activity_1_included",
+      techniqueIds: ["boxing", "balloons", "balls", "guns"],
+      formatCards: [
+        {
+          titleKey: "activity_splash_format_big_title",
+          descriptionKey: "activity_splash_format_big_description",
+          imageKey: "largeCanvas",
+        },
+        {
+          titleKey: "activity_splash_format_standard_title",
+          descriptionKey: "activity_splash_format_standard_description",
+          imageKey: "twoCanvases",
+        },
+        {
+          titleKey: "activity_splash_format_team_title",
+          descriptionKey: "activity_splash_format_team_description",
+          imageKey: "sharedCanvas",
+        },
+      ],
+      imageKey: "gallery4",
+      imageAlt: "Splash painting with playful throwing techniques",
+    },
+    {
+      id: "pouring",
+      titleKey: "activity_pouring_title",
+      descriptionKey: "activity_pouring_description",
+      detailsKey: "activity_pouring_details",
+      includedKey: "activity_1_included",
+      techniqueIds: ["pouring", "spinning", "dripping", "surprise"],
+      formatCards: [
+        {
+          titleKey: "activity_pouring_format_standard_title",
+          descriptionKey: "activity_pouring_format_standard_description",
+          imageKey: "twoCanvasesPouring",
+        },
+        {
+          titleKey: "activity_pouring_format_team_title",
+          descriptionKey: "activity_pouring_format_team_description",
+          imageKey: "sharedCanvasPouring",
+        },
+      ],
+      imageKey: "activity1",
+      imageAlt: "Pouring and spinning abstract painting",
+    },
+  ];
+
   if (variant === "home") {
-    const rows = buildHomeBookingRows(lang);
     return {
       localeNamespace: "home",
       sectionTitleNamespace: "home",
@@ -202,24 +168,9 @@ export function getWhatWeOfferConfig(
       includedTitleNamespace: "home",
       detailsNamespace: "home",
       activityContentNamespace: "home",
-      bookingMode: "table",
-      activities: [
-        {
-          ...standardActivity1,
-          detailsKey: "activity_1_details",
-          bookingRows: rows.activity1,
-        },
-        {
-          ...standardActivity2,
-          detailsKey: "activity_2_details",
-          bookingRows: rows.activity2,
-        },
-        {
-          ...standardActivity3,
-          detailsKey: "activity_3_details",
-          bookingRows: rows.activity3,
-        },
-      ].filter((a) => !isActivityHidden(a.id)),
+      formatContentNamespace: "home",
+      bookingMode: "none",
+      activities: splashPouringActivities.filter((a) => !isActivityHidden(a.id)),
     };
   }
 
@@ -231,29 +182,15 @@ export function getWhatWeOfferConfig(
       includedTitleNamespace: "friends",
       detailsNamespace: "friends",
       activityContentNamespace: "home",
-      bookingMode: "single-cta",
-      ctaKey: "cta_book",
-      activities: [
-        {
-          ...standardActivity1,
-          detailsKey: "activity_1_details",
-          bookUrl: bookFriends,
-        },
-        {
-          ...standardActivity2,
-          detailsKey: "activity_2_details",
-          bookUrl: bookThrowPaint,
-        },
-        {
-          ...standardActivity3,
-          detailsKey: "activity_3_details",
-          bookUrl: bookCustomizeClothes,
-        },
-      ].filter((a) => !isActivityHidden(a.id)),
+      formatContentNamespace: "friends",
+      bookingMode: "none",
+      activities: splashPouringActivities.filter((a) => !isActivityHidden(a.id)),
     };
   }
 
   if (variant === "family") {
+    // Copy the friends "Qué ofrecemos" structure (Splash + Pouring with format
+    // cards and technique videos), but use family-specific format copy.
     return {
       localeNamespace: "family",
       sectionTitleNamespace: "family",
@@ -261,60 +198,35 @@ export function getWhatWeOfferConfig(
       includedTitleNamespace: "family",
       detailsNamespace: "family",
       activityContentNamespace: "home",
-      bookingMode: "single-cta",
-      ctaKey: "cta_book",
-      activities: [
-        {
-          ...standardActivity1,
-          detailsKey: "activity_1_details_family",
-          bookUrl: bookFamily,
-        },
-        {
-          ...standardActivity2,
-          detailsKey: "activity_2_details_family",
-          bookUrl: bookThrowPaint,
-        },
-        {
-          ...standardActivity3,
-          detailsKey: "activity_3_details_family",
-          bookUrl: bookCustomizeClothes,
-        },
-      ].filter((a) => !isActivityHidden(a.id)),
+      formatContentNamespace: "family",
+      bookingMode: "none",
+      activities: splashPouringActivities.filter((a) => !isActivityHidden(a.id)),
     };
   }
 
   if (variant === "couples") {
-    const bookCouplesUrl = bookCouples;
+    // Copy the friends "Qué ofrecemos" structure, but hide formats (already in pricing)
+    // while keeping techniques videos/cards.
     return {
-      localeNamespace: "couples",
-      sectionTitleNamespace: "couples",
-      introNamespace: "couples",
-      includedTitleNamespace: "couples",
+      localeNamespace: "friends",
+      sectionTitleNamespace: "friends",
+      introNamespace: "friends",
+      includedTitleNamespace: "friends",
+      // Couples section pricing lines should be per pareja (not per persona).
       detailsNamespace: "couples",
       activityContentNamespace: "home",
-      bookingMode: "single-cta",
-      ctaKey: "cta_book",
-      activities: [
-        {
-          ...standardActivity1,
-          detailsKey: "activity_1_details_couples",
-          bookUrl: bookCouplesUrl,
-        },
-        {
-          ...standardActivity2,
-          detailsKey: "activity_2_details_couples",
-          bookUrl: bookCouplesUrl,
-        },
-        {
-          ...standardActivity3,
-          detailsKey: "activity_3_details_couples",
-          bookUrl: bookCustomizeClothes,
-        },
-      ].filter((a) => !isActivityHidden(a.id)),
+      bookingMode: "none",
+      activities: splashPouringActivities
+        .filter((a) => !isActivityHidden(a.id))
+        .map((a) => ({
+          ...a,
+          formatCards: undefined,
+          formatNoteKey: undefined,
+        })),
     };
   }
 
-  // corporate
+  // corporate: Team Building Special + Splash & Pouring (from friends)
   const teambuildingActivity: ActivityConfig = {
     id: "teambuilding",
     titleKey: "activity_teambuilding_title",
@@ -326,6 +238,13 @@ export function getWhatWeOfferConfig(
     corporateOnly: true,
   };
 
+  const splashPouringForCorporate: ActivityConfig[] = splashPouringActivities
+    .filter((a) => !isActivityHidden(a.id))
+    .map((a) => ({
+      ...a,
+      includedKey: undefined,
+    }));
+
   return {
     localeNamespace: "corporate",
     sectionTitleNamespace: "friends",
@@ -333,12 +252,13 @@ export function getWhatWeOfferConfig(
     includedTitleNamespace: "friends",
     detailsNamespace: "corporate",
     activityContentNamespace: "home",
+    formatContentNamespace: "corporate",
     bookingMode: "contact",
     showHowItWorks: true,
     ctaKey: "cta_book",
     activities: [
       teambuildingActivity,
-      { ...standardActivity1, detailsKey: "activity_1_details" },
+      ...splashPouringForCorporate,
       { ...standardActivity2, detailsKey: "activity_2_details" },
       { ...standardActivity3, detailsKey: "activity_3_details" },
     ].filter((a) => !isActivityHidden(a.id)),

@@ -1,0 +1,39 @@
+---
+import { createAstroTranslator, type TranslationNamespace } from "../utils/i18n";
+
+interface Props {
+    /** Namespace holding the `pricing_discount_note*` keys (friends/couples/family). */
+    namespace: TranslationNamespace;
+    /** Book URL the "learn more" link points to. */
+    href: string;
+}
+
+const { namespace, href } = Astro.props;
+const t = createAstroTranslator(Astro.currentLocale, namespace);
+---
+
+<p class="discount-note">
+    {t("pricing_discount_note")}{" "}
+    <a href={href} class="discount-note__link">{t("pricing_discount_note_link")}</a>
+</p>
+
+<style>
+    /* Vertical spacing is the host's responsibility. */
+    .discount-note {
+        margin: 0;
+        font-size: 14px;
+        color: var(--dark-text);
+        line-height: 1.55;
+        text-align: center;
+    }
+
+    .discount-note__link {
+        color: inherit;
+        text-decoration: underline;
+        font-weight: 600;
+    }
+
+    .discount-note__link:hover {
+        color: var(--purple);
+    }
+</style>

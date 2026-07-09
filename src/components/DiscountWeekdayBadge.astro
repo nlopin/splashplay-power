@@ -1,0 +1,78 @@
+---
+import { createAstroTranslator, type TranslationNamespace } from "../utils/i18n";
+
+interface Props {
+    /** Visual form only — `circle` (round badge) or `banner` (full-width bar). */
+    shape: "circle" | "banner";
+    /** Namespace holding the `pricing_discount_badge_*` keys (friends/couples/family). */
+    namespace: TranslationNamespace;
+}
+
+const { shape, namespace } = Astro.props;
+const t = createAstroTranslator(Astro.currentLocale, namespace);
+---
+
+<div class:list={["discount-badge", `discount-badge--${shape}`]} aria-hidden="true">
+    <span class="discount-badge__line">{t("pricing_discount_badge_prefix")}</span>
+    <span class="discount-badge__percent">{t("pricing_discount_badge_percent")}</span>
+    <span class="discount-badge__line">{t("pricing_discount_badge_suffix")}</span>
+</div>
+
+<style>
+    /* Surface + typography, shared by both shapes. Positioning, rotation,
+       visibility and spacing are the host's responsibility. */
+    .discount-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #ff5c33 0%, #ff8a2a 100%);
+        border: 2px solid rgba(255, 255, 255, 0.85);
+        box-shadow:
+            0 6px 16px rgba(255, 92, 51, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        color: var(--white);
+        font-weight: 800;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    .discount-badge__line {
+        font-size: 0.62rem;
+        line-height: 1.12;
+        letter-spacing: 0.02em;
+        max-width: 6.5rem;
+    }
+
+    .discount-badge__percent {
+        font-size: 1.86rem;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+    }
+
+    .discount-badge--circle {
+        gap: 0.12rem;
+        width: 9rem;
+        height: 9rem;
+        padding: 0.65rem;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .discount-badge--banner {
+        gap: 0.2rem;
+        width: 100%;
+        padding: 0.9rem 1rem;
+        border-radius: 12px;
+    }
+
+    .discount-badge--banner .discount-badge__line {
+        font-size: 0.7rem;
+        max-width: none;
+    }
+
+    .discount-badge--banner .discount-badge__percent {
+        font-size: 2.1rem;
+    }
+</style>

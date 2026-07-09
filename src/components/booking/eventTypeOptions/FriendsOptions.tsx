@@ -4,6 +4,10 @@ import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
+import {
+  ActivityFormatSelector,
+  type ActivityFormat,
+} from "./ActivityFormatSelector";
 
 const MIN_GUESTS = 1;
 const MAX_GUESTS = 6;
@@ -14,6 +18,7 @@ export interface FriendsFormData {
   guests: number;
   canvases: number;
   canvasType: CanvasType;
+  activityFormat: ActivityFormat;
 }
 
 // Big canvas price table: indexed by guests (1–6)
@@ -78,6 +83,7 @@ export function FriendsOptions({
     guests: 2,
     canvases: 2,
     canvasType: "standard",
+    activityFormat: "splash",
   });
   const t = useTranslator();
   const onChangeRef = useRef(onChange);
@@ -117,7 +123,7 @@ export function FriendsOptions({
       formData.canvasType === "big"
         ? "big canvas"
         : `${formData.canvases} ${formData.canvases === 1 ? "canvas" : "canvases"}`;
-    const productName = `${formData.guests} ${formData.guests === 1 ? "guest" : "guests"}, ${canvasLabel}`;
+    const productName = `${formData.guests} ${formData.guests === 1 ? "guest" : "guests"}, ${canvasLabel}, ${formData.activityFormat}`;
 
     onChangeRef.current({ amount: totalAmount, productName });
 
@@ -129,6 +135,27 @@ export function FriendsOptions({
       // replaceState may be throttled by the browser; ignore
     }
   }, [formData]);
+
+  const handleActivityFormatChange = (format: ActivityFormat) => {
+    if (format === "pouring") {
+      setFormData((prev) => {
+        if (prev.canvasType === "big") {
+          const guests = Math.max(MIN_GUESTS, prev.guests);
+          const limits = CANVAS_LIMITS[guests];
+          const canvases = Math.max(limits.min, Math.min(guests, limits.max));
+          return {
+            ...prev,
+            activityFormat: "pouring",
+            canvasType: "standard",
+            canvases,
+          };
+        }
+        return { ...prev, activityFormat: "pouring" };
+      });
+      return;
+    }
+    setFormData((prev) => ({ ...prev, activityFormat: "splash" }));
+  };
 
   const handleCanvasTypeChange = (type: CanvasType) => {
     if (type === "big") {
@@ -175,11 +202,17 @@ export function FriendsOptions({
     formData.canvasType,
   );
 
+  const isSplash = formData.activityFormat === "splash";
   const isBig = formData.canvasType === "big";
   const canvasLimits = CANVAS_LIMITS[formData.guests];
 
   return (
     <div className="friends-options">
+      <ActivityFormatSelector
+        value={formData.activityFormat}
+        onChange={handleActivityFormatChange}
+      />
+
       {/* Canvas type selector */}
       <div className="canvas-type-selector">
         <div className="canvas-type-label">{t("friends_canvas_type")}</div>
@@ -196,18 +229,20 @@ export function FriendsOptions({
             />
             {t("friends_canvas_standard")}
           </label>
-          <label
-            className={`canvas-type-option${isBig ? " canvas-type-option--selected" : ""}`}
-          >
-            <input
-              type="radio"
-              name="canvasType"
-              value="big"
-              checked={isBig}
-              onChange={() => handleCanvasTypeChange("big")}
-            />
-            {t("friends_canvas_big")}
-          </label>
+          {isSplash && (
+            <label
+              className={`canvas-type-option${isBig ? " canvas-type-option--selected" : ""}`}
+            >
+              <input
+                type="radio"
+                name="canvasType"
+                value="big"
+                checked={isBig}
+                onChange={() => handleCanvasTypeChange("big")}
+              />
+              {t("friends_canvas_big")}
+            </label>
+          )}
         </div>
       </div>
 
