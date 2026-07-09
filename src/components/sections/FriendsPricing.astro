@@ -6,6 +6,8 @@ import {
 } from "../../utils/i18n";
 import { isActivityHidden } from "../../config/activities";
 import { DISCOUNT_BADGE_ROW_SPAN, type OptCell, type PricingRow } from "../../utils/pricingTable";
+import DiscountWeekdayBadge from "../DiscountWeekdayBadge.astro";
+import DiscountWeekdayNote from "../DiscountWeekdayNote.astro";
 import smallCanvas from "../../assets/img/30x40_compartido.jpg";
 import largeCanvas from "../../assets/img/60x80_compartido.jpg";
 import twoCanvases from "../../assets/img/30x40_2individuales.jpg";
@@ -150,17 +152,12 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                 <span class="pricing-activity-meta">{t("activity_1_meta")}</span>
             </h3>
             <p class="pricing-activity-description" set:html={t("pricing_activity1_description")} />
-            <div class="pricing-discount-banner">
-                <div class="pricing-discount-badge-surface pricing-discount-banner__inner">
-                    <span class="pricing-discount-badge__line">{t("pricing_discount_badge_prefix")}</span>
-                    <span class="pricing-discount-badge__percent">{t("pricing_discount_badge_percent")}</span>
-                    <span class="pricing-discount-badge__line">{t("pricing_discount_badge_suffix")}</span>
-                </div>
+            <div class="discount-banner-slot">
+                <DiscountWeekdayBadge shape="banner" namespace="friends" />
             </div>
-            <p class="pricing-discount-note">
-                {t("pricing_discount_note")}{" "}
-                <a href={bookBaseUrl} class="pricing-discount-note__link">{t("pricing_discount_note_link")}</a>
-            </p>
+            <div class="discount-note-slot discount-note-slot--before-table">
+                <DiscountWeekdayNote namespace="friends" href={bookBaseUrl} />
+            </div>
             <!-- Mobile: one card per group size -->
             <div class="pricing-cards-mobile">
                 {activity1GroupsWithOptions.map((group) => (
@@ -223,10 +220,8 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                                         if (row.discountBadgeCol === cellIndex) {
                                             return (
                                                 <td class:list={["td-discount-badge-host", "pricing-table-col", colClass]} rowspan={DISCOUNT_BADGE_ROW_SPAN}>
-                                                    <span class="pricing-discount-badge-surface pricing-discount-badge pricing-discount-badge--desktop">
-                                                        <span class="pricing-discount-badge__line">{t("pricing_discount_badge_prefix")}</span>
-                                                        <span class="pricing-discount-badge__percent">{t("pricing_discount_badge_percent")}</span>
-                                                        <span class="pricing-discount-badge__line">{t("pricing_discount_badge_suffix")}</span>
+                                                    <span class="table-badge-slot">
+                                                        <DiscountWeekdayBadge shape="circle" namespace="friends" />
                                                     </span>
                                                 </td>
                                             );
@@ -619,90 +614,21 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
         vertical-align: middle;
     }
 
-    .pricing-discount-banner {
-        display: none;
-    }
-
-    .pricing-discount-note {
-        font-size: 14px;
-        color: var(--dark-text);
-        line-height: 1.55;
-        margin: 0 0 1rem;
-        text-align: center;
-    }
-
-    .pricing-discount-note__link {
-        color: inherit;
-        text-decoration: underline;
-        font-weight: 600;
-    }
-
-    .pricing-discount-note__link:hover {
-        color: var(--purple);
-    }
-
-    .pricing-discount-badge-surface {
-        background: linear-gradient(135deg, #ff5c33 0%, #ff8a2a 100%);
-        border: 2px solid rgba(255, 255, 255, 0.85);
-        box-shadow:
-            0 6px 16px rgba(255, 92, 51, 0.35),
-            inset 0 1px 0 rgba(255, 255, 255, 0.35);
-        color: var(--white);
-        font-weight: 800;
-        text-align: center;
-        text-transform: uppercase;
-    }
-
-    .pricing-discount-badge--desktop {
+    /* Placement of the discount badge/note (components are placement-agnostic). */
+    .table-badge-slot {
         position: absolute;
         top: 50%;
         left: 50%;
         z-index: 3;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.12rem;
-        width: 9rem;
-        height: 9rem;
-        padding: 0.65rem;
         transform: translate(-50%, -50%) rotate(-15deg);
-        border-radius: 50%;
-        pointer-events: none;
     }
 
-    .pricing-discount-badge__line {
-        font-size: 0.62rem;
-        line-height: 1.12;
-        letter-spacing: 0.02em;
-        max-width: 6.5rem;
+    .discount-banner-slot {
+        display: none;
     }
 
-    .pricing-discount-badge__percent {
-        font-size: 1.86rem;
-        line-height: 1;
-        font-weight: 900;
-        letter-spacing: -0.02em;
-    }
-
-    .pricing-discount-banner__inner {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 0.2rem;
-        width: 100%;
-        padding: 0.9rem 1rem;
-        border-radius: 12px;
-    }
-
-    .pricing-discount-banner__inner .pricing-discount-badge__line {
-        font-size: 0.7rem;
-        max-width: none;
-    }
-
-    .pricing-discount-banner__inner .pricing-discount-badge__percent {
-        font-size: 2.1rem;
+    .discount-note-slot--before-table {
+        margin: 0 0 1rem;
     }
 
     .tr-big-canvas-header td {
@@ -956,9 +882,9 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
     }
 
     @media (max-width: 767px) {
-        .pricing-discount-banner {
+        .discount-banner-slot {
             display: block;
-            margin-bottom: 1rem;
+            margin: 0 0 1rem;
         }
 
         .pricing-cards-mobile {
