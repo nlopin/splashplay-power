@@ -5,6 +5,7 @@ import {
     getLocalizedPath,
 } from "../../utils/i18n";
 import { isActivityHidden } from "../../config/activities";
+import { DISCOUNT_BADGE_ROW_SPAN, type OptCell, type PricingRow } from "../../utils/pricingTable";
 import smallCanvas from "../../assets/img/30x40_compartido.jpg";
 import largeCanvas from "../../assets/img/60x80_compartido.jpg";
 import twoCanvases from "../../assets/img/30x40_2individuales.jpg";
@@ -43,8 +44,7 @@ const activity1Groups = [
 ];
 
 // Each row: one canvas-count option. Per group: [labelKey, priceKey] or null if unavailable.
-type OptCell = { labelKey: string; priceKey: string } | null;
-const activity1Rows: { cells: OptCell[] }[] = [
+const activity1Rows: PricingRow[] = [
     { cells: [
         { labelKey: "pt_2_opt1", priceKey: "pt_2_opt1_pp" },
         { labelKey: "pt_3_opt1", priceKey: "pt_3_opt1_pp" },
@@ -66,13 +66,17 @@ const activity1Rows: { cells: OptCell[] }[] = [
         { labelKey: "pt_5_opt3", priceKey: "pt_5_opt3_pp" },
         { labelKey: "pt_6_opt3", priceKey: "pt_6_opt3_pp" },
     ]},
-    { cells: [
-        null,
-        null,
-        { labelKey: "pt_4_opt4", priceKey: "pt_4_opt4_pp" },
-        { labelKey: "pt_5_opt4", priceKey: "pt_5_opt4_pp" },
-        { labelKey: "pt_6_opt4", priceKey: "pt_6_opt4_pp" },
-    ]},
+    {
+        // Discount badge sits in this row's empty first column.
+        discountBadgeCol: 0,
+        cells: [
+            null,
+            null,
+            { labelKey: "pt_4_opt4", priceKey: "pt_4_opt4_pp" },
+            { labelKey: "pt_5_opt4", priceKey: "pt_5_opt4_pp" },
+            { labelKey: "pt_6_opt4", priceKey: "pt_6_opt4_pp" },
+        ],
+    },
     { cells: [
         null,
         null,
@@ -216,9 +220,9 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                                 {row.cells.map((cell, cellIndex) => {
                                     const colClass = cellIndex % 2 === 0 ? "pricing-table-col--purple" : "pricing-table-col--yellow";
                                     if (!cell) {
-                                        if (rowIndex === 3 && cellIndex === 0) {
+                                        if (row.discountBadgeCol === cellIndex) {
                                             return (
-                                                <td class:list={["td-discount-badge-host", "pricing-table-col", colClass]} rowspan="2">
+                                                <td class:list={["td-discount-badge-host", "pricing-table-col", colClass]} rowspan={DISCOUNT_BADGE_ROW_SPAN}>
                                                     <span class="pricing-discount-badge-surface pricing-discount-badge pricing-discount-badge--desktop">
                                                         <span class="pricing-discount-badge__line">{t("pricing_discount_badge_prefix")}</span>
                                                         <span class="pricing-discount-badge__percent">{t("pricing_discount_badge_percent")}</span>
@@ -227,8 +231,9 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                                                 </td>
                                             );
                                         }
-                                        if (rowIndex === 4 && cellIndex === 0) {
-                                            return null;
+                                        // Skip cells hidden under a badge spanning down from an earlier row.
+                                        for (let s = 1; s < DISCOUNT_BADGE_ROW_SPAN; s++) {
+                                            if (activity1Rows[rowIndex - s]?.discountBadgeCol === cellIndex) return null;
                                         }
                                         return <td class:list={["td-empty", "pricing-table-col", colClass]} />;
                                     }
