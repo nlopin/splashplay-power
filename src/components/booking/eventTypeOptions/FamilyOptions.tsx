@@ -96,7 +96,7 @@ export function FamilyOptions({
       formData.canvasType === "big"
         ? "big canvas"
         : `${formData.canvases} ${formData.canvases === 1 ? "canvas" : "canvases"}`;
-    const productName = `${formData.adults} ${formData.adults === 1 ? "adult" : "adults"}, ${formData.kids} ${formData.kids === 1 ? "kid" : "kids"}, ${canvasLabel}`;
+    const productName = `${formData.adults} ${formData.adults === 1 ? "adult" : "adults"}, ${formData.kids} ${formData.kids === 1 ? "kid" : "kids"}, ${canvasLabel}, ${formData.activityFormat}`;
 
     onChangeRef.current({ amount: totalAmount, productName });
   }, [formData]);

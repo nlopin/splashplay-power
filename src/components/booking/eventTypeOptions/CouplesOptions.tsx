@@ -90,14 +90,14 @@ export function CouplesOptions({
   useEffect(() => {
     onChange({
       amount: PRICE[pictureType],
-      productName: t(`couples_${pictureType}`),
+      productName: `${t(`couples_${pictureType}`)}, ${activityFormat}`,
     });
 
     // Update URL with the selected option
     const url = new URL(window.location.href);
     url.searchParams.set("option", pictureType);
     window.history.replaceState({}, "", url);
-  }, [pictureType, t]);
+  }, [pictureType, activityFormat, t]);
 
   const options: Array<{
     value: PictureType;

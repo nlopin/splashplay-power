@@ -123,7 +123,7 @@ export function FriendsOptions({
       formData.canvasType === "big"
         ? "big canvas"
         : `${formData.canvases} ${formData.canvases === 1 ? "canvas" : "canvases"}`;
-    const productName = `${formData.guests} ${formData.guests === 1 ? "guest" : "guests"}, ${canvasLabel}`;
+    const productName = `${formData.guests} ${formData.guests === 1 ? "guest" : "guests"}, ${canvasLabel}, ${formData.activityFormat}`;
 
     onChangeRef.current({ amount: totalAmount, productName });
 
