@@ -81,8 +81,6 @@
     "hero_subtitle": "Tira-ho, aboca-ho, llança-ho, crea sense por. Pinta un llenç abstracte per a la teva paret que tindrà el valor dels records compartits. Joc pur, art real.<br><br>Per a famílies, parelles, grups d'amics i equips. No cal saber dibuixar ni pintar! 100% sessions privades — només tu i el teu grup, sense desconeguts.",
     "hero_description": "",
     "cta_book": "Reserva la Teva Sessió",
-    "why_fun": "Per Què és Divertit: Tècniques de Pintura",
-    "why_fun_description": "Oblida't dels pinzells. Al nostre estudi provaràs tècniques divertides i poc convencionals per crear la teva obra mestra abstracta, per exemple:",
     "techniques": {
       "pouring": {
         "title": "Vessament",
@@ -115,12 +113,7 @@
       "surprise": {
         "title": "Sorpresa",
         "description": "Descobreix la nostra tècnica secreta: una experiència sorpresa que transforma el llenç en pura diversió i color."
-      },
-      "zona_pouring_title": "Zona Pouring",
-      "zona_pouring_description": "Àrea íntima i pausada, perfecta per submergir-se en el flux del color i deixar que el procés creatiu us porti, explorant cada detall amb calma.",
-      "zona_splash_title": "Zona Splash",
-      "zona_splash_description": "Espai dinàmic i divertit on podeu experimentar amb tècniques més físiques. Perfecte per deixar anar el control i crear junts sense límits.",
-      "more": "I moltes més! Prova'n alguna d'aquestes o inventa la teva."
+      }
     },
     "testimonials_title": "El Que Diuen de Nosaltres",
     "reviews": {

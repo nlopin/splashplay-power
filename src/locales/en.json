@@ -81,8 +81,6 @@
     "hero_subtitle": "Throw it, pour it, launch it, create without fear. Paint an abstract canvas for your wall that will hold the value of shared memories. Pure play, real art.<br><br>For families, couples, groups of friends and teams. You don't need to know how to draw or paint! 100% private sessions — only you and your group, no strangers.",
     "hero_description": "",
     "cta_book": "BOOK YOUR SESSION",
-    "why_fun": "Why It's Fun: Painting Techniques",
-    "why_fun_description": "Forget about paintbrushes. In our studio you'll try fun and unconventional techniques to create your abstract masterpiece, including:",
     "techniques": {
       "pouring": {
         "title": "Pouring",
@@ -115,12 +113,7 @@
       "surprise": {
         "title": "Surprise",
         "description": "Discover our secret technique: a surprise experience that transforms the canvas into pure fun and color."
-      },
-      "zona_pouring_title": "Zona Pouring",
-      "zona_pouring_description": "Intimate and calm area, perfect for immersing yourself in the flow of color and letting the creative process guide you, exploring every detail with calm.",
-      "zona_splash_title": "Zona Splash",
-      "zona_splash_description": "Dynamic and fun space where you can experiment with more physical techniques. Perfect for letting go of control and creating together without limits.",
-      "more": "And many more! Try any of these or invent your own!"
+      }
     },
     "testimonials_title": "What People Say About Us",
     "reviews": {

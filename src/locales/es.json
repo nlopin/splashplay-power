@@ -81,8 +81,6 @@
     "hero_subtitle": "Tiralo, viértelo, lánzalo, crea sin miedo. Pinta un lienzo abstracto para tu pared que tendrá el valor de los recuerdos compartidos. Juego puro, arte real.<br><br>Para familias, parejas, grupos de amigos y equipos. ¡No necesitas saber dibujar ni pintar! 100% sesiones privadas — sólo tú y tu grupo, sin desconocidos.",
     "hero_description": "",
     "cta_book": "RESERVA TU SESIÓN",
-    "why_fun": "Por Qué es Divertido: Técnicas de Pintura",
-    "why_fun_description": "Olvídate de los pinceles. En nuestro estudio probarás técnicas divertidas y poco convencionales para crear tu obra maestra abstracta, por ejemplo:",
     "techniques": {
       "pouring": {
         "title": "Vertido",
@@ -115,12 +113,7 @@
       "surprise": {
         "title": "Sorpresa",
         "description": "Descubre nuestra técnica secreta: una experiencia sorpresa que transforma el lienzo en pura diversión y color."
-      },
-      "zona_pouring_title": "Zona Pouring",
-      "zona_pouring_description": "Área íntima y pausada, perfecta para sumergirse en el flujo del color y dejar que el proceso creativo os lleve, explorando cada detalle con calma.",
-      "zona_splash_title": "Zona Splash",
-      "zona_splash_description": "Espacio dinámico y divertido donde podéis experimentar con técnicas más físicas. Perfecto para soltar el control y crear juntos sin límites.",
-      "more": "¡Y muchas más! Prueba alguna de estas o inventa la tuya."
+      }
     },
     "testimonials_title": "Lo Que Dicen de Nosotros",
     "reviews": {
