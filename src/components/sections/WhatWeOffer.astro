@@ -57,20 +57,22 @@ const { variant } = Astro.props;
 
 const lang = getCurrentLanguage(Astro.currentLocale);
 const config = getWhatWeOfferConfig(variant, lang);
-const variantHidesAllActivityImages =
+const hideActivityImages =
     variant === "home" ||
     variant === "friends" ||
     variant === "couples" ||
     variant === "family";
 
+function isCorporateBookinglessActivity(activity: { id: string }): boolean {
+    return variant === "corporate" && (activity.id === "splash" || activity.id === "pouring");
+}
+
 function shouldShowActivityImage(activity: { id: string }): boolean {
-    if (variantHidesAllActivityImages) return false;
-    if (variant === "corporate" && (activity.id === "splash" || activity.id === "pouring")) {
-        return false;
-    }
+    if (hideActivityImages) return false;
+    if (isCorporateBookinglessActivity(activity)) return false;
     return true;
 }
-const showCommonIncluded =
+const showSharedIncludes =
     variant === "home" ||
     variant === "friends" ||
     variant === "couples" ||
@@ -189,7 +191,7 @@ const activities = config.activities.map((a) => ({
                                         )}
                                     </div>
                                 )}
-                                {!showCommonIncluded && activity.includedKey && (
+                                {!showSharedIncludes && activity.includedKey && (
                                     <>
                                         <p class="activity-included">
                                             <strong>{tIncluded("included_title")}:</strong>{" "}
@@ -230,7 +232,7 @@ const activities = config.activities.map((a) => ({
                                         <CTAButton href={activity.bookUrl} text={tSection(config.ctaKey)} size="sm" />
                                     </div>
                                 )}
-                                {config.bookingMode === "contact" && config.ctaKey && activity.id !== "splash" && activity.id !== "pouring" && (
+                                {config.bookingMode === "contact" && config.ctaKey && !isCorporateBookinglessActivity(activity) && (
                                     <div class="activity-actions">
                                         <CTAButton href="#contact" text={tCorporate(config.ctaKey)} size="sm" />
                                     </div>
@@ -248,7 +250,7 @@ const activities = config.activities.map((a) => ({
                     </>
                 ))
             }
-            {showCommonIncluded && (
+            {showSharedIncludes && (
                 <aside class="common-included" aria-label={tIncluded("included_title")}>
                     <p class="common-included-text">
                         <strong>{tIncluded("included_title")}:</strong>{" "}
