@@ -1,5 +1,6 @@
 ---
 import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
 import { createAstroTranslator, getCurrentLanguage } from "../../utils/i18n";
 import { getWhatWeOfferConfig, type WhatWeOfferVariant } from "../../config/whatWeOffer";
 import type { ImageKey } from "../../config/whatWeOffer";
@@ -111,10 +112,13 @@ const activities = config.activities.map((a) => ({
                         ]}>
                             {shouldShowActivityImage(activity) && (
                                 <div class="activity-image-wrap">
-                                    <img
-                                        src={activity.image.src}
+                                    <Image
+                                        src={activity.image}
                                         alt={activity.imageAlt}
                                         class="activity-image"
+                                        widths={[320, 480, 640]}
+                                        sizes="(max-width: 768px) 100vw, 45vw"
+                                        format="webp"
                                         loading="lazy"
                                     />
                                 </div>
@@ -172,10 +176,13 @@ const activities = config.activities.map((a) => ({
                                             {activity.formatCards.map((format) => (
                                                 <div class="activity-format-card">
                                                     <div class="activity-format-image-wrap">
-                                                        <img
-                                                            src={FORMAT_IMAGES[format.imageKey].src}
+                                                        <Image
+                                                            src={FORMAT_IMAGES[format.imageKey]}
                                                             alt={tContent(format.titleKey)}
                                                             class="activity-format-image"
+                                                            widths={[240, 360, 480]}
+                                                            sizes="(max-width: 768px) 100vw, 33vw"
+                                                            format="webp"
                                                             loading="lazy"
                                                         />
                                                     </div>

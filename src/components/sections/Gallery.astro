@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { createAstroTranslator } from "../../utils/i18n";
 
 import gallery1 from "../../assets/photo/gallery/gallery1.jpg";
@@ -47,10 +48,13 @@ const galleryImages = [
                 {
                     galleryImages.map((image, index) => (
                         <div class="gallery-item">
-                            <img
-                                src={image.src}
+                            <Image
+                                src={image}
                                 alt={`Gallery image ${index + 1}`}
                                 class="gallery-image"
+                                widths={[280, 320, 640]}
+                                sizes="(max-width: 768px) 280px, 320px"
+                                format="webp"
                                 loading="lazy"
                             />
                         </div>
