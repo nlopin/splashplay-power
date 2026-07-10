@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { createAstroTranslator } from "../../utils/i18n";
 import alexandraImg from "../../assets/photo/alexandra.png";
 
@@ -11,12 +12,14 @@ const t = createAstroTranslator(Astro.currentLocale, "home");
 
         <div class="our-team-content">
             <div class="our-team-image-wrap">
-                <img
-                    src={alexandraImg.src}
+                <Image
+                    src={alexandraImg}
                     alt={t("our_team_image_alt")}
                     class="our-team-image"
-                    width={400}
-                    height={500}
+                    widths={[300, 360, 400, 720]}
+                    sizes="(max-width: 600px) 100vw, 300px"
+                    format="webp"
+                    loading="lazy"
                 />
             </div>
             <div class="our-team-text">

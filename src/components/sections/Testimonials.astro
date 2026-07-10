@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { getPageTranslations } from "../../utils/i18n";
 import { testimonialOrder, type TestimonalGroup } from "./TestimonialsData";
 import { createAstroTranslator, getCurrentLanguage, getLocalizedPath } from "../../utils/i18n";
@@ -35,11 +36,14 @@ function isCorrectContentKey(contentKey: string): contentKey is ReviewKey {
                                 <div class="review-item-header">
                                     {"avatar" in review ? (
                                         <div class="review-item-header-avatar">
-                                            <img
-                                                src={review.avatar.src}
+                                            <Image
+                                                src={review.avatar}
                                                 alt={`${review.name}'s Avatar`}
                                                 width={64}
                                                 height={64}
+                                                densities={[1, 2]}
+                                                format="webp"
+                                                loading="lazy"
                                             />
                                         </div>
                                     ) : null}
