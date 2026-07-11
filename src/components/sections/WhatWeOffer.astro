@@ -91,6 +91,11 @@ const tFormats = createAstroTranslator(
 );
 const tCorporate = createAstroTranslator(Astro.currentLocale, "corporate");
 
+function formatCardTitle(titleKey: string): string {
+    const localized = tFormats(titleKey);
+    return localized !== titleKey ? localized : tContent(titleKey);
+}
+
 const activities = config.activities.map((a) => ({
   ...a,
   image: IMAGES[a.imageKey],
@@ -190,7 +195,7 @@ const useWideLayout = hideActivityImages || variant === "corporate";
                                                     <div class="activity-format-image-wrap">
                                                         <Image
                                                             src={FORMAT_IMAGES[format.imageKey]}
-                                                            alt={tContent(format.titleKey)}
+                                                            alt={formatCardTitle(format.titleKey)}
                                                             class="activity-format-image"
                                                             widths={[240, 360, 480]}
                                                             sizes="(max-width: 768px) 100vw, 33vw"
@@ -199,7 +204,7 @@ const useWideLayout = hideActivityImages || variant === "corporate";
                                                         />
                                                     </div>
                                                     <div class="activity-format-body">
-                                                        <h5>{tContent(format.titleKey)}</h5>
+                                                        <h5>{formatCardTitle(format.titleKey)}</h5>
                                                         <p>{tFormats(format.descriptionKey)}</p>
                                                     </div>
                                                 </div>
