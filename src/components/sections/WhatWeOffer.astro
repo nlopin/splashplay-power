@@ -91,13 +91,27 @@ const tFormats = createAstroTranslator(
 );
 const tCorporate = createAstroTranslator(Astro.currentLocale, "corporate");
 
+function formatCardTitle(titleKey: string): string {
+    const localized = tFormats(titleKey);
+    return localized !== titleKey ? localized : tContent(titleKey);
+}
+
 const activities = config.activities.map((a) => ({
   ...a,
   image: IMAGES[a.imageKey],
 }));
+
+const firstFormatActivityIndex = activities.findIndex(
+    (activity) => activity.formatCards && activity.formatCards.length > 0,
+);
+const useWideLayout = hideActivityImages || variant === "corporate";
 ---
 
-<section id="what-we-offer" class="what-we-offer" data-menu-title={tMain("nav_offer")}>
+<section
+    id="what-we-offer"
+    class:list={["what-we-offer", { "what-we-offer--wide": useWideLayout }]}
+    data-menu-title={tMain("nav_offer")}
+>
     <div class="container">
         <h2 class="section-title">{tSection("what_we_offer")}</h2>
         <div class="what-we-offer-intro" set:html={tIntro("what_we_offer_intro")} />
@@ -169,6 +183,9 @@ const activities = config.activities.map((a) => ({
                                 {activity.formatCards && activity.formatCards.length > 0 && (
                                     <div class="activity-formats">
                                         <h4 class="activity-subtitle">{tContent("formats_title")}</h4>
+                                        {index === firstFormatActivityIndex && (
+                                            <p class="activity-formats-intro">{tContent("formats_pricing_note")}</p>
+                                        )}
                                         <div class:list={[
                                             "activity-format-cards",
                                             `activity-format-cards--${activity.formatCards.length}`,
@@ -178,7 +195,7 @@ const activities = config.activities.map((a) => ({
                                                     <div class="activity-format-image-wrap">
                                                         <Image
                                                             src={FORMAT_IMAGES[format.imageKey]}
-                                                            alt={tContent(format.titleKey)}
+                                                            alt={formatCardTitle(format.titleKey)}
                                                             class="activity-format-image"
                                                             widths={[240, 360, 480]}
                                                             sizes="(max-width: 768px) 100vw, 33vw"
@@ -187,7 +204,7 @@ const activities = config.activities.map((a) => ({
                                                         />
                                                     </div>
                                                     <div class="activity-format-body">
-                                                        <h5>{tContent(format.titleKey)}</h5>
+                                                        <h5>{formatCardTitle(format.titleKey)}</h5>
                                                         <p>{tFormats(format.descriptionKey)}</p>
                                                     </div>
                                                 </div>
@@ -259,14 +276,14 @@ const activities = config.activities.map((a) => ({
             }
             {showSharedIncludes && (
                 <aside class="common-included" aria-label={tIncluded("included_title")}>
-                    <p class="common-included-text">
-                        <strong>{tIncluded("included_title")}:</strong>{" "}
-                        {tContent("activity_1_included")}
-                    </p>
-                    <p class="common-included-text">
-                        <strong>{tContent("common_takeaway_title")}</strong>{" "}
-                        {tContent("common_takeaway_text")}
-                    </p>
+                    <div class="common-included-block">
+                        <h4 class="activity-subtitle">{tIncluded("included_title")}</h4>
+                        <p class="common-included-text">{tContent("activity_1_included")}</p>
+                    </div>
+                    <div class="common-included-block">
+                        <h4 class="activity-subtitle">{tContent("common_takeaway_title")}</h4>
+                        <p class="common-included-text">{tContent("common_takeaway_text")}</p>
+                    </div>
                     <p class="common-included-note">{tContent("activity_1_drying_note")}</p>
                 </aside>
             )}
@@ -281,12 +298,16 @@ const activities = config.activities.map((a) => ({
         scroll-margin-top: 60px;
     }
 
+    .what-we-offer--wide .container {
+        max-width: 1360px;
+    }
+
     .what-we-offer-intro {
         max-width: 860px;
         margin: 0 auto 3.5rem;
         padding-inline: 1rem;
         text-align: center;
-        font-size: var(--font-base);
+        font-size: var(--font-md);
         line-height: 1.6;
         color: var(--dark-text);
     }
@@ -307,6 +328,10 @@ const activities = config.activities.map((a) => ({
         margin: 0 auto;
     }
 
+    .what-we-offer--wide .activities-list {
+        max-width: 1320px;
+    }
+
     .activity-card {
         display: flex;
         flex-direction: column;
@@ -317,6 +342,10 @@ const activities = config.activities.map((a) => ({
         width: 100%;
         max-width: 1180px;
         margin: 0 auto;
+    }
+
+    .what-we-offer--wide .activity-card--no-image {
+        max-width: 1320px;
     }
 
     .activity-image-wrap {
@@ -348,7 +377,7 @@ const activities = config.activities.map((a) => ({
     }
 
     .activity-description {
-        font-size: var(--font-base);
+        font-size: var(--font-md);
         color: var(--dark-text);
         line-height: 1.6;
         margin: 0 0 1rem;
@@ -371,13 +400,22 @@ const activities = config.activities.map((a) => ({
     .activity-subtitle {
         margin: 0 0 0.75rem;
         color: var(--purple);
-        font-size: var(--font-base);
+        font-size: var(--font-lg);
         font-weight: 700;
+    }
+
+    .activity-formats-intro {
+        max-width: 780px;
+        margin: 0 auto 1rem;
+        color: var(--dark-text);
+        font-size: var(--font-md);
+        line-height: 1.6;
+        text-align: center;
     }
 
     .activity-techniques,
     .activity-formats {
-        margin: 0 0 1rem;
+        margin: 1.25rem 0 1rem;
     }
 
     .activity-techniques-grid {
@@ -412,14 +450,14 @@ const activities = config.activities.map((a) => ({
         display: block;
         margin: 0.65rem 0.75rem 0.25rem;
         color: var(--purple);
-        font-size: var(--font-sm);
+        font-size: var(--font-base);
     }
 
     .activity-technique span {
         display: block;
         margin: 0 0.75rem 0.75rem;
         color: var(--dark-text);
-        font-size: var(--font-sm);
+        font-size: var(--font-base);
         line-height: 1.45;
     }
 
@@ -462,7 +500,7 @@ const activities = config.activities.map((a) => ({
     .activity-format-body p {
         margin: 0;
         color: var(--dark-text);
-        font-size: var(--font-sm);
+        font-size: var(--font-base);
         line-height: 1.55;
     }
 
@@ -597,32 +635,31 @@ const activities = config.activities.map((a) => ({
 
     .common-included {
         max-width: 820px;
-        margin: 0 auto;
+        margin: -1.5rem auto 0;
         padding: 0 1.25rem;
         text-align: center;
+    }
+
+    .common-included-block + .common-included-block {
+        margin-top: 1.25rem;
+    }
+
+    .common-included .activity-subtitle {
+        margin-bottom: 0.5rem;
     }
 
     .common-included-text {
         margin: 0;
         color: var(--dark-text);
-        font-size: var(--font-base);
+        font-size: var(--font-md);
         line-height: 1.6;
-    }
-
-    .common-included-text + .common-included-text {
-        margin-top: 1rem;
-    }
-
-    .common-included-text strong {
-        color: var(--purple);
-        font-weight: 600;
     }
 
     .common-included-note,
     .activity-included-note {
         margin: 0.75rem 0 0;
         color: var(--dark-text);
-        font-size: var(--font-base);
+        font-size: var(--font-md);
         line-height: 1.6;
     }
 
@@ -729,6 +766,10 @@ const activities = config.activities.map((a) => ({
             text-align: center;
         }
 
+        .what-we-offer--wide .activity-card--no-image .activity-content {
+            padding-inline: 0.5rem;
+        }
+
         .activity-card--no-image .activity-description,
         .activity-card--no-image .activity-details,
         .activity-card--no-image .activity-included {
@@ -750,7 +791,7 @@ const activities = config.activities.map((a) => ({
         }
 
         .activity-description {
-            font-size: var(--font-base);
+            font-size: var(--font-md);
             margin-bottom: 1rem;
         }
 
