@@ -90,6 +90,10 @@ const localBusinessSchema = {
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <meta name="generator" content={Astro.generator} />
         <meta name="description" content={pageDescription} />
+
+        <!-- Preload above-the-fold fonts (regular 400 + bold 700) to win the first-render race -->
+        <link rel="preload" href="/fonts/montserrat-v31-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="/fonts/montserrat-v31-latin-700.woff2" as="font" type="font/woff2" crossorigin>
         {shouldNoIndex && <meta name="robots" content="noindex, nofollow" />}
         <link rel="canonical" href={canonicalUrl} />
         <title>{pageTitle}</title>
