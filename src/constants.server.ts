@@ -27,6 +27,7 @@ export const WEEKLY_SLOTS: Record<string, SlotConfig[]> = {
     { time: "19:45", discount: 10 },
   ],
   Wed: [
+    { time: "10:15", discount: 20 },
     { time: "12:00", discount: 20 },
     { time: "14:00", discount: 20 },
     { time: "16:00", discount: 20 },
@@ -41,6 +42,7 @@ export const WEEKLY_SLOTS: Record<string, SlotConfig[]> = {
     { time: "19:45", discount: 10 },
   ],
   Fri: [
+    { time: "10:15", discount: 10 },
     { time: "12:00", discount: 10 },
     { time: "14:00", discount: 10 },
     { time: "16:00" },
