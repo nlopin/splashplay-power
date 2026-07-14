@@ -78,7 +78,9 @@ export function AvailabilityCalendar({
     return Array.from(set).sort();
   }, [currentWeek]);
 
-  const mobileDays = weeks.slice(0, mobileWeekCount).flat();
+  const allMobileDays = weeks.slice(0, mobileWeekCount).flat();
+  const firstNonEmpty = allMobileDays.findIndex((day) => day.times.length > 0);
+  const mobileStartIndex = firstNonEmpty === -1 ? 0 : firstNonEmpty;
 
   if (!currentWeek) {
     return <div>Error! No calendar available</div>;
@@ -142,7 +144,6 @@ export function AvailabilityCalendar({
             <Fragment key={timeStr}>
               {currentWeek.map((day, dayIndex) => {
                 const slot = day.times.find((t) => formatTime(t) === timeStr);
-                const dow = day.date.getUTCDay();
                 return (
                   <div
                     key={`cell-${dayIndex}-${timeStr}`}
@@ -176,7 +177,10 @@ export function AvailabilityCalendar({
       </div>
 
       <div className="calendar-day-list">
-        {mobileDays.map((day) => {
+        {allMobileDays.map((day, index) => {
+          if (index < mobileStartIndex) {
+            return null;
+          }
           const meta = getDayMeta(day, language);
           return (
             <div key={`day-${day.date}`} className="day-card">
