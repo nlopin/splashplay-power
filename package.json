@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pnpm run build:functions",
+    "build": "pnpm run test && astro build && pnpm run build:functions",
     "build:functions": "tsx scripts/build-netlify-functions.ts",
     "preview": "astro preview",
     "astro": "astro",
