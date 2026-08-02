@@ -161,44 +161,6 @@ export function calculateFriendsPrice(
   return FRIENDS_STANDARD_PRICES[clampedGuests]?.[clampedCanvases] ?? 6000;
 }
 
-// ---- throw_paint / customize_clothes ----
-
-const PAINT_MAX_TOTAL = 6;
-
-// Price table indexed by total guests (1–6)
-// customize_clothes: individual (1) = €60; throw_paint: individual (1) = €45
-const PRICES_THROW_PAINT: Record<number, number> = {
-  1: 4500,
-  2: 7000,
-  3: 10500,
-  4: 12000,
-  5: 15000,
-  6: 18000,
-};
-
-const PRICES_CUSTOMIZE_CLOTHES: Record<number, number> = {
-  1: 6000,
-  2: 7000,
-  3: 10500,
-  4: 12000,
-  5: 15000,
-  6: 18000,
-};
-
-export const PAINT_DEFAULTS = { adults: 2, kids: 0 };
-
-export function calculatePaintPrice(
-  totalGuests: number,
-  eventType?: EventType,
-): number {
-  const clamped = Math.max(1, Math.min(totalGuests, PAINT_MAX_TOTAL));
-  const prices =
-    eventType === "customize_clothes"
-      ? PRICES_CUSTOMIZE_CLOTHES
-      : PRICES_THROW_PAINT;
-  return prices[clamped];
-}
-
 // ---- option schema (used by /api/v1/event-types and /api/v1/price) ----
 
 export const EVENT_TYPE_PRICE_OPTIONS: Record<EventType, PriceOptionSpec[]> = {
@@ -249,13 +211,5 @@ export const EVENT_TYPE_PRICE_OPTIONS: Record<EventType, PriceOptionSpec[]> = {
       values: ["splash", "pouring"],
       default: FRIENDS_DEFAULTS.activityFormat,
     },
-  ],
-  throw_paint: [
-    { name: "adults", type: "number", default: PAINT_DEFAULTS.adults },
-    { name: "kids", type: "number", default: PAINT_DEFAULTS.kids },
-  ],
-  customize_clothes: [
-    { name: "adults", type: "number", default: PAINT_DEFAULTS.adults },
-    { name: "kids", type: "number", default: PAINT_DEFAULTS.kids },
   ],
 };

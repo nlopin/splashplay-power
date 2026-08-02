@@ -29,10 +29,9 @@ export const GET: APIRoute = async ({ url }) => {
   }
 
   const availableTimes = await getAvailability(eventTypeParam, days);
+  const slots = availableTimes
+    .filter(({ booked }) => !booked)
+    .map(({ time }) => ({ time }));
 
-  return jsonResponse({
-    eventType: eventTypeParam,
-    days,
-    slots: availableTimes.map(({ time, booked }) => ({ time, booked })),
-  });
+  return jsonResponse({ eventType: eventTypeParam, days, slots });
 };

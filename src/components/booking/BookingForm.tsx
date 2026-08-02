@@ -289,8 +289,6 @@ const ProductNameKeyByEventType: Record<EventType, string> = {
   family: "family_session",
   friends: "friends_session",
   individual: "individual_session",
-  throw_paint: "throw_paint_session",
-  customize_clothes: "customize_clothes_session",
 };
 
 export function formatBookingProductName(

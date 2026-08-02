@@ -4,7 +4,6 @@ import { CouplesOptions } from "./CouplesOptions";
 import { FamilyOptions } from "./FamilyOptions";
 import { FriendsOptions } from "./FriendsOptions";
 import { IndividualOptions } from "./IndividualOptions";
-import { PaintOptions } from "./PaintOptions";
 
 export type EventTypeOptionsProps = {
   eventType: EventType;
@@ -21,9 +20,6 @@ export function EventTypeOptions(props: EventTypeOptionsProps) {
       return <FriendsOptions {...props} />;
     case "individual":
       return <IndividualOptions {...props} />;
-    case "throw_paint":
-    case "customize_clothes":
-      return <PaintOptions {...props} />;
     case "couples":
     default:
       return <CouplesOptions {...props} />;

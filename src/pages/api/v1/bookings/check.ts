@@ -42,8 +42,8 @@ export const GET: APIRoute = async ({ url }) => {
 
   const availableTimes = await getAvailability(eventTypeParam, MAX_DAYS);
   const slots = availableTimes
-    .filter(({ time }) => isSameBusinessDate(time, date))
-    .map(({ time, booked }) => ({ time, booked }));
+    .filter(({ time, booked }) => !booked && isSameBusinessDate(time, date))
+    .map(({ time }) => ({ time }));
 
   return jsonResponse({ eventType: eventTypeParam, date, slots });
 };

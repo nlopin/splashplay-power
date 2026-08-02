@@ -8,8 +8,6 @@ import {
   calculateFamilyPrice,
   FRIENDS_DEFAULTS,
   calculateFriendsPrice,
-  PAINT_DEFAULTS,
-  calculatePaintPrice,
 } from "@/services/pricing";
 import { getScheduleSlot } from "@/services/availability/schedule";
 import { jsonResponse } from "@/utils/api";
@@ -168,23 +166,6 @@ export const GET: APIRoute = async ({ url }) => {
         }
         amount = calculateFriendsPrice(canvases, guests, canvasType);
         resolvedOptions = { guests, canvases, canvasType, activityFormat };
-        break;
-      }
-      case "throw_paint":
-      case "customize_clothes": {
-        const adults = requireInt(
-          url.searchParams.get("adults"),
-          PAINT_DEFAULTS.adults,
-          "adults",
-        );
-        const kids = requireInt(
-          url.searchParams.get("kids"),
-          PAINT_DEFAULTS.kids,
-          "kids",
-        );
-        const totalGuests = adults + kids;
-        amount = totalGuests === 0 ? 0 : calculatePaintPrice(totalGuests, eventType);
-        resolvedOptions = { adults, kids };
         break;
       }
     }

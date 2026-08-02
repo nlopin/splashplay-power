@@ -61,14 +61,6 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
-      CALENDLY_THROW_PAINT_EVENT_TYPE_ID: envField.string({
-        context: "server",
-        access: "secret",
-      }),
-      CALENDLY_CUSTOMIZE_CLOTHES_EVENT_TYPE_ID: envField.string({
-        context: "server",
-        access: "secret",
-      }),
       NETLIFY_SITE_ID: envField.string({
         context: "server",
         access: "secret",
