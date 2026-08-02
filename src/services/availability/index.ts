@@ -2,11 +2,28 @@ import { EVENT_TYPE, type EventType } from "@/components/booking/types";
 import { fetchAvailability } from "@/services/calendly";
 import { createAndLogEvent } from "@/services/logger";
 import type { ISODatetime } from "@/types";
+import { addDay } from "@/utils/datetime";
 import { getCachedAvailability, setCachedAvailability } from "./cache";
 import { filterToSchedule, generateBookedSlots } from "./schedule";
 import type { AvailableTime } from "./types";
 
 const BOOK_IN_ADVANCE = 45;
+
+/**
+ * The cache can hold more days than requested (e.g. populated by the
+ * background refresh job's default 45-day window) — trim free slots to the
+ * requested window so `days` is honored even on a cache hit. Uses the same
+ * `addDay(now, days)` boundary as generateBookedSlots() so both halves of
+ * the result agree on what "the next N days" means.
+ */
+function withinDaysWindow(
+  times: ISODatetime[],
+  days: number,
+  now: Date,
+): ISODatetime[] {
+  const cutoff = addDay(now, days).getTime();
+  return times.filter((time) => new Date(time).getTime() < cutoff);
+}
 
 /**
  * Get availability from cache (fast) or Calendly API (fallback)
@@ -15,10 +32,11 @@ export async function getAvailability(
   eventType: EventType,
   days = BOOK_IN_ADVANCE,
 ): Promise<AvailableTime[]> {
+  const now = new Date();
   const cached = await getCachedAvailability(eventType);
 
   if (cached) {
-    const available = filterToSchedule(cached);
+    const available = filterToSchedule(withinDaysWindow(cached, days, now));
     return [...available, ...generateBookedSlots(cached, days)].sort((a, b) =>
       a.time.localeCompare(b.time),
     );
@@ -27,7 +45,9 @@ export async function getAvailability(
   const result = await refreshAvailability(eventType, { days });
 
   if (!result.success) return [];
-  const available = filterToSchedule(result.availableTimes);
+  const available = filterToSchedule(
+    withinDaysWindow(result.availableTimes, days, now),
+  );
   return [...available, ...generateBookedSlots(result.availableTimes, days)].sort(
     (a, b) => a.time.localeCompare(b.time),
   );

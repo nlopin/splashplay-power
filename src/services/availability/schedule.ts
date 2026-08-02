@@ -3,7 +3,7 @@ import { HOLIDAYS, WEEKLY_SLOTS } from "@/constants.server";
 import type { ISODatetime } from "@/types";
 import { addDay } from "@/utils/datetime";
 import { formatTime } from "@/utils/formatters";
-import type { AvailableTime } from "./types";
+import type { AvailableTime, Discount } from "./types";
 
 const formatter = new Intl.DateTimeFormat("en-US", {
   timeZone: BUSINESS_TIMEZONE,
@@ -34,30 +34,57 @@ function isHoliday(iso: string): boolean {
   return HOLIDAYS.has(`${parts.day}-${parts.month}`);
 }
 
+/**
+ * Looks up a datetime against WEEKLY_SLOTS. Returns undefined when the
+ * datetime isn't a real scheduled slot at all (as opposed to a real slot
+ * with no discount, which returns `{ discount: undefined }`).
+ */
+export function getScheduleSlot(
+  iso: ISODatetime,
+): { discount?: Discount } | undefined {
+  let dayAbbr = "";
+  let hour = "";
+  let minute = "";
+
+  for (const part of formatter.formatToParts(new Date(iso))) {
+    if (part.type === "weekday") dayAbbr = part.value;
+    else if (part.type === "hour") hour = part.value;
+    else if (part.type === "minute") minute = part.value;
+  }
+
+  const holiday = isHoliday(iso);
+  const scheduleDay = holiday ? "Sun" : dayAbbr;
+  const match = WEEKLY_SLOTS[scheduleDay]?.find(
+    (s) => s.time === `${hour}:${minute}`,
+  );
+
+  if (!match) return undefined;
+  return { discount: holiday ? undefined : match.discount };
+}
+
+/**
+ * A slot's discount is a pure function of its weekday/time, independent of
+ * whether Calendly currently reports it as bookable.
+ */
+export function getDiscountForSlot(iso: ISODatetime): Discount | undefined {
+  return getScheduleSlot(iso)?.discount;
+}
+
+export function formatBusinessDate(date: Date): string {
+  return ymdFormatter.format(date);
+}
+
+export function isSameBusinessDate(iso: ISODatetime, date: string): boolean {
+  return formatBusinessDate(new Date(iso)) === date;
+}
+
 export function filterToSchedule(slots: string[]): AvailableTime[] {
   const result: AvailableTime[] = [];
 
   for (const iso of slots) {
-    let dayAbbr = "";
-    let hour = "";
-    let minute = "";
-
-    for (const part of formatter.formatToParts(new Date(iso))) {
-      if (part.type === "weekday") dayAbbr = part.value;
-      else if (part.type === "hour") hour = part.value;
-      else if (part.type === "minute") minute = part.value;
-    }
-
-    const holiday = isHoliday(iso);
-    const scheduleDay = holiday ? "Sun" : dayAbbr;
-    const match = WEEKLY_SLOTS[scheduleDay]?.find(
-      (s) => s.time === `${hour}:${minute}`,
-    );
-    if (match) {
-      result.push({
-        time: iso,
-        discount: holiday ? undefined : match.discount,
-      });
+    const slot = getScheduleSlot(iso);
+    if (slot) {
+      result.push({ time: iso, discount: slot.discount });
     }
   }
 

@@ -5,6 +5,10 @@ import individual from "@/assets/img/30x40_2individuales.jpg";
 
 import { formatPrice } from "@/utils/price";
 import { useTranslator } from "@/components/TranslatorContext";
+import {
+  COUPLES_PRICES,
+  type CouplesPictureType,
+} from "@/services/pricing";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
 import {
@@ -12,13 +16,9 @@ import {
   type ActivityFormat,
 } from "./ActivityFormatSelector";
 
-type PictureType = "one_small" | "one_big" | "individual";
+type PictureType = CouplesPictureType;
 
-const PRICE: Record<PictureType, number> = {
-  one_small: 7500,
-  one_big: 9000,
-  individual: 9000,
-};
+const PRICE = COUPLES_PRICES;
 
 const IMAGES: Record<PictureType, string> = {
   one_small: one_small.src,

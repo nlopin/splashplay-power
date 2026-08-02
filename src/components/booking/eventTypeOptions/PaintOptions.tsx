@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
+import { calculatePaintPrice, PAINT_DEFAULTS } from "@/services/pricing";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
 import type { EventType } from "../types";
@@ -15,37 +16,7 @@ export interface PaintFormData {
   kids: number;
 }
 
-// Price table indexed by total guests (1–6)
-// customize_clothes: individual (1) = €60; throw_paint: individual (1) = €45
-const PRICES_THROW_PAINT: Record<number, number> = {
-  1: 4500,
-  2: 7000,
-  3: 10500,
-  4: 12000,
-  5: 15000,
-  6: 18000,
-};
-
-const PRICES_CUSTOMIZE_CLOTHES: Record<number, number> = {
-  1: 6000,
-  2: 7000,
-  3: 10500,
-  4: 12000,
-  5: 15000,
-  6: 18000,
-};
-
-export function calculatePaintPrice(
-  totalGuests: number,
-  eventType?: EventType,
-): number {
-  const clamped = Math.max(1, Math.min(totalGuests, MAX_TOTAL));
-  const prices =
-    eventType === "customize_clothes"
-      ? PRICES_CUSTOMIZE_CLOTHES
-      : PRICES_THROW_PAINT;
-  return prices[clamped];
-}
+export { calculatePaintPrice } from "@/services/pricing";
 
 const KIDS_AGE_HINT_BY_EVENT: Record<EventType, string> = {
   throw_paint: "throw_paint_kids_age_hint",
@@ -62,10 +33,7 @@ export function PaintOptions({
   showPrice,
   discount,
 }: EventTypeOptionsProps) {
-  const [formData, setFormData] = useState<PaintFormData>({
-    adults: 2,
-    kids: 0,
-  });
+  const [formData, setFormData] = useState<PaintFormData>(PAINT_DEFAULTS);
   const t = useTranslator();
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;

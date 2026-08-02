@@ -2,6 +2,12 @@ import { useState, useEffect, useRef } from "react";
 
 import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
+import {
+  calculateFriendsPrice,
+  FRIENDS_DEFAULTS,
+  FRIENDS_CANVAS_LIMITS as CANVAS_LIMITS,
+  type CanvasType,
+} from "@/services/pricing";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
 import {
@@ -12,7 +18,8 @@ import {
 const MIN_GUESTS = 1;
 const MAX_GUESTS = 6;
 
-export type CanvasType = "standard" | "big";
+export type { CanvasType } from "@/services/pricing";
+export { calculateFriendsPrice } from "@/services/pricing";
 
 export interface FriendsFormData {
   guests: number;
@@ -21,70 +28,12 @@ export interface FriendsFormData {
   activityFormat: ActivityFormat;
 }
 
-// Big canvas price table: indexed by guests (1–6)
-const BIG_CANVAS_PRICES: Record<number, number> = {
-  1: 8500,
-  2: 9000,
-  3: 9500,
-  4: 10500,
-  5: 11500,
-  6: 12500,
-};
-
-// Standard canvas price table: [guests][canvases] → price in cents
-// guests 1: canvases 1→6000
-// guests 2: canvases 1→7500, 2→9000
-// guests 3: canvases 1→8000, 2→9500, 3→12000
-// guests 4: canvases 2→10500, 3→12800, 4→14000
-// guests 5: canvases 3→13500, 4→14900, 5→16000
-// guests 6: canvases 3→14500, 4→15500, 5→16500, 6→18000
-const STANDARD_PRICES: Record<number, Record<number, number>> = {
-  1: { 1: 6500 },
-  2: { 1: 7500, 2: 9000 },
-  3: { 1: 8000, 2: 9500, 3: 12000 },
-  4: { 2: 10500, 3: 12800, 4: 14000 },
-  5: { 3: 13500, 4: 14900, 5: 16000 },
-  6: { 3: 14500, 4: 15500, 5: 16500, 6: 18000 },
-};
-
-// Min/max canvases for standard canvas per guests count
-const CANVAS_LIMITS: Record<number, { min: number; max: number }> = {
-  1: { min: 1, max: 1 },
-  2: { min: 1, max: 2 },
-  3: { min: 1, max: 3 },
-  4: { min: 2, max: 4 },
-  5: { min: 3, max: 5 },
-  6: { min: 3, max: 6 },
-};
-
-export function calculateFriendsPrice(
-  canvases: number,
-  guests: number = canvases,
-  canvasType: CanvasType = "standard",
-): number {
-  if (canvasType === "big") {
-    const clampedGuests = Math.max(MIN_GUESTS, Math.min(guests, MAX_GUESTS));
-    return BIG_CANVAS_PRICES[clampedGuests] ?? 8000;
-  }
-
-  // Standard canvas
-  const clampedGuests = Math.max(MIN_GUESTS, Math.min(guests, MAX_GUESTS));
-  const limits = CANVAS_LIMITS[clampedGuests];
-  const clampedCanvases = Math.max(limits.min, Math.min(canvases, limits.max));
-  return STANDARD_PRICES[clampedGuests]?.[clampedCanvases] ?? 6000;
-}
-
 export function FriendsOptions({
   onChange,
   showPrice,
   discount,
 }: EventTypeOptionsProps) {
-  const [formData, setFormData] = useState<FriendsFormData>({
-    guests: 2,
-    canvases: 2,
-    canvasType: "standard",
-    activityFormat: "splash",
-  });
+  const [formData, setFormData] = useState<FriendsFormData>(FRIENDS_DEFAULTS);
   const t = useTranslator();
   const onChangeRef = useRef(onChange);
   // Keep ref in sync with latest onChange without triggering effects

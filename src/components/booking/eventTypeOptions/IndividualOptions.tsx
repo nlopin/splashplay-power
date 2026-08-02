@@ -2,11 +2,9 @@ import { useEffect } from "react";
 
 import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
+import { INDIVIDUAL_PRICE } from "@/services/pricing";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
-
-// Fixed price for individual booking
-const INDIVIDUAL_PRICE = 6000;
 
 export function IndividualOptions({
   onChange,
