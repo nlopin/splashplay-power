@@ -1,6 +1,6 @@
 {
   "home": {
-    "title": "Splashplay - Estudi d'Art a Barcelona",
+    "title": "Taller d'Art Lúdic",
     "welcome": "Benvingut a Splashplay",
     "description": "Crea pintures abstractes amb tècniques divertides com vessament, gir i boxa. Zero experiència artística necessària! Perfecte per a individus, parelles i grups.",
     "subtitle": "Per a famílies, parelles, grups d'amics i equips",
@@ -62,7 +62,7 @@
     "our_team_invitation": "M'agradaria conèixer-te a l'estudi i crear alguna cosa junts."
   },
   "schema": {
-    "business_description": "Estudi d'art a Barcelona que ofereix sessions creatives lúdiques: pintura abstracta amb tècniques de vessament, gir, boxa i altres tècniques divertides. No cal experiència artística. Perfecte per a famílies, parelles, grups d'amics i team building corporatiu.",
+    "business_description": "Taller d'Art Lúdic a Barcelona que ofereix pintura abstracta amb esquitxades, vessament, gir, boxa i altres tècniques divertides. No cal experiència artística. Perfecte per a famílies, parelles, amics i team building corporatiu.",
     "address_region": "Catalunya"
   },
   "banner": {
@@ -272,7 +272,7 @@
     "whatsapp": "+34 641 671 670",
     "whatsapp_send": "Enviar Missatge",
     "email_send": "Enviar Email",
-    "copyright": "© 2026 SplashPlay Creative Studio. Tots els drets reservats."
+    "copyright": "© 2026 Taller d'Art Lúdic. Tots els drets reservats."
   },
   "book": {
     "canvas_size": "Mida de Llenç",
@@ -581,7 +581,7 @@
     "gift_cards_buy_url": "https://app.cardivo.com/giftcards/splashplay-bcn"
   },
   "family": {
-    "meta_title": "Activitats en família a Barcelona | Art creatiu amb nens | SplashPlay",
+    "meta_title": "Activitats en família a Barcelona | Art lúdic amb nens | SplashPlay",
     "meta_description": "Activitats divertides amb nens a Barcelona, també els diumenges. Espai familiar i sense alcohol a El Clot per pintar, llançar pintura i crear junts. Nens 6+ amb adults. Des de 17€ per persona.",
     "hero_title": "Temps Creatiu en Família a Barcelona",
     "hero_subtitle": "Busques activitats divertides per fer amb nens a Barcelona?<br><br>A <strong>SplashPlay</strong>, un estudi amb ambient a <strong>El Clot</strong>, us donem tècniques divertides i llibertat per crear junts sense embrutar la casa. Una experiència alegre, original i plena de color per compartir temps en família.<br><br>✅ <strong>Per a qui:</strong><br>• Adults i nens <strong>6+</strong>, acompanyats per adults<br><strong>Filles i fills adults i les seves mares i pares</strong>, que vulguin viure un moment especial junts. Un regal perfecte per al Dia de la Mare i el Dia del Pare.<br><br>No calen habilitats — només ganes de provar i gaudir!",
@@ -723,7 +723,7 @@
     "pt_6_big_pp": "21€ per persona"
   },
   "corporate": {
-    "meta_title": "Team Building Barcelona | Sessions d'Art Creatiu | SplashPlay",
+    "meta_title": "Team Building Barcelona | Sessions d'Art Lúdic | SplashPlay",
     "meta_description": "Team building divertit a Barcelona, amb sessions privades. Pintura creativa per a 4–10 persones, alternativa als bitlles i escape rooms. Des de 40€ per persona.",
     "what_we_offer": "Què oferim",
     "what_we_offer_intro": "Aboca-ho, gira-ho, llança-ho, crea sense por. Pinta un llenç abstracte per a la teva paret que tindrà el valor dels records compartits. Joc pur, art real.",
@@ -735,7 +735,7 @@
     "offer_3": "Recicla la teva roba amb tècniques de pintura abstracta",
     "offer_4": "Team-building especial Splash",
     "hero_title": "Team building divertit a Barcelona",
-    "hero_subtitle": "Busques una activitat única a Barcelona per fer amb el teu equip? Una alternativa als bitlles, laser tag, art i vi, karaoke o sales d'escape?<br><br>A <strong>SplashPlay</strong> t'espera una sessió privada i divertida al nostre estudi creatiu a <strong>El Clot</strong>. No és una classe d'art tradicional: aquí llançareu pintura i faréu servir tècniques inesperades, creant junts records únics.<br><br>✅ <strong>Per a grups de 4 a 10 persones</strong><br><br>No cal experiència!",
+    "hero_subtitle": "Busques una activitat única a Barcelona per fer amb el teu equip? Una alternativa als bitlles, laser tag, art i vi, karaoke o sales d'escape?<br><br>A <strong>SplashPlay</strong> t'espera una sessió privada i divertida al nostre estudi a <strong>El Clot</strong>. No és una classe d'art tradicional: aquí llançareu pintura i faréu servir tècniques inesperades, creant junts records únics.<br><br>✅ <strong>Per a grups de 4 a 10 persones</strong><br><br>No cal experiència!",
     "hero_image_alt": "Companys en una sessió d'art lúdica a SplashPlay",
     "cta_book": "Contacta per reservar",
     "cta_ready_booking": "Llest per reservar la sessió del teu equip?",

@@ -1,6 +1,6 @@
 {
   "home": {
-    "title": "Splashplay - Art Studio in Barcelona",
+    "title": "Playful Art Workshop",
     "welcome": "Welcome to Splashplay",
     "description": "Create abstract paintings with fun techniques like pouring, spinning, and boxing. No artistic skills needed! Perfect for individuals, couples, and groups.",
     "subtitle": "For families, couples, groups of friends and teams",
@@ -62,7 +62,7 @@
     "our_team_invitation": "I'd love to meet you at the studio and create something together."
   },
   "schema": {
-    "business_description": "Art studio in Barcelona offering playful creative sessions — abstract painting with pouring, spinning, boxing, and other fun techniques. No artistic skills needed. Perfect for families, couples, friends, and corporate team building.",
+    "business_description": "Playful Art Workshop in Barcelona offering abstract painting with splashing, pouring, spinning, boxing, and other fun techniques. No artistic skills needed. Perfect for families, couples, friends, and corporate team building.",
     "address_region": "Catalonia"
   },
   "banner": {
@@ -272,7 +272,7 @@
     "whatsapp": "+34 641 671 670",
     "whatsapp_send": "Send Message",
     "email_send": "Send Email",
-    "copyright": "© 2026 SplashPlay Creative Studio. All rights reserved."
+    "copyright": "© 2026 Playful Art Workshop. All rights reserved."
   },
   "book": {
     "canvas_size": "Canvas Size",
@@ -581,7 +581,7 @@
     "gift_cards_buy_url": "https://app.cardivo.com/giftcards/splashplay-bcn"
   },
   "family": {
-    "meta_title": "Family Activities Barcelona | Creative Art with Kids | SplashPlay",
+    "meta_title": "Family Activities Barcelona | Playful Art with Kids | SplashPlay",
     "meta_description": "Fun activities with kids in Barcelona, open on Sundays too. Family-friendly, alcohol-free art studio in El Clot for painting, throwing paint, and creating together. Kids 6+ with adults. From 17€ per person.",
     "hero_title": "Creative Family Time in Barcelona",
     "hero_subtitle": "Looking for fun activities to do with kids in Barcelona?<br><br>At <strong>SplashPlay</strong>, an ambient studio in <strong>El Clot</strong>, we give you fun techniques and the freedom to create together without making a mess at home. A joyful, original, and colorful experience to share family time.<br><br>✅ <strong>Who it's for:</strong><br>• Adults and children <strong>6+</strong>, accompanied by adults<br>• <strong>Adult daughters and sons and their mothers and fathers</strong>, who want to experience a special moment together. A perfect gift for Mother's Day and Father's Day.<br><br>No skills are needed — just a desire to try and enjoy!",
@@ -723,7 +723,7 @@
     "pt_6_big_pp": "21€ per person"
   },
   "corporate": {
-    "meta_title": "Team Building Barcelona | Creative Art Sessions | SplashPlay",
+    "meta_title": "Team Building Barcelona | Playful Art Sessions | SplashPlay",
     "meta_description": "Fun team building in Barcelona with private sessions. Creative painting for 4–10 people, an alternative to bowling and escape rooms. From 40€ per person.",
     "what_we_offer": "What we offer",
     "what_we_offer_intro": "Pour it, spin it, throw it, create without fear. Paint an abstract canvas for your wall that will hold the value of shared memories. Pure play, real art.",
@@ -735,7 +735,7 @@
     "offer_3": "Upcycle your clothes with abstract painting techniques",
     "offer_4": "Splash teambuilding special",
     "hero_title": "Fun Team Building in Barcelona",
-    "hero_subtitle": "Looking for a unique activity in Barcelona to do with your team? An alternative to bowling, laser tag, art and wine, karaoke or escape rooms?<br><br>At <strong>SplashPlay</strong>, a private and fun session awaits you at our creative studio in <strong>El Clot</strong>. It's not a traditional art class: here you will throw paint and use unexpected techniques, creating unique memories together.<br><br>✅ <strong>For groups from 4 to 10 people</strong><br><br>No skills needed!",
+    "hero_subtitle": "Looking for a unique activity in Barcelona to do with your team? An alternative to bowling, laser tag, art and wine, karaoke or escape rooms?<br><br>At <strong>SplashPlay</strong>, a private and fun session awaits you at our studio in <strong>El Clot</strong>. It's not a traditional art class: here you will throw paint and use unexpected techniques, creating unique memories together.<br><br>✅ <strong>For groups from 4 to 10 people</strong><br><br>No skills needed!",
     "hero_image_alt": "Teammates enjoying a playful art session at SplashPlay",
     "cta_book": "Contact to book",
     "cta_ready_booking": "Ready to book your team session?",
