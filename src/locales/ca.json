@@ -57,9 +57,13 @@
     "included_title": "Què inclou",
     "our_team_title": "El nostre equip",
     "our_team_image_alt": "Alexandra a l'estudi SplashPlay",
-    "our_team_greeting": "Hola, sóc l'Alexandra. Per ara condueixo les sessions jo mateixa i el meu suport i «equip» és la meva família: el meu marit i els nostres dos gats.",
-    "our_team_story": "Vaig passar molt de temps amb por d'equivocar-me i això va bloquejar la meva creativitat. Per això vaig crear SplashPlay: un espai on el joc i l'experimentació van primer. Vull que puguis crear sense aquesta por. Aquí ens centrem en la curiositat, el flux d'energia creativa i, al final, l'alegria pura.",
-    "our_team_invitation": "M'agradaria conèixer-te a l'estudi i crear alguna cosa junts."
+    "our_team_greeting": "Hola, sóc l'Alexandra, fundadora de SplashPlay.",
+    "our_team_story": "Vaig passar molt de temps amb por d'equivocar-me i això va bloquejar la meva creativitat. Per això vaig crear SplashPlay: un espai on el joc i l'experimentació van primer. Vull que puguis crear sense aquesta por. Aquí ens centrem en la curiositat, el flux i, al final, l'alegria pura.",
+    "our_team_invitation": "M'agradaria conèixer-te a l'estudi i crear alguna cosa junts.",
+    "our_team_zoe_image_alt": "Zoé en el estudio SplashPlay",
+    "our_team_zoe_greeting": "Hola! Soy Zoé, artista plástica e ilustradora.",
+    "our_team_zoe_story": "Los colores son mi herramienta para exponer mi mundo interior y expresarme!",
+    "our_team_zoe_invitation": "En SplashPlay encontrarás un lugar para crear y jugar! Usando técnicas originales y colores podrás dejar espacio a la creatividad y el juego sin miedo!"
   },
   "schema": {
     "business_description": "Taller d'Art Lúdic a Barcelona que ofereix pintura abstracta amb esquitxades, vessament, gir, boxa i altres tècniques divertides. No cal experiència artística. Perfecte per a famílies, parelles, amics i team building corporatiu.",

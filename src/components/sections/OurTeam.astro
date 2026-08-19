@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import { createAstroTranslator } from "../../utils/i18n";
 import alexandraImg from "../../assets/photo/alexandra.png";
+import zoeImg from "../../assets/photo/zoe.jpg";
 
 const t = createAstroTranslator(Astro.currentLocale, "home");
 ---
@@ -10,23 +11,44 @@ const t = createAstroTranslator(Astro.currentLocale, "home");
     <div class="container">
         <h2 class="section-title">{t("our_team_title")}</h2>
 
-        <div class="our-team-content">
-            <div class="our-team-image-wrap">
-                <Image
-                    src={alexandraImg}
-                    alt={t("our_team_image_alt")}
-                    class="our-team-image"
-                    widths={[300, 360, 400, 720]}
-                    sizes="(max-width: 600px) 100vw, 300px"
-                    format="webp"
-                    loading="lazy"
-                />
-            </div>
-            <div class="our-team-text">
-                <p class="our-team-greeting">{t("our_team_greeting")}</p>
-                <p class="our-team-story">{t("our_team_story")}</p>
-                <p class="our-team-invitation">{t("our_team_invitation")}</p>
-            </div>
+        <div class="our-team-members">
+            <article class="our-team-content">
+                <div class="our-team-image-wrap">
+                    <Image
+                        src={alexandraImg}
+                        alt={t("our_team_image_alt")}
+                        class="our-team-image"
+                        widths={[300, 360, 400, 720]}
+                        sizes="(max-width: 600px) 100vw, 300px"
+                        format="webp"
+                        loading="lazy"
+                    />
+                </div>
+                <div class="our-team-text">
+                    <p class="our-team-greeting">{t("our_team_greeting")}</p>
+                    <p class="our-team-story">{t("our_team_story")}</p>
+                    <p class="our-team-invitation">{t("our_team_invitation")}</p>
+                </div>
+            </article>
+
+            <article class="our-team-content">
+                <div class="our-team-image-wrap">
+                    <Image
+                        src={zoeImg}
+                        alt={t("our_team_zoe_image_alt")}
+                        class="our-team-image"
+                        widths={[300, 360, 400, 720]}
+                        sizes="(max-width: 600px) 100vw, 300px"
+                        format="webp"
+                        loading="lazy"
+                    />
+                </div>
+                <div class="our-team-text">
+                    <p class="our-team-greeting">{t("our_team_zoe_greeting")}</p>
+                    <p class="our-team-story">{t("our_team_zoe_story")}</p>
+                    <p class="our-team-invitation">{t("our_team_zoe_invitation")}</p>
+                </div>
+            </article>
         </div>
     </div>
 </section>
@@ -42,11 +64,17 @@ const t = createAstroTranslator(Astro.currentLocale, "home");
         max-width: 900px;
     }
 
+    .our-team-members {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        margin-top: 1.5rem;
+    }
+
     .our-team-content {
         display: flex;
         flex-direction: column;
         gap: 2rem;
-        margin-top: 1.5rem;
     }
 
     .our-team-image-wrap {
