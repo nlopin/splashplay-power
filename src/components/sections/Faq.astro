@@ -1,0 +1,211 @@
+---
+import { createAstroTranslator, getCurrentLanguage } from "../../utils/i18n";
+
+interface Props {
+    variant?: "default" | "corporate" | "couples";
+}
+
+const { variant = "default" } = Astro.props;
+
+const language = getCurrentLanguage(Astro.currentLocale);
+const t = createAstroTranslator(Astro.currentLocale, "main");
+const showFaq = language === "es";
+
+const defaultFaqItems = [
+    { q: "faq_q_skills", a: "faq_a_skills" },
+    { q: "faq_q_private", a: "faq_a_private" },
+    { q: "faq_q_kids", a: "faq_a_kids" },
+    { q: "faq_q_kids_groups", a: "faq_a_kids_groups" },
+    { q: "faq_q_clothes", a: "faq_a_clothes" },
+    { q: "faq_q_pickup", a: "faq_a_pickup" },
+    { q: "faq_q_cancel", a: "faq_a_cancel" },
+    { q: "faq_q_discount", a: "faq_a_discount" },
+    { q: "faq_q_languages", a: "faq_a_languages" },
+    { q: "faq_q_location", a: "faq_a_location" },
+    { q: "faq_q_group", a: "faq_a_group" },
+    { q: "faq_q_gift", a: "faq_a_gift" },
+] as const;
+
+const corporateFaqItems = [
+    { q: "faq_q_corp_book", a: "faq_a_corp_book" },
+    { q: "faq_q_corp_size", a: "faq_a_corp_size" },
+    { q: "faq_q_corp_invoice", a: "faq_a_corp_invoice" },
+    { q: "faq_q_corp_formats", a: "faq_a_corp_formats" },
+    { q: "faq_q_skills", a: "faq_a_skills" },
+    { q: "faq_q_clothes", a: "faq_a_clothes" },
+    { q: "faq_q_pickup", a: "faq_a_pickup" },
+    { q: "faq_q_cancel", a: "faq_a_cancel" },
+    { q: "faq_q_languages", a: "faq_a_languages" },
+    { q: "faq_q_location", a: "faq_a_location" },
+] as const;
+
+const couplesFaqItems = [
+    { q: "faq_q_skills", a: "faq_a_skills" },
+    { q: "faq_q_private", a: "faq_a_private" },
+    { q: "faq_q_clothes", a: "faq_a_clothes" },
+    { q: "faq_q_pickup", a: "faq_a_pickup" },
+    { q: "faq_q_cancel", a: "faq_a_cancel" },
+    { q: "faq_q_discount", a: "faq_a_discount" },
+    { q: "faq_q_languages", a: "faq_a_languages" },
+    { q: "faq_q_location", a: "faq_a_location" },
+    { q: "faq_q_gift", a: "faq_a_gift" },
+] as const;
+
+const faqItems =
+    variant === "corporate"
+        ? corporateFaqItems
+        : variant === "couples"
+          ? couplesFaqItems
+          : defaultFaqItems;
+
+function stripHtml(html: string) {
+    return html.replace(/<[^>]+>/g, "");
+}
+
+const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map(({ q, a }) => ({
+        "@type": "Question",
+        name: t(q),
+        acceptedAnswer: {
+            "@type": "Answer",
+            text: stripHtml(t(a)),
+        },
+    })),
+};
+---
+
+{
+    showFaq && (
+        <section id="faq" class="faq" data-menu-title={t("nav_faq")}>
+            <script
+                is:inline
+                type="application/ld+json"
+                set:html={JSON.stringify(faqSchema)}
+            />
+            <div class="container">
+                <h2 class="section-title">{t("faq_title")}</h2>
+                <div class="faq-list">
+                    {faqItems.map(({ q, a }) => (
+                        <details class="faq-item">
+                            <summary class="faq-question">{t(q)}</summary>
+                            <div class="faq-answer" set:html={t(a)} />
+                        </details>
+                    ))}
+                </div>
+                <div class="faq-cta">
+                    <p class="faq-cta-text">{t("faq_more_questions")}</p>
+                    <a
+                        href="https://wa.me/34641671670"
+                        target="_blank"
+                        rel="noopener"
+                        class="faq-cta-button"
+                    >
+                        {t("whatsapp_send")}
+                    </a>
+                </div>
+            </div>
+        </section>
+    )
+}
+
+<style>
+    .faq {
+        padding: 3rem 0;
+        background-color: var(--light-bg);
+        scroll-margin-top: 60px;
+    }
+
+    .faq-list {
+        max-width: 720px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .faq-item {
+        background: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 0 1rem;
+    }
+
+    .faq-question {
+        font-weight: 600;
+        color: var(--purple);
+        cursor: pointer;
+        list-style: none;
+        padding: 1rem 1.5rem 1rem 0;
+        line-height: 1.4;
+        position: relative;
+    }
+
+    .faq-question::-webkit-details-marker {
+        display: none;
+    }
+
+    .faq-question::after {
+        content: "▼";
+        font-size: 0.7em;
+        position: absolute;
+        right: 0;
+        top: 1.15rem;
+        transition: transform 0.2s;
+    }
+
+    .faq-item[open] .faq-question::after {
+        transform: rotate(-180deg);
+    }
+
+    .faq-answer {
+        font-size: var(--font-base);
+        color: var(--dark-text);
+        line-height: 1.55;
+        padding: 0 0 1rem;
+    }
+
+    .faq-answer :global(a) {
+        color: var(--purple);
+        font-weight: 600;
+        text-decoration: underline;
+    }
+
+    .faq-answer :global(a:hover) {
+        color: var(--orange);
+    }
+
+    .faq-cta {
+        max-width: 720px;
+        margin: 2.5rem auto 0;
+        text-align: center;
+    }
+
+    .faq-cta-text {
+        font-size: var(--font-lg);
+        font-weight: 600;
+        color: var(--dark-text);
+        margin: 0 0 1rem;
+        line-height: 1.4;
+    }
+
+    .faq-cta-button {
+        display: inline-block;
+        background-color: var(--orange);
+        color: var(--white);
+        padding: 0.6rem 1.2rem;
+        border-radius: 30px;
+        font-weight: bold;
+        font-size: var(--font-sm);
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .faq-cta-button:hover {
+        background-color: var(--purple);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+</style>

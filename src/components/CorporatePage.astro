@@ -6,6 +6,7 @@ import CorporateHero from "./sections/CorporateHero.astro";
 import WhatWeOffer from "./sections/WhatWeOffer.astro";
 import CorporateBookCTA from "./sections/CorporateBookCTA.astro";
 import OurTeam from "./sections/OurTeam.astro";
+import Faq from "./sections/Faq.astro";
 import Testimonials from "./sections/Testimonials.astro";
 import ExperienceSteps from "./sections/ExperienceSteps.astro";
 import Gallery from "./sections/Gallery.astro";
@@ -29,5 +30,6 @@ const showExperienceSteps = Astro.currentLocale !== "en";
 
     <Gallery />
     <OurTeam />
+    <Faq variant="corporate" />
     <Contact />
 </PageLayout>
