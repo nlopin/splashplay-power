@@ -1,5 +1,5 @@
 ---
-import { createAstroTranslator, getCurrentLanguage } from "../../utils/i18n";
+import { createAstroTranslator } from "../../utils/i18n";
 
 interface Props {
     variant?: "default" | "corporate" | "couples";
@@ -7,9 +7,7 @@ interface Props {
 
 const { variant = "default" } = Astro.props;
 
-const language = getCurrentLanguage(Astro.currentLocale);
 const t = createAstroTranslator(Astro.currentLocale, "main");
-const showFaq = language === "es";
 
 const defaultFaqItems = [
     { q: "faq_q_skills", a: "faq_a_skills" },
@@ -76,39 +74,35 @@ const faqSchema = {
 };
 ---
 
-{
-    showFaq && (
-        <section id="faq" class="faq" data-menu-title={t("nav_faq")}>
-            <script
-                is:inline
-                type="application/ld+json"
-                set:html={JSON.stringify(faqSchema)}
-            />
-            <div class="container">
-                <h2 class="section-title">{t("faq_title")}</h2>
-                <div class="faq-list">
-                    {faqItems.map(({ q, a }) => (
-                        <details class="faq-item">
-                            <summary class="faq-question">{t(q)}</summary>
-                            <div class="faq-answer" set:html={t(a)} />
-                        </details>
-                    ))}
-                </div>
-                <div class="faq-cta">
-                    <p class="faq-cta-text">{t("faq_more_questions")}</p>
-                    <a
-                        href="https://wa.me/34641671670"
-                        target="_blank"
-                        rel="noopener"
-                        class="faq-cta-button"
-                    >
-                        {t("whatsapp_send")}
-                    </a>
-                </div>
-            </div>
-        </section>
-    )
-}
+<section id="faq" class="faq" data-menu-title={t("nav_faq")}>
+    <script
+        is:inline
+        type="application/ld+json"
+        set:html={JSON.stringify(faqSchema)}
+    />
+    <div class="container">
+        <h2 class="section-title">{t("faq_title")}</h2>
+        <div class="faq-list">
+            {faqItems.map(({ q, a }) => (
+                <details class="faq-item">
+                    <summary class="faq-question">{t(q)}</summary>
+                    <div class="faq-answer" set:html={t(a)} />
+                </details>
+            ))}
+        </div>
+        <div class="faq-cta">
+            <p class="faq-cta-text">{t("faq_more_questions")}</p>
+            <a
+                href="https://wa.me/34641671670"
+                target="_blank"
+                rel="noopener"
+                class="faq-cta-button"
+            >
+                {t("whatsapp_send")}
+            </a>
+        </div>
+    </div>
+</section>
 
 <style>
     .faq {
