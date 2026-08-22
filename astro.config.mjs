@@ -77,6 +77,13 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
+      // JSON-encoded map: { "<partnerKey>": { "webhookUrl": "...", "secret": "..." } }
+      PARTNERS_CONFIG: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+        default: "{}",
+      }),
       PUBLIC_STRIPE_PUBLISHABLE_KEY: envField.string({
         context: "client",
         access: "public",

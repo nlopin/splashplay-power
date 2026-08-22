@@ -10,6 +10,8 @@ export const CreatePaymentSessionPayloadSchema = z.object({
   fullName: z.string().optional(),
   email: z.email().optional(),
   phone: z.string().optional(),
+  // lookup key, validated against allowlist server-side
+  partner: z.string().optional(),
 });
 
 export const CreatePaymentSessionResponseSchema = z.object({

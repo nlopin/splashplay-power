@@ -1,12 +1,24 @@
 import type { APIRoute } from "astro";
 import Stripe from "stripe";
 import { STRIPE_SECRET_KEY } from "astro:env/server";
+import { isKnownPartner } from "@/services/partners";
 import { CreatePaymentSessionPayloadSchema } from "./types";
 
 export const prerender = false;
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
   apiVersion: "2025-10-29.clover",
 });
+
+const getKnownPartner = (maybePartner: string | undefined): string | null => {
+  if (!maybePartner) return null;
+
+  if (!isKnownPartner(maybePartner)) {
+    console.debug(`Unknown partner key, ignoring: ${maybePartner}`);
+    return null;
+  }
+
+  return maybePartner;
+};
 
 export const POST: APIRoute = async ({ request }) => {
   const body = await request.json();
@@ -18,7 +30,14 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const { amount, productName, datetime, lang, eventType } = parseResult.data;
+  const {
+    amount,
+    productName,
+    datetime,
+    lang,
+    eventType,
+    partner: maybePartner,
+  } = parseResult.data;
   const origin = new URL(request.url).origin;
   const returnUrl = `${origin}/${lang}/complete?session_id={CHECKOUT_SESSION_ID}`;
 
@@ -38,6 +57,7 @@ export const POST: APIRoute = async ({ request }) => {
       eventType,
       sessionTime: datetime,
       sessionTitle: productName,
+      partner: getKnownPartner(maybePartner),
     },
     customer_creation: "always",
     line_items: [
