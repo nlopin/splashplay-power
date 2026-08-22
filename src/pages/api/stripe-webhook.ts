@@ -13,6 +13,7 @@ import { bookEvent, type BookEventResult } from "@/services/calendly";
 import { formatEventComment } from "@/components/booking/eventMessage";
 import { EVENT_TYPE } from "@/components/booking/types";
 import { createEvent, logEvent } from "@/services/logger";
+import { storePartnerBooking } from "@/services/partners";
 
 export const prerender = false;
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
@@ -32,6 +33,8 @@ type StripeWebhookEventData = {
   customerName: string | undefined;
   calendlyBookingSuccess: boolean | undefined;
   notificationSent: boolean | undefined;
+  partnerKey: string | undefined;
+  partnerStored: boolean | undefined;
   error: string | undefined;
   durationMs: number;
 };
@@ -40,6 +43,7 @@ const metadataSchema = z.object({
   eventType: z.enum(Object.values(EVENT_TYPE)),
   sessionTime: z.iso.datetime({ offset: true }),
   sessionTitle: z.string(),
+  partner: z.string().optional(),
 });
 
 const customerSchema = z.object({
@@ -63,6 +67,8 @@ export const POST: APIRoute = async ({ request }) => {
     customerName: undefined,
     calendlyBookingSuccess: undefined,
     notificationSent: undefined,
+    partnerKey: undefined,
+    partnerStored: undefined,
     error: undefined,
     durationMs: 0,
   };
@@ -117,6 +123,15 @@ export const POST: APIRoute = async ({ request }) => {
         webhookEvent.sessionTime = parsedMetadata.data.sessionTime;
         webhookEvent.customerEmail = parsedCustomer.data.email;
         webhookEvent.customerName = parsedCustomer.data.name;
+
+        // store partner key before creating a booking to guarantee it will be read in Calendly webhook
+        if (parsedMetadata.data.partner) {
+          webhookEvent.partnerKey = parsedMetadata.data.partner;
+          webhookEvent.partnerStored = await storePartnerBooking(
+            paymentIntentId,
+            parsedMetadata.data.partner,
+          );
+        }
 
         const calendlyResult = await bookEvent(parsedMetadata.data.eventType, {
           datetime: parsedMetadata.data.sessionTime,
