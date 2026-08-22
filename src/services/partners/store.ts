@@ -30,6 +30,15 @@ export async function storePartnerBooking(
     partnerKey,
   }
 
+  if (!transactionId) {
+    createAndLogEvent("partner_booking_write", {
+      ...logEventBase,
+      status: "skipped_empty_transaction_id",
+      durationMs: Date.now() - startTime,
+    });
+    return false;
+  }
+
   try {
     await partnerBookingsStore.setJSON(transactionId, { partnerKey });
     createAndLogEvent("partner_booking_write", {
@@ -55,6 +64,15 @@ export async function getPartnerKeyForBooking(
   transactionId: string,
 ): Promise<string | null> {
   const startTime = Date.now();
+
+  if (!transactionId) {
+    createAndLogEvent("partner_booking_read", {
+      status: "skipped_empty_transaction_id",
+      transactionId,
+      durationMs: Date.now() - startTime,
+    });
+    return null;
+  }
 
   try {
     const stored = await partnerBookingsStore.get(transactionId, {
