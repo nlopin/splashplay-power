@@ -12,7 +12,8 @@ import { getPaymentIntentId } from "@/services/stripe";
 import { bookEvent, type BookEventResult } from "@/services/calendly";
 import { formatEventComment } from "@/components/booking/eventMessage";
 import { EVENT_TYPE } from "@/components/booking/types";
-import { createEvent, logEvent } from "@/services/logger";
+import { createEvent, logEvent, updateEvent } from "@/services/logger";
+import { storePartnerBooking } from "@/services/partners";
 
 export const prerender = false;
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
@@ -32,6 +33,8 @@ type StripeWebhookEventData = {
   customerName: string | undefined;
   calendlyBookingSuccess: boolean | undefined;
   notificationSent: boolean | undefined;
+  partnerKey: string | undefined;
+  partnerStored: boolean | undefined;
   error: string | undefined;
   durationMs: number;
 };
@@ -40,6 +43,7 @@ const metadataSchema = z.object({
   eventType: z.enum(Object.values(EVENT_TYPE)),
   sessionTime: z.iso.datetime({ offset: true }),
   sessionTitle: z.string(),
+  partner: z.string().optional(),
 });
 
 const customerSchema = z.object({
@@ -63,6 +67,8 @@ export const POST: APIRoute = async ({ request }) => {
     customerName: undefined,
     calendlyBookingSuccess: undefined,
     notificationSent: undefined,
+    partnerKey: undefined,
+    partnerStored: undefined,
     error: undefined,
     durationMs: 0,
   };
@@ -70,10 +76,13 @@ export const POST: APIRoute = async ({ request }) => {
 
   const sig = request.headers.get("stripe-signature");
   if (!sig) {
-    webhookEvent.status = "error";
-    webhookEvent.error = "Signature not found";
-    webhookEvent.durationMs = Date.now() - startTime;
-    logEvent(webhookEvent);
+    logEvent(
+      updateEvent(webhookEvent, {
+        status: "error",
+        error: "Signature not found",
+        durationMs: Date.now() - startTime,
+      }),
+    );
     return new Response("Webhook Error: Signature not found", { status: 400 });
   }
 
@@ -85,17 +94,20 @@ export const POST: APIRoute = async ({ request }) => {
       STRIPE_WEBHOOK_SECRET_KEY,
     );
   } catch (err) {
-    webhookEvent.status = "error";
-    webhookEvent.error = err instanceof Error ? err.message : "Unknown error";
-    webhookEvent.durationMs = Date.now() - startTime;
-    logEvent(webhookEvent);
+    logEvent(
+      updateEvent(webhookEvent, {
+        status: "error",
+        error: err instanceof Error ? err.message : "Unknown error",
+        durationMs: Date.now() - startTime,
+      }),
+    );
     return new Response(
       `Webhook Error: ${err instanceof Error ? err.message : err}`,
       { status: 400 },
     );
   }
 
-  webhookEvent.stripeEventType = event.type;
+  updateEvent(webhookEvent, { stripeEventType: event.type });
 
   switch (event.type) {
     case "checkout.session.completed":
@@ -104,19 +116,34 @@ export const POST: APIRoute = async ({ request }) => {
       );
       const paymentIntentId = getPaymentIntentId(session);
 
-      webhookEvent.sessionId = session.id;
-      webhookEvent.paymentIntentId = paymentIntentId;
-      webhookEvent.amountTotal = session.amount_total;
+      updateEvent(webhookEvent, {
+        sessionId: session.id,
+        paymentIntentId,
+        amountTotal: session.amount_total,
+      });
 
       const parsedMetadata = metadataSchema.safeParse(session.metadata);
       const parsedCustomer = customerSchema.safeParse(session.customer_details);
 
       if (parsedMetadata.success && parsedCustomer.success) {
-        webhookEvent.eventType = parsedMetadata.data.eventType;
-        webhookEvent.sessionTitle = parsedMetadata.data.sessionTitle;
-        webhookEvent.sessionTime = parsedMetadata.data.sessionTime;
-        webhookEvent.customerEmail = parsedCustomer.data.email;
-        webhookEvent.customerName = parsedCustomer.data.name;
+        updateEvent(webhookEvent, {
+          eventType: parsedMetadata.data.eventType,
+          sessionTitle: parsedMetadata.data.sessionTitle,
+          sessionTime: parsedMetadata.data.sessionTime,
+          customerEmail: parsedCustomer.data.email,
+          customerName: parsedCustomer.data.name,
+        });
+
+        // store partner key before creating a booking to guarantee it will be read in Calendly webhook
+        if (parsedMetadata.data.partner) {
+          updateEvent(webhookEvent, {
+            partnerKey: parsedMetadata.data.partner,
+            partnerStored: await storePartnerBooking(
+              paymentIntentId,
+              parsedMetadata.data.partner,
+            ),
+          });
+        }
 
         const calendlyResult = await bookEvent(parsedMetadata.data.eventType, {
           datetime: parsedMetadata.data.sessionTime,
@@ -131,34 +158,36 @@ export const POST: APIRoute = async ({ request }) => {
           ),
         });
 
-        webhookEvent.calendlyBookingSuccess = calendlyResult.success;
-        webhookEvent.status = calendlyResult.success
-          ? "success"
-          : "calendly_booking_failed";
+        updateEvent(webhookEvent, {
+          calendlyBookingSuccess: calendlyResult.success,
+          status: calendlyResult.success
+            ? "success"
+            : "calendly_booking_failed",
+        });
 
         if (session.amount_total) {
-          webhookEvent.notificationSent = await sendPaymentNotification(
-            session.amount_total,
-            parsedMetadata.data.sessionTitle,
-            paymentIntentId,
-            calendlyResult,
-          );
+          updateEvent(webhookEvent, {
+            notificationSent: await sendPaymentNotification(
+              session.amount_total,
+              parsedMetadata.data.sessionTitle,
+              paymentIntentId,
+              calendlyResult,
+            ),
+          });
         }
       } else {
-        webhookEvent.status = "parsing_error";
-        webhookEvent.error = [
-          parsedCustomer.error?.message,
-          parsedMetadata.error?.message,
-        ]
-          .filter(Boolean)
-          .join("; ");
+        updateEvent(webhookEvent, {
+          status: "parsing_error",
+          error: [parsedCustomer.error?.message, parsedMetadata.error?.message]
+            .filter(Boolean)
+            .join("; "),
+        });
       }
 
       break;
   }
 
-  webhookEvent.durationMs = Date.now() - startTime;
-  logEvent(webhookEvent);
+  logEvent(updateEvent(webhookEvent, { durationMs: Date.now() - startTime }));
   return new Response(JSON.stringify({ received: true }), { status: 200 });
 };
 

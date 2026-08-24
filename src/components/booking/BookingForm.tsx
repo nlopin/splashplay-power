@@ -13,6 +13,21 @@ import type { SelectedTimeSlot, EventType, Availability } from "./types";
 
 type Step = "schedule" | "payment";
 
+const PARTNER_SESSION_STORAGE_KEY = "splashplay:partner";
+
+function getInitialPartnerKey(): string | undefined {
+  if (isServer()) return undefined;
+
+  const fromQuery = new URLSearchParams(window.location.search).get("partner");
+  if (fromQuery) return fromQuery;
+
+  try {
+    return sessionStorage.getItem(PARTNER_SESSION_STORAGE_KEY) ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export default function BookingForm({
   translations,
   availability,
@@ -40,12 +55,22 @@ export default function BookingForm({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // ?partner=<key>, else sessionStorage fallback on reload
+  const [partnerKey] = useState<string | undefined>(getInitialPartnerKey);
+
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // Track ScheduleStepOpened on initial mount
   useEffect(() => {
     trackEvent(AnalyticsEvents.ScheduleStepOpened);
   }, []);
+
+  useEffect(() => {
+    if (!partnerKey) return;
+    try {
+      sessionStorage.setItem(PARTNER_SESSION_STORAGE_KEY, partnerKey);
+    } catch {}
+  }, [partnerKey]);
 
   // Unified URL state management and validation
   useEffect(() => {
@@ -124,6 +149,7 @@ export default function BookingForm({
           eventType,
           datetime,
           lang,
+          partner: partnerKey,
         }),
         signal: controller.signal,
       });

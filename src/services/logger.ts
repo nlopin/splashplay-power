@@ -37,3 +37,14 @@ export function createAndLogEvent<T extends EventData>(
   logEvent(event);
   return event;
 }
+
+/**
+ * Merges updates into an existing event, in place.
+ * Returns the same object so it can be passed straight to logEvent().
+ */
+export function updateEvent<T extends EventData>(
+  event: BaseEvent & T,
+  updates: Partial<T>,
+): BaseEvent & T {
+  return Object.assign(event, updates);
+}
