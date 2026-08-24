@@ -57,10 +57,11 @@ parsing already exists and is unchanged by this ADR. We reuse that same
 `transactionId` as a correlation key instead of extending the comment
 format:
 
-1. `stripe-webhook.ts`, right after a successful `bookEvent()`, writes
+1. `stripe-webhook.ts`, before calling `bookEvent()`, writes
    `transactionId → partnerKey` to a Netlify Blobs store (same pattern
    already used for the availability cache in
-   `src/services/availability/cache.ts`).
+   `src/services/availability/cache.ts`) and awaits that write, so it's
+   guaranteed to land before Calendly's own webhook can read it (§4).
 2. `calendly-webhook.ts`, after extracting `transactionId` as it does
    today, looks up `partnerKey` from that store. If found, it builds a
    curated payload, signs it, and forwards it to the partner's webhook.
@@ -92,9 +93,13 @@ Small, known set of partners — static config, not a dynamic/self-serve
 store.
 
 - Add one JSON-encoded server env var, e.g. `PARTNERS_CONFIG`, parsed once
-  at startup with zod into
-  `Record<string, { webhookUrl: string; secret: string }>`, following the
-  existing `astro:env/server` pattern used for `CALENDLY_TOKEN` etc.
+  at startup with zod into `{ webhookUrl: string; secret: string }` entries,
+  following the existing `astro:env/server` pattern used for
+  `CALENDLY_TOKEN` etc. The parsed result is held in a `Map`, not a plain
+  object — `partnerKey` is an attacker-influenced string (arrives via the
+  `?partner=` query param before validation), and `in`/bracket lookups on a
+  plain object let values like `"constructor"` resolve to
+  `Object.prototype` members instead of `undefined`.
 - **The `partner` query param is only ever a lookup key into this
   allowlist — it is never used as, or interpolated into, a URL itself.**
   This is a hard rule, not a style preference: treating an
@@ -115,13 +120,25 @@ store.
 ### 4. `stripe-webhook.ts`: persist the correlation, don't extend the comment
 
 - No change to `formatEventComment` / the Calendly comment format.
-- After a successful `bookEvent()`, if `session.metadata.partner` is
+- **Before** calling `bookEvent()`, if `session.metadata.partner` is
   present, write `{ partnerKey }` to a new Netlify Blobs store (e.g.
   `partner-bookings`) keyed by `transactionId` (the payment intent ID —
-  same ID already embedded in the Calendly comment today).
-- This write is fire-and-forget alongside the existing Telegram
-  notification call — failure to persist it just means the partner forward
-  is skipped later (logged), it must never fail the webhook response.
+  same ID already embedded in the Calendly comment today), and **await**
+  that write.
+- Ordering here is load-bearing, not incidental: `bookEvent()` triggers
+  Calendly to fire its own `invitee.created` webhook, a separate serverless
+  invocation, almost immediately. That handler reads this same blob to
+  resolve `partnerKey`. Writing after `bookEvent()` (or not awaiting the
+  write) lets that read race the write — the Calendly handler always
+  returns 200 regardless, so a lost race means the booking silently and
+  permanently never gets forwarded to its partner, with no retry and no
+  distinguishing signal from a booking that genuinely has no partner.
+- This does mean the write adds to `stripe-webhook.ts`'s response latency
+  (unlike the Telegram send, which stays fire-and-forget). Accepted
+  trade-off: `bookEvent()` itself is already synchronous and blocking by
+  design (see Consequences) for the same reason — this webhook only
+  returns 200 once we're sure the booking actually exists — and the blob
+  write is small next to that.
 
 ### 5. `calendly-webhook.ts`: look up, build curated payload, sign, forward
 
@@ -138,16 +155,19 @@ cancellations too — otherwise their conversion numbers silently rot):
   ```jsonc
   {
     "event": "booking.created", // or "booking.cancelled"
-    "partnerKey": "bestofbarcelona",
     "bookingId": "<transactionId>", // stable correlation id for the partner
     "sessionTitle": "Cita Creativa",
     "scheduledTime": "2026-01-19T11:00:00.000000Z",
     "guestName": "nik lopin",
-    "guestEmail": "ask@lopin.me",
-    "cancellationReason": "test", // booking.cancelled only, optional
-    "timestamp": "2026-08-18T12:00:00.000Z"
+    "createdAt": "2026-08-18T12:00:00.000Z"
   }
   ```
+
+  Deliberately minimal — no `guestEmail` (PII the partner doesn't need to
+  operate on), no `partnerKey` (partner already knows who they are), no
+  `cancellationReason`. Full contract, including signature verification and
+  the partner-facing test endpoint (§6), is documented for partners in
+  `docs/partner-webhook-api.md`.
 
 - Sign it: HMAC-SHA256 over the raw JSON body using the partner's secret
   from the registry, sent as a header in the same `t=<ts>,v1=<hex>` shape
@@ -159,6 +179,15 @@ cancellations too — otherwise their conversion numbers silently rot):
   `sendTelegramMessage` / `triggerAvailabilityRefresh`. **No retry in v1**
   — a failed delivery is logged, not requeued. Acceptable at current
   partner volume; revisit if a partner reports frequent misses.
+- Unlike `stripe-webhook.ts`, none of this needs to block the response to
+  Calendly — a slow partner endpoint has no bearing on whether the booking
+  itself succeeded. `calendly-webhook.ts` acks Calendly (200) as soon as
+  the request is signature/schema-validated, then runs Telegram/refresh/
+  partner-forward afterwards, kept alive via Netlify's
+  `context.waitUntil` (exposed to Astro as `Astro.locals.netlify.context`).
+  This bounds Calendly's own delivery latency to validation time only, and
+  avoids Calendly retrying (and us double-forwarding to the partner) when
+  the partner endpoint alone is slow.
 - Log every attempt (`success` / `failed` / `skipped_no_partner` /
   `skipped_unknown_partner`) as a structured event via `services/logger.ts`,
   matching `webhookEvent` fields already tracked in both webhook handlers.
@@ -171,6 +200,29 @@ cancellations too — otherwise their conversion numbers silently rot):
   didn't get their event and may need a manual resend. Best-effort like
   every other Telegram send here — never throws, never blocks the 200 OK.
 
+### 6. `/api/partners/test-webhook`: let partners self-verify before going live
+
+A partner integrating their receiver has no way to trigger a real booking
+on demand, and we don't want them to have to. `POST
+/api/partners/test-webhook` sends a real, signed `PartnerBookingPayload` to
+their registered `webhookUrl` with synthetic data — no Calendly or Stripe
+involved on our side, so it exercises exactly the signing/delivery path a
+real booking would, without creating one.
+
+- Auth: the partner's own `secret` (the same one used to sign the outbound
+  HMAC) as a bearer token, SHA-256'd on both sides and compared with
+  `crypto.timingSafeEqual` — reuses a credential that already exists rather
+  than minting a new one, and avoids leaking whether a `partnerKey` is
+  valid (unknown key and wrong secret return the same generic 401).
+- `{ partnerKey }` → `booking.created` with a generated test `bookingId`.
+- `{ partnerKey, bookingId, status: "cancel" }` → `booking.cancelled` for
+  that `bookingId`, so a partner can test the cancel path against a
+  `booking.created` they already received.
+- Full request/response contract is in `docs/partner-webhook-api.md`
+  (partner-facing — no internal implementation details).
+- No rate limiting. Acceptable for a credential-gated tool handed to a
+  small, known set of partners; revisit if it's ever exposed more broadly.
+
 ## Consequences
 
 **Gains**
@@ -182,12 +234,17 @@ cancellations too — otherwise their conversion numbers silently rot):
   payload shape and from our internal metadata format.
 - Partner key can never become an SSRF/open-redirect vector — it's always
   a lookup, never a destination.
-- Matches existing codebase conventions end-to-end: fire-and-forget
-  notifications, structured logging, HMAC signature scheme, Netlify Blobs
-  for small correlation data.
+- Matches existing codebase conventions end-to-end: structured logging,
+  HMAC signature scheme, Netlify Blobs for small correlation data, and
+  fire-and-forget notifications wherever ordering doesn't require
+  otherwise.
 
 **Costs / accepted risks (v1)**
 
+- The `partner-bookings` blob write on `stripe-webhook.ts` is awaited, not
+  fire-and-forget — it adds (small) latency to that webhook's response.
+  Deliberate: it must land before `bookEvent()` triggers Calendly's own
+  webhook, which reads it (§4).
 - New Netlify Blobs store (`partner-bookings`) has no TTL/cleanup — low
   volume makes this fine short-term; add a cleanup job if it becomes a
   problem.
@@ -229,11 +286,14 @@ sequenceDiagram
     PS->>S: create Checkout session (metadata.partner = validated key)
     S-->>B: embedded checkout
     S->>SW: checkout.session.completed
+    SW->>Blob: await set(transactionId → partnerKey)
+    Note over SW,Blob: must land before bookEvent() — Calendly's own<br/>invitee.created webhook reads this blob almost<br/>immediately after, no retry if it loses the race
     SW->>Cal: bookEvent() → create invitee (comment unchanged)
-    SW->>Blob: set(transactionId → partnerKey)
     Cal->>CW: invitee.created
+    CW->>CW: verify signature, parse payload
+    CW-->>Cal: 200 OK (ack — rest runs via waitUntil)
     CW->>CW: extract transactionId from comment (existing)
     CW->>Blob: get(transactionId) → partnerKey
-    CW->>PW: POST signed curated payload (fire-and-forget, ~5s timeout)
+    CW->>PW: POST signed curated payload (~5s timeout)
     CW->>CW: log forward result
 ```
