@@ -8,21 +8,23 @@ use to verify their receiver before going live.
 
 We send a `POST` request to your registered `webhookUrl` for two events:
 
-| Event | Sent when |
-|---|---|
-| `booking.created` | A referred visitor completes a paid booking |
-| `booking.cancelled` | A previously-created booking is cancelled |
+| Event               | Sent when                                   |
+| ------------------- | ------------------------------------------- |
+| `booking.created`   | A referred visitor completes a paid booking |
+| `booking.cancelled` | A previously-created booking is cancelled   |
 
 ## 2. Payload
 
 ```jsonc
 {
-  "event": "booking.created",           // or "booking.cancelled"
-  "bookingId": "pi_3PxYzABC123",         // stable id, same value on create and cancel for the same booking
+  "event": "booking.created", // or "booking.cancelled"
+  "bookingId": "pi_3PxYzABC123", // stable id, same value on create and cancel for the same booking
   "sessionTitle": "Creative Session",
   "scheduledTime": "2026-09-01T11:00:00.000Z",
   "guestName": "Jane Doe",
-  "createdAt": "2026-08-23T09:12:03.000Z" // when this event was generated
+  "price": 9000, // total paid, in cents (EUR)
+  "guests": 2, // total attendees on the booking
+  "createdAt": "2026-08-23T09:12:03.000Z", // when this event was generated
 }
 ```
 
@@ -61,7 +63,7 @@ function isValidSignature(rawBody, signatureHeader, secret) {
 }
 ```
 
-Use the *raw* request body (bytes as received, before any JSON re-parsing) —
+Use the _raw_ request body (bytes as received, before any JSON re-parsing) —
 re-serializing the parsed object can change formatting and break the
 comparison.
 
@@ -111,16 +113,16 @@ curl -X POST https://splashplay.es/api/partners/test-webhook \
 {
   "delivered": true,
   "event": "booking.created",
-  "bookingId": "test_9f1c2e3a-..." // generated for you if you didn't send one
+  "bookingId": "test_9f1c2e3a-...", // generated for you if you didn't send one
 }
 ```
 
-| Status | Meaning |
-|---|---|
-| `200` | Delivered to your `webhookUrl` — check your receiver logs |
-| `400` | Bad request (e.g. `status: "cancel"` without a `bookingId`) |
-| `401` | Unknown `partnerKey` or wrong secret |
-| `502` | We reached your endpoint but delivery failed (non-2xx or timeout) — the response body's `error` field has details |
+| Status | Meaning                                                                                                           |
+| ------ | ----------------------------------------------------------------------------------------------------------------- |
+| `200`  | Delivered to your `webhookUrl` — check your receiver logs                                                         |
+| `400`  | Bad request (e.g. `status: "cancel"` without a `bookingId`)                                                       |
+| `401`  | Unknown `partnerKey` or wrong secret                                                                              |
+| `502`  | We reached your endpoint but delivery failed (non-2xx or timeout) — the response body's `error` field has details |
 
 ## 6. Getting your credentials
 

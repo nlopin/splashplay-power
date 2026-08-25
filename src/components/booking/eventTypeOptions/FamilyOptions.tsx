@@ -98,14 +98,21 @@ export function FamilyOptions({
         : `${formData.canvases} ${formData.canvases === 1 ? "canvas" : "canvases"}`;
     const productName = `${formData.adults} ${formData.adults === 1 ? "adult" : "adults"}, ${formData.kids} ${formData.kids === 1 ? "kid" : "kids"}, ${canvasLabel}, ${formData.activityFormat}`;
 
-    onChangeRef.current({ amount: totalAmount, productName });
+    onChangeRef.current({
+      amount: totalAmount,
+      productName,
+      guests: totalGuests,
+    });
   }, [formData]);
 
   const handleActivityFormatChange = (format: ActivityFormat) => {
     if (format === "pouring") {
       setFormData((prev) => {
         if (prev.canvasType === "big") {
-          const total = Math.max(1, Math.min(prev.adults + prev.kids, MAX_TOTAL));
+          const total = Math.max(
+            1,
+            Math.min(prev.adults + prev.kids, MAX_TOTAL),
+          );
           const limits = CANVAS_LIMITS[total];
           const canvases = Math.max(limits.min, Math.min(total, limits.max));
           return {
@@ -333,7 +340,6 @@ export function FamilyOptions({
         >
           +
         </button>
-
       </div>
 
       {showPrice && (

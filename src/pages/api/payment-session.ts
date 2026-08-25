@@ -33,6 +33,7 @@ export const POST: APIRoute = async ({ request }) => {
   const {
     amount,
     productName,
+    guests,
     datetime,
     lang,
     eventType,
@@ -57,6 +58,7 @@ export const POST: APIRoute = async ({ request }) => {
       eventType,
       sessionTime: datetime,
       sessionTitle: productName,
+      guests: String(guests),
       partner: getKnownPartner(maybePartner),
     },
     customer_creation: "always",

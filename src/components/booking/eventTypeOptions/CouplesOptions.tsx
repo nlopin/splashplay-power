@@ -30,9 +30,7 @@ const DEFAULT_SPLASH_PICTURE: PictureType = "one_big";
 const DEFAULT_POURING_PICTURE: PictureType = "individual";
 
 function isPictureType(value: string | null): value is PictureType {
-  return (
-    value === "one_small" || value === "one_big" || value === "individual"
-  );
+  return value === "one_small" || value === "one_big" || value === "individual";
 }
 
 export function CouplesOptions({
@@ -43,7 +41,8 @@ export function CouplesOptions({
   const [pictureType, setPictureType] = useState<PictureType>(
     DEFAULT_SPLASH_PICTURE,
   );
-  const [activityFormat, setActivityFormat] = useState<ActivityFormat>("splash");
+  const [activityFormat, setActivityFormat] =
+    useState<ActivityFormat>("splash");
   const savedSplashPictureTypeRef = useRef<PictureType>(DEFAULT_SPLASH_PICTURE);
   const t = useTranslator();
 
@@ -91,6 +90,7 @@ export function CouplesOptions({
     onChange({
       amount: PRICE[pictureType],
       productName: `${t(`couples_${pictureType}`)}, ${activityFormat}`,
+      guests: 2,
     });
 
     // Update URL with the selected option

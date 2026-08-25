@@ -24,4 +24,5 @@ export type Availability = AvailableTime[];
 export interface PricingData {
   amount: number;
   productName: string;
+  guests: number;
 }

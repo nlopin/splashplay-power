@@ -49,6 +49,7 @@ export default function BookingForm({
   const [currentProductName, setCurrentProductName] = useState<string | null>(
     null,
   );
+  const [currentGuests, setCurrentGuests] = useState<number | null>(null);
 
   // Payment state
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -125,11 +126,13 @@ export default function BookingForm({
     formattedProductName,
     eventType,
     datetime,
+    guests,
   }: {
     amount: number;
     formattedProductName: string;
     eventType: EventType;
     datetime: ISODatetime;
+    guests: number;
   }) => {
     setError(null);
 
@@ -150,6 +153,7 @@ export default function BookingForm({
           datetime,
           lang,
           partner: partnerKey,
+          guests,
         }),
         signal: controller.signal,
       });
@@ -181,9 +185,11 @@ export default function BookingForm({
   const handlePriceChange: ScheduleStepProps["onPriceChange"] = ({
     amount,
     productName,
+    guests,
   }) => {
     setCurrentAmount(amount);
     setCurrentProductName(productName);
+    setCurrentGuests(guests);
   };
 
   const handleTimeSlotSelect: ScheduleStepProps["onTimeSlotSelect"] = (
@@ -199,7 +205,13 @@ export default function BookingForm({
   };
 
   const handlePayToBook: ScheduleStepProps["onPayToBook"] = async () => {
-    if (!selectedTimeSlot || !currentAmount || !currentProductName) return;
+    if (
+      !selectedTimeSlot ||
+      !currentAmount ||
+      !currentProductName ||
+      !currentGuests
+    )
+      return;
 
     const formattedProductName = formatBookingProductName(
       translations[ProductNameKeyByEventType[eventType]],
@@ -222,6 +234,7 @@ export default function BookingForm({
         formattedProductName,
         eventType,
         datetime: selectedTimeSlot,
+        guests: currentGuests,
       });
       // Navigate to payment step - URL will be updated by useEffect
       setCurrentStep("payment");

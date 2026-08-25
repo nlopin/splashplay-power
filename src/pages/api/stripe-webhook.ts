@@ -43,6 +43,7 @@ const metadataSchema = z.object({
   eventType: z.enum(Object.values(EVENT_TYPE)),
   sessionTime: z.iso.datetime({ offset: true }),
   sessionTitle: z.string(),
+  guests: z.coerce.number().int().positive(),
   partner: z.string().optional(),
 });
 
@@ -134,14 +135,17 @@ export const POST: APIRoute = async ({ request }) => {
           customerName: parsedCustomer.data.name,
         });
 
-        // store partner key before creating a booking to guarantee it will be read in Calendly webhook
+        // store puchase via partner before creating a booking to guarantee it will be read in Calendly webhook
         if (parsedMetadata.data.partner) {
+          const isPartnerStored = await storePartnerBooking(paymentIntentId, {
+            partnerKey: parsedMetadata.data.partner,
+            price: session.amount_total ?? 0,
+            guests: parsedMetadata.data.guests,
+          });
+
           updateEvent(webhookEvent, {
             partnerKey: parsedMetadata.data.partner,
-            partnerStored: await storePartnerBooking(
-              paymentIntentId,
-              parsedMetadata.data.partner,
-            ),
+            partnerStored: isPartnerStored,
           });
         }
 

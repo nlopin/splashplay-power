@@ -76,7 +76,11 @@ export function PaintOptions({
       totalGuests === 0 ? 0 : calculatePaintPrice(totalGuests, eventType);
     const productName = `${formData.adults} ${formData.adults === 1 ? "adult" : "adults"}, ${formData.kids} ${formData.kids === 1 ? "kid" : "kids"}`;
 
-    onChangeRef.current({ amount: totalAmount, productName });
+    onChangeRef.current({
+      amount: totalAmount,
+      productName,
+      guests: totalGuests,
+    });
   }, [formData]);
 
   const handleAdultsChange = (value: number) => {
@@ -173,7 +177,6 @@ export function PaintOptions({
         >
           +
         </button>
-
       </div>
 
       {showPrice && (

@@ -125,7 +125,11 @@ export function FriendsOptions({
         : `${formData.canvases} ${formData.canvases === 1 ? "canvas" : "canvases"}`;
     const productName = `${formData.guests} ${formData.guests === 1 ? "guest" : "guests"}, ${canvasLabel}, ${formData.activityFormat}`;
 
-    onChangeRef.current({ amount: totalAmount, productName });
+    onChangeRef.current({
+      amount: totalAmount,
+      productName,
+      guests: formData.guests,
+    });
 
     try {
       const url = new URL(window.location.href);
@@ -318,7 +322,6 @@ export function FriendsOptions({
         >
           +
         </button>
-
       </div>
 
       {showPrice && (

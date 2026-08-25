@@ -20,6 +20,7 @@ export function IndividualOptions({
     onChange({
       amount: INDIVIDUAL_PRICE,
       productName: t("individual_session"),
+      guests: 1,
     });
   }, [onChange, t]);
 

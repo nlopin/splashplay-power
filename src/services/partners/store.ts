@@ -4,6 +4,8 @@ import { createAndLogEvent } from "@/services/logger";
 
 type PartnerBooking = {
   partnerKey: string;
+  price?: number;
+  guests?: number;
 };
 
 const partnerBookingsStore = getStore("partner-bookings", {
@@ -15,20 +17,20 @@ function isPartnerBooking(value: unknown): value is PartnerBooking {
   return (
     typeof value === "object" &&
     value !== null &&
-    'partnerKey' in value &&
-    typeof value['partnerKey'] === "string"
+    "partnerKey" in value &&
+    typeof value["partnerKey"] === "string"
   );
 }
 
 export async function storePartnerBooking(
   transactionId: string,
-  partnerKey: string,
+  booking: PartnerBooking,
 ): Promise<boolean> {
   const startTime = Date.now();
   const logEventBase = {
     transactionId,
-    partnerKey,
-  }
+    partnerKey: booking.partnerKey,
+  };
 
   if (!transactionId) {
     createAndLogEvent("partner_booking_write", {
@@ -40,7 +42,7 @@ export async function storePartnerBooking(
   }
 
   try {
-    await partnerBookingsStore.setJSON(transactionId, { partnerKey });
+    await partnerBookingsStore.setJSON(transactionId, booking);
     createAndLogEvent("partner_booking_write", {
       ...logEventBase,
       status: "success",
@@ -60,9 +62,9 @@ export async function storePartnerBooking(
   }
 }
 
-export async function getPartnerKeyForBooking(
+export async function getPartnerBookingForTransaction(
   transactionId: string,
-): Promise<string | null> {
+): Promise<PartnerBooking | null> {
   const startTime = Date.now();
 
   if (!transactionId) {
@@ -93,7 +95,7 @@ export async function getPartnerKeyForBooking(
       partnerKey: stored.partnerKey,
       durationMs: Date.now() - startTime,
     });
-    return stored.partnerKey;
+    return stored;
   } catch (error) {
     createAndLogEvent("partner_booking_read", {
       status: "error",

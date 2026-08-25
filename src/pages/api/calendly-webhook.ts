@@ -12,7 +12,10 @@ import {
 import { formatVisitDateTime } from "@/utils/formatters";
 import { triggerAvailabilityRefresh } from "@/services/availability";
 import { createEvent, logEvent, updateEvent } from "@/services/logger";
-import { getPartner, getPartnerKeyForBooking } from "@/services/partners";
+import {
+  getPartner,
+  getPartnerBookingForTransaction,
+} from "@/services/partners";
 import {
   sendPartnerWebhook,
   type PartnerBookingPayload,
@@ -37,7 +40,7 @@ type CalendlyWebhookEventData = {
   partnerForwardStatus: PartnerForwardStatus | undefined;
   partnerKey: string | undefined;
   error: string | undefined;
-  startTime: number,
+  startTime: number;
   durationMs: number;
 };
 
@@ -106,7 +109,6 @@ const JsonEventSchema = z
     }
   })
   .pipe(CalendlyWebhookEvent);
-
 
 export const POST: APIRoute = async ({ request, locals }) => {
   const baseEventData: CalendlyWebhookEventData = {
@@ -199,7 +201,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
 async function processCalendlyEvent(
   event: z.infer<typeof CalendlyWebhookEvent>,
-  webhookEvent: CalendlyWebhookEventData & { timestamp: string; event: string }
+  webhookEvent: CalendlyWebhookEventData & { timestamp: string; event: string },
 ): Promise<void> {
   updateEvent(webhookEvent, { phase: "completed" });
 
@@ -236,14 +238,20 @@ async function processCalendlyEvent(
     });
   }
 
-  logEvent(updateEvent(webhookEvent, { durationMs: Date.now() - webhookEvent.startTime }));
+  logEvent(
+    updateEvent(webhookEvent, {
+      durationMs: Date.now() - webhookEvent.startTime,
+    }),
+  );
 }
 
 // "failed" is the only partner-forward outcome that should flip the handler's
 // own status — skipped_no_partner/skipped_unknown_partner are expected, non-error
 // outcomes and shouldn't read as a handler failure in status-based monitoring.
 function overallStatus(partnerForward: PartnerForwardResult): string {
-  return partnerForward.status === "failed" ? "partner_forward_failed" : "success";
+  return partnerForward.status === "failed"
+    ? "partner_forward_failed"
+    : "success";
 }
 
 /**
@@ -415,11 +423,14 @@ async function forwardPartnerEvent(params: {
   scheduledTime: string;
   guestName: string;
 }): Promise<PartnerForwardResult> {
-  const partnerKey = await getPartnerKeyForBooking(params.transactionId);
-  if (!partnerKey) {
+  const partnerBooking = await getPartnerBookingForTransaction(
+    params.transactionId,
+  );
+  if (!partnerBooking) {
     return { status: "skipped_no_partner" };
   }
 
+  const { partnerKey } = partnerBooking;
   const partner = getPartner(partnerKey);
   if (!partner) {
     return { status: "skipped_unknown_partner", partnerKey };
@@ -431,6 +442,8 @@ async function forwardPartnerEvent(params: {
     sessionTitle: params.sessionTitle,
     scheduledTime: params.scheduledTime,
     guestName: params.guestName,
+    price: partnerBooking.price ?? 0,
+    guests: partnerBooking.guests ?? 0,
     createdAt: new Date().toISOString(),
   };
 

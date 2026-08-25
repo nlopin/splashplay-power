@@ -159,15 +159,22 @@ cancellations too — otherwise their conversion numbers silently rot):
     "sessionTitle": "Cita Creativa",
     "scheduledTime": "2026-01-19T11:00:00.000000Z",
     "guestName": "nik lopin",
-    "createdAt": "2026-08-18T12:00:00.000Z"
+    "price": 9000,
+    "guests": 2,
+    "createdAt": "2026-08-18T12:00:00.000Z",
   }
   ```
 
   Deliberately minimal — no `guestEmail` (PII the partner doesn't need to
   operate on), no `partnerKey` (partner already knows who they are), no
-  `cancellationReason`. Full contract, including signature verification and
-  the partner-facing test endpoint (§6), is documented for partners in
-  `docs/partner-webhook-api.md`.
+  `cancellationReason`. `price` (cents, EUR) and `guests` (attendee count)
+  ride along in the same `partner-bookings` blob record as `partnerKey` —
+  written once by `stripe-webhook.ts` from `session.amount_total` and the
+  validated `guests` metadata field, read back by `calendly-webhook.ts` —
+  rather than being threaded through the Calendly comment field, for the
+  same reason `partnerKey` itself is (see "Rejected approach" above). Full
+  contract, including signature verification and the partner-facing test
+  endpoint (§6), is documented for partners in `docs/partner-webhook-api.md`.
 
 - Sign it: HMAC-SHA256 over the raw JSON body using the partner's secret
   from the registry, sent as a header in the same `t=<ts>,v1=<hex>` shape

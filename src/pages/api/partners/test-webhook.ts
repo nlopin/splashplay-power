@@ -17,8 +17,12 @@ const TestWebhookRequestSchema = z.object({
 });
 
 function secretsMatch(provided: string, expected: string): boolean {
-  const a = new Uint8Array(crypto.createHash("sha256").update(provided).digest());
-  const b = new Uint8Array(crypto.createHash("sha256").update(expected).digest());
+  const a = new Uint8Array(
+    crypto.createHash("sha256").update(provided).digest(),
+  );
+  const b = new Uint8Array(
+    crypto.createHash("sha256").update(expected).digest(),
+  );
   return crypto.timingSafeEqual(a, b);
 }
 
@@ -40,7 +44,9 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (status === "cancel" && !requestedBookingId) {
     return new Response(
-      JSON.stringify({ error: 'bookingId is required when status is "cancel"' }),
+      JSON.stringify({
+        error: 'bookingId is required when status is "cancel"',
+      }),
       { status: 400 },
     );
   }
@@ -49,7 +55,11 @@ export const POST: APIRoute = async ({ request }) => {
   const authHeader = request.headers.get("Authorization") ?? "";
   const providedSecret = authHeader.replace(/^Bearer\s+/i, "");
 
-  if (!partner || !providedSecret || !secretsMatch(providedSecret, partner.secret)) {
+  if (
+    !partner ||
+    !providedSecret ||
+    !secretsMatch(providedSecret, partner.secret)
+  ) {
     createAndLogEvent("partner_test_webhook", {
       status: "unauthorized",
       partnerKey,
@@ -70,6 +80,8 @@ export const POST: APIRoute = async ({ request }) => {
     sessionTitle: "Test booking",
     scheduledTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     guestName: "Test Guest",
+    price: crypto.randomInt(5000, 20001),
+    guests: crypto.randomInt(2, 7),
     createdAt: new Date().toISOString(),
   };
 

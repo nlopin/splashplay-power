@@ -11,6 +11,8 @@ export type PartnerBookingPayload = {
   sessionTitle: string;
   scheduledTime: string;
   guestName: string;
+  price: number;
+  guests: number;
   createdAt: string;
 };
 
