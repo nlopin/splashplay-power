@@ -17,7 +17,7 @@ import { storePartnerBooking } from "@/services/partners";
 
 export const prerender = false;
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
-  apiVersion: "2025-10-29.clover",
+  apiVersion: "2026-07-29.preview",
 });
 
 type StripeWebhookEventData = {

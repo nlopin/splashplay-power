@@ -5,7 +5,7 @@ import Stripe from "stripe";
 export const prerender = false;
 
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
-  apiVersion: "2025-10-29.clover",
+  apiVersion: "2026-07-29.preview",
 });
 
 export const GET: APIRoute = async (ctx) => {
