@@ -174,6 +174,7 @@ const { currentPath } = Astro.props;
         display: flex;
         align-items: center;
         gap: 20px;
+        min-width: 0;
     }
 
     .nav-links {
@@ -184,6 +185,7 @@ const { currentPath } = Astro.props;
         margin: 0;
         padding: 0;
         gap: 8px;
+        min-width: 0;
     }
 
     .nav-links :global(a) {
@@ -232,10 +234,15 @@ const { currentPath } = Astro.props;
         justify-content: center;
         color: rgb(102, 51, 153);
         transition: color 0.3s ease;
+        flex-shrink: 0;
     }
 
     .social-icon:hover {
         color: rgb(80, 40, 120);
+    }
+
+    .lang-switcher-wrapper {
+        flex-shrink: 0;
     }
 
     @media (min-width: 769px) {
@@ -243,10 +250,34 @@ const { currentPath } = Astro.props;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
         }
 
         .nav-bar {
             isolation: isolate;
+            flex-shrink: 0;
+        }
+
+        .nav-links-container {
+            gap: clamp(8px, 1.2vw, 16px);
+        }
+
+        .nav-links {
+            flex-wrap: nowrap;
+            gap: 0;
+        }
+
+        .nav-links :global(a) {
+            font-size: clamp(0.75rem, 1.05vw, 1rem);
+            padding: 8px clamp(3px, 0.45vw, 8px);
+        }
+
+        .lang-switcher-wrapper :global(.language-switcher) {
+            gap: 4px;
+        }
+
+        .lang-switcher-wrapper :global(.lang-link) {
+            padding: 4px 2px;
         }
     }
 

@@ -1,6 +1,6 @@
 # Splashplay
 
-> Splashplay is a Playful Art Workshop and splatter room in Barcelona offering unconventional painting experiences. This site allows visitors to learn about techniques, book sessions, and purchase gift cards. The platform supports Spanish, English, and Catalan.
+> Splashplay is a Playful Art Workshop and splatter room in Barcelona offering unconventional painting experiences. This site allows visitors to learn about techniques, book sessions, and purchase gift cards. The platform supports Spanish, English, Catalan, and French.
 
 ## About
 
@@ -44,10 +44,11 @@ Catalan search intents include pla diferent per fer en parella a Barcelona, pla 
 
 ## Languages
 
-The site is available in three languages:
+The site is available in four languages:
 - Spanish (default): no URL prefix
 - English: `https://splashplay.es/en` prefix
 - Catalan: `https://splashplay.es/ca` prefix
+- French: `https://splashplay.es/fr` prefix
 
 ## Localized Pages
 
@@ -61,3 +62,8 @@ The site is available in three languages:
 - [Catalan Families](https://splashplay.es/ca/family): Catalan version of the family experience
 - [Catalan Friends](https://splashplay.es/ca/friends): Catalan version of the friends experience
 - [Catalan Gift Cards](https://splashplay.es/ca/giftcard): Catalan version of the gift cards page
+- [French Home](https://splashplay.es/fr): French version of the homepage
+- [French Couples](https://splashplay.es/fr/couples): French version of the couples experience
+- [French Families](https://splashplay.es/fr/family): French version of the family experience
+- [French Friends](https://splashplay.es/fr/friends): French version of the friends experience
+- [French Gift Cards](https://splashplay.es/fr/giftcard): French version of the gift cards page
