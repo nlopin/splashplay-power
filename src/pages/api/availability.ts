@@ -2,6 +2,8 @@ import type { APIRoute } from "astro";
 import { getAvailability } from "@/services/availability";
 import { isEventType } from "@/components/booking/types";
 
+export const prerender = false;
+
 export const GET: APIRoute = async ({ url }) => {
   try {
     const maybeEventType = url.searchParams.get("type");

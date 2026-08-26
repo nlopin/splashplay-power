@@ -2,6 +2,8 @@ import type { APIRoute } from "astro";
 import { STRIPE_SECRET_KEY } from "astro:env/server";
 import Stripe from "stripe";
 
+export const prerender = false;
+
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
   apiVersion: "2025-10-29.clover",
 });
