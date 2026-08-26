@@ -97,9 +97,11 @@ const priceCards = [
                     </div>
                     <div class="price-card-body">
                         <div class="price-card-header">
-                            <span class="price-card-icon">{t(`pricing.${card.id}.icon`)}</span>
                             <h4>
-                                <a href={card.link} class="price-card-title">{t(`pricing.${card.id}.title_card`)}</a>
+                                <span class="price-card-heading">
+                                    <span class="price-card-icon">{t(`pricing.${card.id}.icon`)}</span>
+                                    <a href={card.link} class="price-card-title">{t(`pricing.${card.id}.title_card`)}</a>
+                                </span>
                                 {card.id !== "teams" && (
                                     <span class="price-card-age">| {t(`pricing.${card.id}.age`)}</span>
                                 )}
@@ -235,24 +237,30 @@ const priceCards = [
     }
 
     .price-card-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
         margin-bottom: 0.35rem;
-    }
-
-    .price-card-icon {
-        font-size: var(--font-xl);
     }
 
     .price-card-header h4 {
         margin: 0;
         display: flex;
+        flex-wrap: wrap;
         align-items: baseline;
         justify-content: center;
-        flex-wrap: wrap;
-        gap: 0.25rem;
+        column-gap: 0.35rem;
+        row-gap: 0.15rem;
+    }
+
+    .price-card-heading {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        max-width: 100%;
+    }
+
+    .price-card-icon {
+        font-size: var(--font-xl);
+        line-height: 1;
+        flex-shrink: 0;
     }
 
     .price-card-title {

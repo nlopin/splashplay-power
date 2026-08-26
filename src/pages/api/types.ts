@@ -7,7 +7,7 @@ export const CreatePaymentSessionPayloadSchema = z.object({
   guests: z.number().int().positive(),
   datetime: z.iso.datetime({ offset: true }),
   eventType: z.enum(Object.values(EVENT_TYPE)),
-  lang: z.enum(["es", "ca", "en"]).optional().default("es"),
+  lang: z.enum(["es", "ca", "en", "fr"]).optional().default("es"),
   fullName: z.string().optional(),
   email: z.email().optional(),
   phone: z.string().optional(),

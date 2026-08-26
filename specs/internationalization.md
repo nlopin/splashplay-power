@@ -2,7 +2,7 @@
 
 ## Purpose & Motivation
 
-The website at hand is aimed to users that speak three languages — English, Spanish and Catalan.
+The website at hand is aimed to users that speak four languages — English, Spanish, Catalan and French.
 All the pages must have a version in each language mentioned above.
 
 The default language is Spanish.
@@ -46,6 +46,7 @@ Supported languages configuration:
 - Spanish (es): Default language, no URL prefix
 - English (en): URL prefix `/en`
 - Catalan (ca): URL prefix `/ca`
+- French (fr): URL prefix `/fr`
 
 Language detection priority:
 

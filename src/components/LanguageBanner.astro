@@ -14,7 +14,7 @@ const { alternateLinks } = Astro.props;
 
 const BannersDescriptionSchema = z.array(
     z.object({
-        lang: z.enum(["es", "ca", "en"]),
+        lang: z.enum(["es", "ca", "en", "fr"]),
         url: z.url(),
         text: z.string(),
         button: z.string(),

@@ -1,25 +1,28 @@
-export type Language = "es" | "en" | "ca";
+export type Language = "es" | "en" | "ca" | "fr";
 
 export const defaultLanguage: Language = "es";
 
-export const languages: Language[] = ["es", "en", "ca"];
+export const languages: Language[] = ["es", "en", "ca", "fr"];
 
 export const languageNames: Record<Language, string> = {
   es: "Español",
   en: "English",
   ca: "Català",
+  fr: "Français",
 };
 
 export const languagePrefixes: Record<Language, string> = {
   es: "", // Default language has no prefix
   en: "/en",
   ca: "/ca",
+  fr: "/fr",
 };
 
 // Import translation files
 import esTranslations from "../locales/es.json";
 import enTranslations from "../locales/en.json";
 import caTranslations from "../locales/ca.json";
+import frTranslations from "../locales/fr.json";
 
 type Translations = Record<Language, typeof esTranslations>;
 
@@ -29,6 +32,7 @@ const translations: Translations = {
   es: esTranslations,
   en: enTranslations,
   ca: caTranslations,
+  fr: frTranslations,
 };
 
 const languagesSet = new Set<string>(languages);
