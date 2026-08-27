@@ -24,8 +24,8 @@ Catalan search intents include pla diferent per fer en parella a Barcelona, pla 
 
 - [Home](https://splashplay.es/): Main landing page with techniques showcase, testimonials, pricing, and gallery
 - [Couples](https://splashplay.es/couples): Romantic painting experience for two (€60-90, 1.5 hours)
-- [Families](https://splashplay.es/family): Family-friendly sessions with children (from €17 per person, 45 min - 1.5 hours)
-- [Friends](https://splashplay.es/friends): Group sessions for 2-6 people (from €17 per person, 45 min - 1.5 hours)
+- [Families](https://splashplay.es/family): Family-friendly sessions with children (from €18 per person, 45 min - 1.5 hours)
+- [Friends](https://splashplay.es/friends): Group sessions for 2-6 people (from €18 per person, 45 min - 1.5 hours)
 - [Corporate](https://splashplay.es/corporate): Team-building and private company events for groups
 - [Gift Cards](https://splashplay.es/giftcard): Purchase gift cards for any experience
 

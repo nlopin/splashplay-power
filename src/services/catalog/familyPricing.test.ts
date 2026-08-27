@@ -4,14 +4,14 @@ import { calculateFamilyPrice } from "./familyPricing";
 describe("calculateFamilyPrice — big canvas", () => {
   it("2 people → €90", () =>
     expect(calculateFamilyPrice(1, 2, "big")).toBe(9000));
-  it("3 people → €95", () =>
-    expect(calculateFamilyPrice(1, 3, "big")).toBe(9500));
-  it("4 people → €105", () =>
-    expect(calculateFamilyPrice(1, 4, "big")).toBe(10500));
-  it("5 people → €115", () =>
-    expect(calculateFamilyPrice(1, 5, "big")).toBe(11500));
-  it("6 people → €125", () =>
-    expect(calculateFamilyPrice(1, 6, "big")).toBe(12500));
+  it("3 people → €96", () =>
+    expect(calculateFamilyPrice(1, 3, "big")).toBe(9600));
+  it("4 people → €108", () =>
+    expect(calculateFamilyPrice(1, 4, "big")).toBe(10800));
+  it("5 people → €120", () =>
+    expect(calculateFamilyPrice(1, 5, "big")).toBe(12000));
+  it("6 people → €132", () =>
+    expect(calculateFamilyPrice(1, 6, "big")).toBe(13200));
 });
 
 describe("calculateFamilyPrice — standard canvas, 1 person", () => {
@@ -31,37 +31,37 @@ describe("calculateFamilyPrice — standard canvas, 3 people", () => {
     expect(calculateFamilyPrice(1, 3)).toBe(8000));
   it("3 people, 2 canvases → €95", () =>
     expect(calculateFamilyPrice(2, 3)).toBe(9500));
-  it("3 people, 3 canvases → €120", () =>
-    expect(calculateFamilyPrice(3, 3)).toBe(12000));
+  it("3 people, 3 canvases → €126", () =>
+    expect(calculateFamilyPrice(3, 3)).toBe(12600));
 });
 
 describe("calculateFamilyPrice — standard canvas, 4 people", () => {
   it("4 people, 2 canvases → €105", () =>
     expect(calculateFamilyPrice(2, 4)).toBe(10500));
-  it("4 people, 3 canvases → €128", () =>
-    expect(calculateFamilyPrice(3, 4)).toBe(12800));
-  it("4 people, 4 canvases → €140", () =>
-    expect(calculateFamilyPrice(4, 4)).toBe(14000));
+  it("4 people, 3 canvases → €132", () =>
+    expect(calculateFamilyPrice(3, 4)).toBe(13200));
+  it("4 people, 4 canvases → €148", () =>
+    expect(calculateFamilyPrice(4, 4)).toBe(14800));
 });
 
 describe("calculateFamilyPrice — standard canvas, 5 people", () => {
-  it("5 people, 3 canvases → €135", () =>
-    expect(calculateFamilyPrice(3, 5)).toBe(13500));
-  it("5 people, 4 canvases → €149", () =>
-    expect(calculateFamilyPrice(4, 5)).toBe(14900));
-  it("5 people, 5 canvases → €160", () =>
-    expect(calculateFamilyPrice(5, 5)).toBe(16000));
+  it("5 people, 3 canvases → €140", () =>
+    expect(calculateFamilyPrice(3, 5)).toBe(14000));
+  it("5 people, 4 canvases → €155", () =>
+    expect(calculateFamilyPrice(4, 5)).toBe(15500));
+  it("5 people, 5 canvases → €175", () =>
+    expect(calculateFamilyPrice(5, 5)).toBe(17500));
 });
 
 describe("calculateFamilyPrice — standard canvas, 6 people", () => {
   it("6 people, 3 canvases → €145", () =>
     expect(calculateFamilyPrice(3, 6)).toBe(14500));
-  it("6 people, 4 canvases → €155", () =>
-    expect(calculateFamilyPrice(4, 6)).toBe(15500));
-  it("6 people, 5 canvases → €165", () =>
-    expect(calculateFamilyPrice(5, 6)).toBe(16500));
-  it("6 people, 6 canvases → €180", () =>
-    expect(calculateFamilyPrice(6, 6)).toBe(18000));
+  it("6 people, 4 canvases → €160", () =>
+    expect(calculateFamilyPrice(4, 6)).toBe(16000));
+  it("6 people, 5 canvases → €180", () =>
+    expect(calculateFamilyPrice(5, 6)).toBe(18000));
+  it("6 people, 6 canvases → €195", () =>
+    expect(calculateFamilyPrice(6, 6)).toBe(19500));
 });
 
 describe("calculateFamilyPrice — clamping", () => {
@@ -70,5 +70,5 @@ describe("calculateFamilyPrice — clamping", () => {
   it("clamps canvases above max for 2 people (max=2)", () =>
     expect(calculateFamilyPrice(5, 2)).toBe(9000));
   it("clamps total guests above 6", () =>
-    expect(calculateFamilyPrice(6, 7)).toBe(18000));
+    expect(calculateFamilyPrice(6, 7)).toBe(19500));
 });
