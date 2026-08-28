@@ -54,6 +54,10 @@ async function build() {
       ROOT_DIR,
       "src/netlify-functions/refresh-availability-background.ts",
     ),
+    path.resolve(
+      ROOT_DIR,
+      "src/netlify-functions/scheduled-partner-bookings-cleanup.ts",
+    ),
   ];
 
   try {

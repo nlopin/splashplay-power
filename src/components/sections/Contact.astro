@@ -1,7 +1,13 @@
 ---
-import { createAstroTranslator } from "../../utils/i18n";
+import {
+    createAstroTranslator,
+    getCurrentLanguage,
+    languagePrefixes,
+} from "../../utils/i18n";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
+const language = getCurrentLanguage(Astro.currentLocale);
+const privacyPolicyHref = `${languagePrefixes[language]}/privacy-policy`;
 ---
 
 <section id="contact" class="contacts" data-menu-title={t("nav_contact")}>
@@ -62,7 +68,10 @@ const t = createAstroTranslator(Astro.currentLocale, "main");
 <footer>
     <div class="container">
         <div class="footer__content">
-            <p>{t("copyright")}</p>
+            <div class="footer__legal">
+                <p>{t("copyright")}</p>
+                <a href={privacyPolicyHref} class="footer__privacy-link">{t("privacy_policy_link")}</a>
+            </div>
             <div class="footer__social">
                 <a
                     href="https://www.instagram.com/splashplaystudio"
@@ -181,6 +190,24 @@ const t = createAstroTranslator(Astro.currentLocale, "main");
         margin: 0;
     }
 
+    .footer__legal {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .footer__privacy-link {
+        color: var(--white);
+        text-decoration: underline;
+        opacity: 0.85;
+        transition: opacity 0.3s ease;
+    }
+
+    .footer__privacy-link:hover {
+        opacity: 1;
+    }
+
     .social-link {
         color: var(--white);
         transition: color 0.3s ease;
@@ -203,6 +230,11 @@ const t = createAstroTranslator(Astro.currentLocale, "main");
             flex-direction: column;
             gap: 1rem;
             text-align: center;
+        }
+
+        .footer__legal {
+            flex-direction: column;
+            gap: 0.5rem;
         }
     }
 </style>

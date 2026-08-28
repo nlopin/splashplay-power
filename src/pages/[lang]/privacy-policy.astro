@@ -1,0 +1,12 @@
+---
+import PrivacyPolicyPage from "../../components/PrivacyPolicyPage.astro";
+import { languages } from "../../utils/i18n";
+
+export async function getStaticPaths() {
+    return languages.map((lang) => ({
+        params: { lang },
+    }));
+}
+---
+
+<PrivacyPolicyPage />
