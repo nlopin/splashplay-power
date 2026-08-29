@@ -5,8 +5,6 @@ import {
   CALENDLY_FAMILY_EVENT_TYPE_ID,
   CALENDLY_FRIENDS_EVENT_TYPE_ID,
   CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
-  CALENDLY_THROW_PAINT_EVENT_TYPE_ID,
-  CALENDLY_CUSTOMIZE_CLOTHES_EVENT_TYPE_ID,
 } from "astro:env/server";
 
 import { type EventType } from "@/components/booking/types";
@@ -23,8 +21,6 @@ const EVENT_TYPE_IDS: Record<EventType, string> = {
   family: CALENDLY_FAMILY_EVENT_TYPE_ID,
   friends: CALENDLY_FRIENDS_EVENT_TYPE_ID,
   individual: CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
-  throw_paint: CALENDLY_THROW_PAINT_EVENT_TYPE_ID,
-  customize_clothes: CALENDLY_CUSTOMIZE_CLOTHES_EVENT_TYPE_ID,
 };
 const BOOK_IN_ADVANCE = 45;
 const BATCH_SIZE_IN_DAYS = 7;

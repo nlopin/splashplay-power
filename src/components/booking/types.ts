@@ -8,8 +8,6 @@ export const EVENT_TYPE = {
   FAMILY: "family",
   FRIENDS: "friends",
   INDIVIDUAL: "individual",
-  THROW_PAINT: "throw_paint",
-  CUSTOMIZE_CLOTHES: "customize_clothes",
 } as const;
 
 export type EventType = (typeof EVENT_TYPE)[keyof typeof EVENT_TYPE];
