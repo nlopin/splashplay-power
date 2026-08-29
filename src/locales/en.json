@@ -312,7 +312,8 @@
     "faq_a_corp_invoice": "Prices are per person + VAT. Send us your company details at least 3 days in advance; we'll issue an invoice and, once payment is confirmed, your booking is confirmed. Full payment (100%) is due by card or bank transfer.",
     "faq_q_corp_formats": "What's the difference between Splash, Pouring, and the Team Building Special?",
     "faq_a_corp_formats": "Splash and Pouring last 1.5 h and are for up to 6 people: Splash is more dynamic, Pouring is calmer. The Team Building Special is for 6–10 people and lasts 2–2.5 h: canvases and tools rotate, each artwork is a group creation, and everyone takes home a painting.",
-    "privacy_policy_link": "Privacy Policy"
+    "privacy_policy_link": "Privacy Policy",
+    "ai_agent_link": "AI agent access"
   },
   "book": {
     "canvas_size": "Canvas Size",

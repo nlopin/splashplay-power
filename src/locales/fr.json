@@ -312,7 +312,8 @@
     "faq_a_corp_invoice": "Les prix sont par personne + TVA. Envoyez-nous les coordonnées de votre entreprise au moins 3 jours à l'avance ; nous émettrons une facture et, une fois le paiement confirmé, votre réservation est confirmée. Le paiement intégral (100 %) se fait par carte ou virement bancaire.",
     "faq_q_corp_formats": "Quelle est la différence entre Splash, Pouring et le Spécial Team Building ?",
     "faq_a_corp_formats": "Splash et Pouring durent 1.5 h et sont pour jusqu'à 6 personnes : Splash est plus dynamique, Pouring plus calme. Le Spécial Team Building est pour 6–10 personnes et dure 2–2.5 h : toiles et outils tournent, chaque œuvre est une création collective, et chacun ramène un tableau.",
-    "privacy_policy_link": "Politique de confidentialité"
+    "privacy_policy_link": "Politique de confidentialité",
+    "ai_agent_link": "Accès agents IA"
   },
   "book": {
     "canvas_size": "Taille de la toile",

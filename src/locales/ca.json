@@ -312,7 +312,8 @@
     "faq_a_corp_invoice": "Els preus són per persona + IVA. Envieu-nos les dades de l'empresa amb almenys 3 dies d'antelació; us emetem la factura i, en confirmar el pagament, es confirma la reserva. Es paga el 100% amb targeta o transferència bancària.",
     "faq_q_corp_formats": "Quina diferència hi ha entre Splash, Pouring i el Team Building Special?",
     "faq_a_corp_formats": "Splash i Pouring duren 1,5 h i són per a fins a 6 persones: Splash és més dinàmic i Pouring més tranquil. El Team Building Special és per a 6–10 persones i dura 2–2,5 h: roten llenços i eines, cada obra és col·lectiva i cada persona s'emporta un quadre.",
-    "privacy_policy_link": "Política de Privacitat"
+    "privacy_policy_link": "Política de Privacitat",
+    "ai_agent_link": "Accés per a agents IA"
   },
   "book": {
     "canvas_size": "Mida de Llenç",
