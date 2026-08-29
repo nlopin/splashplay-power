@@ -4,9 +4,7 @@ import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
-
-// Fixed price for individual booking
-const INDIVIDUAL_PRICE = 6000;
+import { INDIVIDUAL_PRICE } from "@/services/catalog/individualPricing";
 
 export function IndividualOptions({
   onChange,

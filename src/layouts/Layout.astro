@@ -8,6 +8,7 @@ import {
 import { normalizeSeoPath, shouldExcludeFromIndex } from "../utils/seo-paths.mjs";
 import { getImage } from "astro:assets";
 import ogImageSrc from "../assets/og.jpg"
+import { CONTACT_EMAIL, WHATSAPP_PHONE } from "../constants";
 
 interface Props {
     title?: string;
@@ -47,8 +48,8 @@ const localBusinessSchema = {
     "description": tSchema("business_description"),
     "url": "https://splashplay.es",
     "image": new URL("/icon.svg", Astro.site || "https://splashplay.es").toString(),
-    "telephone": "+34641671670",
-    "email": "info@splashplay.es",
+    "telephone": WHATSAPP_PHONE,
+    "email": CONTACT_EMAIL,
     "address": {
         "@type": "PostalAddress",
         "streetAddress": "Carrer del Concili de Trento, 7",

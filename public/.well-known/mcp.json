@@ -1,0 +1,18 @@
+{
+  "mcp_version": "1.0",
+  "server_name": "splashplay-booking",
+  "server_version": "0.1.0",
+  "description": "Book a Splashplay painting session in Barcelona (couples, family, friends) — browse experiences, check availability, and create a Stripe checkout, all without leaving the conversation.",
+  "endpoints": {
+    "streamable_http": "https://splashplay.es/api/mcp"
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": true,
+    "prompts": false
+  },
+  "authentication": {
+    "required": false
+  },
+  "documentation": "https://splashplay.es/llms.txt"
+}

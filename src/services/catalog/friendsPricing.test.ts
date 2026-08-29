@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { calculateFriendsPrice } from "./FriendsOptions";
+import { calculateFriendsPrice } from "./friendsPricing";
 
 describe("calculateFriendsPrice — big canvas", () => {
-  it("1 guest → €80", () =>
-    expect(calculateFriendsPrice(1, 1, "big")).toBe(8000));
+  it("1 guest → €85", () =>
+    expect(calculateFriendsPrice(1, 1, "big")).toBe(8500));
   it("2 guests → €90", () =>
     expect(calculateFriendsPrice(1, 2, "big")).toBe(9000));
   it("3 guests → €95", () =>
@@ -18,8 +18,8 @@ describe("calculateFriendsPrice — big canvas", () => {
 
 describe("calculateFriendsPrice — standard canvas", () => {
   // 1 guest
-  it("1 guest, 1 canvas → €60", () =>
-    expect(calculateFriendsPrice(1, 1, "standard")).toBe(6000));
+  it("1 guest, 1 canvas → €65", () =>
+    expect(calculateFriendsPrice(1, 1, "standard")).toBe(6500));
 
   // 2 guests
   it("2 guests, 1 canvas → €75", () =>

@@ -311,7 +311,9 @@
     "faq_q_corp_invoice": "Does the price include VAT? Do you issue invoices?",
     "faq_a_corp_invoice": "Prices are per person + VAT. Send us your company details at least 3 days in advance; we'll issue an invoice and, once payment is confirmed, your booking is confirmed. Full payment (100%) is due by card or bank transfer.",
     "faq_q_corp_formats": "What's the difference between Splash, Pouring, and the Team Building Special?",
-    "faq_a_corp_formats": "Splash and Pouring last 1.5 h and are for up to 6 people: Splash is more dynamic, Pouring is calmer. The Team Building Special is for 6–10 people and lasts 2–2.5 h: canvases and tools rotate, each artwork is a group creation, and everyone takes home a painting."
+    "faq_a_corp_formats": "Splash and Pouring last 1.5 h and are for up to 6 people: Splash is more dynamic, Pouring is calmer. The Team Building Special is for 6–10 people and lasts 2–2.5 h: canvases and tools rotate, each artwork is a group creation, and everyone takes home a painting.",
+    "privacy_policy_link": "Privacy Policy",
+    "ai_agent_link": "AI agent access"
   },
   "book": {
     "canvas_size": "Canvas Size",
@@ -321,7 +323,9 @@
     "select_event_type": "Choose Your Experience",
     "event_type_couples": "Couples",
     "event_type_couples_desc": "Perfect for romantic dates and quality time together",
+    "event_type_family": "Family",
     "event_type_family_desc": "Fun creative time for families with kids",
+    "event_type_friends": "Friends",
     "event_type_friends_desc": "Great for friend groups and celebrations",
     "event_type_individual_desc": "Solo creative exploration and relaxation",
     "couples_one_small": "One canvas, 30×40cm",
@@ -816,7 +820,6 @@
     "activity_pouring_format_team_description": "Come as a team and create together. If you're a group of 4 to 6, choose 2 or 3 canvases to split into pairs, keeping the collaborative dynamic.",
     "more_info": "More info"
   },
-
   "notFound": {
     "title": "Page not found",
     "heading": "Page not found",
@@ -834,5 +837,109 @@
     "title": "Gift Certificates - SplashPlay",
     "meta_description": "SplashPlay gift certificates in Barcelona for a private, playful creative experience, available on Sundays too. Print or send by email. Valid 6 months.",
     "intro": "A gift card is creative time together at the studio. Pick an amount, print or send by email on your chosen date. They come when they're ready. Valid 6 months."
+  },
+  "privacyPolicy": {
+    "meta_title": "Privacy Policy - SplashPlay",
+    "meta_description": "How SplashPlay Studio (Aleksandra Lopina) collects, uses and protects your personal data when you book a session, pay, or browse the website.",
+    "h1": "Privacy Policy",
+    "last_updated_label": "Last updated:",
+    "last_updated": "August 26, 2026",
+    "intro": "At SplashPlay we take the privacy of your data seriously. This policy explains what information we collect when you book a session, buy a gift card, or browse splashplay.es, what we use it for, who we share it with, and what rights you have over it.",
+    "s1_title": "1. Who is responsible for your data",
+    "s1_p1": "The data controller for your personal data is Aleksandra Lopina, a self-employed professional (autónoma) trading as \"SplashPlay Studio\", with address at Carrer del Concili de Trento, 7, 08018 Barcelona, Spain.",
+    "s1_p2": "For any question about this policy or your personal data, you can write to us at info@splashplay.es.",
+    "s2_title": "2. What data we collect and where it comes from",
+    "s2_intro": "We do not keep our own customer database. The data we collect is stored directly in the third-party services described below, which act as our data processors.",
+    "s2_necessity": "Giving us your name, email and phone number is necessary to complete a booking — without them we can't confirm your session, contact you about it, or process payment.",
+    "s2_stripe_title": "Booking and payment (Stripe)",
+    "s2_stripe_body": "When you book and pay for a session, the payment form (Stripe Checkout) collects your name, email, phone number and your card or payment method details. Stripe processes the payment and stores this data on our behalf; we never see or store your full card number.",
+    "s2_calendly_title": "Choosing a date and time (Calendly)",
+    "s2_calendly_body": "Once payment is confirmed, your name, email, phone number and any comment you leave are sent to Calendly to book your slot in the studio's schedule.",
+    "s2_partner_title": "Bookings made through partners",
+    "s2_partner_body": "If you reach SplashPlay through a partner's link (for example, another business that recommends our sessions), we share your name, the session date, activity type, price and number of guests with that partner, so it can confirm the booking it referred. We also store, in a technical store hosted by our hosting provider (Netlify), the payment transaction ID together with the partner, price and number of guests — without your name or contact details — to reconcile that relationship with the partner.",
+    "s2_telegram_title": "Internal booking notifications",
+    "s2_telegram_body": "When a booking is created, changed or cancelled, a message with your name, email, phone number and (if you cancel) the cancellation reason is automatically sent to an internal Telegram chat that we use solely to run the studio.",
+    "s2_analytics_title": "Analytics and advertising",
+    "s2_analytics_body": "We use Amplitude to understand how the website is used (pages viewed, clicks, booking-flow steps) and its session-replay feature, which can record how you interact with the page. We also use Google Tag Manager, Google Ads and the Meta (Facebook/Instagram) Pixel to measure the performance of our ads and, based on your on-site behaviour, to build remarketing audiences (showing you ads after your visit) and lookalike audiences on Google and Meta — in other words, these tools carry out profiling for advertising purposes. These tools may collect your IP address, device/browser identifiers and on-site activity through cookies or similar technologies. These tools currently load when you visit the site, without asking for your consent first; we are building a cookie-consent control that will let you accept or reject this advertising profiling before it runs.",
+    "s2_hosting_title": "Hosting and technical logs",
+    "s2_hosting_body": "Our website and server functions are hosted on Netlify, which generates temporary technical logs (for example, of errors or function traffic) that may include IP addresses or other data included in requests.",
+    "s3_title": "3. Why we process your data (legal basis)",
+    "s3_body": "We process your personal data under the following GDPR legal bases:",
+    "s3_list": [
+      "Performance of a contract (Art. 6.1.b): to manage your booking, process payment and provide the service.",
+      "Legal obligation (Art. 6.1.c): to comply with tax and accounting obligations.",
+      "Legitimate interest (Art. 6.1.f): to prevent fraud, manage partner bookings and improve the website.",
+      "Consent (Art. 6.1.a): for non-essential analytics and advertising, where required by applicable law."
+    ],
+    "s4_title": "4. Who we share your data with",
+    "s4_intro": "We only share data with the providers needed to run the service, all acting as data processors (or, in the case of partners, as independent controllers of the data they receive):",
+    "s4_list": [
+      "Stripe Payments Europe, Ltd. — payment processing and customer data.",
+      "Calendly, LLC — booking schedule management.",
+      "Amplitude, Inc. — product analytics and session replay.",
+      "Google Ireland Ltd. (Google Tag Manager, Google Ads, Google Maps) — ad measurement and the studio map on the Contact section.",
+      "Meta Platforms Ireland Ltd. (Meta Pixel) — ad measurement.",
+      "Netlify, Inc. — website hosting, server functions and technical storage.",
+      "Telegram Messenger Inc. / Telegram FZ-LLC — internal booking notifications.",
+      "Partner businesses that referred you to SplashPlay, only when you book through their link."
+    ],
+    "s4_note": "We do not sell your personal data to third parties.",
+    "s4_dpa_note": "We have a data processing agreement (DPA) under Art. 28 GDPR in place with each of these providers, incorporated into their standard terms of service — with the exception of Telegram (see section 5).",
+    "s5_title": "5. International data transfers",
+    "s5_intro": "Some of our providers process data outside the European Economic Area, mainly in the United States. Here is the specific safeguard each one relies on:",
+    "s5_list": [
+      "Stripe (Stripe Payments Europe, Ltd. in the EU; Stripe, Inc. in the US as sub-processor) — EU-U.S. Data Privacy Framework.",
+      "Calendly, LLC — EU-U.S. Data Privacy Framework, plus the UK Extension and the Swiss-U.S. DPF.",
+      "Amplitude, Inc. — EU-U.S. Data Privacy Framework.",
+      "Google (Google Ireland Ltd. as our contracting party; Google LLC in the US) — EU-U.S. Data Privacy Framework, for Google Ads, Google Tag Manager and Google Maps.",
+      "Meta (Meta Platforms Ireland Ltd. as our contracting party; Meta Platforms, Inc. in the US) — EU-U.S. Data Privacy Framework.",
+      "Netlify, Inc. — EU-U.S. Data Privacy Framework plus the European Commission's Standard Contractual Clauses.",
+      "Telegram (Telegram FZ-LLC, Telegram Group Inc.) — Telegram acts as an independent controller for the messages we send it, and states it stores EU/UK users' data in data centres in the Netherlands, with an EU representative appointed under Art. 27 GDPR. Telegram does not offer a data processing agreement, so we cannot point to a formal Art. 46 GDPR safeguard for this channel; that is why we limit what we send there to the minimum needed to manage your booking."
+    ],
+    "s5_note": "You can check each provider's own policy for their current DPF certification details.",
+    "s6_title": "6. How long we keep your data",
+    "s6_body": "Since we don't store data in our own systems, retention depends mainly on each provider and our legal obligations:",
+    "s6_list": [
+      "Payment and billing data (Stripe): for as long as the relationship lasts, and afterwards for the period required by Spanish tax and accounting law (currently up to 6 years).",
+      "Booking data (Calendly): for as long as the booking stays on our calendar; we manually clear completed or cancelled Calendly events, typically within 12 months of the session, unless we need to keep them longer for a payment dispute or claim.",
+      "Partner data (Netlify Blobs, no name or contact details): 365 days from the booking, then automatically deleted by a daily scheduled job.",
+      "Session Replay recordings (Amplitude): 30 days from recording, Amplitude's default retention.",
+      "Other analytics events (Amplitude, beyond Session Replay): per our Amplitude account's retention setting, which we currently have not shortened from the platform default.",
+      "Advertising cookies (Google Ads, Meta Pixel): the `_gcl_au` (Google Ads) and `_fbp`/`_fbc` (Meta Pixel) cookies expire by default 90 days after your last visit.",
+      "Internal notifications (Telegram) and technical logs (Netlify): we keep messages in the internal chat only for as long as operationally useful to manage the booking, typically a few weeks; Netlify's technical logs are kept for a limited period under our hosting provider's own settings.",
+      "Google Maps (Contact section): Google may set its own cookies when the map loads; retention is set by Google (see Google's cookie policy)."
+    ],
+    "s7_title": "7. Your rights",
+    "s7_body": "You can exercise the following rights at any time by writing to info@splashplay.es:",
+    "s7_list": [
+      "Access: find out what data of yours we process.",
+      "Rectification: correct inaccurate data.",
+      "Erasure: ask us to delete your data (note that some billing data must be kept by law even if you request deletion).",
+      "Objection and restriction: object to certain processing or ask us to restrict its use.",
+      "Portability: receive your data in a structured format.",
+      "Withdraw consent: where processing is based on your consent, at any time, without retroactive effect."
+    ],
+    "s7_complaint": "If you believe we haven't handled your data correctly, you can also file a complaint with the Spanish Data Protection Agency, the AEPD (www.aepd.es).",
+    "s8_title": "8. Cookies and similar technologies",
+    "s8_body": "Our website uses cookies and similar identifiers mainly for analytics and advertising, through the services listed in section 2:",
+    "s8_list": [
+      "Amplitude — usage analytics and session replay (recordings kept 30 days by default).",
+      "Google Tag Manager and Google Ads — campaign measurement and building remarketing/lookalike audiences from your on-site activity (advertising profiling); `_gcl_au` cookie, expires after 90 days.",
+      "Meta Pixel — campaign measurement and building remarketing/lookalike audiences on Facebook/Instagram from your on-site activity (advertising profiling); `_fbp`/`_fbc` cookies, expire after 90 days.",
+      "Google Maps — the interactive map embedded in the Contact section loads directly from Google and may set its own cookies; for EU visitors, Google shows its own consent prompt inside the map before loading them."
+    ],
+    "s8_note": "You can block or delete these cookies from your browser settings; blocking them does not affect your booking or payment, which are handled directly with Stripe and Calendly. These tools currently load without asking for your consent first — we are building a consent panel that will let you accept or reject analytics and advertising (including the profiling described above) before they run.",
+    "s9_title": "9. Security",
+    "s9_body": "We apply reasonable technical and organisational measures to protect your data, and we entrust payment processing to Stripe, a PCI-DSS certified platform, so your card details never pass through our own servers.",
+    "s10_title": "10. Children",
+    "s10_body": "Our sessions may include children accompanied by an adult, but booking and payment must always be made by an adult. We do not knowingly collect personal data from children through the booking form.",
+    "s11_title": "11. Changes to this policy",
+    "s11_body": "We may update this policy if our services or applicable law change. We will always publish the current version on this same page, with the last-updated date.",
+    "s12_title": "12. Contact",
+    "s12_body": "For any question about this policy or your personal data:",
+    "s12_email_label": "Email:",
+    "s12_address_label": "Address:",
+    "s12_address": "Carrer del Concili de Trento, 7, 08018 Barcelona, Spain",
+    "back_home": "Back to homepage"
   }
 }

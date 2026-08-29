@@ -1,5 +1,6 @@
 ---
 import { createAstroTranslator } from "../../utils/i18n";
+import { WHATSAPP_LINK } from "../../constants";
 
 interface Props {
     variant?: "default" | "corporate" | "couples";
@@ -93,7 +94,7 @@ const faqSchema = {
         <div class="faq-cta">
             <p class="faq-cta-text">{t("faq_more_questions")}</p>
             <a
-                href="https://wa.me/34641671670"
+                href={WHATSAPP_LINK}
                 target="_blank"
                 rel="noopener"
                 class="faq-cta-button"

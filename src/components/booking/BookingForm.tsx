@@ -2,7 +2,10 @@ import { useState, useRef, useEffect } from "react";
 
 import { TranslatorProvider } from "@/components/TranslatorContext";
 import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
-import { formatVisitDateTime } from "@/utils/formatters";
+import {
+  formatBookingProductName,
+  ProductNameKeyByEventType,
+} from "@/services/catalog/productName";
 import { isServer } from "@/utils/environment";
 import { trackEvent, AnalyticsEvents } from "@/services/analytics";
 import type { ISODatetime } from "@/types";
@@ -323,22 +326,3 @@ function shouldRedirectToSchedule(
   return step === "payment" && !selectedTimeSlot;
 }
 
-const ProductNameKeyByEventType: Record<EventType, string> = {
-  couples: "creative_date",
-  family: "family_session",
-  friends: "friends_session",
-  individual: "individual_session",
-  throw_paint: "throw_paint_session",
-  customize_clothes: "customize_clothes_session",
-};
-
-export function formatBookingProductName(
-  creativeDateTranslation: string,
-  bookingDate: string,
-  eventOptions: string,
-  locale?: string,
-): string {
-  const formattedDate = formatVisitDateTime(bookingDate, "short", locale);
-
-  return `${creativeDateTranslation}, ${formattedDate} (${eventOptions})`;
-}

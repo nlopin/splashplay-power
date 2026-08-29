@@ -1,0 +1,187 @@
+---
+import SimpleLayout from "@/layouts/SimpleLayout.astro";
+import {
+    languagePrefixes,
+    getCurrentLanguage,
+    getPageTranslations,
+} from "@/utils/i18n";
+import { CONTACT_EMAIL } from "@/constants";
+
+const language = getCurrentLanguage(Astro.currentLocale);
+const t = getPageTranslations(language, "privacyPolicy");
+const homeHref = languagePrefixes[language] || "/";
+---
+
+<SimpleLayout title={t.meta_title} description={t.meta_description} homeHref={homeHref}>
+    <article class="policy">
+        <h1>{t.h1}</h1>
+        <p class="updated">{t.last_updated_label} {t.last_updated}</p>
+        <p class="intro">{t.intro}</p>
+
+        <section>
+            <h2>{t.s1_title}</h2>
+            <p>{t.s1_p1}</p>
+            <p>{t.s1_p2}</p>
+        </section>
+
+        <section>
+            <h2>{t.s2_title}</h2>
+            <p>{t.s2_intro}</p>
+            <p>{t.s2_necessity}</p>
+
+            <h3>{t.s2_stripe_title}</h3>
+            <p>{t.s2_stripe_body}</p>
+
+            <h3>{t.s2_calendly_title}</h3>
+            <p>{t.s2_calendly_body}</p>
+
+            <h3>{t.s2_partner_title}</h3>
+            <p>{t.s2_partner_body}</p>
+
+            <h3>{t.s2_telegram_title}</h3>
+            <p>{t.s2_telegram_body}</p>
+
+            <h3>{t.s2_analytics_title}</h3>
+            <p>{t.s2_analytics_body}</p>
+
+            <h3>{t.s2_hosting_title}</h3>
+            <p>{t.s2_hosting_body}</p>
+        </section>
+
+        <section>
+            <h2>{t.s3_title}</h2>
+            <p>{t.s3_body}</p>
+            <ul>
+                {t.s3_list.map((item) => <li>{item}</li>)}
+            </ul>
+        </section>
+
+        <section>
+            <h2>{t.s4_title}</h2>
+            <p>{t.s4_intro}</p>
+            <ul>
+                {t.s4_list.map((item) => <li>{item}</li>)}
+            </ul>
+            <p>{t.s4_note}</p>
+            <p>{t.s4_dpa_note}</p>
+        </section>
+
+        <section>
+            <h2>{t.s5_title}</h2>
+            <p>{t.s5_intro}</p>
+            <ul>
+                {t.s5_list.map((item) => <li>{item}</li>)}
+            </ul>
+            <p>{t.s5_note}</p>
+        </section>
+
+        <section>
+            <h2>{t.s6_title}</h2>
+            <p>{t.s6_body}</p>
+            <ul>
+                {t.s6_list.map((item) => <li>{item}</li>)}
+            </ul>
+        </section>
+
+        <section>
+            <h2>{t.s7_title}</h2>
+            <p>{t.s7_body}</p>
+            <ul>
+                {t.s7_list.map((item) => <li>{item}</li>)}
+            </ul>
+            <p>{t.s7_complaint}</p>
+        </section>
+
+        <section>
+            <h2>{t.s8_title}</h2>
+            <p>{t.s8_body}</p>
+            <ul>
+                {t.s8_list.map((item) => <li>{item}</li>)}
+            </ul>
+            <p>{t.s8_note}</p>
+        </section>
+
+        <section>
+            <h2>{t.s9_title}</h2>
+            <p>{t.s9_body}</p>
+        </section>
+
+        <section>
+            <h2>{t.s10_title}</h2>
+            <p>{t.s10_body}</p>
+        </section>
+
+        <section>
+            <h2>{t.s11_title}</h2>
+            <p>{t.s11_body}</p>
+        </section>
+
+        <section>
+            <h2>{t.s12_title}</h2>
+            <p>{t.s12_body}</p>
+            <p>{t.s12_email_label} <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p>
+            <p>{t.s12_address_label} {t.s12_address}</p>
+        </section>
+
+        <a href={homeHref} class="home-link">{t.back_home}</a>
+    </article>
+</SimpleLayout>
+
+<style>
+    .policy {
+        text-align: left;
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    .policy h1 {
+        text-align: center;
+    }
+
+    .updated {
+        text-align: center;
+        color: var(--text-muted, #666);
+        font-size: var(--font-sm);
+        margin-bottom: 1.5rem !important;
+    }
+
+    .intro {
+        margin-bottom: 2rem !important;
+    }
+
+    section {
+        margin-bottom: 2rem;
+    }
+
+    section h2 {
+        font-size: var(--font-xl);
+        color: var(--purple);
+        margin-bottom: 0.75rem;
+    }
+
+    section h3 {
+        font-size: var(--font-lg);
+        color: var(--dark-text);
+        margin: 1rem 0 0.25rem;
+    }
+
+    section p,
+    section li {
+        text-align: left;
+        line-height: 1.6;
+    }
+
+    section ul {
+        margin: 0.5rem 0 1rem;
+        padding-left: 1.25rem;
+    }
+
+    section li {
+        margin-bottom: 0.5rem;
+    }
+
+    .home-link {
+        display: inline-block;
+        margin-top: 1rem;
+    }
+</style>

@@ -11,8 +11,6 @@ const ASTRO_ENV_VARS = [
   "CALENDLY_FAMILY_EVENT_TYPE_ID",
   "CALENDLY_FRIENDS_EVENT_TYPE_ID",
   "CALENDLY_INDIVIDUAL_EVENT_TYPE_ID",
-  "CALENDLY_THROW_PAINT_EVENT_TYPE_ID",
-  "CALENDLY_CUSTOMIZE_CLOTHES_EVENT_TYPE_ID",
   "NETLIFY_SITE_ID",
   "NETLIFY_TOKEN",
 ];
@@ -53,6 +51,10 @@ async function build() {
     path.resolve(
       ROOT_DIR,
       "src/netlify-functions/refresh-availability-background.ts",
+    ),
+    path.resolve(
+      ROOT_DIR,
+      "src/netlify-functions/scheduled-partner-bookings-cleanup.ts",
     ),
   ];
 
