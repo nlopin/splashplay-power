@@ -5,6 +5,7 @@ import {
     getCurrentLanguage,
     getPageTranslations,
 } from "@/utils/i18n";
+import { CONTACT_EMAIL } from "@/constants";
 
 const language = getCurrentLanguage(Astro.currentLocale);
 const t = getPageTranslations(language, "privacyPolicy");
@@ -118,7 +119,7 @@ const homeHref = languagePrefixes[language] || "/";
         <section>
             <h2>{t.s12_title}</h2>
             <p>{t.s12_body}</p>
-            <p>{t.s12_email_label} <a href="mailto:info@splashplay.es">info@splashplay.es</a></p>
+            <p>{t.s12_email_label} <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p>
             <p>{t.s12_address_label} {t.s12_address}</p>
         </section>
 

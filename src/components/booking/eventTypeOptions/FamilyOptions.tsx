@@ -8,12 +8,17 @@ import {
   ActivityFormatSelector,
   type ActivityFormat,
 } from "./ActivityFormatSelector";
+import {
+  MIN_ADULTS,
+  MIN_KIDS,
+  MAX_TOTAL,
+  CANVAS_LIMITS,
+  calculateFamilyPrice,
+  formatFamilyProductName,
+  type CanvasType,
+} from "@/services/catalog/familyPricing";
 
-const MIN_ADULTS = 1;
-const MIN_KIDS = 0;
-const MAX_TOTAL = 6;
-
-export type CanvasType = "standard" | "big";
+export type { CanvasType } from "@/services/catalog/familyPricing";
 export type { ActivityFormat } from "./ActivityFormatSelector";
 
 export interface FamilyFormData {
@@ -22,50 +27,6 @@ export interface FamilyFormData {
   canvases: number;
   canvasType: CanvasType;
   activityFormat: ActivityFormat;
-}
-
-// Big canvas price table: indexed by total guests (2–6)
-const BIG_CANVAS_PRICES: Record<number, number> = {
-  2: 9000,
-  3: 9500,
-  4: 10500,
-  5: 11500,
-  6: 12500,
-};
-
-// Standard canvas price table: [totalGuests][canvases] → price in cents
-const STANDARD_PRICES: Record<number, Record<number, number>> = {
-  1: { 1: 6000 },
-  2: { 1: 7500, 2: 9000 },
-  3: { 1: 8000, 2: 9500, 3: 12000 },
-  4: { 2: 10500, 3: 12800, 4: 14000 },
-  5: { 3: 13500, 4: 14900, 5: 16000 },
-  6: { 3: 14500, 4: 15500, 5: 16500, 6: 18000 },
-};
-
-// Min/max canvases for standard canvas per total guests count
-const CANVAS_LIMITS: Record<number, { min: number; max: number }> = {
-  1: { min: 1, max: 1 },
-  2: { min: 1, max: 2 },
-  3: { min: 1, max: 3 },
-  4: { min: 2, max: 4 },
-  5: { min: 3, max: 5 },
-  6: { min: 3, max: 6 },
-};
-
-export function calculateFamilyPrice(
-  canvases: number,
-  totalGuests: number = 2,
-  canvasType: CanvasType = "standard",
-): number {
-  if (canvasType === "big") {
-    const clamped = Math.max(2, Math.min(totalGuests, MAX_TOTAL));
-    return BIG_CANVAS_PRICES[clamped] ?? 8000;
-  }
-  const clampedTotal = Math.max(1, Math.min(totalGuests, MAX_TOTAL));
-  const limits = CANVAS_LIMITS[clampedTotal];
-  const clampedCanvases = Math.max(limits.min, Math.min(canvases, limits.max));
-  return STANDARD_PRICES[clampedTotal]?.[clampedCanvases] ?? 6000;
 }
 
 export function FamilyOptions({
@@ -92,11 +53,13 @@ export function FamilyOptions({
       totalGuests,
       formData.canvasType,
     );
-    const canvasLabel =
-      formData.canvasType === "big"
-        ? "big canvas"
-        : `${formData.canvases} ${formData.canvases === 1 ? "canvas" : "canvases"}`;
-    const productName = `${formData.adults} ${formData.adults === 1 ? "adult" : "adults"}, ${formData.kids} ${formData.kids === 1 ? "kid" : "kids"}, ${canvasLabel}, ${formData.activityFormat}`;
+    const productName = formatFamilyProductName(
+      formData.adults,
+      formData.kids,
+      formData.canvases,
+      formData.canvasType,
+      formData.activityFormat,
+    );
 
     onChangeRef.current({
       amount: totalAmount,

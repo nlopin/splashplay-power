@@ -4,21 +4,22 @@ import one_big from "@/assets/img/60x80_compartido.jpg";
 import individual from "@/assets/img/30x40_2individuales.jpg";
 
 import { formatPrice } from "@/utils/price";
-import { useTranslator } from "@/components/TranslatorContext";
+import { useTranslator, usePageLanguage } from "@/components/TranslatorContext";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
 import {
   ActivityFormatSelector,
   type ActivityFormat,
 } from "./ActivityFormatSelector";
+import {
+  COUPLES_PRICE,
+  formatCouplesProductName,
+  type CouplesPicture,
+} from "@/services/catalog/couplesPricing";
 
-type PictureType = "one_small" | "one_big" | "individual";
+type PictureType = CouplesPicture;
 
-const PRICE: Record<PictureType, number> = {
-  one_small: 7500,
-  one_big: 9000,
-  individual: 9000,
-};
+const PRICE = COUPLES_PRICE;
 
 const IMAGES: Record<PictureType, string> = {
   one_small: one_small.src,
@@ -45,6 +46,7 @@ export function CouplesOptions({
     useState<ActivityFormat>("splash");
   const savedSplashPictureTypeRef = useRef<PictureType>(DEFAULT_SPLASH_PICTURE);
   const t = useTranslator();
+  const lang = usePageLanguage();
 
   const handlePictureTypeChange = (type: PictureType) => {
     setPictureType(type);
@@ -89,7 +91,7 @@ export function CouplesOptions({
   useEffect(() => {
     onChange({
       amount: PRICE[pictureType],
-      productName: `${t(`couples_${pictureType}`)}, ${activityFormat}`,
+      productName: formatCouplesProductName(pictureType, activityFormat, lang),
       guests: 2,
     });
 
@@ -97,7 +99,7 @@ export function CouplesOptions({
     const url = new URL(window.location.href);
     url.searchParams.set("option", pictureType);
     window.history.replaceState({}, "", url);
-  }, [pictureType, activityFormat, t]);
+  }, [pictureType, activityFormat, lang]);
 
   const options: Array<{
     value: PictureType;

@@ -1,31 +1,22 @@
 import type { APIRoute } from "astro";
-import { STRIPE_SECRET_KEY } from "astro:env/server";
-import Stripe from "stripe";
+import { getCheckoutSessionStatus } from "@/services/checkout/status";
 
 export const prerender = false;
-
-const stripe = new Stripe(STRIPE_SECRET_KEY, {
-  apiVersion: "2026-07-29.preview",
-});
 
 export const GET: APIRoute = async (ctx) => {
   const requestedSessionId = ctx.url.searchParams.get("session_id");
   if (requestedSessionId === null) {
     return new Response(null, { status: 404 });
   }
-  const session = await stripe.checkout.sessions.retrieve(requestedSessionId, {
-    expand: ["payment_intent"],
-  });
 
-  const paymentIntent =
-    typeof session.payment_intent === "object" ? session.payment_intent : null;
+  const status = await getCheckoutSessionStatus(requestedSessionId);
 
   return new Response(
     JSON.stringify({
-      status: session.status,
-      payment_status: session.payment_status,
-      payment_intent_id: paymentIntent?.id,
-      payment_intent_status: paymentIntent?.status,
+      status: status.status,
+      payment_status: status.paymentStatus,
+      payment_intent_id: status.paymentIntentId,
+      payment_intent_status: status.paymentIntentStatus,
     }),
     {
       headers: {

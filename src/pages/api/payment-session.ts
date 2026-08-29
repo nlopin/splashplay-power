@@ -1,24 +1,8 @@
 import type { APIRoute } from "astro";
-import Stripe from "stripe";
-import { STRIPE_SECRET_KEY } from "astro:env/server";
-import { isKnownPartner } from "@/services/partners";
+import { createEmbeddedCheckoutSession } from "@/services/checkout/createCheckoutSession";
 import { CreatePaymentSessionPayloadSchema } from "./types";
 
 export const prerender = false;
-const stripe = new Stripe(STRIPE_SECRET_KEY, {
-  apiVersion: "2026-07-29.preview",
-});
-
-const getKnownPartner = (maybePartner: string | undefined): string | null => {
-  if (!maybePartner) return null;
-
-  if (!isKnownPartner(maybePartner)) {
-    console.debug(`Unknown partner key, ignoring: ${maybePartner}`);
-    return null;
-  }
-
-  return maybePartner;
-};
 
 export const POST: APIRoute = async ({ request }) => {
   const body = await request.json();
@@ -30,51 +14,19 @@ export const POST: APIRoute = async ({ request }) => {
     });
   }
 
-  const {
+  const { amount, productName, guests, datetime, lang, eventType, partner } =
+    parseResult.data;
+  const origin = new URL(request.url).origin;
+
+  const session = await createEmbeddedCheckoutSession({
     amount,
     productName,
     guests,
     datetime,
     lang,
     eventType,
-    partner: maybePartner,
-  } = parseResult.data;
-  const origin = new URL(request.url).origin;
-  const returnUrl = `${origin}/${lang}/complete?session_id={CHECKOUT_SESSION_ID}`;
-
-  const session = await stripe.checkout.sessions.create({
-    mode: "payment",
-    ui_mode: "embedded",
-    allow_promotion_codes: true,
-    locale: lang === "ca" ? "es" : lang, // catalan is not supported
-    phone_number_collection: { enabled: true },
-    name_collection: {
-      individual: {
-        enabled: true,
-        optional: false,
-      },
-    },
-    metadata: {
-      eventType,
-      sessionTime: datetime,
-      sessionTitle: productName,
-      guests: String(guests),
-      partner: getKnownPartner(maybePartner),
-    },
-    customer_creation: "always",
-    line_items: [
-      {
-        price_data: {
-          product_data: {
-            name: productName,
-          },
-          currency: "EUR",
-          unit_amount: amount,
-        },
-        quantity: 1,
-      },
-    ],
-    return_url: returnUrl,
+    partner,
+    origin,
   });
 
   return new Response(

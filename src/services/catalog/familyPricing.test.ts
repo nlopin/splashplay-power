@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculateFamilyPrice } from "./FamilyOptions";
+import { calculateFamilyPrice } from "./familyPricing";
 
 describe("calculateFamilyPrice — big canvas", () => {
   it("2 people → €90", () =>

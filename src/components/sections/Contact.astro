@@ -4,6 +4,7 @@ import {
     getCurrentLanguage,
     languagePrefixes,
 } from "../../utils/i18n";
+import { CONTACT_EMAIL, WHATSAPP_LINK } from "../../constants";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
 const language = getCurrentLanguage(Astro.currentLocale);
@@ -32,7 +33,7 @@ const privacyPolicyHref = `${languagePrefixes[language]}/privacy-policy`;
                     <h3 class="contacts-item-title">WhatsApp</h3>
                     <p class="contacts-item-text">{t("whatsapp")}</p>
                     <a
-                        href="https://wa.me/34641671670"
+                        href={WHATSAPP_LINK}
                         target="_blank"
                         rel="noopener"
                         class="btn btn-small">{t("whatsapp_send")}</a
@@ -41,9 +42,9 @@ const privacyPolicyHref = `${languagePrefixes[language]}/privacy-policy`;
 
                 <div class="contacts-item">
                     <h3 class="contacts-item-title">Email</h3>
-                    <p class="contacts-item-text">info@splashplay.es</p>
+                    <p class="contacts-item-text">{CONTACT_EMAIL}</p>
                     <a
-                        href="mailto:info@splashplay.es"
+                        href={`mailto:${CONTACT_EMAIL}`}
                         target="_blank"
                         rel="noopener"
                         class="btn btn-small">{t("email_send")}</a
