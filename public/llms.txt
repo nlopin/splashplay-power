@@ -36,6 +36,10 @@ Catalan search intents include pla diferent per fer en parella a Barcelona, pla 
 - [Book Friends](https://splashplay.es/book/friends): Book a friends group session
 - [Book Individual](https://splashplay.es/book/individual): Book an individual session
 
+## Agentic Booking (MCP)
+
+Splashplay exposes an MCP server for agents that can book on the user's behalf: `https://splashplay.es/api/mcp` (Streamable HTTP). Tools: `list_experiences` (catalog with prices/durations/guest counts), `check_availability` (open slots for an experience), `create_booking_checkout` (creates a Stripe-hosted checkout session and returns its URL — price is always computed server-side), `get_booking_status` (confirms a checkout session's payment status). Also serves a per-language FAQ/policies resource. No API key required; rate-limited per IP.
+
 ## Contact
 
 - [Contact](https://splashplay.es/#contact): Contact Splashplay to ask questions, get directions, or discuss private and corporate sessions
