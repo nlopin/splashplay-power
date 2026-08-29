@@ -39,6 +39,17 @@ const CORS_HEADERS: Record<string, string> = {
   "Access-Control-Expose-Headers": "mcp-session-id, mcp-protocol-version",
 };
 
+const SERVER_NAME = "splashplay-booking";
+const SERVER_VERSION = "0.1.0";
+// Mirrors the registerTool() calls below — no programmatic way to list them
+// off the McpServer instance, so kept in sync by hand (four tools, one file).
+const TOOL_NAMES = [
+  "list_experiences",
+  "check_availability",
+  "create_booking_checkout",
+  "get_booking_status",
+] as const;
+
 const LangSchema = z.enum(LANG_VALUES).describe(
   "Language for names/descriptions and the Stripe checkout page: es, en, or ca. Match the user's conversation language.",
 );
@@ -86,8 +97,8 @@ function resolveFamilySplit(
 /** Fresh server per request — this endpoint runs stateless (see WebStandardStreamableHTTPServerTransport docs). */
 function createMcpServer(origin: string): McpServer {
   const server = new McpServer({
-    name: "splashplay-booking",
-    version: "0.1.0",
+    name: SERVER_NAME,
+    version: SERVER_VERSION,
   });
 
   server.registerTool(
@@ -331,7 +342,37 @@ const methodNotAllowed = () =>
 export const OPTIONS: APIRoute = async () =>
   withCors(new Response(null, { status: 204 }));
 
-export const GET: APIRoute = async () => methodNotAllowed();
+// Bare GET isn't part of the MCP protocol (the transport is POST-only JSON-RPC),
+// but a browser, crawler, or an agent that just followed a link lands here with
+// one — answer with plain info instead of a bare 405, so "booking MCP for
+// agents" is discoverable by just opening the URL.
+export const GET: APIRoute = async () =>
+  withCors(
+    new Response(
+      JSON.stringify(
+        {
+          name: SERVER_NAME,
+          version: SERVER_VERSION,
+          description:
+            "Booking MCP for agents — browse Splashplay's painting experiences, check availability, and create a Stripe checkout on the user's behalf.",
+          protocol: "mcp",
+          transport: "streamable-http",
+          endpoint: {
+            url: "/api/mcp",
+            method: "POST",
+            contentType: "application/json",
+            note: "JSON-RPC 2.0 per the MCP spec — this GET response is informational only.",
+          },
+          tools: TOOL_NAMES,
+          resources: ["faq"],
+          documentation: "https://splashplay.es/llms.txt",
+        },
+        null,
+        2,
+      ),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    ),
+  );
 export const DELETE: APIRoute = async () => methodNotAllowed();
 
 export const POST: APIRoute = async (ctx) => {

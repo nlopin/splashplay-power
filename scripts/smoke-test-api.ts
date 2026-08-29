@@ -110,8 +110,19 @@ async function main() {
     assert(res.status === 401, `expected 401, got ${res.status}`);
   });
 
-  await check("GET /api/mcp rejects with a JSON-RPC method-not-allowed error", async () => {
+  await check("GET /api/mcp returns server info, not a bare error", async () => {
     const res = await fetch(`${baseUrl}/api/mcp`);
+    assert(res.status === 200, `expected 200, got ${res.status}`);
+    const body = await readJson(res);
+    assert(body.name === "splashplay-booking", `expected server name, got ${JSON.stringify(body.name)}`);
+    assert(
+      Array.isArray(body.tools) && body.tools.includes("create_booking_checkout"),
+      "expected a tools array listing create_booking_checkout",
+    );
+  });
+
+  await check("DELETE /api/mcp rejects with a JSON-RPC method-not-allowed error", async () => {
+    const res = await fetch(`${baseUrl}/api/mcp`, { method: "DELETE" });
     assert(res.status === 405, `expected 405, got ${res.status}`);
     const body = await readJson(res);
     assert(body.jsonrpc === "2.0" && body.error, "expected a JSON-RPC error body");
