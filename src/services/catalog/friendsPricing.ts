@@ -9,26 +9,26 @@ export const MAX_GUESTS = 6;
 export const BIG_CANVAS_PRICES: Record<number, number> = {
   1: 8500,
   2: 9000,
-  3: 9500,
-  4: 10500,
-  5: 11500,
-  6: 12500,
+  3: 9600,
+  4: 10800,
+  5: 12000,
+  6: 13200,
 };
 
 // Standard canvas price table: [guests][canvases] → price in cents
 // guests 1: canvases 1→6500
 // guests 2: canvases 1→7500, 2→9000
-// guests 3: canvases 1→8000, 2→9500, 3→12000
-// guests 4: canvases 2→10500, 3→12800, 4→14000
-// guests 5: canvases 3→13500, 4→14900, 5→16000
-// guests 6: canvases 3→14500, 4→15500, 5→16500, 6→18000
+// guests 3: canvases 1→8000, 2→9500, 3→12600
+// guests 4: canvases 2→10500, 3→13200, 4→14800
+// guests 5: canvases 3→14000, 4→15500, 5→17500
+// guests 6: canvases 3→14500, 4→16000, 5→18000, 6→19500
 export const STANDARD_PRICES: Record<number, Record<number, number>> = {
   1: { 1: 6500 },
   2: { 1: 7500, 2: 9000 },
-  3: { 1: 8000, 2: 9500, 3: 12000 },
-  4: { 2: 10500, 3: 12800, 4: 14000 },
-  5: { 3: 13500, 4: 14900, 5: 16000 },
-  6: { 3: 14500, 4: 15500, 5: 16500, 6: 18000 },
+  3: { 1: 8000, 2: 9500, 3: 12600 },
+  4: { 2: 10500, 3: 13200, 4: 14800 },
+  5: { 3: 14000, 4: 15500, 5: 17500 },
+  6: { 3: 14500, 4: 16000, 5: 18000, 6: 19500 },
 };
 
 // Min/max canvases for standard canvas per guests count

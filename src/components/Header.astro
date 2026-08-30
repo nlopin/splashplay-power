@@ -2,12 +2,34 @@
 import Logo from "../assets/splash-play-logo.svg";
 
 import LanguageSwitcher from "./LanguageSwitcher.astro";
+import {
+    createAstroTranslator,
+    getCurrentLanguage,
+    getLocalizedPath,
+    getPathWithoutLanguage,
+    type Language,
+} from "../utils/i18n";
 
 interface Props {
     currentPath: string;
 }
 
 const { currentPath } = Astro.props;
+const t = createAstroTranslator(Astro.currentLocale, "main");
+const language = getCurrentLanguage(Astro.currentLocale);
+const bookHref = getHeaderBookHref(currentPath, language);
+
+function getHeaderBookHref(
+    pathname: string,
+    lang: Language,
+): string | undefined {
+    const path = getPathWithoutLanguage(pathname).replace(/\/+$/, "") || "/";
+    if (path === "/") return "#pricing";
+    if (path === "/family") return getLocalizedPath("/book/family", lang);
+    if (path === "/friends") return getLocalizedPath("/book/friends", lang);
+    if (path === "/couples") return getLocalizedPath("/book/couples", lang);
+    return undefined;
+}
 ---
 
 <header class="site-header">
@@ -60,7 +82,12 @@ const { currentPath } = Astro.props;
         </div>
 
         <div class="nav-links-container">
-            <ul class="nav-links" id="nav-links">
+            <ul
+                class="nav-links"
+                id="nav-links"
+                data-book-href={bookHref ?? ""}
+                data-book-label={t("nav_book")}
+            >
             </ul>
             <div class="lang-switcher-wrapper">
                 <LanguageSwitcher currentPath={currentPath} />
@@ -114,6 +141,17 @@ const { currentPath } = Astro.props;
             li.appendChild(a);
             navLinksList?.appendChild(li);
         });
+
+        const bookHref = navLinksList?.dataset.bookHref;
+        const bookLabel = navLinksList?.dataset.bookLabel;
+        if (navLinksList && bookHref && bookLabel) {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = bookHref;
+            a.textContent = bookLabel;
+            li.appendChild(a);
+            navLinksList.appendChild(li);
+        }
     }
 
     function setupMobileMenu() {
