@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import one_small from "@/assets/img/30x40_compartido.jpg";
 import one_big from "@/assets/img/60x80_compartido.jpg";
+import two_big from "@/assets/img/60x90_2individuales.jpg";
 import individual from "@/assets/img/30x40_2individuales.jpg";
 
 import { formatPrice } from "@/utils/price";
@@ -24,6 +25,7 @@ const PRICE = COUPLES_PRICE;
 const IMAGES: Record<PictureType, string> = {
   one_small: one_small.src,
   one_big: one_big.src,
+  two_big: two_big.src,
   individual: individual.src,
 };
 
@@ -31,7 +33,16 @@ const DEFAULT_SPLASH_PICTURE: PictureType = "one_big";
 const DEFAULT_POURING_PICTURE: PictureType = "individual";
 
 function isPictureType(value: string | null): value is PictureType {
-  return value === "one_small" || value === "one_big" || value === "individual";
+  return (
+    value === "one_small" ||
+    value === "one_big" ||
+    value === "two_big" ||
+    value === "individual"
+  );
+}
+
+function isSplashOnlyPicture(value: PictureType): boolean {
+  return value === "one_big" || value === "two_big";
 }
 
 export function CouplesOptions({
@@ -73,29 +84,41 @@ export function CouplesOptions({
 
   const isSplash = activityFormat === "splash";
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const typeParam = params.get("option");
+  const didHydrateOption = useRef(false);
 
-    if (isPictureType(typeParam)) {
-      setPictureType(typeParam);
-      if (typeParam === "one_big" || typeParam === "one_small") {
-        setActivityFormat("splash");
-        savedSplashPictureTypeRef.current = typeParam;
-      } else {
-        savedSplashPictureTypeRef.current = DEFAULT_SPLASH_PICTURE;
+  useEffect(() => {
+    if (!didHydrateOption.current) {
+      didHydrateOption.current = true;
+      const typeParam = new URLSearchParams(window.location.search).get(
+        "option",
+      );
+      if (isPictureType(typeParam)) {
+        setPictureType(typeParam);
+        if (isSplashOnlyPicture(typeParam) || typeParam === "one_small") {
+          setActivityFormat("splash");
+          savedSplashPictureTypeRef.current = typeParam;
+        } else {
+          savedSplashPictureTypeRef.current = DEFAULT_SPLASH_PICTURE;
+        }
+        onChange({
+          amount: PRICE[typeParam],
+          productName: formatCouplesProductName(
+            typeParam,
+            isSplashOnlyPicture(typeParam) ? "splash" : activityFormat,
+            lang,
+          ),
+          guests: 2,
+        });
+        return;
       }
     }
-  }, []);
 
-  useEffect(() => {
     onChange({
       amount: PRICE[pictureType],
       productName: formatCouplesProductName(pictureType, activityFormat, lang),
       guests: 2,
     });
 
-    // Update URL with the selected option
     const url = new URL(window.location.href);
     url.searchParams.set("option", pictureType);
     window.history.replaceState({}, "", url);
@@ -117,6 +140,15 @@ export function CouplesOptions({
         : null,
       image: IMAGES.one_small,
     },
+    {
+      value: "individual",
+      label: t("couples_individual"),
+      price: formatPrice(PRICE.individual),
+      discountedPrice: discount
+        ? formatPrice(Math.round(PRICE.individual * (1 - discount / 100)))
+        : null,
+      image: IMAGES.individual,
+    },
     ...(isSplash
       ? [
           {
@@ -128,17 +160,17 @@ export function CouplesOptions({
               : null,
             image: IMAGES.one_big,
           },
+          {
+            value: "two_big" as const,
+            label: t("couples_two_big"),
+            price: formatPrice(PRICE.two_big),
+            discountedPrice: discount
+              ? formatPrice(Math.round(PRICE.two_big * (1 - discount / 100)))
+              : null,
+            image: IMAGES.two_big,
+          },
         ]
       : []),
-    {
-      value: "individual",
-      label: t("couples_individual"),
-      price: formatPrice(PRICE.individual),
-      discountedPrice: discount
-        ? formatPrice(Math.round(PRICE.individual * (1 - discount / 100)))
-        : null,
-      image: IMAGES.individual,
-    },
   ];
 
   return (

@@ -169,9 +169,9 @@ function createMcpServer(origin: string): McpServer {
           .optional()
           .describe("family/friends only: number of canvases. For standard, usually one per guest. For a big canvas, 1 or 2 (max 2)."),
         picture: z
-          .enum(["one_small", "one_big", "individual"])
+          .enum(["one_small", "one_big", "two_big", "individual"])
           .optional()
-          .describe("couples only: canvas format. `One_small` is one shared standard canvas 40x30, `one_big` is one shared big canvas, `individual` is a standard canvas for both"),
+          .describe("couples only: canvas format. `one_small` is one shared standard canvas 40x30, `one_big` is one shared big canvas, `two_big` is two big canvases (Splash only), `individual` is a standard canvas for both"),
         adults: z
           .number()
           .int()

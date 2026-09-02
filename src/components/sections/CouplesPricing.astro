@@ -8,6 +8,7 @@ import { isActivityHidden } from "../../config/activities";
 import DiscountWeekdayBadge from "../DiscountWeekdayBadge.astro";
 import DiscountWeekdayNote from "../DiscountWeekdayNote.astro";
 import twoCanvases from "../../assets/img/30x40_2individuales.jpg";
+import twoBigCanvases from "../../assets/img/60x90_2individuales.jpg";
 import largeCanvas from "../../assets/img/60x80_compartido.jpg";
 import smallCanvas from "../../assets/img/30x40_compartido.jpg";
 import clothing1 from "../../assets/photo/clothing/clothing1-074c0620-2ca8-40fd-b3b0-c18bdfb1199c.png";
@@ -35,6 +36,15 @@ const pricingOptions = [
         popular: false,
     },
     {
+        image: twoCanvases,
+        price: t("option1_price"),
+        title: t("option1_title"),
+        description: t("option1_description"),
+        cta: t("option1_cta"),
+        url: getLocalizedPath("/book/couples?option=individual", lang),
+        popular: false,
+    },
+    {
         image: largeCanvas,
         price: t("option2_price"),
         title: t("option2_title"),
@@ -44,12 +54,12 @@ const pricingOptions = [
         popular: true,
     },
     {
-        image: twoCanvases,
-        price: t("option1_price"),
-        title: t("option1_title"),
-        description: t("option1_description"),
-        cta: t("option1_cta"),
-        url: getLocalizedPath("/book/couples?option=individual", lang),
+        image: twoBigCanvases,
+        price: t("option4_price"),
+        title: t("option4_title"),
+        description: t("option4_description"),
+        cta: t("option4_cta"),
+        url: getLocalizedPath("/book/couples?option=two_big", lang),
         popular: false,
     },
 ];
@@ -218,8 +228,8 @@ const pricingOptions = [
 
     .price-cards-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1.5rem;
         max-width: 1320px;
         margin: 0 auto;
     }
@@ -444,6 +454,28 @@ const pricingOptions = [
         .heading-badge-slot {
             left: 4rem;
             transform: translate(-50%, -50%) rotate(-15deg) scale(0.833);
+        }
+
+        .price-cards-container {
+            gap: 1rem;
+        }
+
+        .price-card-details {
+            padding: 1rem 0.75rem 1.25rem;
+        }
+
+        .price-card-title {
+            font-size: var(--font-md);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-card-details p {
+            font-size: var(--font-xs);
+            line-height: 1.45;
+        }
+
+        .btn-card {
+            padding: 0.6rem 0.75rem;
         }
     }
 
