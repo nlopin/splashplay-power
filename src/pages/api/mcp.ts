@@ -161,13 +161,13 @@ function createMcpServer(origin: string): McpServer {
         canvasType: z
           .enum(["standard", "big"])
           .optional()
-          .describe("family/friends only: one shared big canvas vs. standard canvases per person/pair. If big canvas is selected, you don't need to fill the `canvases` field. It's always one."),
+          .describe("family/friends only: shared big canvas (60×90) vs. standard canvases. Friends and family may take 1 or 2 big canvases via `canvases` (defaults to 1; 1 guest max 1). If big canvas is selected and `canvases` is omitted, it is one."),
         canvases: z
           .number()
           .int()
           .positive()
           .optional()
-          .describe("family/friends only: number of standard canvases, usually one per guest"),
+          .describe("family/friends only: number of canvases. For standard, usually one per guest. For a big canvas, 1 or 2 (max 2)."),
         picture: z
           .enum(["one_small", "one_big", "individual"])
           .optional()
@@ -217,7 +217,11 @@ function createMcpServer(origin: string): McpServer {
             split.adults,
             split.kids,
             // Clamped so an out-of-range `canvases` shows what's actually charged.
-            clampFamilyCanvases(canvases ?? guests, guests),
+            clampFamilyCanvases(
+              canvases ?? (resolvedCanvasType === "big" ? 1 : guests),
+              guests,
+              resolvedCanvasType,
+            ),
             resolvedCanvasType,
             resolvedActivityFormat,
           );
@@ -226,7 +230,11 @@ function createMcpServer(origin: string): McpServer {
         case EVENT_TYPE.FRIENDS:
           eventOptions = formatFriendsProductName(
             guests,
-            clampFriendsCanvases(canvases ?? guests, guests),
+            clampFriendsCanvases(
+              canvases ?? (resolvedCanvasType === "big" ? 1 : guests),
+              guests,
+              resolvedCanvasType,
+            ),
             resolvedCanvasType,
             resolvedActivityFormat,
           );

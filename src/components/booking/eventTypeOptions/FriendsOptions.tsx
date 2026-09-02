@@ -11,7 +11,8 @@ import {
 import {
   MIN_GUESTS,
   MAX_GUESTS,
-  CANVAS_LIMITS,
+  getFriendsCanvasLimits,
+  clampFriendsCanvases,
   calculateFriendsPrice,
   formatFriendsProductName,
   type CanvasType,
@@ -98,8 +99,7 @@ export function FriendsOptions({
       setFormData((prev) => {
         if (prev.canvasType === "big") {
           const guests = Math.max(MIN_GUESTS, prev.guests);
-          const limits = CANVAS_LIMITS[guests];
-          const canvases = Math.max(limits.min, Math.min(guests, limits.max));
+          const canvases = clampFriendsCanvases(guests, guests, "standard");
           return {
             ...prev,
             activityFormat: "pouring",
@@ -116,18 +116,20 @@ export function FriendsOptions({
 
   const handleCanvasTypeChange = (type: CanvasType) => {
     if (type === "big") {
-      setFormData((prev) => ({
-        ...prev,
-        canvasType: "big",
-        canvases: 1,
-        guests: Math.max(MIN_GUESTS, prev.guests),
-      }));
+      setFormData((prev) => {
+        const guests = Math.max(MIN_GUESTS, prev.guests);
+        return {
+          ...prev,
+          canvasType: "big",
+          canvases: clampFriendsCanvases(1, guests, "big"),
+          guests,
+        };
+      });
     } else {
       // Switching to standard: set canvases equal to guests (clamped to limits)
       setFormData((prev) => {
         const guests = Math.max(MIN_GUESTS, prev.guests);
-        const limits = CANVAS_LIMITS[guests];
-        const canvases = Math.max(limits.min, Math.min(guests, limits.max));
+        const canvases = clampFriendsCanvases(guests, guests, "standard");
         return { ...prev, canvasType: "standard", guests, canvases };
       });
     }
@@ -137,19 +139,24 @@ export function FriendsOptions({
     const guests = Math.max(MIN_GUESTS, Math.min(value, MAX_GUESTS));
 
     if (formData.canvasType === "big") {
-      setFormData((prev) => ({ ...prev, guests }));
+      setFormData((prev) => ({
+        ...prev,
+        guests,
+        canvases: clampFriendsCanvases(prev.canvases, guests, "big"),
+      }));
     } else {
-      const limits = CANVAS_LIMITS[guests];
       // Default canvases to match guests count, clamped to allowed range
-      const canvases = Math.max(limits.min, Math.min(guests, limits.max));
+      const canvases = clampFriendsCanvases(guests, guests, "standard");
       setFormData((prev) => ({ ...prev, guests, canvases }));
     }
   };
 
   const handleCanvasesChange = (value: number) => {
-    if (formData.canvasType === "big") return;
-    const limits = CANVAS_LIMITS[formData.guests];
-    const canvases = Math.max(limits.min, Math.min(value, limits.max));
+    const canvases = clampFriendsCanvases(
+      value,
+      formData.guests,
+      formData.canvasType,
+    );
     setFormData((prev) => ({ ...prev, canvases }));
   };
 
@@ -161,7 +168,10 @@ export function FriendsOptions({
 
   const isSplash = formData.activityFormat === "splash";
   const isBig = formData.canvasType === "big";
-  const canvasLimits = CANVAS_LIMITS[formData.guests];
+  const canvasLimits = getFriendsCanvasLimits(
+    formData.guests,
+    formData.canvasType,
+  );
 
   return (
     <div className="friends-options">
@@ -243,35 +253,30 @@ export function FriendsOptions({
         </button>
 
         {/* Canvases */}
-        <div
-          className={`option-label${isBig ? " option-label--disabled" : ""}`}
-        >
-          {t("friends_canvases_count")}
-        </div>
+        <div className="option-label">{t("friends_canvases_count")}</div>
         <button
           type="button"
           className="number-input-btn"
           onClick={() => handleCanvasesChange(formData.canvases - 1)}
-          disabled={isBig || formData.canvases <= canvasLimits.min}
+          disabled={formData.canvases <= canvasLimits.min}
         >
           -
         </button>
         <input
           type="number"
-          min={isBig ? 1 : canvasLimits.min}
-          max={isBig ? 1 : canvasLimits.max}
+          min={canvasLimits.min}
+          max={canvasLimits.max}
           value={formData.canvases}
           onChange={(e) =>
             handleCanvasesChange(parseInt(e.target.value) || canvasLimits.min)
           }
-          className={`number-input${isBig ? " number-input--disabled" : ""}`}
-          disabled={isBig}
+          className="number-input"
         />
         <button
           type="button"
           className="number-input-btn"
           onClick={() => handleCanvasesChange(formData.canvases + 1)}
-          disabled={isBig || formData.canvases >= canvasLimits.max}
+          disabled={formData.canvases >= canvasLimits.max}
         >
           +
         </button>

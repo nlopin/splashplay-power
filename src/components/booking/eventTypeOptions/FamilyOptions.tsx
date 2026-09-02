@@ -12,7 +12,8 @@ import {
   MIN_ADULTS,
   MIN_KIDS,
   MAX_TOTAL,
-  CANVAS_LIMITS,
+  getFamilyCanvasLimits,
+  clampFamilyCanvases,
   calculateFamilyPrice,
   formatFamilyProductName,
   type CanvasType,
@@ -76,8 +77,7 @@ export function FamilyOptions({
             1,
             Math.min(prev.adults + prev.kids, MAX_TOTAL),
           );
-          const limits = CANVAS_LIMITS[total];
-          const canvases = Math.max(limits.min, Math.min(total, limits.max));
+          const canvases = clampFamilyCanvases(total, total, "standard");
           return {
             ...prev,
             activityFormat: "pouring",
@@ -94,16 +94,18 @@ export function FamilyOptions({
 
   const handleCanvasTypeChange = (type: CanvasType) => {
     if (type === "big") {
-      setFormData((prev) => ({
-        ...prev,
-        canvasType: "big",
-        canvases: 1,
-      }));
+      setFormData((prev) => {
+        const total = Math.max(1, Math.min(prev.adults + prev.kids, MAX_TOTAL));
+        return {
+          ...prev,
+          canvasType: "big",
+          canvases: clampFamilyCanvases(1, total, "big"),
+        };
+      });
     } else {
       setFormData((prev) => {
         const total = Math.max(1, Math.min(prev.adults + prev.kids, MAX_TOTAL));
-        const limits = CANVAS_LIMITS[total];
-        const canvases = Math.max(limits.min, Math.min(total, limits.max));
+        const canvases = clampFamilyCanvases(total, total, "standard");
         return { ...prev, canvasType: "standard", canvases };
       });
     }
@@ -113,12 +115,16 @@ export function FamilyOptions({
     const adults = Math.max(MIN_ADULTS, value);
     setFormData((prev) => {
       const kids = Math.min(prev.kids, MAX_TOTAL - adults);
-      if (prev.canvasType === "big") {
-        return { ...prev, adults, kids };
-      }
       const total = Math.max(1, Math.min(adults + kids, MAX_TOTAL));
-      const limits = CANVAS_LIMITS[total];
-      const canvases = Math.max(limits.min, Math.min(total, limits.max));
+      if (prev.canvasType === "big") {
+        return {
+          ...prev,
+          adults,
+          kids,
+          canvases: clampFamilyCanvases(prev.canvases, total, "big"),
+        };
+      }
+      const canvases = clampFamilyCanvases(total, total, "standard");
       return { ...prev, adults, kids, canvases };
     });
   };
@@ -130,24 +136,26 @@ export function FamilyOptions({
         MIN_ADULTS,
         Math.min(prev.adults, MAX_TOTAL - kids),
       );
-      if (prev.canvasType === "big") {
-        return { ...prev, adults, kids };
-      }
       const total = Math.max(1, Math.min(adults + kids, MAX_TOTAL));
-      const limits = CANVAS_LIMITS[total];
-      const canvases = Math.max(limits.min, Math.min(total, limits.max));
+      if (prev.canvasType === "big") {
+        return {
+          ...prev,
+          adults,
+          kids,
+          canvases: clampFamilyCanvases(prev.canvases, total, "big"),
+        };
+      }
+      const canvases = clampFamilyCanvases(total, total, "standard");
       return { ...prev, adults, kids, canvases };
     });
   };
 
   const handleCanvasesChange = (value: number) => {
-    if (formData.canvasType === "big") return;
     const total = Math.max(
       1,
       Math.min(formData.adults + formData.kids, MAX_TOTAL),
     );
-    const limits = CANVAS_LIMITS[total];
-    const canvases = Math.max(limits.min, Math.min(value, limits.max));
+    const canvases = clampFamilyCanvases(value, total, formData.canvasType);
     setFormData((prev) => ({ ...prev, canvases }));
   };
 
@@ -155,7 +163,10 @@ export function FamilyOptions({
   const clampedTotal = Math.max(1, Math.min(totalGuests, MAX_TOTAL));
   const isSplash = formData.activityFormat === "splash";
   const isBig = formData.canvasType === "big";
-  const canvasLimits = CANVAS_LIMITS[clampedTotal];
+  const canvasLimits = getFamilyCanvasLimits(
+    clampedTotal,
+    formData.canvasType,
+  );
   const totalPrice = calculateFamilyPrice(
     formData.canvases,
     clampedTotal,
@@ -271,35 +282,30 @@ export function FamilyOptions({
         </button>
 
         {/* Canvases */}
-        <div
-          className={`option-label${isBig ? " option-label--disabled" : ""}`}
-        >
-          {t("family_canvas_count")}
-        </div>
+        <div className="option-label">{t("family_canvas_count")}</div>
         <button
           type="button"
           className="number-input-btn"
           onClick={() => handleCanvasesChange(formData.canvases - 1)}
-          disabled={isBig || formData.canvases <= canvasLimits.min}
+          disabled={formData.canvases <= canvasLimits.min}
         >
           -
         </button>
         <input
           type="number"
-          min={isBig ? 1 : canvasLimits.min}
-          max={isBig ? 1 : canvasLimits.max}
+          min={canvasLimits.min}
+          max={canvasLimits.max}
           value={formData.canvases}
           onChange={(e) =>
             handleCanvasesChange(parseInt(e.target.value) || canvasLimits.min)
           }
-          className={`number-input${isBig ? " number-input--disabled" : ""}`}
-          disabled={isBig}
+          className="number-input"
         />
         <button
           type="button"
           className="number-input-btn"
           onClick={() => handleCanvasesChange(formData.canvases + 1)}
-          disabled={isBig || formData.canvases >= canvasLimits.max}
+          disabled={formData.canvases >= canvasLimits.max}
         >
           +
         </button>
