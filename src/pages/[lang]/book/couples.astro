@@ -32,8 +32,8 @@ const availability = await getAvailability(eventType);
 <style is:global>
     .couples-options-grid {
         display: flex;
-        flex-wrap: wrap;
-        gap: 24px;
+        flex-wrap: nowrap;
+        gap: 16px;
         justify-content: flex-start;
 
         --card-shift: -4px;
@@ -45,8 +45,8 @@ const availability = await getAvailability(eventType);
 
     .couples-option-card {
         cursor: pointer;
-        min-width: 240px;
-        flex-shrink: 0;
+        min-width: 0;
+        flex: 1 1 0;
         border: 2px solid #e0e0e0;
         border-radius: 16px;
         padding: 16px;
@@ -58,7 +58,6 @@ const availability = await getAvailability(eventType);
         align-items: center;
         position: relative;
         transition: all 0.2s ease;
-        flex: 1;
     }
 
     .couples-option-card:hover {
@@ -154,8 +153,13 @@ const availability = await getAvailability(eventType);
     }
 
     @media (max-width: 640px) {
+        .couples-options-grid {
+            flex-wrap: wrap;
+        }
+
         .couples-option-card {
-            width: 160px;
+            flex: 1 1 calc(50% - 8px);
+            width: auto;
             padding: 12px;
             gap: 12px;
         }

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { calculateFamilyPrice } from "./familyPricing";
 
-describe("calculateFamilyPrice — big canvas", () => {
+describe("calculateFamilyPrice — one big canvas", () => {
   it("2 people → €90", () =>
     expect(calculateFamilyPrice(1, 2, "big")).toBe(9000));
   it("3 people → €96", () =>
@@ -12,6 +12,23 @@ describe("calculateFamilyPrice — big canvas", () => {
     expect(calculateFamilyPrice(1, 5, "big")).toBe(12000));
   it("6 people → €132", () =>
     expect(calculateFamilyPrice(1, 6, "big")).toBe(13200));
+});
+
+describe("calculateFamilyPrice — two big canvases", () => {
+  it("1 person, 2 canvases clamps to one → €90", () =>
+    expect(calculateFamilyPrice(2, 1, "big")).toBe(9000));
+  it("2 people → €124", () =>
+    expect(calculateFamilyPrice(2, 2, "big")).toBe(12400));
+  it("3 people → €135", () =>
+    expect(calculateFamilyPrice(2, 3, "big")).toBe(13500));
+  it("4 people → €144", () =>
+    expect(calculateFamilyPrice(2, 4, "big")).toBe(14400));
+  it("5 people → €155", () =>
+    expect(calculateFamilyPrice(2, 5, "big")).toBe(15500));
+  it("6 people → €168", () =>
+    expect(calculateFamilyPrice(2, 6, "big")).toBe(16800));
+  it("3 people, 3 canvases clamps to two → €135", () =>
+    expect(calculateFamilyPrice(3, 3, "big")).toBe(13500));
 });
 
 describe("calculateFamilyPrice — standard canvas, 1 person", () => {

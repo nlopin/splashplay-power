@@ -95,13 +95,22 @@ const activity1Rows: PricingRow[] = [
     ]},
 ];
 
-// Big canvas row (always last, separator above)
-const activity1BigRow: OptCell[] = [
-    { labelKey: "pt_2_big", priceKey: "pt_2_big_pp" },
-    { labelKey: "pt_3_big", priceKey: "pt_3_big_pp" },
-    { labelKey: "pt_4_big", priceKey: "pt_4_big_pp" },
-    { labelKey: "pt_5_big", priceKey: "pt_5_big_pp" },
-    { labelKey: "pt_6_big", priceKey: "pt_6_big_pp" },
+// Big canvas rows (always last, separator above)
+const activity1BigRows: OptCell[][] = [
+    [
+        { labelKey: "pt_2_big", priceKey: "pt_2_big_pp" },
+        { labelKey: "pt_3_big", priceKey: "pt_3_big_pp" },
+        { labelKey: "pt_4_big", priceKey: "pt_4_big_pp" },
+        { labelKey: "pt_5_big", priceKey: "pt_5_big_pp" },
+        { labelKey: "pt_6_big", priceKey: "pt_6_big_pp" },
+    ],
+    [
+        { labelKey: "pt_2_two_big", priceKey: "pt_2_two_big_pp" },
+        { labelKey: "pt_3_two_big", priceKey: "pt_3_two_big_pp" },
+        { labelKey: "pt_4_two_big", priceKey: "pt_4_two_big_pp" },
+        { labelKey: "pt_5_two_big", priceKey: "pt_5_two_big_pp" },
+        { labelKey: "pt_6_two_big", priceKey: "pt_6_two_big_pp" },
+    ],
 ];
 
 // For mobile cards, reconstruct per-group options list
@@ -110,7 +119,9 @@ const activity1GroupsWithOptions = activity1Groups.map((group, gi) => ({
     options: activity1Rows
         .map((row) => row.cells[gi])
         .filter(Boolean) as { labelKey: string; priceKey: string }[],
-    bigCanvasOption: activity1BigRow[gi] as { labelKey: string; priceKey: string },
+    bigCanvasOptions: activity1BigRows.map(
+        (row) => row[gi] as { labelKey: string; priceKey: string },
+    ),
 }));
 
 const bookBaseUrl = getLocalizedPath("/book/family", lang);
@@ -178,18 +189,18 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                                 );
                             })}
                             <li class="pricing-card-mobile-big-header">{t("pricing_big_canvas_section_title")}</li>
-                            {(() => {
-                                const parsed = parseOptLabel(t(group.bigCanvasOption.labelKey));
+                            {group.bigCanvasOptions.map((opt) => {
+                                const parsed = parseOptLabel(t(opt.labelKey));
                                 return (
                                     <li>
                                         <span class="opt-row-main">
-                                            <span class="opt-canvas-label">{parsed ? parsed.canvasLabel : t(group.bigCanvasOption.labelKey)}</span>
+                                            <span class="opt-canvas-label">{parsed ? parsed.canvasLabel : t(opt.labelKey)}</span>
                                             {parsed && <span class="opt-canvas-price">{parsed.price}</span>}
                                         </span>
-                                        <span class="opt-price">{t(group.bigCanvasOption.priceKey)}</span>
+                                        <span class="opt-price">{t(opt.priceKey)}</span>
                                     </li>
                                 );
-                            })()}
+                            })}
                         </ul>
                         <a href={bookBaseUrl} class="pricing-btn pricing-btn--mobile">{t("cta_book_button")}</a>
                     </div>
@@ -248,22 +259,24 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
                         <tr class="tr-big-canvas-header">
                             <td colspan={activity1Groups.length}>{t("pricing_big_canvas_section_title")}</td>
                         </tr>
-                        <tr class="tr-big-canvas">
-                            {activity1BigRow.map((cell, cellIndex) => {
-                                const colClass = cellIndex % 2 === 0 ? "pricing-table-col--purple" : "pricing-table-col--yellow";
-                                if (!cell) return <td class:list={["td-empty", "pricing-table-col", colClass]} />;
-                                const parsed = parseOptLabel(t(cell.labelKey));
-                                return (
-                                    <td class:list={["pricing-table-col", colClass]}>
-                                        <span class="opt-row-main">
-                                            <span class="opt-canvas-label">{parsed ? parsed.canvasLabel : t(cell.labelKey)}</span>
-                                            {parsed && <span class="opt-canvas-price">{parsed.price}</span>}
-                                        </span>
-                                        <span class="opt-price">{t(cell.priceKey)}</span>
-                                    </td>
-                                );
-                            })}
-                        </tr>
+                        {activity1BigRows.map((row) => (
+                            <tr class="tr-big-canvas">
+                                {row.map((cell, cellIndex) => {
+                                    const colClass = cellIndex % 2 === 0 ? "pricing-table-col--purple" : "pricing-table-col--yellow";
+                                    if (!cell) return <td class:list={["td-empty", "pricing-table-col", colClass]} />;
+                                    const parsed = parseOptLabel(t(cell.labelKey));
+                                    return (
+                                        <td class:list={["pricing-table-col", colClass]}>
+                                            <span class="opt-row-main">
+                                                <span class="opt-canvas-label">{parsed ? parsed.canvasLabel : t(cell.labelKey)}</span>
+                                                {parsed && <span class="opt-canvas-price">{parsed.price}</span>}
+                                            </span>
+                                            <span class="opt-price">{t(cell.priceKey)}</span>
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -644,6 +657,10 @@ function parseOptLabel(text: string): { canvasLabel: string; price: string } | n
 
     .tr-big-canvas td {
         border-top: none !important;
+    }
+
+    .tr-big-canvas + .tr-big-canvas td {
+        border-top: 1px solid rgba(102, 51, 153, 0.12) !important;
     }
 
     .pricing-card-mobile-big-header {

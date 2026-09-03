@@ -37,10 +37,12 @@ export function getPriceCents(
 ): number {
   const {
     guests,
-    canvases = guests,
     canvasType = "standard",
     picture = "one_small",
   } = options;
+  // Big canvas defaults to one shared canvas; do not fall back to guest count
+  // or a 4-person booking would be charged as two big canvases.
+  const canvases = options.canvases ?? (canvasType === "big" ? 1 : guests);
 
   switch (eventType) {
     case EVENT_TYPE.COUPLES:

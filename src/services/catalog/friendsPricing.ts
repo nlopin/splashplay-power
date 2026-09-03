@@ -5,14 +5,24 @@ export type CanvasType = "standard" | "big";
 export const MIN_GUESTS = 1;
 export const MAX_GUESTS = 6;
 
-// Big canvas price table: indexed by guests (1–6)
-export const BIG_CANVAS_PRICES: Record<number, number> = {
-  1: 8500,
-  2: 9000,
-  3: 9600,
-  4: 10800,
-  5: 12000,
-  6: 13200,
+// Big canvas price table: [guests][canvases] → price in cents. Max 2 big canvases;
+// 1 guest can only take 1.
+export const BIG_CANVAS_PRICES: Record<number, Record<number, number>> = {
+  1: { 1: 8500 },
+  2: { 1: 9000, 2: 12400 },
+  3: { 1: 9600, 2: 13500 },
+  4: { 1: 10800, 2: 14400 },
+  5: { 1: 12000, 2: 15500 },
+  6: { 1: 13200, 2: 16800 },
+};
+
+export const BIG_CANVAS_LIMITS: Record<number, { min: number; max: number }> = {
+  1: { min: 1, max: 1 },
+  2: { min: 1, max: 2 },
+  3: { min: 1, max: 2 },
+  4: { min: 1, max: 2 },
+  5: { min: 1, max: 2 },
+  6: { min: 1, max: 2 },
 };
 
 // Standard canvas price table: [guests][canvases] → price in cents
@@ -41,10 +51,23 @@ export const CANVAS_LIMITS: Record<number, { min: number; max: number }> = {
   6: { min: 3, max: 6 },
 };
 
-// Exported so a caller building a display label uses the same clamp as the price.
-export function clampFriendsCanvases(canvases: number, guests: number): number {
+export function getFriendsCanvasLimits(
+  guests: number,
+  canvasType: CanvasType = "standard",
+): { min: number; max: number } {
   const clampedGuests = Math.max(MIN_GUESTS, Math.min(guests, MAX_GUESTS));
-  const limits = CANVAS_LIMITS[clampedGuests];
+  return canvasType === "big"
+    ? BIG_CANVAS_LIMITS[clampedGuests]
+    : CANVAS_LIMITS[clampedGuests];
+}
+
+// Exported so a caller building a display label uses the same clamp as the price.
+export function clampFriendsCanvases(
+  canvases: number,
+  guests: number,
+  canvasType: CanvasType = "standard",
+): number {
+  const limits = getFriendsCanvasLimits(guests, canvasType);
   return Math.max(limits.min, Math.min(canvases, limits.max));
 }
 
@@ -53,14 +76,13 @@ export function calculateFriendsPrice(
   guests: number = canvases,
   canvasType: CanvasType = "standard",
 ): number {
+  const clampedGuests = Math.max(MIN_GUESTS, Math.min(guests, MAX_GUESTS));
+  const clampedCanvases = clampFriendsCanvases(canvases, guests, canvasType);
+
   if (canvasType === "big") {
-    const clampedGuests = Math.max(MIN_GUESTS, Math.min(guests, MAX_GUESTS));
-    return BIG_CANVAS_PRICES[clampedGuests] ?? 8000;
+    return BIG_CANVAS_PRICES[clampedGuests]?.[clampedCanvases] ?? 8500;
   }
 
-  // Standard canvas
-  const clampedGuests = Math.max(MIN_GUESTS, Math.min(guests, MAX_GUESTS));
-  const clampedCanvases = clampFriendsCanvases(canvases, guests);
   return STANDARD_PRICES[clampedGuests]?.[clampedCanvases] ?? 6000;
 }
 
@@ -72,7 +94,7 @@ export function formatFriendsProductName(
 ): string {
   const canvasLabel =
     canvasType === "big"
-      ? "big canvas"
+      ? `${canvases} big ${canvases === 1 ? "canvas" : "canvases"}`
       : `${canvases} ${canvases === 1 ? "canvas" : "canvases"}`;
   return `${guests} ${guests === 1 ? "guest" : "guests"}, ${canvasLabel}, ${activityFormat}`;
 }
