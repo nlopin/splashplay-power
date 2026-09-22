@@ -10,6 +10,7 @@ export const ProductNameKeyByEventType: Record<EventType, string> = {
   family: "family_session",
   friends: "friends_session",
   individual: "individual_session",
+  open_session: "open_session",
 };
 
 export function getProductTitle(eventType: EventType, lang: Language): string {
@@ -23,6 +24,8 @@ export function getProductTitle(eventType: EventType, lang: Language): string {
       return book.friends_session;
     case EVENT_TYPE.INDIVIDUAL:
       return book.individual_session;
+    case EVENT_TYPE.OPEN_SESSION:
+      return book.open_session;
   }
 }
 

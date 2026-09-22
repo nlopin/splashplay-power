@@ -1,0 +1,182 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getPageTranslations, isSupportedLanguage } from "@/utils/i18n";
+import { getAvailability } from "@/services/availability";
+import BookingForm from "@/components/booking/BookingForm.tsx";
+import type { EventType } from "@/components/booking/types";
+
+export const prerender = false;
+
+const { lang } = Astro.params;
+
+if (!lang || !isSupportedLanguage(lang)) {
+    return Astro.redirect("/404");
+}
+
+const eventType: EventType = "open_session";
+const translations = getPageTranslations(lang, "book");
+
+const availability = await getAvailability(eventType);
+---
+
+<Layout>
+    <BookingForm
+        translations={translations}
+        availability={availability}
+        lang={lang}
+        eventType={eventType}
+        client:load
+    />
+</Layout>
+
+<style is:global>
+    .open-session-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+
+    .open-session-options-title {
+        margin: 0;
+        font-size: var(--font-lg);
+        font-weight: 700;
+        color: var(--dark-text);
+    }
+
+    .open-ticket-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-top: 8px;
+    }
+
+    .open-ticket-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        background: var(--white);
+        cursor: default;
+        position: relative;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .open-ticket-card:hover:not(.disabled) {
+        border-color: #d0d0d0;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .open-ticket-card.selected {
+        border-color: var(--purple);
+        box-shadow: 0 4px 16px rgba(102, 51, 153, 0.12);
+    }
+
+    .open-ticket-card.disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+    }
+
+    .open-ticket-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .open-ticket-label {
+        font-weight: 700;
+        color: var(--dark-text);
+    }
+
+    .open-ticket-desc {
+        font-size: var(--font-sm);
+        color: #666;
+    }
+
+    .open-ticket-unavailable {
+        font-size: var(--font-xs);
+        color: var(--orange);
+        font-weight: 600;
+    }
+
+    .open-ticket-price {
+        font-size: var(--font-lg);
+        font-weight: 700;
+        color: var(--purple);
+        white-space: nowrap;
+    }
+
+    .open-ticket-card.selected .open-ticket-price {
+        color: var(--purple);
+    }
+
+    .open-ticket-card .popular-badge {
+        position: absolute;
+        top: -8px;
+        right: 12px;
+        background-color: var(--orange);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 12px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+        z-index: 1;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .open-ticket-stepper {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        margin-top: 8px;
+    }
+
+    .open-ticket-stepper-btn {
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--border-color);
+        background: var(--white);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--dark-text);
+        font-size: var(--font-lg);
+        line-height: 1;
+        transition: all 0.2s;
+    }
+
+    .open-ticket-stepper-btn:hover:not(:disabled) {
+        background: var(--purple-light);
+        border-color: var(--purple);
+        color: var(--purple);
+    }
+
+    .open-ticket-stepper-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    .open-ticket-stepper-value {
+        min-width: 1.25em;
+        text-align: center;
+        font-weight: 700;
+        color: var(--dark-text);
+        font-size: var(--font-base);
+    }
+
+    .open-ticket-total {
+        margin-top: 4px;
+        text-align: right;
+        font-weight: 700;
+        color: var(--purple);
+        font-size: var(--font-lg);
+    }
+</style>

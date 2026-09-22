@@ -14,6 +14,14 @@ export const CreatePaymentSessionPayloadSchema = z.object({
   phone: z.string().optional(),
   // lookup key, validated against allowlist server-side
   partner: z.string().optional(),
+  openTicket: z.enum(["solo", "pair_shared", "pair_two"]).optional(),
+  openCart: z
+    .object({
+      solo: z.number().int().min(0).max(4),
+      pair_shared: z.number().int().min(0).max(2),
+      pair_two: z.number().int().min(0).max(2),
+    })
+    .optional(),
 });
 
 export const CreatePaymentSessionResponseSchema = z.object({

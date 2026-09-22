@@ -14,6 +14,10 @@ import { formatEventComment } from "@/components/booking/eventMessage";
 import { EVENT_TYPE } from "@/components/booking/types";
 import { createEvent, logEvent, updateEvent } from "@/services/logger";
 import { storePartnerBooking } from "@/services/partners";
+import {
+  releaseOpenSessionSeats,
+  reserveOpenSessionSeats,
+} from "@/services/availability/occupancy";
 
 export const prerender = false;
 const stripe = new Stripe(STRIPE_SECRET_KEY, {
@@ -149,7 +153,8 @@ export const POST: APIRoute = async ({ request }) => {
           });
         }
 
-        const calendlyResult = await bookEvent(parsedMetadata.data.eventType, {
+        const calendlyResult = await bookPaidEvent({
+          eventType: parsedMetadata.data.eventType,
           datetime: parsedMetadata.data.sessionTime,
           email: parsedCustomer.data.email,
           name: parsedCustomer.data.name,
@@ -160,6 +165,7 @@ export const POST: APIRoute = async ({ request }) => {
             paymentIntentId,
             parsedMetadata.data.sessionTitle,
           ),
+          guests: parsedMetadata.data.guests,
         });
 
         updateEvent(webhookEvent, {
@@ -194,6 +200,47 @@ export const POST: APIRoute = async ({ request }) => {
   logEvent(updateEvent(webhookEvent, { durationMs: Date.now() - startTime }));
   return new Response(JSON.stringify({ received: true }), { status: 200 });
 };
+
+async function bookPaidEvent({
+  eventType,
+  datetime,
+  email,
+  name,
+  phone,
+  comment,
+  guests,
+}: {
+  eventType: (typeof EVENT_TYPE)[keyof typeof EVENT_TYPE];
+  datetime: string;
+  email: string;
+  name: string;
+  phone: string;
+  comment: string;
+  guests: number;
+}): Promise<BookEventResult> {
+  if (eventType === EVENT_TYPE.OPEN_SESSION) {
+    const reserved = await reserveOpenSessionSeats(datetime, guests);
+    if (!reserved.ok) {
+      return {
+        success: false,
+        error: `Open session is full (${reserved.taken} already booked)`,
+      };
+    }
+    const calendlyResult = await bookEvent(eventType, {
+      datetime,
+      email,
+      name,
+      phone,
+      comment,
+    });
+    if (!calendlyResult.success) {
+      await releaseOpenSessionSeats(datetime, guests);
+    }
+    return calendlyResult;
+  }
+
+  return bookEvent(eventType, { datetime, email, name, phone, comment });
+}
 
 const PAYMENT_SUCCESS_STICKERS: Readonly<Array<string>> = [
   "CAACAgIAAxkBAAMFaTNYePmlrNHkc5VM5tMuZZB7lRwAAlYBAAIOJwwFKG2zp5BXJ8g2BA",

@@ -9,6 +9,7 @@ export const GUEST_BOUNDS: Record<EventType, GuestBounds> = {
   [EVENT_TYPE.FAMILY]: { min: 1, max: 6 },
   [EVENT_TYPE.FRIENDS]: { min: 1, max: 6 },
   [EVENT_TYPE.INDIVIDUAL]: { min: 1, max: 1 },
+  [EVENT_TYPE.OPEN_SESSION]: { min: 1, max: 4 },
 };
 
 // Minutes. Sourced from the "<strong>X h</strong> | ..." details shown on the
@@ -20,4 +21,5 @@ export const DURATION_MINUTES: Record<EventType, number> = {
   [EVENT_TYPE.FAMILY]: 90,
   [EVENT_TYPE.FRIENDS]: 90,
   [EVENT_TYPE.INDIVIDUAL]: 60,
+  [EVENT_TYPE.OPEN_SESSION]: 90,
 };

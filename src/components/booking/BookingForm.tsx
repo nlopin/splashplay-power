@@ -13,6 +13,7 @@ import type { ISODatetime } from "@/types";
 import { PaymentStep } from "./PaymentStep";
 import { ScheduleStep, type ScheduleStepProps } from "./ScheduleStep";
 import type { SelectedTimeSlot, EventType, Availability } from "./types";
+import type { OpenSessionCart } from "@/services/catalog/openSessionPricing";
 
 type Step = "schedule" | "payment";
 
@@ -53,11 +54,15 @@ export default function BookingForm({
     null,
   );
   const [currentGuests, setCurrentGuests] = useState<number | null>(null);
+  const [currentOpenCart, setCurrentOpenCart] = useState<
+    OpenSessionCart | undefined
+  >(undefined);
 
   // Payment state
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [bookingError, setBookingError] = useState<string | null>(null);
 
   // ?partner=<key>, else sessionStorage fallback on reload
   const [partnerKey] = useState<string | undefined>(getInitialPartnerKey);
@@ -130,14 +135,17 @@ export default function BookingForm({
     eventType,
     datetime,
     guests,
+    openCart,
   }: {
     amount: number;
     formattedProductName: string;
     eventType: EventType;
     datetime: ISODatetime;
     guests: number;
-  }) => {
+    openCart?: OpenSessionCart;
+  }): Promise<boolean> => {
     setError(null);
+    setBookingError(null);
 
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -157,9 +165,15 @@ export default function BookingForm({
           lang,
           partner: partnerKey,
           guests,
+          ...(openCart ? { openCart } : {}),
         }),
         signal: controller.signal,
       });
+
+      if (res.status === 409) {
+        setBookingError(translations.error_slot_full);
+        return false;
+      }
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -175,13 +189,15 @@ export default function BookingForm({
       }
 
       setClientSecret(parseResult.data.clientSecret);
+      return true;
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") {
         console.log("Request aborted");
-        return;
+        return false;
       }
       console.error(err);
       setError(translations.error_load);
+      return false;
     }
   };
 
@@ -189,10 +205,12 @@ export default function BookingForm({
     amount,
     productName,
     guests,
+    openCart,
   }) => {
     setCurrentAmount(amount);
     setCurrentProductName(productName);
     setCurrentGuests(guests);
+    setCurrentOpenCart(openCart);
   };
 
   const handleTimeSlotSelect: ScheduleStepProps["onTimeSlotSelect"] = (
@@ -232,15 +250,17 @@ export default function BookingForm({
 
     setIsLoading(true);
     try {
-      await createSession({
+      const ok = await createSession({
         amount,
         formattedProductName,
         eventType,
         datetime: selectedTimeSlot,
         guests: currentGuests,
+        openCart: currentOpenCart,
       });
-      // Navigate to payment step - URL will be updated by useEffect
-      setCurrentStep("payment");
+      if (ok) {
+        setCurrentStep("payment");
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -273,8 +293,10 @@ export default function BookingForm({
           availability={availability}
           selectedTimeSlot={selectedTimeSlot}
           currentAmount={currentAmount}
+          currentGuests={currentGuests}
           isLoading={isLoading}
           eventType={eventType}
+          bookingError={bookingError}
           onTimeSlotSelect={handleTimeSlotSelect}
           onPriceChange={handlePriceChange}
           onPayToBook={handlePayToBook}

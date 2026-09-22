@@ -13,6 +13,13 @@ export const HOLIDAYS = new Set<string>([
   "25-12", // Navidad
 ]);
 
+export const OPEN_WEEKLY_SLOTS: Record<string, SlotConfig[]> = {
+  Mon: [{ time: "18:00" }],
+  Thu: [{ time: "19:45" }],
+  Sat: [{ time: "14:00" }],
+  Sun: [{ time: "12:00" }],
+};
+
 export const WEEKLY_SLOTS: Record<string, SlotConfig[]> = {
   Mon: [
     { time: "14:00", discount: 20 },

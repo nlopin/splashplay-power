@@ -53,10 +53,13 @@ const TOOL_NAMES = [
 const LangSchema = z.enum(LANG_VALUES).describe(
   "Language for names/descriptions and the Stripe checkout page: es, en, or ca. Match the user's conversation language.",
 );
-// individual stays bookable on-site but isn't offered through the agent.
+// individual and open sessions stay bookable on-site but aren't offered through the agent.
 const MCP_EVENT_TYPES = [EVENT_TYPE.COUPLES, EVENT_TYPE.FAMILY, EVENT_TYPE.FRIENDS] as const;
 const EventTypeSchema = z.enum(MCP_EVENT_TYPES);
-const MCP_HIDDEN_EXPERIENCES = new Set<string>([EVENT_TYPE.INDIVIDUAL]);
+const MCP_HIDDEN_EXPERIENCES = new Set<string>([
+  EVENT_TYPE.INDIVIDUAL,
+  EVENT_TYPE.OPEN_SESSION,
+]);
 
 function jsonResult(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };

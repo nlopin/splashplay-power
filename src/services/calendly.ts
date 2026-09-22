@@ -5,6 +5,7 @@ import {
   CALENDLY_FAMILY_EVENT_TYPE_ID,
   CALENDLY_FRIENDS_EVENT_TYPE_ID,
   CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
+  CALENDLY_OPEN_SESSION_EVENT_TYPE_ID,
 } from "astro:env/server";
 
 import { type EventType } from "@/components/booking/types";
@@ -21,6 +22,7 @@ const EVENT_TYPE_IDS: Record<EventType, string> = {
   family: CALENDLY_FAMILY_EVENT_TYPE_ID,
   friends: CALENDLY_FRIENDS_EVENT_TYPE_ID,
   individual: CALENDLY_INDIVIDUAL_EVENT_TYPE_ID,
+  open_session: CALENDLY_OPEN_SESSION_EVENT_TYPE_ID,
 };
 const BOOK_IN_ADVANCE = 45;
 const BATCH_SIZE_IN_DAYS = 7;

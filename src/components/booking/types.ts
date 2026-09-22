@@ -1,5 +1,6 @@
 import type { ISODatetime } from "@/types";
 import type { AvailableTime } from "@/services/availability/types";
+import type { OpenSessionCart, OpenSessionTicket } from "@/services/catalog/openSessionPricing";
 
 export type SelectedTimeSlot = ISODatetime;
 
@@ -8,6 +9,7 @@ export const EVENT_TYPE = {
   FAMILY: "family",
   FRIENDS: "friends",
   INDIVIDUAL: "individual",
+  OPEN_SESSION: "open_session",
 } as const;
 
 export type EventType = (typeof EVENT_TYPE)[keyof typeof EVENT_TYPE];
@@ -23,4 +25,6 @@ export interface PricingData {
   amount: number;
   productName: string;
   guests: number;
+  openTicket?: OpenSessionTicket;
+  openCart?: OpenSessionCart;
 }
