@@ -101,7 +101,9 @@ const lang = getCurrentLanguage(Astro.currentLocale);
     }
 
     .cta-wrapper {
-        display: inline-block;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
         max-width: 300px;
     }
 
@@ -137,6 +139,11 @@ const lang = getCurrentLanguage(Astro.currentLocale);
 
         .hero-content {
             text-align: center;
+        }
+
+        .cta-wrapper {
+            margin-left: auto;
+            margin-right: auto;
         }
 
         h1 {
