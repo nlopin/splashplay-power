@@ -12,9 +12,6 @@ export type OpenSessionCart = Record<OpenSessionTicket, number>;
 
 export const OPEN_SESSION_CAPACITY = 6;
 
-/** Max people in a single checkout — mixes allowed, e.g. 1 couple + 2 solo. */
-export const OPEN_SESSION_MAX_PEOPLE_PER_PURCHASE = 4;
-
 export const OPEN_SESSION_PRICE: Record<OpenSessionTicket, number> = {
   solo: 3200,
   pair_shared: 4700,
@@ -54,10 +51,8 @@ export function maxOpenSessionQuantity(
 ): number {
   const cart = options.cart ?? emptyOpenSessionCart();
   const othersPeople = openSessionPeople({ ...cart, [ticket]: 0 });
-  let remaining = OPEN_SESSION_MAX_PEOPLE_PER_PURCHASE - othersPeople;
-  if (options.spotsLeft != null) {
-    remaining = Math.min(remaining, options.spotsLeft - othersPeople);
-  }
+  const cap = options.spotsLeft ?? OPEN_SESSION_CAPACITY;
+  const remaining = cap - othersPeople;
   return Math.max(0, Math.floor(remaining / OPEN_SESSION_GUESTS[ticket]));
 }
 
@@ -93,7 +88,7 @@ export function cartFromTicketAndGuests(
 
 export function isValidOpenSessionCart(cart: OpenSessionCart): boolean {
   const people = openSessionPeople(cart);
-  if (people < 1 || people > OPEN_SESSION_MAX_PEOPLE_PER_PURCHASE) {
+  if (people < 1 || people > OPEN_SESSION_CAPACITY) {
     return false;
   }
   for (const ticket of OPEN_SESSION_TICKETS) {
