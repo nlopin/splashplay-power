@@ -131,5 +131,5 @@ export function formatOpenSessionProductName(
     return [quantity > 1 ? `${quantity} × ${labels[ticket]}` : labels[ticket]];
   });
   const summary = parts.join(" + ") || labels.solo;
-  return `${summary}, Splash, 30×40`;
+  return `${summary}, Splash`;
 }
