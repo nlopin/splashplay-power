@@ -54,11 +54,19 @@ export function EventTypeSelector({
   };
 
   const formatDuration = (hours: number) => {
-    if (hours === 1) {
-      return t("duration_hour").replace("{hours}", hours.toString());
-    }
-    return t("duration_hours").replace("{hours}", hours.toString());
+    return t("duration_labeled").replace("{hours}", hours.toString());
   };
+
+  if (currentEventType === "open_session") {
+    return (
+      <div>
+        <div className="event-type-trigger event-type-static">
+          <h1 className="current-selection">{t("open_session")}</h1>
+        </div>
+        <p>⏰ {formatDuration(1.5)}</p>
+      </div>
+    );
+  }
 
   if (!currentOption) {
     return null;

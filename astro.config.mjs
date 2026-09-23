@@ -61,6 +61,10 @@ export default defineConfig({
         context: "server",
         access: "secret",
       }),
+      CALENDLY_OPEN_SESSION_EVENT_TYPE_ID: envField.string({
+        context: "server",
+        access: "secret",
+      }),
       NETLIFY_SITE_ID: envField.string({
         context: "server",
         access: "secret",

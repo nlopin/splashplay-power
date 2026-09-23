@@ -3,6 +3,7 @@ import { fetchAvailability } from "@/services/calendly";
 import { createAndLogEvent } from "@/services/logger";
 import type { ISODatetime } from "@/types";
 import { getCachedAvailability, setCachedAvailability } from "./cache";
+import { getOpenSessionAvailability } from "./openSessions";
 import { filterToSchedule, generateBookedSlots } from "./schedule";
 import type { AvailableTime } from "./types";
 
@@ -18,18 +19,27 @@ export async function getAvailability(
   const cached = await getCachedAvailability(eventType);
 
   if (cached) {
-    const available = filterToSchedule(cached);
-    return [...available, ...generateBookedSlots(cached, days)].sort((a, b) =>
-      a.time.localeCompare(b.time),
-    );
+    return toAvailability(eventType, cached, days);
   }
 
   const result = await refreshAvailability(eventType, { days });
 
   if (!result.success) return [];
-  const available = filterToSchedule(result.availableTimes);
-  return [...available, ...generateBookedSlots(result.availableTimes, days)].sort(
-    (a, b) => a.time.localeCompare(b.time),
+  return toAvailability(eventType, result.availableTimes, days);
+}
+
+async function toAvailability(
+  eventType: EventType,
+  times: ISODatetime[],
+  days: number,
+): Promise<AvailableTime[]> {
+  if (eventType === EVENT_TYPE.OPEN_SESSION) {
+    return getOpenSessionAvailability(times, days);
+  }
+
+  const available = filterToSchedule(times);
+  return [...available, ...generateBookedSlots(times, days)].sort((a, b) =>
+    a.time.localeCompare(b.time),
   );
 }
 

@@ -28,6 +28,7 @@ const BOOKING_PATH: Record<EventType, string> = {
   family: "book/family",
   friends: "book/friends",
   individual: "book/individual",
+  open_session: "book/open-session",
 };
 
 // "book" holds the generic booking-flow copy shared across event types that
@@ -43,6 +44,8 @@ function getName(eventType: EventType, lang: Language): string {
       return book.event_type_friends;
     case EVENT_TYPE.INDIVIDUAL:
       return book.individual_session;
+    case EVENT_TYPE.OPEN_SESSION:
+      return book.open_session;
   }
 }
 
@@ -56,6 +59,8 @@ function getDescription(eventType: EventType, lang: Language): string {
       return getPageTranslations(lang, "friends").meta_description;
     case EVENT_TYPE.INDIVIDUAL:
       return getPageTranslations(lang, "book").event_type_individual_desc;
+    case EVENT_TYPE.OPEN_SESSION:
+      return getPageTranslations(lang, "book").event_type_open_session_desc;
   }
 }
 

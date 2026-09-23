@@ -34,7 +34,13 @@ function isHoliday(iso: string): boolean {
   return HOLIDAYS.has(`${parts.day}-${parts.month}`);
 }
 
-export function filterToSchedule(slots: string[]): AvailableTime[] {
+type WeeklySchedule = typeof WEEKLY_SLOTS;
+
+export function filterToSchedule(
+  slots: string[],
+  schedule: WeeklySchedule = WEEKLY_SLOTS,
+  { remapHolidays = true }: { remapHolidays?: boolean } = {},
+): AvailableTime[] {
   const result: AvailableTime[] = [];
 
   for (const iso of slots) {
@@ -49,8 +55,8 @@ export function filterToSchedule(slots: string[]): AvailableTime[] {
     }
 
     const holiday = isHoliday(iso);
-    const scheduleDay = holiday ? "Sun" : dayAbbr;
-    const match = WEEKLY_SLOTS[scheduleDay]?.find(
+    const scheduleDay = remapHolidays && holiday ? "Sun" : dayAbbr;
+    const match = schedule[scheduleDay]?.find(
       (s) => s.time === `${hour}:${minute}`,
     );
     if (match) {
@@ -84,6 +90,8 @@ function toMadridISODatetime(utcDay: Date, timeHHMM: string): ISODatetime {
 export function generateBookedSlots(
   availableISOs: string[],
   days: number,
+  schedule: WeeklySchedule = WEEKLY_SLOTS,
+  { remapHolidays = true }: { remapHolidays?: boolean } = {},
 ): AvailableTime[] {
   const availableMs = new Set(availableISOs.map((s) => new Date(s).getTime()));
   const now = new Date();
@@ -97,8 +105,8 @@ export function generateBookedSlots(
     for (const part of formatter.formatToParts(utcDay)) {
       if (part.type === "weekday") dayAbbr = part.value;
     }
-    const scheduleDay = holiday ? "Sun" : dayAbbr;
-    const slots = WEEKLY_SLOTS[scheduleDay] ?? [];
+    const scheduleDay = remapHolidays && holiday ? "Sun" : dayAbbr;
+    const slots = schedule[scheduleDay] ?? [];
 
     for (const slot of slots) {
       const slotISO = toMadridISODatetime(utcDay, slot.time);

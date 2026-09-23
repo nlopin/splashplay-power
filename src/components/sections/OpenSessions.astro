@@ -1,0 +1,210 @@
+---
+import { createAstroTranslator, getCurrentLanguage, getLocalizedPath } from "../../utils/i18n";
+
+const t = createAstroTranslator(Astro.currentLocale, "main");
+const lang = getCurrentLanguage(Astro.currentLocale);
+const bookUrl = getLocalizedPath("/book/open-session", lang);
+
+const tickets = [
+    {
+        labelKey: "open_sessions.ticket_solo_label",
+        priceKey: "open_sessions.ticket_solo_price",
+        descKey: "open_sessions.ticket_solo_desc",
+        featured: true,
+    },
+    {
+        labelKey: "open_sessions.ticket_shared_label",
+        priceKey: "open_sessions.ticket_shared_price",
+        descKey: "open_sessions.ticket_shared_desc",
+        featured: false,
+    },
+    {
+        labelKey: "open_sessions.ticket_pair_label",
+        priceKey: "open_sessions.ticket_pair_price",
+        descKey: "open_sessions.ticket_pair_desc",
+        featured: false,
+    },
+] as const;
+---
+
+<div id="sesiones-abiertas" class="open-sessions">
+    <div class="open-sessions__intro">
+        <h3 class="open-sessions__title">{t("open_sessions.title")}</h3>
+        <p class="open-sessions__activity">{t("open_sessions.activity")}</p>
+        <p class="open-sessions__subtitle">{t("open_sessions.subtitle")}</p>
+        <p class="open-sessions__kicker">{t("open_sessions.meta")}</p>
+    </div>
+
+    <ul class="open-sessions__tickets">
+        {
+            tickets.map((ticket) => (
+                <li class:list={["open-ticket", { "open-ticket--featured": ticket.featured }]}>
+                    <div class="open-ticket__copy">
+                        <span class="open-ticket__label">{t(ticket.labelKey)}</span>
+                        <span class="open-ticket__desc">{t(ticket.descKey)}</span>
+                    </div>
+                    <span class="open-ticket__price">{t(ticket.priceKey)}</span>
+                </li>
+            ))
+        }
+    </ul>
+
+    <div class="open-sessions__footer">
+        <a class="open-sessions__cta" href={bookUrl} id="open-sessions-cta" style="display: none">{t("open_sessions.cta")}</a>
+        <span class="open-sessions__cta open-sessions__cta--soon" id="open-sessions-coming-soon">{t("open_sessions.coming_soon")}</span>
+    </div>
+</div>
+
+<script is:inline>
+    // Feature flag: the open-session page isn't public yet. Reservations
+    // stay hidden behind "coming soon" unless this key is set. To test,
+    // run in the browser console: localStorage.setItem("splashplay:openSessionsEnabled", "1")
+    try {
+        if (localStorage.getItem("splashplay:openSessionsEnabled") !== null) {
+            document.getElementById("open-sessions-cta").style.display = "";
+            document.getElementById("open-sessions-coming-soon").style.display = "none";
+        }
+    } catch (e) {}
+</script>
+
+<style>
+    .open-sessions {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 1.5rem 1.35rem 1.35rem;
+        background-color: var(--purple-tint-bg);
+        border: 1px solid rgba(102, 51, 153, 0.12);
+        border-radius: 12px;
+        scroll-margin-top: 80px;
+        box-sizing: border-box;
+    }
+
+    .open-sessions__intro {
+        text-align: center;
+        margin: 0 0 1.15rem;
+    }
+
+    .open-sessions__title {
+        margin: 0 0 0.35rem;
+        color: var(--purple);
+        font-size: var(--font-xl);
+        font-weight: 700;
+    }
+
+    .open-sessions__activity {
+        margin: 0 0 0.55rem;
+        color: var(--purple);
+        font-size: var(--font-base);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+    .open-sessions__subtitle {
+        margin: 0 0 0.45rem;
+        color: var(--dark-text);
+        font-size: var(--font-base);
+        line-height: 1.5;
+    }
+
+    .open-sessions__kicker {
+        margin: 0;
+        color: var(--purple);
+        font-size: var(--font-sm);
+        font-weight: 600;
+        line-height: 1.45;
+    }
+
+    .open-sessions__tickets {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .open-ticket {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 12px 16px;
+        background: var(--white);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+    }
+
+    .open-ticket--featured {
+        border-color: rgba(102, 51, 153, 0.35);
+    }
+
+    .open-ticket__copy {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        text-align: left;
+    }
+
+    .open-ticket__label {
+        color: var(--purple);
+        font-weight: 700;
+        font-size: var(--font-base);
+    }
+
+    .open-ticket__desc {
+        color: var(--dark-text);
+        font-size: var(--font-sm);
+    }
+
+    .open-ticket__price {
+        color: var(--purple);
+        font-size: var(--font-lg);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .open-sessions__footer {
+        margin-top: 1.15rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    a.open-sessions__cta {
+        display: inline-block;
+        padding: 0.35rem 0.8rem;
+        font-size: var(--font-xs);
+        font-weight: 700;
+        color: var(--white);
+        background-color: var(--orange);
+        border-radius: 20px;
+        text-decoration: none;
+        text-transform: uppercase;
+        white-space: nowrap;
+        letter-spacing: 0.02em;
+    }
+
+    a.open-sessions__cta:hover {
+        background-color: var(--purple);
+        color: var(--white);
+    }
+
+    .open-sessions__cta--soon {
+        background-color: var(--border-color);
+        color: var(--dark-text);
+        cursor: default;
+    }
+
+    @media (max-width: 599px) {
+        .open-sessions {
+            padding: 1.35rem 1rem 1.25rem;
+        }
+
+        .open-ticket {
+            padding: 12px;
+        }
+    }
+</style>

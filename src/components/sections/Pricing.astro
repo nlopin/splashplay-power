@@ -5,6 +5,7 @@ import {
     getLocalizedPath,
 } from "../../utils/i18n";
 import { isActivityHidden, type ActivityId } from "../../config/activities";
+import OpenSessions from "./OpenSessions.astro";
 import friendsImg from "../../assets/photo/friends.jpg";
 import couplesImg from "../../assets/photo/couples.jpg";
 import familyImg from "../../assets/photo/family.jpg";
@@ -12,6 +13,7 @@ import teamsImg from "../../assets/photo/equipos.jpg";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
 const lang = getCurrentLanguage(Astro.currentLocale);
+const showOpenSessions = true;
 
 interface PricingActivity {
     activityId: ActivityId;
@@ -51,6 +53,27 @@ const allTeamActivities: PricingActivity[] = [
 ];
 const teamActivities = allTeamActivities.filter((a) => !isActivityHidden(a.activityId));
 
+const miniAudiences = [
+    {
+        id: "couples" as const,
+        pageUrl: getLocalizedPath("/couples", lang),
+        bookUrl: getLocalizedPath("/book/couples", lang),
+        activity: couplesActivities[0],
+    },
+    {
+        id: "families" as const,
+        pageUrl: getLocalizedPath("/family", lang),
+        bookUrl: getLocalizedPath("/book/family", lang),
+        activity: familyActivities[0],
+    },
+    {
+        id: "friends" as const,
+        pageUrl: getLocalizedPath("/friends", lang),
+        bookUrl: getLocalizedPath("/book/friends", lang),
+        activity: friendsActivities[0],
+    },
+];
+
 const priceCards = [
     {
         id: "friends",
@@ -84,66 +107,116 @@ const priceCards = [
         <h2 class="section-title">{t("pricing_title")}</h2>
         <p class="price-description">{t("pricing_subtitle")}</p>
 
-        <div class="pricing-cards">
-            {priceCards.map((card) => (
-                <div class={`price-card ${card.id === "teams" ? "price-card--teams" : ""}`}>
-                    <div class="price-card-image-wrap">
-                        <img
-                            src={card.img.src}
-                            alt={t(`pricing.${card.id}.image_alt`)}
-                            class="price-card-image"
-                            loading="lazy"
-                        />
-                    </div>
-                    <div class="price-card-body">
-                        <div class="price-card-header">
-                            <h4>
-                                <span class="price-card-heading">
-                                    <span class="price-card-icon">{t(`pricing.${card.id}.icon`)}</span>
-                                    <a href={card.link} class="price-card-title">{t(`pricing.${card.id}.title_card`)}</a>
-                                </span>
-                                {card.id !== "teams" && (
-                                    <span class="price-card-age">| {t(`pricing.${card.id}.age`)}</span>
-                                )}
-                            </h4>
+        {
+            showOpenSessions ? (
+                <div class="pricing-split">
+                    <div class="mode-panel">
+                        <div class="mode-panel__intro">
+                            <h3 class="mode-panel__title">{t("pricing_private_title")}</h3>
+                            <p class="mode-panel__activity">{t("pricing_private_activities")}</p>
+                            <p class="mode-panel__subtitle">{t("pricing_private_subtitle")}</p>
                         </div>
 
-                        {card.activities.length === 1 || card.id === "teams" ? (
-                            <div class="price-single">
-                                <div class="price-single-value">
-                                    {card.id === "teams"
-                                        ? `${t("pricing.teams.price")} · ${t("pricing.teams.duration")}`
-                                        : `${t(`pricing.${card.id}.${card.activities[0].priceKey}`)} · ${t(`pricing.${card.id}.${card.activities[0].durationKey}`)}`}
+                        <ul class="mini-audiences">
+                            {miniAudiences.map((audience) => (
+                                <li class="mini-audience">
+                                    <div class="mini-audience__copy">
+                                        <a href={audience.pageUrl} class="mini-audience__title">
+                                            <span class="mini-audience__icon">{t(`pricing.${audience.id}.icon`)}</span>
+                                            {t(`pricing.${audience.id}.title_card`)}
+                                        </a>
+                                        <span class="mini-audience__meta">
+                                            {t(`pricing.${audience.id}.age`)}
+                                            {audience.activity && (
+                                                <>
+                                                    {" · "}
+                                                    {t(`pricing.${audience.id}.${audience.activity.durationKey}`)}
+                                                </>
+                                            )}
+                                        </span>
+                                        <a href={audience.pageUrl} class="mini-audience__details">
+                                            {t("cta_more_info")}
+                                            <span class="visually-hidden"> {t(`cta_more_info_sr_${audience.id}`)}</span>
+                                        </a>
+                                    </div>
+                                    <div class="mini-audience__side">
+                                        <span class="mini-audience__price">
+                                            {t(`pricing.${audience.id}.price`)}
+                                        </span>
+                                        <a href={audience.bookUrl} class="mode-cta">
+                                            {t("nav_book")}
+                                        </a>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <OpenSessions />
+                </div>
+            ) : (
+                <div class="pricing-cards">
+                    {priceCards.map((card) => (
+                        <div class={`price-card ${card.id === "teams" ? "price-card--teams" : ""}`}>
+                            <div class="price-card-image-wrap">
+                                <img
+                                    src={card.img.src}
+                                    alt={t(`pricing.${card.id}.image_alt`)}
+                                    class="price-card-image"
+                                    loading="lazy"
+                                />
+                            </div>
+                            <div class="price-card-body">
+                                <div class="price-card-header">
+                                    <h4>
+                                        <span class="price-card-heading">
+                                            <span class="price-card-icon">{t(`pricing.${card.id}.icon`)}</span>
+                                            <a href={card.link} class="price-card-title">{t(`pricing.${card.id}.title_card`)}</a>
+                                        </span>
+                                        {card.id !== "teams" && (
+                                            <span class="price-card-age">| {t(`pricing.${card.id}.age`)}</span>
+                                        )}
+                                    </h4>
+                                </div>
+
+                                {card.activities.length === 1 || card.id === "teams" ? (
+                                    <div class="price-single">
+                                        <div class="price-single-value">
+                                            {card.id === "teams"
+                                                ? `${t("pricing.teams.price")} · ${t("pricing.teams.duration")}`
+                                                : `${t(`pricing.${card.id}.${card.activities[0].priceKey}`)} · ${t(`pricing.${card.id}.${card.activities[0].durationKey}`)}`}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <table class="price-activity-table">
+                                        <tbody>
+                                            {card.activities.map((activity) => (
+                                                <tr>
+                                                    <td class="price-activity-name">{t(`pricing.${card.id}.${activity.nameKey}`)}</td>
+                                                    <td class="price-activity-duration">{t(`pricing.${card.id}.${activity.durationKey}`)}</td>
+                                                    <td class="price-activity-price">{t(`pricing.${card.id}.${activity.priceKey}`)}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
+
+                                <div class="price-card-footer">
+                                    {card.activities.length === 1 ? (
+                                        <a href={card.activities[0].bookingUrl} class="price-activity-btn">{t(`pricing.${card.id}.cta`)}</a>
+                                    ) : (
+                                        <a href="#contact" class="price-activity-btn">{t("pricing.teams.cta")}</a>
+                                    )}
+                                    <a href={card.link} class="btn-small btn-more">
+                                        <strong>{t("cta_more_info")}<span class="visually-hidden"> {t(`cta_more_info_sr_${card.id}`)}</span></strong>
+                                    </a>
                                 </div>
                             </div>
-                        ) : (
-                            <table class="price-activity-table">
-                                <tbody>
-                                    {card.activities.map((activity) => (
-                                        <tr>
-                                            <td class="price-activity-name">{t(`pricing.${card.id}.${activity.nameKey}`)}</td>
-                                            <td class="price-activity-duration">{t(`pricing.${card.id}.${activity.durationKey}`)}</td>
-                                            <td class="price-activity-price">{t(`pricing.${card.id}.${activity.priceKey}`)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        )}
-
-                        <div class="price-card-footer">
-                            {card.activities.length === 1 ? (
-                                <a href={card.activities[0].bookingUrl} class="price-activity-btn">{t(`pricing.${card.id}.cta`)}</a>
-                            ) : (
-                                <a href="#contact" class="price-activity-btn">{t("pricing.teams.cta")}</a>
-                            )}
-                            <a href={card.link} class="btn-small btn-more">
-                                <strong>{t("cta_more_info")}<span class="visually-hidden"> {t(`cta_more_info_sr_${card.id}`)}</span></strong>
-                            </a>
                         </div>
-                    </div>
+                    ))}
                 </div>
-            ))}
-        </div>
+            )
+        }
     </div>
 </section>
 
@@ -168,12 +241,193 @@ const priceCards = [
         line-height: 1.6;
     }
 
+    .pricing-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+        align-items: stretch;
+        max-width: 980px;
+        margin: 0 auto;
+    }
+
+    .mode-panel {
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem 1.35rem 1.35rem;
+        border: 1px solid rgba(255, 107, 53, 0.18);
+        border-radius: 12px;
+        background: var(--orange-tint-bg);
+        box-sizing: border-box;
+        container-type: inline-size;
+    }
+
+    .mode-panel__intro {
+        text-align: center;
+        margin: 0 0 1.15rem;
+    }
+
+    .mode-panel__title {
+        margin: 0 0 0.35rem;
+        color: var(--purple);
+        font-size: var(--font-xl);
+        font-weight: 700;
+    }
+
+    .mode-panel__activity {
+        margin: 0 0 0.55rem;
+        color: var(--purple);
+        font-size: var(--font-base);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+    .mode-panel__subtitle {
+        margin: 0;
+        color: var(--dark-text);
+        font-size: var(--font-base);
+        line-height: 1.5;
+    }
+
+    .mini-audiences {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .mini-audience {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 12px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        background: var(--light-bg);
+    }
+
+    .mini-audience__copy {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        text-align: left;
+        flex: 1;
+    }
+
+    a.mini-audience__title {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--purple);
+        font-weight: 700;
+        font-size: var(--font-base);
+        line-height: 1.2;
+        text-decoration: none;
+    }
+
+    a.mini-audience__title:hover {
+        color: var(--orange);
+    }
+
+    .mini-audience__icon {
+        font-size: var(--font-lg);
+        line-height: 1;
+        flex-shrink: 0;
+    }
+
+    .mini-audience__meta {
+        color: var(--dark-text);
+        font-size: var(--font-sm);
+    }
+
+    a.mini-audience__details {
+        width: fit-content;
+        margin-top: 2px;
+        color: var(--purple);
+        font-size: var(--font-sm);
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+    a.mini-audience__details:hover {
+        color: var(--orange);
+    }
+
+    .mini-audience__side {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .mini-audience__price {
+        color: var(--purple);
+        font-size: var(--font-sm);
+        font-weight: 700;
+        text-align: right;
+        line-height: 1.3;
+    }
+
+    a.mode-cta {
+        display: inline-block;
+        padding: 0.35rem 0.8rem;
+        font-size: var(--font-xs);
+        font-weight: 700;
+        color: var(--white);
+        background-color: var(--orange);
+        border-radius: 20px;
+        text-decoration: none;
+        text-transform: uppercase;
+        white-space: nowrap;
+        letter-spacing: 0.02em;
+    }
+
+    a.mode-cta:hover {
+        background-color: var(--purple);
+        color: var(--white);
+    }
+
     .pricing-cards {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1.5rem;
         max-width: 900px;
         margin: 0 auto;
+    }
+
+    @media (max-width: 799px) {
+        .pricing-split {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @container (max-width: 28rem) {
+        .mini-audience {
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 8px 12px;
+        }
+
+        .mini-audience__copy {
+            flex: 1 1 100%;
+        }
+
+        .mini-audience__side {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .mini-audience__price {
+            text-align: left;
+        }
     }
 
     @media (max-width: 599px) {
@@ -197,6 +451,10 @@ const priceCards = [
             width: 100%;
             text-align: center;
             box-sizing: border-box;
+        }
+
+        .mini-audience {
+            padding: 12px;
         }
     }
 
@@ -281,7 +539,6 @@ const priceCards = [
         opacity: 0.8;
     }
 
-    /* Single-activity cards */
     .price-single {
         display: flex;
         flex-direction: column;
@@ -294,7 +551,6 @@ const priceCards = [
         color: var(--purple);
     }
 
-    /* Multi-activity table (teams) */
     .price-activity-table {
         width: 100%;
         border-collapse: collapse;
@@ -331,7 +587,6 @@ const priceCards = [
         font-size: 0.85em;
     }
 
-    /* Footer / CTAs */
     .price-card-footer {
         padding-top: 1.5rem;
         display: flex;
@@ -383,5 +638,4 @@ const priceCards = [
         font-weight: 600;
         text-decoration: underline;
     }
-
 </style>

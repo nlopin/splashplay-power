@@ -30,15 +30,19 @@ export function AvailabilityCalendar({
     setInternalSelectedSlot(selectedTimeSlot ?? null);
   }, [selectedTimeSlot]);
 
-  const { discountMap, bookedSet, weeks, initialWeekIndex } = useMemo(() => {
+  const { discountMap, bookedSet, spotsLeftMap, weeks, initialWeekIndex } = useMemo(() => {
     const discountMap = new Map<string, Discount | undefined>();
     const bookedSet = new Set<string>();
+    const spotsLeftMap = new Map<string, number>();
     const times: ISODatetime[] = [];
 
     let firstAvailableTime: string | null = null;
     for (const s of availability) {
       times.push(s.time);
       discountMap.set(s.time, s.discount);
+      if (s.spotsLeft != null) {
+        spotsLeftMap.set(s.time, s.spotsLeft);
+      }
       if (s.booked) {
         bookedSet.add(s.time);
       } else if (!firstAvailableTime) {
@@ -56,6 +60,7 @@ export function AvailabilityCalendar({
     return {
       discountMap,
       bookedSet,
+      spotsLeftMap,
       weeks,
       initialWeekIndex,
     };
@@ -156,6 +161,7 @@ export function AvailabilityCalendar({
                         onSelect={handleSelect}
                         discount={discountMap.get(slot)}
                         isBooked={bookedSet.has(slot)}
+                        spotsLeft={spotsLeftMap.get(slot)}
                       />
                     )}
                   </div>
@@ -198,6 +204,7 @@ export function AvailabilityCalendar({
                       onSelect={handleSelect}
                       discount={discountMap.get(time)}
                       isBooked={bookedSet.has(time)}
+                      spotsLeft={spotsLeftMap.get(time)}
                     />
                   ))}
                 </div>
@@ -274,14 +281,23 @@ const TimeSlotButton = ({
   onSelect,
   discount,
   isBooked,
+  spotsLeft,
 }: {
   time: ISODatetime;
   isSelected: boolean;
   onSelect: (time: ISODatetime) => void;
   discount?: Discount;
   isBooked?: boolean;
+  spotsLeft?: number;
 }) => {
+  const t = useTranslator();
   const formattedTime = formatTime(time);
+  const spotsLabel =
+    spotsLeft == null || isBooked
+      ? null
+      : spotsLeft === 1
+        ? t("spots_left_one")
+        : t("spots_left").replace("{count}", String(spotsLeft));
   return (
     <button
       type="button"
@@ -293,6 +309,7 @@ const TimeSlotButton = ({
       {discount && !isBooked && (
         <span className="discount-badge">-{discount}%</span>
       )}
+      {spotsLabel && <span className="spots-left">{spotsLabel}</span>}
     </button>
   );
 };

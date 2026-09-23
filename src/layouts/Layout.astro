@@ -625,6 +625,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         background-color: rgba(255,255,255,0.25);
     }
 
+    .spots-left {
+        display: block;
+        font-size: var(--font-xs);
+        font-weight: 600;
+        line-height: 1.2;
+        opacity: 0.85;
+    }
+
 
     .options-grid {
         display: grid;
@@ -665,6 +673,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     .event-type-trigger:hover {
         color: var(--purple);
+    }
+
+    .event-type-trigger.event-type-static {
+        cursor: default;
+    }
+
+    .event-type-trigger.event-type-static:hover {
+        color: var(--dark-text);
     }
 
     .event-type-trigger:focus-visible {

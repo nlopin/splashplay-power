@@ -1,4 +1,5 @@
 import { EVENT_TYPE, type EventType } from "@/components/booking/types";
+import { OPEN_SESSION_CAPACITY } from "./openSessionPricing";
 
 export type GuestBounds = { min: number; max: number };
 
@@ -9,6 +10,9 @@ export const GUEST_BOUNDS: Record<EventType, GuestBounds> = {
   [EVENT_TYPE.FAMILY]: { min: 1, max: 6 },
   [EVENT_TYPE.FRIENDS]: { min: 1, max: 6 },
   [EVENT_TYPE.INDIVIDUAL]: { min: 1, max: 1 },
+  // No per-purchase cap — bounded only by spots left in the session, up to
+  // capacity (see maxOpenSessionQuantity/isValidOpenSessionCart).
+  [EVENT_TYPE.OPEN_SESSION]: { min: 1, max: OPEN_SESSION_CAPACITY },
 };
 
 // Minutes. Sourced from the "<strong>X h</strong> | ..." details shown on the
@@ -20,4 +24,5 @@ export const DURATION_MINUTES: Record<EventType, number> = {
   [EVENT_TYPE.FAMILY]: 90,
   [EVENT_TYPE.FRIENDS]: 90,
   [EVENT_TYPE.INDIVIDUAL]: 60,
+  [EVENT_TYPE.OPEN_SESSION]: 90,
 };

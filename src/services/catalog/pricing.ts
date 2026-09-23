@@ -3,6 +3,14 @@ import { COUPLES_PRICE, type CouplesPicture } from "./couplesPricing";
 import { INDIVIDUAL_PRICE } from "./individualPricing";
 import { calculateFamilyPrice } from "./familyPricing";
 import { calculateFriendsPrice } from "./friendsPricing";
+import {
+  cartFromTicketAndGuests,
+  emptyOpenSessionCart,
+  OPEN_SESSION_PRICE,
+  openSessionAmountCents,
+  type OpenSessionCart,
+  type OpenSessionTicket,
+} from "./openSessionPricing";
 
 export type CanvasType = "standard" | "big";
 export type { CouplesPicture };
@@ -12,6 +20,8 @@ export type BookingPricingOptions = {
   canvases?: number;
   canvasType?: CanvasType;
   picture?: CouplesPicture;
+  openTicket?: OpenSessionTicket;
+  openCart?: OpenSessionCart;
 };
 
 // Cheapest amount Stripe would ever charge for this event type — the
@@ -26,6 +36,8 @@ export function getFromPriceCents(eventType: EventType): number {
       return calculateFriendsPrice(1, 1, "standard");
     case EVENT_TYPE.INDIVIDUAL:
       return INDIVIDUAL_PRICE;
+    case EVENT_TYPE.OPEN_SESSION:
+      return OPEN_SESSION_PRICE.solo;
   }
 }
 
@@ -53,5 +65,12 @@ export function getPriceCents(
       return calculateFriendsPrice(canvases, guests, canvasType);
     case EVENT_TYPE.INDIVIDUAL:
       return INDIVIDUAL_PRICE;
+    case EVENT_TYPE.OPEN_SESSION: {
+      const cart =
+        options.openCart ??
+        cartFromTicketAndGuests(options.openTicket ?? "solo", guests) ??
+        emptyOpenSessionCart();
+      return openSessionAmountCents(cart);
+    }
   }
 }
