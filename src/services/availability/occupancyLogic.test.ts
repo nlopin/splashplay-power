@@ -1,12 +1,15 @@
 import { describe, it, expect, vi } from "vitest";
 import {
   applyOccupancyToSlots,
-  isOccupancyCounts,
+  countsFromLedger,
+  dropHold,
+  holdSeats,
+  isOccupancyLedger,
   occupancyKey,
   OccupancyStoreError,
-  updateSlotCount,
+  updateSlotHolds,
   type OccupancyCasStore,
-  type OccupancyCounts,
+  type OccupancyLedger,
 } from "./occupancyLogic";
 
 const SLOT = "2026-09-28T16:00:00.000Z";
@@ -18,10 +21,7 @@ describe("applyOccupancyToSlots", () => {
   });
 
   it("leaves a Calendly-closed empty slot booked (private took it)", () => {
-    const result = applyOccupancyToSlots(
-      [{ time: SLOT, booked: true }],
-      {},
-    );
+    const result = applyOccupancyToSlots([{ time: SLOT, booked: true }], {});
     expect(result).toEqual([{ time: SLOT, booked: true, spotsLeft: 0 }]);
   });
 
@@ -47,102 +47,168 @@ describe("applyOccupancyToSlots", () => {
   });
 });
 
-function memoryStore(initial: OccupancyCounts | null = null) {
-  let blob: { counts: OccupancyCounts; etag: string } | null = initial
-    ? { counts: { ...initial }, etag: "v0" }
+function memoryStore(initial: OccupancyLedger | null = null) {
+  const clone = (ledger: OccupancyLedger): OccupancyLedger =>
+    structuredClone(ledger);
+  let blob: { ledger: OccupancyLedger; etag: string } | null = initial
+    ? { ledger: clone(initial), etag: "v0" }
     : null;
   let version = 0;
   const tick = () => new Promise((r) => setTimeout(r, 0));
-  const store: OccupancyCasStore & { snapshot(): OccupancyCounts | null } = {
+  const store: OccupancyCasStore & { snapshot(): OccupancyLedger | null } = {
     async read() {
       await tick();
-      return blob ? { counts: { ...blob.counts }, etag: blob.etag } : null;
+      return blob ? { ledger: clone(blob.ledger), etag: blob.etag } : null;
     },
-    async write(counts, etag) {
+    async write(ledger, etag) {
       await tick();
       if (etag === undefined ? blob !== null : blob?.etag !== etag) {
         return false;
       }
-      blob = { counts: { ...counts }, etag: `v${++version}` };
+      blob = { ledger: clone(ledger), etag: `v${++version}` };
       return true;
     },
-    snapshot: () => (blob ? { ...blob.counts } : null),
+    snapshot: () => (blob ? clone(blob.ledger) : null),
   };
   return store;
 }
 
-const reserve = (guests: number) => (taken: number) =>
-  taken + guests > 6 ? null : taken + guests;
+const AT = 1_700_000_000_000;
+const hold = (guests: number) => ({ guests, at: AT });
+const reserve = (key: string, guests: number) => holdSeats(key, guests, 6, AT);
 
-describe("updateSlotCount", () => {
+describe("updateSlotHolds", () => {
   const KEY = occupancyKey(SLOT);
   const OTHER = "2026-09-29T16:00:00.000Z";
 
   it("never oversells under concurrent reservations", async () => {
-    const store = memoryStore({ [KEY]: 4, [OTHER]: 3 });
+    const store = memoryStore({
+      [KEY]: { pi_a: hold(4) },
+      [OTHER]: { pi_z: hold(3) },
+    });
     const results = await Promise.all([
-      updateSlotCount(store, KEY, reserve(2)),
-      updateSlotCount(store, KEY, reserve(2)),
+      updateSlotHolds(store, KEY, reserve("pi_b", 2)),
+      updateSlotHolds(store, KEY, reserve("pi_c", 2)),
     ]);
     expect(results.filter((r) => r.written)).toHaveLength(1);
-    expect(store.snapshot()).toEqual({ [KEY]: 6, [OTHER]: 3 });
+    expect(countsFromLedger(store.snapshot()!)).toEqual({
+      [KEY]: 6,
+      [OTHER]: 3,
+    });
   });
 
   it("counts every concurrent reservation that fits", async () => {
     const store = memoryStore();
     const results = await Promise.all(
-      [1, 1, 1, 1, 1, 1, 1].map((g) =>
-        updateSlotCount(store, KEY, reserve(g), 20),
+      ["a", "b", "c", "d", "e", "f", "g"].map((id) =>
+        updateSlotHolds(store, KEY, reserve(`pi_${id}`, 1), 20),
       ),
     );
     expect(results.filter((r) => r.written)).toHaveLength(6);
-    expect(store.snapshot()).toEqual({ [KEY]: 6 });
+    expect(countsFromLedger(store.snapshot()!)).toEqual({ [KEY]: 6 });
   });
 
   it("does not write when capacity is exceeded", async () => {
-    const store = memoryStore({ [KEY]: 5 });
-    const result = await updateSlotCount(store, KEY, reserve(2));
-    expect(result).toEqual({ written: false, taken: 5 });
-    expect(store.snapshot()).toEqual({ [KEY]: 5 });
+    const store = memoryStore({ [KEY]: { pi_a: hold(5) } });
+    const result = await updateSlotHolds(store, KEY, reserve("pi_b", 2));
+    expect(result).toEqual({ written: false, holds: { pi_a: hold(5) } });
+    expect(store.snapshot()).toEqual({ [KEY]: { pi_a: hold(5) } });
   });
 
-  it("removes the key when released to zero, keeping other slots", async () => {
-    const store = memoryStore({ [KEY]: 2, [OTHER]: 3 });
-    await updateSlotCount(store, KEY, (t) => Math.max(0, t - 2));
-    expect(store.snapshot()).toEqual({ [OTHER]: 3 });
+  it("does not count the same booking twice", async () => {
+    const store = memoryStore({ [KEY]: { pi_a: hold(2) } });
+    const write = vi.spyOn(store, "write");
+    const result = await updateSlotHolds(store, KEY, reserve("pi_a", 2));
+    expect(result.written).toBe(true);
+    expect(write).not.toHaveBeenCalled();
+    expect(store.snapshot()).toEqual({ [KEY]: { pi_a: hold(2) } });
+  });
+
+  it("re-reserving a held booking succeeds even when the slot is full", async () => {
+    const store = memoryStore({ [KEY]: { pi_a: hold(2), pi_b: hold(4) } });
+    const result = await updateSlotHolds(store, KEY, reserve("pi_a", 2));
+    expect(result.written).toBe(true);
+  });
+
+  it("releases only the given booking, keeping other slots", async () => {
+    const store = memoryStore({
+      [KEY]: { pi_a: hold(2), pi_b: hold(1) },
+      [OTHER]: { pi_z: hold(3) },
+    });
+    await updateSlotHolds(store, KEY, dropHold("pi_a"));
+    expect(store.snapshot()).toEqual({
+      [KEY]: { pi_b: hold(1) },
+      [OTHER]: { pi_z: hold(3) },
+    });
+  });
+
+  it("removes the slot when its last booking is released", async () => {
+    const store = memoryStore({
+      [KEY]: { pi_a: hold(2) },
+      [OTHER]: { pi_z: hold(3) },
+    });
+    await updateSlotHolds(store, KEY, dropHold("pi_a"));
+    expect(store.snapshot()).toEqual({ [OTHER]: { pi_z: hold(3) } });
+  });
+
+  it("releasing twice is a no-op", async () => {
+    const store = memoryStore({ [KEY]: { pi_a: hold(2), pi_b: hold(1) } });
+    await updateSlotHolds(store, KEY, dropHold("pi_a"));
+    const write = vi.spyOn(store, "write");
+    await updateSlotHolds(store, KEY, dropHold("pi_a"));
+    expect(write).not.toHaveBeenCalled();
+    expect(store.snapshot()).toEqual({ [KEY]: { pi_b: hold(1) } });
   });
 
   it("propagates read failures instead of treating them as empty", async () => {
-    const store = memoryStore({ [OTHER]: 3 });
+    const store = memoryStore({ [OTHER]: { pi_z: hold(3) } });
     store.read = async () => {
       throw new OccupancyStoreError("boom");
     };
     const write = vi.spyOn(store, "write");
-    await expect(updateSlotCount(store, KEY, reserve(2))).rejects.toThrow(
-      "boom",
-    );
+    await expect(
+      updateSlotHolds(store, KEY, reserve("pi_a", 2)),
+    ).rejects.toThrow("boom");
     expect(write).not.toHaveBeenCalled();
-    expect(store.snapshot()).toEqual({ [OTHER]: 3 });
+    expect(store.snapshot()).toEqual({ [OTHER]: { pi_z: hold(3) } });
   });
 
   it("gives up after bounded retries when it keeps losing the race", async () => {
-    const store = memoryStore({ [KEY]: 1 });
+    const store = memoryStore({ [KEY]: { pi_a: hold(1) } });
     store.write = async () => false;
-    await expect(updateSlotCount(store, KEY, reserve(1), 3)).rejects.toThrow(
-      OccupancyStoreError,
-    );
+    await expect(
+      updateSlotHolds(store, KEY, reserve("pi_b", 1), 3),
+    ).rejects.toThrow(OccupancyStoreError);
   });
 });
 
-describe("isOccupancyCounts", () => {
+describe("countsFromLedger", () => {
+  it("sums people per slot", () => {
+    expect(
+      countsFromLedger({
+        [SLOT]: { pi_a: hold(2), pi_b: hold(1) },
+        "2026-09-29T16:00:00.000Z": { pi_c: hold(4) },
+      }),
+    ).toEqual({ [SLOT]: 3, "2026-09-29T16:00:00.000Z": 4 });
+  });
+});
+
+describe("isOccupancyLedger", () => {
   it("rejects corrupt payloads", () => {
-    expect(isOccupancyCounts(null)).toBe(false);
-    expect(isOccupancyCounts("x")).toBe(false);
-    expect(isOccupancyCounts([1, 2])).toBe(false);
-    expect(isOccupancyCounts({ a: "1" })).toBe(false);
-    expect(isOccupancyCounts({ a: -1 })).toBe(false);
-    expect(isOccupancyCounts({ a: Number.NaN })).toBe(false);
-    expect(isOccupancyCounts({ a: 2 })).toBe(true);
-    expect(isOccupancyCounts({})).toBe(true);
+    expect(isOccupancyLedger(null)).toBe(false);
+    expect(isOccupancyLedger("x")).toBe(false);
+    expect(isOccupancyLedger([1, 2])).toBe(false);
+    expect(isOccupancyLedger({ [SLOT]: 2 })).toBe(false);
+    expect(isOccupancyLedger({ [SLOT]: { pi_a: 2 } })).toBe(false);
+    expect(isOccupancyLedger({ [SLOT]: { pi_a: { guests: 0, at: AT } } })).toBe(
+      false,
+    );
+    expect(
+      isOccupancyLedger({ [SLOT]: { pi_a: { guests: 1.5, at: AT } } }),
+    ).toBe(false);
+    expect(isOccupancyLedger({ [SLOT]: { pi_a: { guests: 2 } } })).toBe(false);
+    expect(isOccupancyLedger({ [SLOT]: { pi_a: hold(2) } })).toBe(true);
+    expect(isOccupancyLedger({ [SLOT]: {} })).toBe(true);
+    expect(isOccupancyLedger({})).toBe(true);
   });
 });

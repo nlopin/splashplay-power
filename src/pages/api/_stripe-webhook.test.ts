@@ -113,6 +113,7 @@ describe("stripe-webhook checkout.session.completed", () => {
     expect(response.status).toBe(200);
     expect(mocks.reserveOpenSessionSeats).toHaveBeenCalledWith(
       "2026-10-03T11:00:00+02:00",
+      "pi_1",
       2,
     );
     expect(mocks.bookEvent).toHaveBeenCalledTimes(1);
@@ -174,7 +175,7 @@ describe("stripe-webhook checkout.session.completed", () => {
     expect(response.status).toBe(500);
     expect(mocks.releaseOpenSessionSeats).toHaveBeenCalledWith(
       "2026-10-03T11:00:00+02:00",
-      2,
+      "pi_1",
     );
     expect(mocks.blobStore!.peek(PROCESSING_KEY)).toBeNull();
   });
@@ -208,6 +209,21 @@ describe("stripe-webhook checkout.session.completed", () => {
     expect(mocks.releaseOpenSessionSeats).toHaveBeenCalledTimes(1);
     expect(mocks.sendTelegramMessage).toHaveBeenCalledTimes(1);
     expect(mocks.blobStore!.peek(PROCESSING_KEY)).toBeNull();
+  });
+
+  it("keys the seat hold by checkout session when there is no payment intent", async () => {
+    mocks.retrieveSession.mockResolvedValueOnce({
+      ...checkoutSession(),
+      payment_intent: null,
+    });
+
+    await deliver();
+
+    expect(mocks.reserveOpenSessionSeats).toHaveBeenCalledWith(
+      "2026-10-03T11:00:00+02:00",
+      SESSION_ID,
+      2,
+    );
   });
 
   it("does not book a full session", async () => {

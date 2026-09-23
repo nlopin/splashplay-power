@@ -3,12 +3,16 @@ import { getStore } from "@netlify/blobs";
 import { OPEN_SESSION_CAPACITY } from "@/services/catalog/openSessionPricing";
 import { createAndLogEvent } from "@/services/logger";
 import {
-  isOccupancyCounts,
+  countsFromLedger,
+  dropHold,
+  holdSeats,
+  isOccupancyLedger,
   occupancyKey,
   OccupancyStoreError,
-  updateSlotCount,
+  seatsTaken,
+  updateSlotHolds,
   type OccupancyCasStore,
-  type OccupancyCounts,
+  type OccupancyLedger,
 } from "./occupancyLogic";
 
 export { OccupancyStoreError } from "./occupancyLogic";
@@ -18,7 +22,7 @@ const occupancyStore = getStore("open-session-occupancy", {
   token: NETLIFY_TOKEN,
 });
 
-const COUNTS_KEY = "counts";
+const LEDGER_KEY = "ledger";
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "Unknown error";
@@ -29,45 +33,45 @@ function errorMessage(error: unknown): string {
  * not exist yet; throws OccupancyStoreError on transport errors, corrupt data
  * or a missing ETag, so callers can never mistake a failed read for "empty".
  */
-async function readCountsStrict(): Promise<{
-  counts: OccupancyCounts;
+async function readLedgerStrict(): Promise<{
+  ledger: OccupancyLedger;
   etag: string | undefined;
 } | null> {
   let result;
   try {
-    result = await occupancyStore.getWithMetadata(COUNTS_KEY, {
+    result = await occupancyStore.getWithMetadata(LEDGER_KEY, {
       type: "json",
       consistency: "strong",
     });
   } catch (error) {
     throw new OccupancyStoreError(
-      `Failed to read occupancy counts: ${errorMessage(error)}`,
+      `Failed to read occupancy ledger: ${errorMessage(error)}`,
       { cause: error },
     );
   }
   if (result === null) return null;
-  if (!isOccupancyCounts(result.data)) {
-    throw new OccupancyStoreError("Occupancy counts blob is corrupt");
+  if (!isOccupancyLedger(result.data)) {
+    throw new OccupancyStoreError("Occupancy ledger blob is corrupt");
   }
   if (!result.etag) {
-    throw new OccupancyStoreError("Occupancy counts blob has no ETag");
+    throw new OccupancyStoreError("Occupancy ledger blob has no ETag");
   }
-  return { counts: result.data, etag: result.etag };
+  return { ledger: result.data, etag: result.etag };
 }
 
 const casStore: OccupancyCasStore = {
-  read: readCountsStrict,
-  async write(counts, etag) {
+  read: readLedgerStrict,
+  async write(ledger, etag) {
     try {
       const result = await occupancyStore.setJSON(
-        COUNTS_KEY,
-        counts,
+        LEDGER_KEY,
+        ledger,
         etag === undefined ? { onlyIfNew: true } : { onlyIfMatch: etag },
       );
       return result.modified;
     } catch (error) {
       throw new OccupancyStoreError(
-        `Failed to write occupancy counts: ${errorMessage(error)}`,
+        `Failed to write occupancy ledger: ${errorMessage(error)}`,
         { cause: error },
       );
     }
@@ -92,7 +96,7 @@ function logOccupancyError(
  */
 export async function getOccupancyCounts(): Promise<Record<string, number>> {
   try {
-    return (await readCountsStrict())?.counts ?? {};
+    return countsFromLedger((await readLedgerStrict())?.ledger ?? {});
   } catch (error) {
     logOccupancyError("open_session_occupancy_read", error);
     return {};
@@ -100,13 +104,13 @@ export async function getOccupancyCounts(): Promise<Record<string, number>> {
 }
 
 /**
- * Pre-payment capacity gate. Fails closed: returns 0 when counts cannot be
+ * Pre-payment capacity gate. Fails closed: returns 0 when the ledger cannot be
  * read, so we never take money for a slot whose occupancy is unknown.
  */
 export async function getSpotsLeft(datetime: string): Promise<number> {
   try {
-    const counts = (await readCountsStrict())?.counts ?? {};
-    const taken = counts[occupancyKey(datetime)] ?? 0;
+    const ledger = (await readLedgerStrict())?.ledger ?? {};
+    const taken = seatsTaken(ledger[occupancyKey(datetime)] ?? {});
     return Math.max(0, OPEN_SESSION_CAPACITY - taken);
   } catch (error) {
     logOccupancyError("open_session_occupancy_read", error);
@@ -115,7 +119,9 @@ export async function getSpotsLeft(datetime: string): Promise<number> {
 }
 
 /**
- * Atomically reserve seats (ETag compare-and-swap with bounded retries).
+ * Atomically reserve seats for a booking (ETag compare-and-swap with bounded
+ * retries). Idempotent per `bookingKey`: reserving again for a booking that
+ * already holds seats on this slot succeeds without counting them twice.
  * Returns `{ ok: false }` only when the slot is genuinely full. Throws
  * OccupancyStoreError when the store cannot be read/written or the update
  * keeps losing the race: the booking outcome is unknown and must not be
@@ -123,18 +129,22 @@ export async function getSpotsLeft(datetime: string): Promise<number> {
  */
 export async function reserveOpenSessionSeats(
   datetime: string,
+  bookingKey: string,
   guests: number,
 ): Promise<{ ok: true; taken: number } | { ok: false; taken: number }> {
   if (!Number.isInteger(guests) || guests <= 0) {
     throw new OccupancyStoreError(`Invalid guest count: ${guests}`);
   }
+  if (!bookingKey) {
+    throw new OccupancyStoreError("Missing booking key");
+  }
   try {
-    const { written, taken } = await updateSlotCount(
+    const { written, holds } = await updateSlotHolds(
       casStore,
       occupancyKey(datetime),
-      (current) =>
-        current + guests > OPEN_SESSION_CAPACITY ? null : current + guests,
+      holdSeats(bookingKey, guests, OPEN_SESSION_CAPACITY),
     );
+    const taken = seatsTaken(holds);
     return written ? { ok: true, taken } : { ok: false, taken };
   } catch (error) {
     logOccupancyError("open_session_occupancy_write", error);
@@ -143,19 +153,23 @@ export async function reserveOpenSessionSeats(
 }
 
 /**
- * Atomically release seats. Never throws (it runs on a cleanup path); on any
- * store failure it leaves the stored counts untouched, i.e. seats stay held
- * (fail closed: undersell rather than oversell) and the error is logged.
+ * Atomically release a booking's seats. Idempotent: releasing a booking that
+ * holds nothing on this slot is a no-op. Throws OccupancyStoreError when the
+ * store cannot be read/written; the ledger is then left untouched, i.e. the
+ * seats stay held (fail closed: undersell rather than oversell).
  */
 export async function releaseOpenSessionSeats(
   datetime: string,
-  guests: number,
+  bookingKey: string,
 ): Promise<void> {
   try {
-    await updateSlotCount(casStore, occupancyKey(datetime), (current) =>
-      Math.max(0, current - guests),
+    await updateSlotHolds(
+      casStore,
+      occupancyKey(datetime),
+      dropHold(bookingKey),
     );
   } catch (error) {
     logOccupancyError("open_session_occupancy_write", error);
+    throw error;
   }
 }

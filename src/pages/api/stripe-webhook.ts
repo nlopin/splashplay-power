@@ -275,6 +275,10 @@ async function handleCheckoutSessionCompleted(
       parsedMetadata.data.sessionTitle,
     ),
     guests: parsedMetadata.data.guests,
+    // The payment intent id is what the Calendly comment carries, so later
+    // Calendly events can find this booking's seats. Fall back to the
+    // checkout session id so the hold is still keyed uniquely.
+    bookingKey: paymentIntentId || checkoutSessionId,
   });
 
   updateEvent(webhookEvent, {
@@ -307,6 +311,7 @@ async function bookPaidEvent({
   phone,
   comment,
   guests,
+  bookingKey,
 }: {
   eventType: (typeof EVENT_TYPE)[keyof typeof EVENT_TYPE];
   datetime: string;
@@ -315,6 +320,7 @@ async function bookPaidEvent({
   phone: string;
   comment: string;
   guests: number;
+  bookingKey: string;
 }): Promise<{ result: BookEventResult; heldSeatsReleased: boolean }> {
   if (eventType !== EVENT_TYPE.OPEN_SESSION) {
     const result = await bookEvent(eventType, {
@@ -328,7 +334,7 @@ async function bookPaidEvent({
   }
 
   // May throw (read failure / write conflict); nothing is held in that case.
-  const reserved = await reserveOpenSessionSeats(datetime, guests);
+  const reserved = await reserveOpenSessionSeats(datetime, bookingKey, guests);
   if (!reserved.ok) {
     return {
       result: {
@@ -349,7 +355,7 @@ async function bookPaidEvent({
       comment,
     });
   } catch (err) {
-    if (await releaseSeatsSafely(datetime, guests)) throw err;
+    if (await releaseSeatsSafely(datetime, bookingKey)) throw err;
     // Seats are stuck; report as a (non-retryable) booking failure instead of
     // throwing, so the claim isn't released and a retry can't reserve twice.
     return {
@@ -366,22 +372,22 @@ async function bookPaidEvent({
   }
   return {
     result: calendlyResult,
-    heldSeatsReleased: await releaseSeatsSafely(datetime, guests),
+    heldSeatsReleased: await releaseSeatsSafely(datetime, bookingKey),
   };
 }
 
 async function releaseSeatsSafely(
   datetime: string,
-  guests: number,
+  bookingKey: string,
 ): Promise<boolean> {
   try {
-    await releaseOpenSessionSeats(datetime, guests);
+    await releaseOpenSessionSeats(datetime, bookingKey);
     return true;
   } catch (err) {
     createAndLogEvent("open_session_seat_release", {
       status: "error",
       datetime,
-      guests,
+      bookingKey,
       error: err instanceof Error ? err.message : "Unknown error",
     });
     return false;
