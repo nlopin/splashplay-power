@@ -50,7 +50,7 @@ vi.mock("@/services/partners", () => ({
   storePartnerBooking: vi.fn(async () => true),
 }));
 
-const { POST } = await import("./stripe-webhook");
+const { POST, formatPaymentSuccessMessage } = await import("./stripe-webhook");
 
 const SESSION_ID = "cs_test_1";
 const PROCESSING_KEY = `checkout-session/${SESSION_ID}`;
@@ -226,6 +226,23 @@ describe("stripe-webhook checkout.session.completed", () => {
     );
   });
 
+  it("notifies about a booking fully covered by a voucher", async () => {
+    mocks.retrieveSession.mockResolvedValueOnce({
+      ...checkoutSession(),
+      payment_intent: null,
+      amount_total: 0,
+    });
+
+    const response = await deliver();
+
+    expect(response.status).toBe(200);
+    expect(mocks.bookEvent).toHaveBeenCalledTimes(1);
+    expect(mocks.sendTelegramMessage).toHaveBeenCalledTimes(1);
+    expect(mocks.sendTelegramMessage).toHaveBeenCalledWith(
+      expect.stringContaining("Gift Card Booking"),
+    );
+  });
+
   it("does not book a full session", async () => {
     mocks.reserveOpenSessionSeats.mockResolvedValueOnce({
       ok: false,
@@ -275,5 +292,28 @@ describe("stripe-webhook checkout.session.completed", () => {
     expect(response.status).toBe(200);
     expect(mocks.reserveOpenSessionSeats).not.toHaveBeenCalled();
     expect(mocks.bookEvent).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("formatPaymentSuccessMessage", () => {
+  it("reports a paid booking as a payment", () => {
+    const message = formatPaymentSuccessMessage(9000, "Open session", "pi_1", {
+      success: true,
+    });
+
+    expect(message).toContain("New Payment Received");
+    expect(message).toContain("90.00 €");
+    expect(message).toContain("Payment Successful");
+  });
+
+  it("reports a zero-amount booking as a gift card booking", () => {
+    const message = formatPaymentSuccessMessage(0, "Open session", "", {
+      success: true,
+    });
+
+    expect(message).toContain("New Gift Card Booking");
+    expect(message).toContain("no payment required");
+    expect(message).not.toContain("Transaction ID");
+    expect(message).not.toContain("Payment Received");
   });
 });

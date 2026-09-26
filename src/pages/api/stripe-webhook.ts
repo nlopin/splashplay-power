@@ -326,16 +326,15 @@ async function handleCheckoutSessionCompleted(
     status: calendlyResult.success ? "success" : "calendly_booking_failed",
   });
 
-  if (session.amount_total) {
-    updateEvent(webhookEvent, {
-      notificationSent: await sendPaymentNotification(
-        session.amount_total,
-        parsedMetadata.data.sessionTitle,
-        paymentIntentId,
-        calendlyResult,
-      ),
-    });
-  }
+  // Always notify: a 100% voucher (gift card) leaves amount_total at 0.
+  updateEvent(webhookEvent, {
+    notificationSent: await sendPaymentNotification(
+      session.amount_total ?? 0,
+      parsedMetadata.data.sessionTitle,
+      paymentIntentId,
+      calendlyResult,
+    ),
+  });
 
   if (calendlyResult.success) return "completed";
   // If releasing the seats failed they are still counted against this
@@ -511,8 +510,11 @@ export function formatPaymentSuccessMessage(
   calendlyResult: BookEventResult,
 ): string {
   const formattedAmount = (amount / 100).toFixed(2);
+  const isFullyCovered = amount === 0;
 
-  let message = `💰 *New Payment Received!*\n\n`;
+  let message = isFullyCovered
+    ? `🎁 *New Gift Card Booking!*\n\n`
+    : `💰 *New Payment Received!*\n\n`;
   message += `Amount: *${formattedAmount} €*\n`;
 
   if (sessionTitle) {
@@ -523,7 +525,9 @@ export function formatPaymentSuccessMessage(
     message += `Transaction ID: [${escapeMarkdown(transactionId)}](https://dashboard.stripe.com/acct_1QyrutG3Vb6TnG9U/payments/${transactionId})\n`;
   }
 
-  message += `\nStatus: ✅ Payment Successful`;
+  message += isFullyCovered
+    ? `\nStatus: ✅ Fully covered by voucher, no payment required`
+    : `\nStatus: ✅ Payment Successful`;
 
   if (calendlyResult.success) {
     message += `\nBooking: ✅ Calendly event created`;
