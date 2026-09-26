@@ -289,9 +289,14 @@ async function handleCheckoutSessionCompleted(
     customerName: parsedCustomer.data.name,
   });
 
+  // The Calendly comment carries this key, so later Calendly events can find
+  // the booking's seats. Checkouts without a payment intent fall back to the
+  // checkout session id so the key stays unique.
+  const bookingKey = paymentIntentId || checkoutSessionId;
+
   // store puchase via partner before creating a booking to guarantee it will be read in Calendly webhook
   if (parsedMetadata.data.partner) {
-    const isPartnerStored = await storePartnerBooking(paymentIntentId, {
+    const isPartnerStored = await storePartnerBooking(bookingKey, {
       partnerKey: parsedMetadata.data.partner,
       price: session.amount_total ?? 0,
       guests: parsedMetadata.data.guests,
@@ -302,11 +307,6 @@ async function handleCheckoutSessionCompleted(
       partnerStored: isPartnerStored,
     });
   }
-
-  // The Calendly comment carries this key, so later Calendly events can find
-  // the booking's seats. Checkouts without a payment intent fall back to the
-  // checkout session id so the key stays unique.
-  const bookingKey = paymentIntentId || checkoutSessionId;
 
   const { result: calendlyResult, heldSeatsReleased } = await bookPaidEvent({
     eventType: parsedMetadata.data.eventType,
