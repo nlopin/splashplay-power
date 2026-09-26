@@ -145,57 +145,22 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    if (claim.status === "done") {
-      logEvent(
-        updateEvent(webhookEvent, {
-          status: "duplicate_ignored",
-          durationMs: Date.now() - startTime,
-        }),
-      );
-      return new Response(JSON.stringify({ received: true }), { status: 200 });
-    }
-
-    if (claim.status === "in_flight") {
-      // Another delivery is processing this session. Don't touch seats; ask
-      // Stripe to retry later, when it'll see "done" (or a released claim).
-      logEvent(
-        updateEvent(webhookEvent, {
-          status: "duplicate_in_flight",
-          durationMs: Date.now() - startTime,
-        }),
-      );
-      return new Response("Checkout session is already being processed", {
-        status: 409,
-      });
-    }
-
-    let outcome: CheckoutOutcome;
-    try {
-      outcome = await handleCheckoutSessionCompleted(
-        checkoutSessionId,
-        webhookEvent,
-      );
-    } catch (err) {
-      // Any seats reserved by this attempt were rolled back before the throw
-      // reached here (see bookPaidEvent), so the session is safe to retry.
-      await releaseClaimSafely(checkoutSessionId);
-      return failAndAskStripeToRetry(webhookEvent, startTime, "error", err);
-    }
-
-    if (outcome === "retryable_failure") {
-      await releaseClaimSafely(checkoutSessionId);
-    } else {
-      try {
-        await markCheckoutSessionDone(checkoutSessionId);
-      } catch (err) {
-        // The booking already happened; answering non-2xx would make Stripe
-        // redeliver while our claim is still "processing". The stale-claim
-        // lease is the only way this session could be processed again.
-        createAndLogEvent("checkout_processing_mark_done", {
-          status: "error",
-          sessionId: checkoutSessionId,
-          error: err instanceof Error ? err.message : "Unknown error",
-        });
+    switch (claim.status) {
+      case "done":
+        return ignoreProcessedSession(webhookEvent, startTime);
+      case "in_flight":
+        return deferInFlightSession(webhookEvent, startTime);
+      case "claimed":
+        return processClaimedSession(
+          checkoutSessionId,
+          webhookEvent,
+          startTime,
+        );
+      default: {
+        const unhandled: never = claim;
+        throw new Error(
+          `Unhandled checkout claim status: ${JSON.stringify(unhandled)}`,
+        );
       }
     }
   }
@@ -205,6 +170,82 @@ export const POST: APIRoute = async ({ request }) => {
 };
 
 type WebhookEvent = ReturnType<typeof createEvent<StripeWebhookEventData>>;
+
+/** The session was already processed: this delivery is a duplicate. */
+function ignoreProcessedSession(
+  webhookEvent: WebhookEvent,
+  startTime: number,
+): Response {
+  logEvent(
+    updateEvent(webhookEvent, {
+      status: "duplicate_ignored",
+      durationMs: Date.now() - startTime,
+    }),
+  );
+  return new Response(JSON.stringify({ received: true }), { status: 200 });
+}
+
+/**
+ * Another delivery is processing this session. Don't touch seats; ask
+ * Stripe to retry later, when it'll see "done" (or a released claim).
+ */
+function deferInFlightSession(
+  webhookEvent: WebhookEvent,
+  startTime: number,
+): Response {
+  logEvent(
+    updateEvent(webhookEvent, {
+      status: "duplicate_in_flight",
+      durationMs: Date.now() - startTime,
+    }),
+  );
+  return new Response("Checkout session is already being processed", {
+    status: 409,
+  });
+}
+
+/**
+ * This delivery holds the claim: book, then mark the session done, or
+ * release the claim so a later delivery can retry.
+ */
+async function processClaimedSession(
+  checkoutSessionId: string,
+  webhookEvent: WebhookEvent,
+  startTime: number,
+): Promise<Response> {
+  let outcome: CheckoutOutcome;
+  try {
+    outcome = await handleCheckoutSessionCompleted(
+      checkoutSessionId,
+      webhookEvent,
+    );
+  } catch (err) {
+    // Any seats reserved by this attempt were rolled back before the throw
+    // reached here (see bookPaidEvent), so the session is safe to retry.
+    await releaseClaimSafely(checkoutSessionId);
+    return failAndAskStripeToRetry(webhookEvent, startTime, "error", err);
+  }
+
+  if (outcome === "retryable_failure") {
+    await releaseClaimSafely(checkoutSessionId);
+  } else {
+    try {
+      await markCheckoutSessionDone(checkoutSessionId);
+    } catch (err) {
+      // The booking already happened; answering non-2xx would make Stripe
+      // redeliver while our claim is still "processing". The stale-claim
+      // lease is the only way this session could be processed again.
+      createAndLogEvent("checkout_processing_mark_done", {
+        status: "error",
+        sessionId: checkoutSessionId,
+        error: err instanceof Error ? err.message : "Unknown error",
+      });
+    }
+  }
+
+  logEvent(updateEvent(webhookEvent, { durationMs: Date.now() - startTime }));
+  return new Response(JSON.stringify({ received: true }), { status: 200 });
+}
 
 /**
  * - "completed": processed (booked, or a final failure that retrying won't
@@ -248,9 +289,14 @@ async function handleCheckoutSessionCompleted(
     customerName: parsedCustomer.data.name,
   });
 
+  // The Calendly comment carries this key, so later Calendly events can find
+  // the booking's seats. Checkouts without a payment intent fall back to the
+  // checkout session id so the key stays unique.
+  const bookingKey = paymentIntentId || checkoutSessionId;
+
   // store puchase via partner before creating a booking to guarantee it will be read in Calendly webhook
   if (parsedMetadata.data.partner) {
-    const isPartnerStored = await storePartnerBooking(paymentIntentId, {
+    const isPartnerStored = await storePartnerBooking(bookingKey, {
       partnerKey: parsedMetadata.data.partner,
       price: session.amount_total ?? 0,
       guests: parsedMetadata.data.guests,
@@ -270,11 +316,9 @@ async function handleCheckoutSessionCompleted(
     phone: parsedCustomer.data.phone.startsWith("+")
       ? parsedCustomer.data.phone
       : `+34${parsedCustomer.data.phone}`,
-    comment: formatEventComment(
-      paymentIntentId,
-      parsedMetadata.data.sessionTitle,
-    ),
+    comment: formatEventComment(bookingKey, parsedMetadata.data.sessionTitle),
     guests: parsedMetadata.data.guests,
+    bookingKey,
   });
 
   updateEvent(webhookEvent, {
@@ -282,16 +326,15 @@ async function handleCheckoutSessionCompleted(
     status: calendlyResult.success ? "success" : "calendly_booking_failed",
   });
 
-  if (session.amount_total) {
-    updateEvent(webhookEvent, {
-      notificationSent: await sendPaymentNotification(
-        session.amount_total,
-        parsedMetadata.data.sessionTitle,
-        paymentIntentId,
-        calendlyResult,
-      ),
-    });
-  }
+  // Always notify: a 100% voucher (gift card) leaves amount_total at 0.
+  updateEvent(webhookEvent, {
+    notificationSent: await sendPaymentNotification(
+      session.amount_total ?? 0,
+      parsedMetadata.data.sessionTitle,
+      paymentIntentId,
+      calendlyResult,
+    ),
+  });
 
   if (calendlyResult.success) return "completed";
   // If releasing the seats failed they are still counted against this
@@ -307,6 +350,7 @@ async function bookPaidEvent({
   phone,
   comment,
   guests,
+  bookingKey,
 }: {
   eventType: (typeof EVENT_TYPE)[keyof typeof EVENT_TYPE];
   datetime: string;
@@ -315,6 +359,7 @@ async function bookPaidEvent({
   phone: string;
   comment: string;
   guests: number;
+  bookingKey: string;
 }): Promise<{ result: BookEventResult; heldSeatsReleased: boolean }> {
   if (eventType !== EVENT_TYPE.OPEN_SESSION) {
     const result = await bookEvent(eventType, {
@@ -328,7 +373,7 @@ async function bookPaidEvent({
   }
 
   // May throw (read failure / write conflict); nothing is held in that case.
-  const reserved = await reserveOpenSessionSeats(datetime, guests);
+  const reserved = await reserveOpenSessionSeats(datetime, bookingKey, guests);
   if (!reserved.ok) {
     return {
       result: {
@@ -349,7 +394,7 @@ async function bookPaidEvent({
       comment,
     });
   } catch (err) {
-    if (await releaseSeatsSafely(datetime, guests)) throw err;
+    if (await releaseSeatsSafely(datetime, bookingKey)) throw err;
     // Seats are stuck; report as a (non-retryable) booking failure instead of
     // throwing, so the claim isn't released and a retry can't reserve twice.
     return {
@@ -366,22 +411,22 @@ async function bookPaidEvent({
   }
   return {
     result: calendlyResult,
-    heldSeatsReleased: await releaseSeatsSafely(datetime, guests),
+    heldSeatsReleased: await releaseSeatsSafely(datetime, bookingKey),
   };
 }
 
 async function releaseSeatsSafely(
   datetime: string,
-  guests: number,
+  bookingKey: string,
 ): Promise<boolean> {
   try {
-    await releaseOpenSessionSeats(datetime, guests);
+    await releaseOpenSessionSeats(datetime, bookingKey);
     return true;
   } catch (err) {
     createAndLogEvent("open_session_seat_release", {
       status: "error",
       datetime,
-      guests,
+      bookingKey,
       error: err instanceof Error ? err.message : "Unknown error",
     });
     return false;
@@ -465,8 +510,11 @@ export function formatPaymentSuccessMessage(
   calendlyResult: BookEventResult,
 ): string {
   const formattedAmount = (amount / 100).toFixed(2);
+  const isFullyCovered = amount === 0;
 
-  let message = `💰 *New Payment Received!*\n\n`;
+  let message = isFullyCovered
+    ? `🎁 *New Gift Card Booking!*\n\n`
+    : `💰 *New Payment Received!*\n\n`;
   message += `Amount: *${formattedAmount} €*\n`;
 
   if (sessionTitle) {
@@ -477,7 +525,9 @@ export function formatPaymentSuccessMessage(
     message += `Transaction ID: [${escapeMarkdown(transactionId)}](https://dashboard.stripe.com/acct_1QyrutG3Vb6TnG9U/payments/${transactionId})\n`;
   }
 
-  message += `\nStatus: ✅ Payment Successful`;
+  message += isFullyCovered
+    ? `\nStatus: ✅ Fully covered by voucher, no payment required`
+    : `\nStatus: ✅ Payment Successful`;
 
   if (calendlyResult.success) {
     message += `\nBooking: ✅ Calendly event created`;

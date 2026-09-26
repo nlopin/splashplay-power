@@ -37,10 +37,21 @@ type CheckoutRecord =
   | { state: "processing"; startedAt: number }
   | { state: "done"; completedAt: number };
 
+
+/**
+ * - "claimed":   this caller now holds the exclusive claim and must process
+ *                the session, then call markCheckoutSessionDone (success or
+ *                final failure) or releaseCheckoutSessionClaim (retryable
+ *                failure, after rolling back its side effects).
+ * - "done":      the session was already processed; the delivery is a
+ *                duplicate and must be ignored.
+ * - "in_flight": another attempt holds a live (non-stale) claim; don't touch
+ *                the session, let the sender retry later.
+ */
 export type ClaimResult =
   { status: "claimed" } | { status: "done" } | { status: "in_flight" };
 
-function recordKey(checkoutSessionId: string): string {
+function getRecordKey(checkoutSessionId: string): string {
   return `checkout-session/${checkoutSessionId}`;
 }
 
@@ -53,7 +64,7 @@ function isCheckoutRecord(value: unknown): value is CheckoutRecord {
   );
 }
 
-function processingRecord(): CheckoutRecord {
+function createProcessingRecord(): CheckoutRecord {
   return { state: "processing", startedAt: Date.now() };
 }
 
@@ -64,9 +75,9 @@ function processingRecord(): CheckoutRecord {
 export async function claimCheckoutSession(
   checkoutSessionId: string,
 ): Promise<ClaimResult> {
-  const key = recordKey(checkoutSessionId);
+  const key = getRecordKey(checkoutSessionId);
 
-  const created = await processingStore.setJSON(key, processingRecord(), {
+  const created = await processingStore.setJSON(key, createProcessingRecord(), {
     onlyIfNew: true,
   });
   if (created.modified) return { status: "claimed" };
@@ -74,7 +85,7 @@ export async function claimCheckoutSession(
   const existing = await processingStore.getWithMetadata(key, { type: "json" });
   if (existing === null) {
     // Released between our write and read; try once more to claim.
-    const retried = await processingStore.setJSON(key, processingRecord(), {
+    const retried = await processingStore.setJSON(key, createProcessingRecord(), {
       onlyIfNew: true,
     });
     return retried.modified ? { status: "claimed" } : { status: "in_flight" };
@@ -91,7 +102,7 @@ export async function claimCheckoutSession(
     record.state !== "processing" ||
     Date.now() - record.startedAt > CLAIM_LEASE_MS;
   if (isStale && existing.etag) {
-    const takenOver = await processingStore.setJSON(key, processingRecord(), {
+    const takenOver = await processingStore.setJSON(key, createProcessingRecord(), {
       onlyIfMatch: existing.etag,
     });
     if (takenOver.modified) return { status: "claimed" };
@@ -105,7 +116,7 @@ export async function markCheckoutSessionDone(
   checkoutSessionId: string,
 ): Promise<void> {
   const record: CheckoutRecord = { state: "done", completedAt: Date.now() };
-  await processingStore.setJSON(recordKey(checkoutSessionId), record);
+  await processingStore.setJSON(getRecordKey(checkoutSessionId), record);
 }
 
 /**
@@ -116,5 +127,5 @@ export async function markCheckoutSessionDone(
 export async function releaseCheckoutSessionClaim(
   checkoutSessionId: string,
 ): Promise<void> {
-  await processingStore.delete(recordKey(checkoutSessionId));
+  await processingStore.delete(getRecordKey(checkoutSessionId));
 }
