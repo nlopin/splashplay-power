@@ -10,9 +10,11 @@ import {
   occupancyKey,
   OccupancyStoreError,
   seatsTaken,
+  updateLedger,
   updateSlotHolds,
   type OccupancyCasStore,
   type OccupancyLedger,
+  type SeatHold,
 } from "./occupancyLogic";
 
 export { OccupancyStoreError } from "./occupancyLogic";
@@ -131,7 +133,7 @@ export async function reserveOpenSessionSeats(
   datetime: string,
   bookingKey: string,
   guests: number,
-): Promise<{ ok: true; taken: number } | { ok: false; taken: number }> {
+): Promise<{ ok: boolean; taken: number }> {
   if (!Number.isInteger(guests) || guests <= 0) {
     throw new OccupancyStoreError(`Invalid guest count: ${guests}`);
   }
@@ -142,7 +144,7 @@ export async function reserveOpenSessionSeats(
     const { written, holds } = await updateSlotHolds(
       casStore,
       occupancyKey(datetime),
-      holdSeats(bookingKey, guests, OPEN_SESSION_CAPACITY),
+      holdSeats(bookingKey, guests, { enforceCapacity: true }),
     );
     const taken = seatsTaken(holds);
     return written ? { ok: true, taken } : { ok: false, taken };
@@ -168,6 +170,82 @@ export async function releaseOpenSessionSeats(
       occupancyKey(datetime),
       dropHold(bookingKey),
     );
+  } catch (error) {
+    logOccupancyError("open_session_occupancy_write", error);
+    throw error;
+  }
+}
+
+/**
+ * Strict read of one booking's hold on a slot, or null when it holds none.
+ * Throws OccupancyStoreError when the ledger cannot be read.
+ */
+export async function getOpenSessionHold(
+  datetime: string,
+  bookingKey: string,
+): Promise<SeatHold | null> {
+  try {
+    const ledger = (await readLedgerStrict())?.ledger ?? {};
+    return ledger[occupancyKey(datetime)]?.[bookingKey] ?? null;
+  } catch (error) {
+    logOccupancyError("open_session_occupancy_read", error);
+    throw error;
+  }
+}
+
+/**
+ * Record seats for a booking Calendly has already accepted (a reschedule or
+ * a booking made outside our checkout). Unlike reserveOpenSessionSeats this
+ * never refuses: the booking exists, so the ledger must reflect it even if
+ * the slot ends up over capacity. Idempotent per `bookingKey`. Throws
+ * OccupancyStoreError when the store cannot be read/written.
+ */
+export async function recordOpenSessionSeats(
+  datetime: string,
+  bookingKey: string,
+  guests: number,
+): Promise<{ taken: number }> {
+  if (!Number.isInteger(guests) || guests <= 0) {
+    throw new OccupancyStoreError(`Invalid guest count: ${guests}`);
+  }
+  if (!bookingKey) {
+    throw new OccupancyStoreError("Missing booking key");
+  }
+  try {
+    const { holds } = await updateSlotHolds(
+      casStore,
+      occupancyKey(datetime),
+      holdSeats(bookingKey, guests, { enforceCapacity: false }),
+    );
+    return { taken: seatsTaken(holds) };
+  } catch (error) {
+    logOccupancyError("open_session_occupancy_write", error);
+    throw error;
+  }
+}
+
+/** Strict read of the whole ledger. Throws OccupancyStoreError. */
+export async function readOpenSessionLedger(): Promise<OccupancyLedger> {
+  try {
+    return (await readLedgerStrict())?.ledger ?? {};
+  } catch (error) {
+    logOccupancyError("open_session_occupancy_read", error);
+    throw error;
+  }
+}
+
+/**
+ * Atomic whole-ledger update (see updateLedger). Throws OccupancyStoreError
+ * when the store cannot be read/written.
+ */
+export async function updateOpenSessionLedger<T>(
+  decide: (ledger: OccupancyLedger) => {
+    next: OccupancyLedger | null;
+    result: T;
+  },
+): Promise<T> {
+  try {
+    return await updateLedger(casStore, decide);
   } catch (error) {
     logOccupancyError("open_session_occupancy_write", error);
     throw error;

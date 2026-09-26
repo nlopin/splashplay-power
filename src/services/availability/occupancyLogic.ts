@@ -106,12 +106,36 @@ export interface OccupancyCasStore {
 export const OCCUPANCY_MAX_ATTEMPTS = 8;
 
 /**
- * Optimistic-concurrency update of a single slot's holds. `decide` sees the
- * freshly read holds and returns the new holds, the same object to leave
- * them unchanged, or `null` to refuse. The decision therefore runs against
- * the exact version that the conditional write is pinned to, so two
- * concurrent writers cannot both pass a capacity check. Throws
- * OccupancyStoreError on read failure or when every attempt lost the race.
+ * Optimistic-concurrency update of the whole ledger. `decide` sees the
+ * freshly read ledger and returns the ledger to write (`next`, or null to
+ * leave it unchanged) plus a result for the caller. The decision therefore
+ * runs against the exact version the conditional write is pinned to.
+ * Throws OccupancyStoreError on read failure or when every attempt lost the
+ * race.
+ */
+export async function updateLedger<T>(
+  store: OccupancyCasStore,
+  decide: (ledger: OccupancyLedger) => {
+    next: OccupancyLedger | null;
+    result: T;
+  },
+  maxAttempts = OCCUPANCY_MAX_ATTEMPTS,
+): Promise<T> {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const current = await store.read();
+    const { next, result } = decide(current?.ledger ?? {});
+    if (next === null) return result;
+    if (await store.write(next, current?.etag)) return result;
+  }
+  throw new OccupancyStoreError(
+    `Occupancy ledger update lost the write race ${maxAttempts} times`,
+  );
+}
+
+/**
+ * Update a single slot's holds. `decide` sees the slot's current holds and
+ * returns the new holds, the same object to leave them unchanged, or `null`
+ * to refuse; two concurrent writers cannot both pass a capacity check.
  */
 export async function updateSlotHolds(
   store: OccupancyCasStore,
@@ -119,41 +143,47 @@ export async function updateSlotHolds(
   decide: (holds: SlotHolds) => SlotHolds | null,
   maxAttempts = OCCUPANCY_MAX_ATTEMPTS,
 ): Promise<{ written: boolean; holds: SlotHolds }> {
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const current = await store.read();
-    const ledger: OccupancyLedger = { ...(current?.ledger ?? {}) };
-    const holds = ledger[slot] ?? {};
-    const next = decide(holds);
-    if (next === null) return { written: false, holds };
-    if (next === holds) return { written: true, holds };
-    if (Object.keys(next).length === 0) {
-      delete ledger[slot];
-    } else {
-      ledger[slot] = next;
-    }
-    if (await store.write(ledger, current?.etag)) {
-      return { written: true, holds: next };
-    }
-  }
-  throw new OccupancyStoreError(
-    `Occupancy update for ${slot} lost the write race ${maxAttempts} times`,
+  return updateLedger<{ written: boolean; holds: SlotHolds }>(
+    store,
+    (ledger) => {
+      const holds = ledger[slot] ?? {};
+      const next = decide(holds);
+      if (next === null)
+        return { next: null, result: { written: false, holds } };
+      if (next === holds)
+        return { next: null, result: { written: true, holds } };
+      const updated = { ...ledger };
+      if (Object.keys(next).length === 0) {
+        delete updated[slot];
+      } else {
+        updated[slot] = next;
+      }
+      return { next: updated, result: { written: true, holds: next } };
+    },
+    maxAttempts,
   );
 }
 
 /**
  * Hold `guests` seats for `bookingKey`. Idempotent: if the booking already
- * holds seats on this slot they are kept as they are. Refuses (null) when
- * the new hold would exceed capacity.
+ * holds seats on this slot they are kept as they are. With
+ * `enforceCapacity`, refuses (null) when the new hold would exceed
+ * OPEN_SESSION_CAPACITY; without it, records the hold regardless (for
+ * bookings Calendly has already accepted).
  */
 export function holdSeats(
   bookingKey: string,
   guests: number,
-  capacity = OPEN_SESSION_CAPACITY,
-  now = Date.now(),
+  {
+    enforceCapacity,
+    now = Date.now(),
+  }: { enforceCapacity: boolean; now?: number },
 ): (holds: SlotHolds) => SlotHolds | null {
   return (holds) => {
     if (holds[bookingKey]) return holds;
-    if (seatsTaken(holds) + guests > capacity) return null;
+    if (enforceCapacity && seatsTaken(holds) + guests > OPEN_SESSION_CAPACITY) {
+      return null;
+    }
     return { ...holds, [bookingKey]: { guests, at: now } };
   };
 }
@@ -165,4 +195,94 @@ export function dropHold(bookingKey: string): (holds: SlotHolds) => SlotHolds {
     const { [bookingKey]: _dropped, ...rest } = holds;
     return rest;
   };
+}
+
+/** An active Calendly invitee of an open session, as a ledger key. */
+export type CalendlyBooking = { slot: string; key: string };
+
+export type ReconcileChange =
+  | {
+      kind: "added";
+      slot: string;
+      key: string;
+      guests: number;
+      guestsAssumed: boolean;
+    }
+  | { kind: "removed"; slot: string; key: string; guests: number };
+
+/**
+ * Bring the ledger in line with Calendly's active invitees for slots
+ * starting in [now, windowEnd]:
+ * - a hold with no active invitee is removed, unless it is younger than
+ *   `minHoldAgeMs` (our checkout reserves seats before the Calendly booking
+ *   exists, so a fresh hold may not have its invitee yet);
+ * - an invitee with no hold is added, with `guestsFor(key)` people or 1 when
+ *   unknown.
+ * Slots that already started are dropped; slots after windowEnd are kept
+ * as they are. `next` is null when nothing changed.
+ */
+export function reconcileLedger(
+  ledger: OccupancyLedger,
+  bookings: CalendlyBooking[],
+  {
+    now,
+    windowEnd,
+    minHoldAgeMs,
+    guestsFor,
+  }: {
+    now: number;
+    windowEnd: number;
+    minHoldAgeMs: number;
+    guestsFor: (key: string) => number | undefined;
+  },
+): { next: OccupancyLedger | null; changes: ReconcileChange[] } {
+  const active = new Map<string, Set<string>>();
+  for (const { slot, key } of bookings) {
+    if (!active.has(slot)) active.set(slot, new Set());
+    active.get(slot)!.add(key);
+  }
+
+  const next: OccupancyLedger = {};
+  const changes: ReconcileChange[] = [];
+  let dirty = false;
+
+  for (const [slot, holds] of Object.entries(ledger)) {
+    const start = Date.parse(slot);
+    if (start < now) {
+      dirty = true;
+      continue;
+    }
+    if (start > windowEnd) {
+      next[slot] = holds;
+      continue;
+    }
+    const keys = active.get(slot) ?? new Set<string>();
+    const kept: SlotHolds = {};
+    for (const [key, hold] of Object.entries(holds)) {
+      if (keys.has(key) || now - hold.at < minHoldAgeMs) {
+        kept[key] = hold;
+      } else {
+        changes.push({ kind: "removed", slot, key, guests: hold.guests });
+      }
+    }
+    if (Object.keys(kept).length > 0) next[slot] = kept;
+  }
+
+  for (const [slot, keys] of active) {
+    for (const key of keys) {
+      if (next[slot]?.[key]) continue;
+      const known = guestsFor(key);
+      const guests = known ?? 1;
+      next[slot] = { ...next[slot], [key]: { guests, at: now } };
+      changes.push({
+        kind: "added",
+        slot,
+        key,
+        guests,
+        guestsAssumed: known === undefined,
+      });
+    }
+  }
+
+  return { next: dirty || changes.length > 0 ? next : null, changes };
 }

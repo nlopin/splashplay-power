@@ -7,6 +7,7 @@ import {
   isOccupancyLedger,
   occupancyKey,
   OccupancyStoreError,
+  reconcileLedger,
   updateSlotHolds,
   type OccupancyCasStore,
   type OccupancyLedger,
@@ -75,7 +76,8 @@ function memoryStore(initial: OccupancyLedger | null = null) {
 
 const AT = 1_700_000_000_000;
 const hold = (guests: number) => ({ guests, at: AT });
-const reserve = (key: string, guests: number) => holdSeats(key, guests, 6, AT);
+const reserve = (key: string, guests: number) =>
+  holdSeats(key, guests, { enforceCapacity: true, now: AT });
 
 describe("updateSlotHolds", () => {
   const KEY = occupancyKey(SLOT);
@@ -122,6 +124,17 @@ describe("updateSlotHolds", () => {
     expect(result.written).toBe(true);
     expect(write).not.toHaveBeenCalled();
     expect(store.snapshot()).toEqual({ [KEY]: { pi_a: hold(2) } });
+  });
+
+  it("records past capacity when capacity isn't enforced", async () => {
+    const store = memoryStore({ [KEY]: { pi_a: hold(5) } });
+    const result = await updateSlotHolds(
+      store,
+      KEY,
+      holdSeats("pi_b", 2, { enforceCapacity: false, now: AT }),
+    );
+    expect(result.written).toBe(true);
+    expect(countsFromLedger(store.snapshot()!)).toEqual({ [KEY]: 7 });
   });
 
   it("re-reserving a held booking succeeds even when the slot is full", async () => {
@@ -210,5 +223,90 @@ describe("isOccupancyLedger", () => {
     expect(isOccupancyLedger({ [SLOT]: { pi_a: hold(2) } })).toBe(true);
     expect(isOccupancyLedger({ [SLOT]: {} })).toBe(true);
     expect(isOccupancyLedger({})).toBe(true);
+  });
+});
+
+describe("reconcileLedger", () => {
+  const NOW = Date.parse("2026-09-23T10:00:00.000Z");
+  const MIN_AGE = 15 * 60 * 1000;
+  const FUTURE = "2026-10-03T09:00:00.000Z";
+  const PAST = "2026-09-20T09:00:00.000Z";
+  const FAR = "2027-01-01T09:00:00.000Z";
+  const old = (guests: number) => ({ guests, at: NOW - 60 * 60 * 1000 });
+  const fresh = (guests: number) => ({ guests, at: NOW - 60 * 1000 });
+  const options = (guests: Record<string, number> = {}) => ({
+    now: NOW,
+    windowEnd: NOW + 60 * 24 * 60 * 60 * 1000,
+    minHoldAgeMs: MIN_AGE,
+    guestsFor: (key: string) => guests[key],
+  });
+
+  it("changes nothing when the ledger matches Calendly", () => {
+    const result = reconcileLedger(
+      { [FUTURE]: { pi_a: old(2) } },
+      [{ slot: FUTURE, key: "pi_a" }],
+      options(),
+    );
+    expect(result).toEqual({ next: null, changes: [] });
+  });
+
+  it("removes a hold whose Calendly booking is gone", () => {
+    const result = reconcileLedger(
+      { [FUTURE]: { pi_a: old(2), pi_b: old(1) } },
+      [{ slot: FUTURE, key: "pi_b" }],
+      options(),
+    );
+    expect(result.next).toEqual({ [FUTURE]: { pi_b: old(1) } });
+    expect(result.changes).toEqual([
+      { kind: "removed", slot: FUTURE, key: "pi_a", guests: 2 },
+    ]);
+  });
+
+  it("keeps a fresh hold whose Calendly booking may still be coming", () => {
+    const result = reconcileLedger(
+      { [FUTURE]: { pi_a: fresh(2) } },
+      [],
+      options(),
+    );
+    expect(result).toEqual({ next: null, changes: [] });
+  });
+
+  it("adds a missing booking with its known headcount", () => {
+    const result = reconcileLedger(
+      {},
+      [{ slot: FUTURE, key: "pi_a" }],
+      options({ pi_a: 2 }),
+    );
+    expect(result.next).toEqual({ [FUTURE]: { pi_a: { guests: 2, at: NOW } } });
+    expect(result.changes).toEqual([
+      {
+        kind: "added",
+        slot: FUTURE,
+        key: "pi_a",
+        guests: 2,
+        guestsAssumed: false,
+      },
+    ]);
+  });
+
+  it("assumes 1 person when the headcount is unknown", () => {
+    const result = reconcileLedger(
+      {},
+      [{ slot: FUTURE, key: "https://calendly/invitee" }],
+      options(),
+    );
+    expect(result.changes).toEqual([
+      expect.objectContaining({ guests: 1, guestsAssumed: true }),
+    ]);
+  });
+
+  it("drops slots that already started and keeps slots past the window", () => {
+    const result = reconcileLedger(
+      { [PAST]: { pi_a: old(2) }, [FAR]: { pi_b: old(1) } },
+      [],
+      options(),
+    );
+    expect(result.next).toEqual({ [FAR]: { pi_b: old(1) } });
+    expect(result.changes).toEqual([]);
   });
 });

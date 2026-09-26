@@ -176,6 +176,134 @@ export async function bookEvent(
   return { success: true };
 }
 
+const PaginationSchema = z.looseObject({
+  next_page_token: z.string().nullable().optional(),
+});
+
+const CurrentUserSchema = z.looseObject({
+  resource: z.looseObject({ current_organization: z.string() }),
+});
+
+const ScheduledEventsSchema = z.looseObject({
+  collection: z.array(
+    z.looseObject({
+      uri: z.string(),
+      start_time: z.iso.datetime({ offset: true }),
+      event_type: z.string(),
+    }),
+  ),
+  pagination: PaginationSchema,
+});
+
+const InviteesSchema = z.looseObject({
+  collection: z.array(
+    z.looseObject({
+      uri: z.string(),
+      questions_and_answers: z
+        .array(z.looseObject({ answer: z.string() }))
+        .optional(),
+    }),
+  ),
+  pagination: PaginationSchema,
+});
+
+export type ActiveInvitee = {
+  startTime: ISODatetime;
+  inviteeUri: string;
+  // Answer to the first booking question; our checkout puts the
+  // "Transaction ID: …" comment there.
+  comment: string;
+};
+
+async function calendlyGet<T>(url: string, schema: z.ZodType<T>): Promise<T> {
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${CALENDLY_TOKEN}` },
+  });
+  if (response.status !== 200) {
+    throw new Error(
+      `Calendly API error for ${url}: HTTP ${response.status}: ${await response.text()}`,
+    );
+  }
+  const parsed = schema.safeParse(await response.json());
+  if (!parsed.success) {
+    throw new Error(
+      `Unexpected Calendly response for ${url}: ${parsed.error.message}`,
+    );
+  }
+  return parsed.data;
+}
+
+/** Follow `next_page_token` until the collection is exhausted. */
+async function calendlyGetAll<T>(
+  url: string,
+  params: URLSearchParams,
+  schema: z.ZodType<{
+    collection: T[];
+    pagination: { next_page_token?: string | null };
+  }>,
+): Promise<T[]> {
+  const items: T[] = [];
+  let pageToken: string | null | undefined;
+  do {
+    const pageParams = new URLSearchParams(params);
+    if (pageToken) pageParams.set("page_token", pageToken);
+    const page = await calendlyGet(`${url}?${pageParams}`, schema);
+    items.push(...page.collection);
+    pageToken = page.pagination.next_page_token;
+  } while (pageToken);
+  return items;
+}
+
+/**
+ * Every active invitee of `eventType` events starting in [from, to].
+ * Throws on any API or parsing failure: a partial list must never be
+ * mistaken for "these are all the bookings".
+ */
+export async function listActiveInvitees(
+  eventType: EventType,
+  from: Date,
+  to: Date,
+): Promise<ActiveInvitee[]> {
+  const me = await calendlyGet(`${CALENDLY_URL}/users/me`, CurrentUserSchema);
+  const events = await calendlyGetAll(
+    `${CALENDLY_URL}/scheduled_events`,
+    new URLSearchParams({
+      organization: me.resource.current_organization,
+      status: "active",
+      min_start_time: from.toISOString(),
+      max_start_time: to.toISOString(),
+      count: "100",
+    }),
+    ScheduledEventsSchema,
+  );
+
+  const invitees: ActiveInvitee[] = [];
+  for (const event of events) {
+    if (!isCalendlyEventType(event.event_type, eventType)) continue;
+    const eventInvitees = await calendlyGetAll(
+      `${event.uri}/invitees`,
+      new URLSearchParams({ status: "active", count: "100" }),
+      InviteesSchema,
+    );
+    for (const invitee of eventInvitees) {
+      invitees.push({
+        startTime: event.start_time,
+        inviteeUri: invitee.uri,
+        comment: invitee.questions_and_answers?.at(0)?.answer ?? "",
+      });
+    }
+  }
+  return invitees;
+}
+
+/** Whether a Calendly event type URI (as sent in webhooks) is `eventType`. */
+export function isCalendlyEventType(
+  uri: string,
+  eventType: EventType,
+): boolean {
+  return uri === getEventTypeId(eventType);
+}
+
 function getEventTypeId(eventType: EventType): string {
   return CALENDLY_URL + "/event_types/" + EVENT_TYPE_IDS[eventType];
 }

@@ -262,6 +262,11 @@ async function handleCheckoutSessionCompleted(
     });
   }
 
+  // The Calendly comment carries this key, so later Calendly events can find
+  // the booking's seats. Checkouts without a payment intent fall back to the
+  // checkout session id so the key stays unique.
+  const bookingKey = paymentIntentId || checkoutSessionId;
+
   const { result: calendlyResult, heldSeatsReleased } = await bookPaidEvent({
     eventType: parsedMetadata.data.eventType,
     datetime: parsedMetadata.data.sessionTime,
@@ -270,15 +275,9 @@ async function handleCheckoutSessionCompleted(
     phone: parsedCustomer.data.phone.startsWith("+")
       ? parsedCustomer.data.phone
       : `+34${parsedCustomer.data.phone}`,
-    comment: formatEventComment(
-      paymentIntentId,
-      parsedMetadata.data.sessionTitle,
-    ),
+    comment: formatEventComment(bookingKey, parsedMetadata.data.sessionTitle),
     guests: parsedMetadata.data.guests,
-    // The payment intent id is what the Calendly comment carries, so later
-    // Calendly events can find this booking's seats. Fall back to the
-    // checkout session id so the hold is still keyed uniquely.
-    bookingKey: paymentIntentId || checkoutSessionId,
+    bookingKey,
   });
 
   updateEvent(webhookEvent, {

@@ -11,6 +11,14 @@ import {
 } from "@/components/booking/eventMessage";
 import { formatVisitDateTime } from "@/utils/formatters";
 import { triggerAvailabilityRefresh } from "@/services/availability";
+import {
+  syncInviteeCanceled,
+  syncInviteeCreated,
+  type InviteeRef,
+  type SeatSyncResult,
+} from "@/services/availability/openSessionBookings";
+import { EVENT_TYPE } from "@/components/booking/types";
+import { isCalendlyEventType } from "@/services/calendly";
 import { createEvent, logEvent, updateEvent } from "@/services/logger";
 import {
   getPartner,
@@ -39,6 +47,9 @@ type CalendlyWebhookEventData = {
   notificationSent: boolean | undefined;
   partnerForwardStatus: PartnerForwardStatus | undefined;
   partnerKey: string | undefined;
+  // Open-session seat ledger update; "not_open_session" for other types.
+  seatSync: SeatSyncResult["status"] | "not_open_session" | undefined;
+  seatSyncError: string | undefined;
   error: string | undefined;
   startTime: number;
   durationMs: number;
@@ -59,13 +70,23 @@ const PARTNER_FORWARD_INTERNAL_ERROR: PartnerForwardResult = {
   error: "internal_error",
 };
 
+type SeatSync = SeatSyncResult | { status: "not_open_session" };
+
+const SEAT_SYNC_INTERNAL_ERROR: SeatSync = {
+  status: "error",
+  error: "internal_error",
+};
+
 const BaseCalendlyPayload = z.looseObject({
   event: z.string(),
   name: z.string(),
   email: z.string(),
+  // Invitee URI; keys seat holds for bookings made outside our checkout.
+  uri: z.string().optional(),
   scheduled_event: z.object({
     uri: z.string(),
     start_time: z.iso.datetime({ offset: true }),
+    event_type: z.string().optional(),
   }),
   rescheduled: z.boolean(),
   questions_and_answers: z.array(
@@ -125,6 +146,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
     notificationSent: undefined,
     partnerForwardStatus: undefined,
     partnerKey: undefined,
+    seatSync: undefined,
+    seatSyncError: undefined,
     error: undefined,
     startTime: Date.now(),
     durationMs: 0,
@@ -215,6 +238,7 @@ async function processCalendlyEvent(
           notificationSent: createdResult.notificationSent,
           partnerForwardStatus: createdResult.partnerForward.status,
           partnerKey: createdResult.partnerForward.partnerKey,
+          ...seatSyncLog(createdResult.seatSync),
         });
         break;
 
@@ -228,6 +252,7 @@ async function processCalendlyEvent(
           notificationSent: result.notificationSent,
           partnerForwardStatus: result.partnerForward.status,
           partnerKey: result.partnerForward.partnerKey,
+          ...seatSyncLog(result.seatSync),
         });
         break;
     }
@@ -252,6 +277,39 @@ function overallStatus(partnerForward: PartnerForwardResult): string {
   return partnerForward.status === "failed"
     ? "partner_forward_failed"
     : "success";
+}
+
+function seatSyncLog(seatSync: SeatSync) {
+  return {
+    seatSync: seatSync.status,
+    seatSyncError: seatSync.status === "error" ? seatSync.error : undefined,
+  };
+}
+
+type InviteePayload = z.infer<typeof BaseCalendlyPayload>;
+
+/** Null when the booking isn't for an open session (or we can't tell). */
+function openSessionInvitee(
+  payload: InviteePayload,
+  transactionId: string,
+): InviteeRef | null {
+  const eventTypeUri = payload.scheduled_event.event_type;
+  if (!eventTypeUri || !payload.uri) return null;
+  if (!isCalendlyEventType(eventTypeUri, EVENT_TYPE.OPEN_SESSION)) return null;
+  return {
+    startTime: payload.scheduled_event.start_time,
+    transactionId,
+    inviteeUri: payload.uri,
+  };
+}
+
+async function syncSeats(
+  payload: InviteePayload,
+  transactionId: string,
+  sync: (invitee: InviteeRef) => Promise<SeatSyncResult>,
+): Promise<SeatSync> {
+  const invitee = openSessionInvitee(payload, transactionId);
+  return invitee ? sync(invitee) : { status: "not_open_session" };
 }
 
 /**
@@ -313,6 +371,7 @@ async function handleInviteeCreated({
 }): Promise<{
   notificationSent: boolean;
   partnerForward: PartnerForwardResult;
+  seatSync: SeatSync;
 }> {
   const scheduledTime = payload.scheduled_event.start_time;
   const { transactionId, sessionTitle } = extractEventComment(payload);
@@ -336,16 +395,19 @@ async function handleInviteeCreated({
         scheduledTime,
         guestName: payload.name,
       }),
+      syncSeats(payload, transactionId, syncInviteeCreated),
     ]);
     const partnerForward = settledOrDefault(
       results[2],
       PARTNER_FORWARD_INTERNAL_ERROR,
     );
-    return { notificationSent: true, partnerForward };
+    const seatSync = settledOrDefault(results[3], SEAT_SYNC_INTERNAL_ERROR);
+    return { notificationSent: true, partnerForward, seatSync };
   } catch {
     return {
       notificationSent: false,
       partnerForward: PARTNER_FORWARD_INTERNAL_ERROR,
+      seatSync: SEAT_SYNC_INTERNAL_ERROR,
     };
   }
 }
@@ -358,6 +420,7 @@ async function handleInviteeCanceled({
   transactionId: string | null;
   notificationSent: boolean;
   partnerForward: PartnerForwardResult;
+  seatSync: SeatSync;
 }> {
   const { transactionId, sessionTitle } = extractEventComment(payload);
 
@@ -392,22 +455,26 @@ async function handleInviteeCanceled({
         scheduledTime: payload.scheduled_event.start_time,
         guestName: payload.name,
       }),
+      syncSeats(payload, transactionId, syncInviteeCanceled),
     ]);
     const partnerForward = settledOrDefault(
       results[2],
       PARTNER_FORWARD_INTERNAL_ERROR,
     );
+    const seatSync = settledOrDefault(results[3], SEAT_SYNC_INTERNAL_ERROR);
 
     return {
       transactionId: transactionId || null,
       notificationSent: true,
       partnerForward,
+      seatSync,
     };
   } catch {
     return {
       transactionId: transactionId || null,
       notificationSent: false,
       partnerForward: PARTNER_FORWARD_INTERNAL_ERROR,
+      seatSync: SEAT_SYNC_INTERNAL_ERROR,
     };
   }
 }
