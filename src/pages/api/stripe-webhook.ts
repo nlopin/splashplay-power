@@ -145,57 +145,22 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    if (claim.status === "done") {
-      logEvent(
-        updateEvent(webhookEvent, {
-          status: "duplicate_ignored",
-          durationMs: Date.now() - startTime,
-        }),
-      );
-      return new Response(JSON.stringify({ received: true }), { status: 200 });
-    }
-
-    if (claim.status === "in_flight") {
-      // Another delivery is processing this session. Don't touch seats; ask
-      // Stripe to retry later, when it'll see "done" (or a released claim).
-      logEvent(
-        updateEvent(webhookEvent, {
-          status: "duplicate_in_flight",
-          durationMs: Date.now() - startTime,
-        }),
-      );
-      return new Response("Checkout session is already being processed", {
-        status: 409,
-      });
-    }
-
-    let outcome: CheckoutOutcome;
-    try {
-      outcome = await handleCheckoutSessionCompleted(
-        checkoutSessionId,
-        webhookEvent,
-      );
-    } catch (err) {
-      // Any seats reserved by this attempt were rolled back before the throw
-      // reached here (see bookPaidEvent), so the session is safe to retry.
-      await releaseClaimSafely(checkoutSessionId);
-      return failAndAskStripeToRetry(webhookEvent, startTime, "error", err);
-    }
-
-    if (outcome === "retryable_failure") {
-      await releaseClaimSafely(checkoutSessionId);
-    } else {
-      try {
-        await markCheckoutSessionDone(checkoutSessionId);
-      } catch (err) {
-        // The booking already happened; answering non-2xx would make Stripe
-        // redeliver while our claim is still "processing". The stale-claim
-        // lease is the only way this session could be processed again.
-        createAndLogEvent("checkout_processing_mark_done", {
-          status: "error",
-          sessionId: checkoutSessionId,
-          error: err instanceof Error ? err.message : "Unknown error",
-        });
+    switch (claim.status) {
+      case "done":
+        return ignoreProcessedSession(webhookEvent, startTime);
+      case "in_flight":
+        return deferInFlightSession(webhookEvent, startTime);
+      case "claimed":
+        return processClaimedSession(
+          checkoutSessionId,
+          webhookEvent,
+          startTime,
+        );
+      default: {
+        const unhandled: never = claim;
+        throw new Error(
+          `Unhandled checkout claim status: ${JSON.stringify(unhandled)}`,
+        );
       }
     }
   }
@@ -205,6 +170,82 @@ export const POST: APIRoute = async ({ request }) => {
 };
 
 type WebhookEvent = ReturnType<typeof createEvent<StripeWebhookEventData>>;
+
+/** The session was already processed: this delivery is a duplicate. */
+function ignoreProcessedSession(
+  webhookEvent: WebhookEvent,
+  startTime: number,
+): Response {
+  logEvent(
+    updateEvent(webhookEvent, {
+      status: "duplicate_ignored",
+      durationMs: Date.now() - startTime,
+    }),
+  );
+  return new Response(JSON.stringify({ received: true }), { status: 200 });
+}
+
+/**
+ * Another delivery is processing this session. Don't touch seats; ask
+ * Stripe to retry later, when it'll see "done" (or a released claim).
+ */
+function deferInFlightSession(
+  webhookEvent: WebhookEvent,
+  startTime: number,
+): Response {
+  logEvent(
+    updateEvent(webhookEvent, {
+      status: "duplicate_in_flight",
+      durationMs: Date.now() - startTime,
+    }),
+  );
+  return new Response("Checkout session is already being processed", {
+    status: 409,
+  });
+}
+
+/**
+ * This delivery holds the claim: book, then mark the session done, or
+ * release the claim so a later delivery can retry.
+ */
+async function processClaimedSession(
+  checkoutSessionId: string,
+  webhookEvent: WebhookEvent,
+  startTime: number,
+): Promise<Response> {
+  let outcome: CheckoutOutcome;
+  try {
+    outcome = await handleCheckoutSessionCompleted(
+      checkoutSessionId,
+      webhookEvent,
+    );
+  } catch (err) {
+    // Any seats reserved by this attempt were rolled back before the throw
+    // reached here (see bookPaidEvent), so the session is safe to retry.
+    await releaseClaimSafely(checkoutSessionId);
+    return failAndAskStripeToRetry(webhookEvent, startTime, "error", err);
+  }
+
+  if (outcome === "retryable_failure") {
+    await releaseClaimSafely(checkoutSessionId);
+  } else {
+    try {
+      await markCheckoutSessionDone(checkoutSessionId);
+    } catch (err) {
+      // The booking already happened; answering non-2xx would make Stripe
+      // redeliver while our claim is still "processing". The stale-claim
+      // lease is the only way this session could be processed again.
+      createAndLogEvent("checkout_processing_mark_done", {
+        status: "error",
+        sessionId: checkoutSessionId,
+        error: err instanceof Error ? err.message : "Unknown error",
+      });
+    }
+  }
+
+  logEvent(updateEvent(webhookEvent, { durationMs: Date.now() - startTime }));
+  return new Response(JSON.stringify({ received: true }), { status: 200 });
+}
 
 /**
  * - "completed": processed (booked, or a final failure that retrying won't
