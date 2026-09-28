@@ -1,13 +1,12 @@
-import Stripe from "stripe";
-import { STRIPE_SECRET_KEY } from "astro:env/server";
+import type Stripe from "stripe";
 import { isKnownPartner } from "@/services/partners";
 import type { EventType } from "@/components/booking/types";
 import type { Language } from "@/utils/i18n";
 import { getBookingPath } from "@/services/catalog/experiences";
 
-export const stripe = new Stripe(STRIPE_SECRET_KEY, {
-  apiVersion: "2026-07-29.preview",
-});
+import { stripe } from "./stripeClient";
+
+export { stripe };
 
 export type CheckoutSessionInput = {
   amount: number;

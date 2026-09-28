@@ -14,6 +14,9 @@ const ASTRO_ENV_VARS = [
   "CALENDLY_OPEN_SESSION_EVENT_TYPE_ID",
   "NETLIFY_SITE_ID",
   "NETLIFY_TOKEN",
+  "STRIPE_SECRET_KEY",
+  "TELEGRAM_SECRET_KEY",
+  "TELEGRAM_CHAT_ID",
 ];
 
 /**
@@ -56,6 +59,10 @@ async function build() {
     path.resolve(
       ROOT_DIR,
       "src/netlify-functions/scheduled-partner-bookings-cleanup.ts",
+    ),
+    path.resolve(
+      ROOT_DIR,
+      "src/netlify-functions/scheduled-open-session-seats-reconcile.ts",
     ),
   ];
 
