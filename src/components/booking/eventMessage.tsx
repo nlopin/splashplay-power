@@ -8,6 +8,16 @@ export function formatEventComment(
   return `${sessionTitle}\n${TRANSACTION_TITLE}${transactionId}`;
 }
 
+/** Companions besides the booker. One person stays just the name. */
+export function formatOpenSessionInviteeName(
+  name: string,
+  guests: number,
+): string {
+  const companions = guests - 1;
+  if (!Number.isInteger(companions) || companions < 1) return name;
+  return `${name} +${companions}`;
+}
+
 export function getTransactionIdFromEventComment(eventComment: string): string {
   const matches = [...eventComment.matchAll(TRANSACTION_ID_REGEX)];
   if (matches.length > 0) {

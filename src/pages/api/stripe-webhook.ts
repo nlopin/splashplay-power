@@ -10,7 +10,10 @@ import {
 } from "@/services/telegram";
 import { getPaymentIntentId } from "@/services/stripe";
 import { bookEvent, type BookEventResult } from "@/services/calendly";
-import { formatEventComment } from "@/components/booking/eventMessage";
+import {
+  formatEventComment,
+  formatOpenSessionInviteeName,
+} from "@/components/booking/eventMessage";
 import { EVENT_TYPE } from "@/components/booking/types";
 import {
   createAndLogEvent,
@@ -389,7 +392,8 @@ async function bookPaidEvent({
     calendlyResult = await bookEvent(eventType, {
       datetime,
       email,
-      name,
+      // The group-event calendar lists only this name, so companions go here.
+      name: formatOpenSessionInviteeName(name, guests),
       phone,
       comment,
     });

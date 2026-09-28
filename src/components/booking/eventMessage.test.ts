@@ -1,6 +1,7 @@
 import { describe, expect, it, test } from "vitest";
 import {
   formatEventComment,
+  formatOpenSessionInviteeName,
   getTransactionIdFromEventComment,
 } from "./eventMessage";
 
@@ -45,6 +46,17 @@ describe("formatEventComment", () => {
     expect(result).toBe(
       "Creative Workshop\nFor Beginners\n(Materials Included)\nTransaction ID: JKL012",
     );
+  });
+});
+
+describe("formatOpenSessionInviteeName", () => {
+  it("leaves a solo booking as the booker's name", () => {
+    expect(formatOpenSessionInviteeName("Ada", 1)).toBe("Ada");
+  });
+
+  it("counts companions besides the booker", () => {
+    expect(formatOpenSessionInviteeName("Ada", 2)).toBe("Ada +1");
+    expect(formatOpenSessionInviteeName("Ada", 4)).toBe("Ada +3");
   });
 });
 

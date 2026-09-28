@@ -116,7 +116,10 @@ describe("stripe-webhook checkout.session.completed", () => {
       "pi_1",
       2,
     );
-    expect(mocks.bookEvent).toHaveBeenCalledTimes(1);
+    expect(mocks.bookEvent).toHaveBeenCalledWith(
+      "open_session",
+      expect.objectContaining({ name: "Guest +1" }),
+    );
     expect(mocks.releaseOpenSessionSeats).not.toHaveBeenCalled();
     expect(mocks.blobStore!.peek(PROCESSING_KEY)).toMatchObject({
       state: "done",
@@ -281,6 +284,18 @@ describe("stripe-webhook checkout.session.completed", () => {
     });
   });
 
+  it("books a party of 4 as the booker plus 3", async () => {
+    mocks.retrieveSession.mockResolvedValue(checkoutSession({ guests: "4" }));
+
+    const response = await deliver();
+
+    expect(response.status).toBe(200);
+    expect(mocks.bookEvent).toHaveBeenCalledWith(
+      "open_session",
+      expect.objectContaining({ name: "Guest +3" }),
+    );
+  });
+
   it("books other event types without touching seats", async () => {
     mocks.retrieveSession.mockResolvedValue(
       checkoutSession({ eventType: "couples" }),
@@ -291,7 +306,10 @@ describe("stripe-webhook checkout.session.completed", () => {
 
     expect(response.status).toBe(200);
     expect(mocks.reserveOpenSessionSeats).not.toHaveBeenCalled();
-    expect(mocks.bookEvent).toHaveBeenCalledTimes(1);
+    expect(mocks.bookEvent).toHaveBeenCalledWith(
+      "couples",
+      expect.objectContaining({ name: "Guest" }),
+    );
   });
 });
 
