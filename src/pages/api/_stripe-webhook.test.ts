@@ -119,7 +119,7 @@ describe("stripe-webhook checkout.session.completed", () => {
     );
     expect(mocks.bookEvent).toHaveBeenCalledWith(
       "open_session",
-      expect.objectContaining({ name: "Guest +1, 1 canvas" }),
+      expect.objectContaining({ name: "Guest +1, 1 canvas;\n" }),
     );
     expect(mocks.releaseOpenSessionSeats).not.toHaveBeenCalled();
     expect(mocks.blobStore!.peek(PROCESSING_KEY)).toMatchObject({
@@ -295,7 +295,7 @@ describe("stripe-webhook checkout.session.completed", () => {
     expect(response.status).toBe(200);
     expect(mocks.bookEvent).toHaveBeenCalledWith(
       "open_session",
-      expect.objectContaining({ name: "Guest +3, 2 canvases" }),
+      expect.objectContaining({ name: "Guest +3, 2 canvases;\n" }),
     );
   });
 
@@ -308,7 +308,7 @@ describe("stripe-webhook checkout.session.completed", () => {
 
     expect(mocks.bookEvent).toHaveBeenCalledWith(
       "open_session",
-      expect.objectContaining({ name: "Guest +1" }),
+      expect.objectContaining({ name: "Guest +1;\n" }),
     );
   });
 

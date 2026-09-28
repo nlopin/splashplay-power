@@ -51,19 +51,21 @@ describe("formatEventComment", () => {
 
 describe("formatOpenSessionInviteeName", () => {
   it("leaves a solo booking as the booker's name", () => {
-    expect(formatOpenSessionInviteeName("Ada", 1)).toBe("Ada");
+    expect(formatOpenSessionInviteeName("Ada", 1)).toBe("Ada;\n");
   });
 
   it("counts companions besides the booker", () => {
-    expect(formatOpenSessionInviteeName("Ada", 2)).toBe("Ada +1");
-    expect(formatOpenSessionInviteeName("Ada", 4)).toBe("Ada +3");
+    expect(formatOpenSessionInviteeName("Ada", 2)).toBe("Ada +1;\n");
+    expect(formatOpenSessionInviteeName("Ada", 4)).toBe("Ada +3;\n");
   });
 
   it("adds the canvas count when it is known", () => {
-    expect(formatOpenSessionInviteeName("Ada", 1, 1)).toBe("Ada, 1 canvas");
-    expect(formatOpenSessionInviteeName("Ada", 2, 1)).toBe("Ada +1, 1 canvas");
+    expect(formatOpenSessionInviteeName("Ada", 1, 1)).toBe("Ada, 1 canvas;\n");
+    expect(formatOpenSessionInviteeName("Ada", 2, 1)).toBe(
+      "Ada +1, 1 canvas;\n",
+    );
     expect(formatOpenSessionInviteeName("Ada", 2, 2)).toBe(
-      "Ada +1, 2 canvases",
+      "Ada +1, 2 canvases;\n",
     );
   });
 });

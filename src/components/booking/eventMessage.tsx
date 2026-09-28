@@ -22,9 +22,13 @@ export function formatOpenSessionInviteeName(
     Number.isInteger(companions) && companions >= 1
       ? `${name} +${companions}`
       : name;
-  if (!Number.isInteger(canvases) || (canvases ?? 0) < 1) return withCompanions;
-  const label = canvases === 1 ? "canvas" : "canvases";
-  return `${withCompanions}, ${canvases} ${label}`;
+  const label =
+    !Number.isInteger(canvases) || (canvases ?? 0) < 1
+      ? ""
+      : `, ${canvases} ${canvases === 1 ? "canvas" : "canvases"}`;
+  // Calendly joins invitee names with a comma. The semicolon and line break
+  // mark where one booking ends so the next one starts on its own line.
+  return `${withCompanions}${label};\n`;
 }
 
 export function getTransactionIdFromEventComment(eventComment: string): string {
