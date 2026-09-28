@@ -62,6 +62,7 @@ const metadataSchema = z.object({
   sessionTime: z.iso.datetime({ offset: true }),
   sessionTitle: z.string(),
   guests: z.coerce.number().int().positive(),
+  canvases: z.coerce.number().int().positive().optional(),
   partner: z.string().optional(),
 });
 
@@ -321,6 +322,7 @@ async function handleCheckoutSessionCompleted(
       : `+34${parsedCustomer.data.phone}`,
     comment: formatEventComment(bookingKey, parsedMetadata.data.sessionTitle),
     guests: parsedMetadata.data.guests,
+    canvases: parsedMetadata.data.canvases,
     bookingKey,
   });
 
@@ -353,6 +355,7 @@ async function bookPaidEvent({
   phone,
   comment,
   guests,
+  canvases,
   bookingKey,
 }: {
   eventType: (typeof EVENT_TYPE)[keyof typeof EVENT_TYPE];
@@ -362,6 +365,7 @@ async function bookPaidEvent({
   phone: string;
   comment: string;
   guests: number;
+  canvases?: number;
   bookingKey: string;
 }): Promise<{ result: BookEventResult; heldSeatsReleased: boolean }> {
   if (eventType !== EVENT_TYPE.OPEN_SESSION) {
@@ -393,7 +397,7 @@ async function bookPaidEvent({
       datetime,
       email,
       // The group-event calendar lists only this name, so companions go here.
-      name: formatOpenSessionInviteeName(name, guests),
+      name: formatOpenSessionInviteeName(name, guests, canvases),
       phone,
       comment,
     });

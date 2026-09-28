@@ -65,6 +65,7 @@ function checkoutSession(metadata: Record<string, string> = {}) {
       sessionTime: "2026-10-03T11:00:00+02:00",
       sessionTitle: "Open session",
       guests: "2",
+      canvases: "1",
       ...metadata,
     },
     customer_details: {
@@ -118,7 +119,7 @@ describe("stripe-webhook checkout.session.completed", () => {
     );
     expect(mocks.bookEvent).toHaveBeenCalledWith(
       "open_session",
-      expect.objectContaining({ name: "Guest +1" }),
+      expect.objectContaining({ name: "Guest +1, 1 canvas" }),
     );
     expect(mocks.releaseOpenSessionSeats).not.toHaveBeenCalled();
     expect(mocks.blobStore!.peek(PROCESSING_KEY)).toMatchObject({
@@ -284,15 +285,30 @@ describe("stripe-webhook checkout.session.completed", () => {
     });
   });
 
-  it("books a party of 4 as the booker plus 3", async () => {
-    mocks.retrieveSession.mockResolvedValue(checkoutSession({ guests: "4" }));
+  it("books a party of 4 with 2 canvases as the booker plus 3", async () => {
+    mocks.retrieveSession.mockResolvedValue(
+      checkoutSession({ guests: "4", canvases: "2" }),
+    );
 
     const response = await deliver();
 
     expect(response.status).toBe(200);
     expect(mocks.bookEvent).toHaveBeenCalledWith(
       "open_session",
-      expect.objectContaining({ name: "Guest +3" }),
+      expect.objectContaining({ name: "Guest +3, 2 canvases" }),
+    );
+  });
+
+  it("books without a canvas count when the checkout has none", async () => {
+    const session = checkoutSession();
+    delete session.metadata.canvases;
+    mocks.retrieveSession.mockResolvedValue(session);
+
+    await deliver();
+
+    expect(mocks.bookEvent).toHaveBeenCalledWith(
+      "open_session",
+      expect.objectContaining({ name: "Guest +1" }),
     );
   });
 

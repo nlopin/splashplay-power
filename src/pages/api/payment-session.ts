@@ -7,6 +7,7 @@ import {
   cartFromTicketAndGuests,
   isOpenSessionTicket,
   isValidOpenSessionCart,
+  openSessionCanvases,
   openSessionPeople,
 } from "@/services/catalog/openSessionPricing";
 import { getSpotsLeft } from "@/services/availability/occupancy";
@@ -27,6 +28,7 @@ export const POST: APIRoute = async ({ request }) => {
     parseResult.data;
   const { openTicket, openCart: rawCart } = parseResult.data;
   const origin = new URL(request.url).origin;
+  let canvases: number | undefined;
 
   if (eventType === EVENT_TYPE.OPEN_SESSION) {
     const cart =
@@ -47,6 +49,7 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
     amount = getPriceCents(eventType, { guests, openCart: cart });
+    canvases = openSessionCanvases(cart);
     const remaining = await getSpotsLeft(datetime);
     if (remaining < guests) {
       return new Response(JSON.stringify({ error: "slot_full" }), {
@@ -59,6 +62,7 @@ export const POST: APIRoute = async ({ request }) => {
     amount,
     productName,
     guests,
+    canvases,
     datetime,
     lang,
     eventType,

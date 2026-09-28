@@ -8,14 +8,23 @@ export function formatEventComment(
   return `${sessionTitle}\n${TRANSACTION_TITLE}${transactionId}`;
 }
 
-/** Companions besides the booker. One person stays just the name. */
+/**
+ * What the group-event calendar can show: companions besides the booker,
+ * then how many canvases they booked. One person has no "+0".
+ */
 export function formatOpenSessionInviteeName(
   name: string,
   guests: number,
+  canvases?: number,
 ): string {
   const companions = guests - 1;
-  if (!Number.isInteger(companions) || companions < 1) return name;
-  return `${name} +${companions}`;
+  const withCompanions =
+    Number.isInteger(companions) && companions >= 1
+      ? `${name} +${companions}`
+      : name;
+  if (!Number.isInteger(canvases) || (canvases ?? 0) < 1) return withCompanions;
+  const label = canvases === 1 ? "canvas" : "canvases";
+  return `${withCompanions}, ${canvases} ${label}`;
 }
 
 export function getTransactionIdFromEventComment(eventComment: string): string {

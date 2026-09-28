@@ -24,6 +24,12 @@ export const OPEN_SESSION_GUESTS: Record<OpenSessionTicket, number> = {
   pair_two: 2,
 };
 
+export const OPEN_SESSION_CANVASES: Record<OpenSessionTicket, number> = {
+  solo: 1,
+  pair_shared: 1,
+  pair_two: 2,
+};
+
 export function emptyOpenSessionCart(): OpenSessionCart {
   return { solo: 0, pair_shared: 0, pair_two: 0 };
 }
@@ -31,6 +37,13 @@ export function emptyOpenSessionCart(): OpenSessionCart {
 export function openSessionPeople(cart: OpenSessionCart): number {
   return OPEN_SESSION_TICKETS.reduce(
     (sum, ticket) => sum + cart[ticket] * OPEN_SESSION_GUESTS[ticket],
+    0,
+  );
+}
+
+export function openSessionCanvases(cart: OpenSessionCart): number {
+  return OPEN_SESSION_TICKETS.reduce(
+    (sum, ticket) => sum + cart[ticket] * OPEN_SESSION_CANVASES[ticket],
     0,
   );
 }

@@ -58,6 +58,14 @@ describe("formatOpenSessionInviteeName", () => {
     expect(formatOpenSessionInviteeName("Ada", 2)).toBe("Ada +1");
     expect(formatOpenSessionInviteeName("Ada", 4)).toBe("Ada +3");
   });
+
+  it("adds the canvas count when it is known", () => {
+    expect(formatOpenSessionInviteeName("Ada", 1, 1)).toBe("Ada, 1 canvas");
+    expect(formatOpenSessionInviteeName("Ada", 2, 1)).toBe("Ada +1, 1 canvas");
+    expect(formatOpenSessionInviteeName("Ada", 2, 2)).toBe(
+      "Ada +1, 2 canvases",
+    );
+  });
 });
 
 describe("getTransactionIdFromEventComment", () => {

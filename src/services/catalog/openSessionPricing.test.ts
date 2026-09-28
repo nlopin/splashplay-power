@@ -6,10 +6,12 @@ import {
   isValidOpenSessionCart,
   isValidOpenSessionPurchase,
   maxOpenSessionQuantity,
+  OPEN_SESSION_CANVASES,
   OPEN_SESSION_CAPACITY,
   OPEN_SESSION_GUESTS,
   OPEN_SESSION_PRICE,
   openSessionAmountCents,
+  openSessionCanvases,
   openSessionPeople,
 } from "./openSessionPricing";
 
@@ -27,6 +29,19 @@ describe("open session tickets", () => {
   it("two canvases is 62€ for 2 people", () => {
     expect(OPEN_SESSION_PRICE.pair_two).toBe(6200);
     expect(OPEN_SESSION_GUESTS.pair_two).toBe(2);
+  });
+
+  it("counts one canvas for a shared couple ticket and two for separate canvases", () => {
+    expect(OPEN_SESSION_CANVASES).toEqual({ solo: 1, pair_shared: 1, pair_two: 2 });
+    expect(
+      openSessionCanvases({ solo: 0, pair_shared: 1, pair_two: 0 }),
+    ).toBe(1);
+    expect(openSessionCanvases({ solo: 0, pair_shared: 0, pair_two: 1 })).toBe(
+      2,
+    );
+    expect(openSessionCanvases({ solo: 1, pair_shared: 1, pair_two: 1 })).toBe(
+      4,
+    );
   });
 
   it("session holds 6 people", () => {

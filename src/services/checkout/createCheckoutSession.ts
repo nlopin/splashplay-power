@@ -12,6 +12,7 @@ export type CheckoutSessionInput = {
   amount: number;
   productName: string;
   guests: number;
+  canvases?: number;
   datetime: string;
   lang: Language;
   eventType: EventType;
@@ -50,6 +51,7 @@ function baseSessionParams(
       sessionTime: input.datetime,
       sessionTitle: input.productName,
       guests: String(input.guests),
+      ...(input.canvases != null ? { canvases: String(input.canvases) } : {}),
       // Omitted entirely (not sent as null) when there's no partner — the MCP
       // checkout tool never has one, and most website bookings don't either.
       ...(partner ? { partner } : {}),
