@@ -1,11 +1,17 @@
-import { OPEN_WEEKLY_SLOTS } from "@/constants.server";
+import {
+  OPEN_SESSION_EXTRA_SLOTS,
+  OPEN_WEEKLY_SLOTS,
+} from "@/constants.server";
 import type { ISODatetime } from "@/types";
 import { getOccupancyCounts } from "./occupancy";
 import { applyOccupancyToSlots } from "./occupancyLogic";
 import { filterToSchedule, generateBookedSlots } from "./schedule";
 import type { AvailableTime } from "./types";
 
-const OPEN_SCHEDULE_OPTIONS = { remapHolidays: false };
+const OPEN_SCHEDULE_OPTIONS = {
+  remapHolidays: false,
+  extraSlots: OPEN_SESSION_EXTRA_SLOTS,
+};
 
 export async function getOpenSessionAvailability(
   calendlyTimes: ISODatetime[],

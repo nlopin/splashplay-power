@@ -3,7 +3,7 @@ import { HOLIDAYS, WEEKLY_SLOTS } from "@/constants.server";
 import type { ISODatetime } from "@/types";
 import { addDay } from "@/utils/datetime";
 import { formatTime } from "@/utils/formatters";
-import type { AvailableTime } from "./types";
+import type { AvailableTime, Discount } from "./types";
 
 const formatter = new Intl.DateTimeFormat("en-US", {
   timeZone: BUSINESS_TIMEZONE,
@@ -35,11 +35,27 @@ function isHoliday(iso: string): boolean {
 }
 
 type WeeklySchedule = typeof WEEKLY_SLOTS;
+type DatedSlots = Record<string, { time: string; discount?: Discount }[]>;
+
+type ScheduleOptions = {
+  remapHolidays?: boolean;
+  extraSlots?: DatedSlots;
+};
+
+function madridTime(iso: string): { date: string; time: string } {
+  let hour = "";
+  let minute = "";
+  for (const part of formatter.formatToParts(new Date(iso))) {
+    if (part.type === "hour") hour = part.value;
+    else if (part.type === "minute") minute = part.value;
+  }
+  return { date: ymdFormatter.format(new Date(iso)), time: `${hour}:${minute}` };
+}
 
 export function filterToSchedule(
   slots: string[],
   schedule: WeeklySchedule = WEEKLY_SLOTS,
-  { remapHolidays = true }: { remapHolidays?: boolean } = {},
+  { remapHolidays = true, extraSlots = {} }: ScheduleOptions = {},
 ): AvailableTime[] {
   const result: AvailableTime[] = [];
 
@@ -56,9 +72,9 @@ export function filterToSchedule(
 
     const holiday = isHoliday(iso);
     const scheduleDay = remapHolidays && holiday ? "Sun" : dayAbbr;
-    const match = schedule[scheduleDay]?.find(
-      (s) => s.time === `${hour}:${minute}`,
-    );
+    const { date } = madridTime(iso);
+    const daySchedule = extraSlots[date] ?? schedule[scheduleDay];
+    const match = daySchedule?.find((s) => s.time === `${hour}:${minute}`);
     if (match) {
       result.push({
         time: iso,
@@ -91,7 +107,7 @@ export function generateBookedSlots(
   availableISOs: string[],
   days: number,
   schedule: WeeklySchedule = WEEKLY_SLOTS,
-  { remapHolidays = true }: { remapHolidays?: boolean } = {},
+  { remapHolidays = true, extraSlots = {} }: ScheduleOptions = {},
 ): AvailableTime[] {
   const availableMs = new Set(availableISOs.map((s) => new Date(s).getTime()));
   const now = new Date();
@@ -108,7 +124,10 @@ export function generateBookedSlots(
     const scheduleDay = remapHolidays && holiday ? "Sun" : dayAbbr;
     const slots = schedule[scheduleDay] ?? [];
 
-    for (const slot of slots) {
+    const ymd = ymdFormatter.format(utcDay);
+    const daySlots = extraSlots[ymd] ?? slots;
+
+    for (const slot of daySlots) {
       const slotISO = toMadridISODatetime(utcDay, slot.time);
       if (!availableMs.has(new Date(slotISO).getTime()) && new Date(slotISO) > now) {
         result.push({ time: slotISO, booked: true });

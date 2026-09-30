@@ -15,9 +15,17 @@ export const HOLIDAYS = new Set<string>([
 
 export const OPEN_WEEKLY_SLOTS: Record<string, SlotConfig[]> = {
   Mon: [{ time: "18:00" }],
+  Tue: [{ time: "19:45" }],
+  Wed: [{ time: "18:00" }],
   Thu: [{ time: "19:45" }],
-  Sat: [{ time: "14:00" }],
-  Sun: [{ time: "12:00" }],
+  Fri: [{ time: "18:00" }],
+  Sat: [{ time: "16:00" }],
+  Sun: [{ time: "16:00" }],
+};
+
+/** Replaces the weekly open-session times on that Madrid date. */
+export const OPEN_SESSION_EXTRA_SLOTS: Record<string, SlotConfig[]> = {
+  "2026-10-31": [{ time: "14:00" }],
 };
 
 export const WEEKLY_SLOTS: Record<string, SlotConfig[]> = {
