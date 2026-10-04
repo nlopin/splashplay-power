@@ -1,78 +1,56 @@
 import type { APIRoute } from "astro";
 import { createEmbeddedCheckoutSession } from "@/services/checkout/createCheckoutSession";
+import { quoteBooking } from "@/services/checkout/quote";
 import { CreatePaymentSessionPayloadSchema } from "./types";
 import { EVENT_TYPE } from "@/components/booking/types";
-import { getPriceCents } from "@/services/catalog/pricing";
-import {
-  cartFromTicketAndGuests,
-  isOpenSessionTicket,
-  isValidOpenSessionCart,
-  openSessionCanvases,
-  openSessionPeople,
-} from "@/services/catalog/openSessionPricing";
 import { getSpotsLeft } from "@/services/availability/occupancy";
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
-  const body = await request.json();
+  const body = await request.json().catch(() => null);
   const parseResult = CreatePaymentSessionPayloadSchema.safeParse(body);
 
   if (!parseResult.success) {
-    return new Response(JSON.stringify({ error: parseResult.error }), {
-      status: 400,
-    });
+    return jsonResponse({ error: parseResult.error }, 400);
   }
 
-  let { amount, productName, guests, datetime, lang, eventType, partner } =
-    parseResult.data;
-  const { openTicket, openCart: rawCart } = parseResult.data;
-  const origin = new URL(request.url).origin;
-  let canvases: number | undefined;
+  const { selection, datetime, lang, partner } = parseResult.data;
 
-  if (eventType === EVENT_TYPE.OPEN_SESSION) {
-    const cart =
-      rawCart ??
-      (isOpenSessionTicket(openTicket)
-        ? cartFromTicketAndGuests(openTicket, guests)
-        : null);
-    if (!cart || !isValidOpenSessionCart(cart)) {
-      return new Response(
-        JSON.stringify({ error: "open session cart is invalid" }),
-        { status: 400 },
-      );
-    }
-    if (openSessionPeople(cart) !== guests) {
-      return new Response(
-        JSON.stringify({ error: "guests do not match ticket" }),
-        { status: 400 },
-      );
-    }
-    amount = getPriceCents(eventType, { guests, openCart: cart });
-    canvases = openSessionCanvases(cart);
-    const remaining = await getSpotsLeft(datetime);
-    if (remaining < guests) {
-      return new Response(JSON.stringify({ error: "slot_full" }), {
-        status: 409,
-      });
+  const quoted = await quoteBooking({ selection, datetime, lang });
+  if (!quoted.ok) {
+    return jsonResponse(
+      { error: quoted.reason },
+      quoted.reason === "slot_unavailable" ? 409 : 400,
+    );
+  }
+  const { quote } = quoted;
+
+  if (selection.eventType === EVENT_TYPE.OPEN_SESSION) {
+    const remaining = await getSpotsLeft(quote.datetime);
+    if (remaining < quote.guests) {
+      return jsonResponse({ error: "slot_full" }, 409);
     }
   }
 
   const session = await createEmbeddedCheckoutSession({
-    amount,
-    productName,
-    guests,
-    canvases,
-    datetime,
+    amount: quote.amountCents,
+    productName: quote.productName,
+    guests: quote.guests,
+    canvases: quote.canvases,
+    datetime: quote.datetime,
     lang,
-    eventType,
+    eventType: selection.eventType,
     partner,
-    origin,
+    origin: new URL(request.url).origin,
   });
 
-  return new Response(
-    JSON.stringify({
-      clientSecret: session.client_secret,
-    }),
-  );
+  return jsonResponse({ clientSecret: session.client_secret });
 };
+
+function jsonResponse(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}

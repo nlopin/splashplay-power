@@ -5,7 +5,7 @@ import two_big from "@/assets/img/60x90_2individuales.jpg";
 import individual from "@/assets/img/30x40_2individuales.jpg";
 
 import { formatPrice } from "@/utils/price";
-import { useTranslator, usePageLanguage } from "@/components/TranslatorContext";
+import { useTranslator } from "@/components/TranslatorContext";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
 import {
@@ -14,7 +14,6 @@ import {
 } from "./ActivityFormatSelector";
 import {
   COUPLES_PRICE,
-  formatCouplesProductName,
   type CouplesPicture,
 } from "@/services/catalog/couplesPricing";
 
@@ -57,7 +56,6 @@ export function CouplesOptions({
     useState<ActivityFormat>("splash");
   const savedSplashPictureTypeRef = useRef<PictureType>(DEFAULT_SPLASH_PICTURE);
   const t = useTranslator();
-  const lang = usePageLanguage();
 
   const handlePictureTypeChange = (type: PictureType) => {
     setPictureType(type);
@@ -102,12 +100,14 @@ export function CouplesOptions({
         }
         onChange({
           amount: PRICE[typeParam],
-          productName: formatCouplesProductName(
-            typeParam,
-            isSplashOnlyPicture(typeParam) ? "splash" : activityFormat,
-            lang,
-          ),
           guests: 2,
+          selection: {
+            eventType: "couples",
+            picture: typeParam,
+            activityFormat: isSplashOnlyPicture(typeParam)
+              ? "splash"
+              : activityFormat,
+          },
         });
         return;
       }
@@ -115,14 +115,14 @@ export function CouplesOptions({
 
     onChange({
       amount: PRICE[pictureType],
-      productName: formatCouplesProductName(pictureType, activityFormat, lang),
       guests: 2,
+      selection: { eventType: "couples", picture: pictureType, activityFormat },
     });
 
     const url = new URL(window.location.href);
     url.searchParams.set("option", pictureType);
     window.history.replaceState({}, "", url);
-  }, [pictureType, activityFormat, lang]);
+  }, [pictureType, activityFormat]);
 
   const options: Array<{
     value: PictureType;

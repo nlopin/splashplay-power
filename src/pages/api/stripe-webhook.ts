@@ -53,6 +53,7 @@ type StripeWebhookEventData = {
   notificationSent: boolean | undefined;
   partnerKey: string | undefined;
   partnerStored: boolean | undefined;
+  priceCheck: PriceCheck["status"] | undefined;
   error: string | undefined;
   durationMs: number;
 };
@@ -64,6 +65,8 @@ const metadataSchema = z.object({
   guests: z.coerce.number().int().positive(),
   canvases: z.coerce.number().int().positive().optional(),
   partner: z.string().optional(),
+  // Absent on sessions created before server-side quoting existed.
+  quotedAmount: z.coerce.number().int().nonnegative().optional(),
 });
 
 const customerSchema = z.object({
@@ -89,6 +92,7 @@ export const POST: APIRoute = async ({ request }) => {
     notificationSent: undefined,
     partnerKey: undefined,
     partnerStored: undefined,
+    priceCheck: undefined,
     error: undefined,
     durationMs: 0,
   };
@@ -285,7 +289,15 @@ async function handleCheckoutSessionCompleted(
     return "completed";
   }
 
+  // Prices are set server-side, so a mismatch means the session didn't come
+  // from our checkout code. Flag it loudly; the customer still gets booked.
+  const priceCheck = checkQuotedPrice(
+    session.amount_subtotal,
+    parsedMetadata.data.quotedAmount,
+  );
+
   updateEvent(webhookEvent, {
+    priceCheck: priceCheck.status,
     eventType: parsedMetadata.data.eventType,
     sessionTitle: parsedMetadata.data.sessionTitle,
     sessionTime: parsedMetadata.data.sessionTime,
@@ -338,6 +350,7 @@ async function handleCheckoutSessionCompleted(
       parsedMetadata.data.sessionTitle,
       paymentIntentId,
       calendlyResult,
+      priceCheck,
     ),
   });
 
@@ -485,11 +498,33 @@ const PAYMENT_SUCCESS_STICKERS: Readonly<Array<string>> = [
   "CAACAgIAAxkBAAMYaUBWmNaUqt9hQqksac_SF3HKRUcAAl0BAAI9DegEKNM9H_ZQfmU2BA",
 ];
 
+export type PriceCheck =
+  | { status: "ok" }
+  | { status: "mismatch"; chargedSubtotal: number; quoted: number }
+  | { status: "unverified" };
+
+/**
+ * Compares the session's subtotal (line items before promo codes, so gift
+ * cards don't trip it) with the amount our server quoted at creation.
+ */
+export function checkQuotedPrice(
+  chargedSubtotal: number | null | undefined,
+  quoted: number | undefined,
+): PriceCheck {
+  if (quoted === undefined || chargedSubtotal == null) {
+    return { status: "unverified" };
+  }
+  return chargedSubtotal === quoted
+    ? { status: "ok" }
+    : { status: "mismatch", chargedSubtotal, quoted };
+}
+
 async function sendPaymentNotification(
   amount: number,
   sessionTitle: string,
   transactionId: string,
   calendlyResult: BookEventResult,
+  priceCheck: PriceCheck,
 ): Promise<boolean> {
   try {
     await sendTelegramSticker(
@@ -503,6 +538,7 @@ async function sendPaymentNotification(
         sessionTitle,
         transactionId,
         calendlyResult,
+        priceCheck,
       ),
     );
     return true;
@@ -516,6 +552,7 @@ export function formatPaymentSuccessMessage(
   sessionTitle: string,
   transactionId: string,
   calendlyResult: BookEventResult,
+  priceCheck: PriceCheck = { status: "ok" },
 ): string {
   const formattedAmount = (amount / 100).toFixed(2);
   const isFullyCovered = amount === 0;
@@ -544,6 +581,12 @@ export function formatPaymentSuccessMessage(
     if (calendlyResult.error) {
       message += `\nReason: ${escapeMarkdown(calendlyResult.error)}`;
     }
+  }
+
+  if (priceCheck.status === "mismatch") {
+    message += `\n⚠️ *Price check failed:* items total ${(priceCheck.chargedSubtotal / 100).toFixed(2)} € but we quoted ${(priceCheck.quoted / 100).toFixed(2)} €. Check before the session.`;
+  } else if (priceCheck.status === "unverified") {
+    message += `\n⚠️ Price not verified: this checkout has no server quote.`;
   }
 
   return message;

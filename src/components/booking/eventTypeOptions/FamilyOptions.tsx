@@ -15,7 +15,6 @@ import {
   getFamilyCanvasLimits,
   clampFamilyCanvases,
   calculateFamilyPrice,
-  formatFamilyProductName,
   type CanvasType,
 } from "@/services/catalog/familyPricing";
 
@@ -54,18 +53,17 @@ export function FamilyOptions({
       totalGuests,
       formData.canvasType,
     );
-    const productName = formatFamilyProductName(
-      formData.adults,
-      formData.kids,
-      formData.canvases,
-      formData.canvasType,
-      formData.activityFormat,
-    );
-
     onChangeRef.current({
       amount: totalAmount,
-      productName,
       guests: totalGuests,
+      selection: {
+        eventType: "family",
+        adults: formData.adults,
+        kids: formData.kids,
+        canvases: formData.canvases,
+        canvasType: formData.canvasType,
+        activityFormat: formData.activityFormat,
+      },
     });
   }, [formData]);
 

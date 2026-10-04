@@ -1,6 +1,6 @@
 import type { ISODatetime } from "@/types";
 import type { AvailableTime } from "@/services/availability/types";
-import type { OpenSessionCart, OpenSessionTicket } from "@/services/catalog/openSessionPricing";
+import type { BookingSelection } from "@/services/catalog/bookingSelection";
 
 export type SelectedTimeSlot = ISODatetime;
 
@@ -20,11 +20,9 @@ export function isEventType(value: string): value is EventType {
 
 export type Availability = AvailableTime[];
 
-// todo: review if needed
+// `amount` is for display only; the server prices `selection` itself.
 export interface PricingData {
   amount: number;
-  productName: string;
   guests: number;
-  openTicket?: OpenSessionTicket;
-  openCart?: OpenSessionCart;
+  selection: BookingSelection;
 }

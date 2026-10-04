@@ -14,7 +14,6 @@ import {
   getFriendsCanvasLimits,
   clampFriendsCanvases,
   calculateFriendsPrice,
-  formatFriendsProductName,
   type CanvasType,
 } from "@/services/catalog/friendsPricing";
 
@@ -72,17 +71,16 @@ export function FriendsOptions({
       formData.guests,
       formData.canvasType,
     );
-    const productName = formatFriendsProductName(
-      formData.guests,
-      formData.canvases,
-      formData.canvasType,
-      formData.activityFormat,
-    );
-
     onChangeRef.current({
       amount: totalAmount,
-      productName,
       guests: formData.guests,
+      selection: {
+        eventType: "friends",
+        guests: formData.guests,
+        canvases: formData.canvases,
+        canvasType: formData.canvasType,
+        activityFormat: formData.activityFormat,
+      },
     });
 
     try {

@@ -2,17 +2,6 @@ import { EVENT_TYPE, type EventType } from "@/components/booking/types";
 import { formatVisitDateTime } from "@/utils/formatters";
 import { getPageTranslations, type Language } from "@/utils/i18n";
 
-// BookingForm.tsx indexes its loosely-typed `translations` prop with this;
-// getProductTitle below is the typed equivalent (indexing getPageTranslations()
-// with a computed key needs a cast, so it's a switch there instead).
-export const ProductNameKeyByEventType: Record<EventType, string> = {
-  couples: "creative_date",
-  family: "family_session",
-  friends: "friends_session",
-  individual: "individual_session",
-  open_session: "open_session",
-};
-
 export function getProductTitle(eventType: EventType, lang: Language): string {
   const book = getPageTranslations(lang, "book");
   switch (eventType) {

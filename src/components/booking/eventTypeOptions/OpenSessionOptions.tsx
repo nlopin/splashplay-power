@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-import { usePageLanguage, useTranslator } from "@/components/TranslatorContext";
+import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
 import {
   clampOpenSessionCart,
   emptyOpenSessionCart,
-  formatOpenSessionProductName,
   isOpenSessionTicket,
   maxOpenSessionQuantity,
   OPEN_SESSION_GUESTS,
@@ -63,7 +62,6 @@ export function OpenSessionOptions({
   spotsLeft,
 }: EventTypeOptionsProps) {
   const t = useTranslator();
-  const lang = usePageLanguage();
   const [cart, setCart] = useState<OpenSessionCart>(DEFAULT_CART);
   const didHydrate = useRef(false);
 
@@ -88,13 +86,12 @@ export function OpenSessionOptions({
 
     onChangeRef.current({
       amount: openSessionAmountCents(cart),
-      productName: formatOpenSessionProductName(cart, lang),
       guests: openSessionPeople(cart),
-      openCart: cart,
+      selection: { eventType: "open_session", openCart: cart },
     });
 
     writeCartToUrl(cart);
-  }, [cart, lang, spotsLeft]);
+  }, [cart, spotsLeft]);
 
   const setQuantity = (ticket: OpenSessionTicket, quantity: number) => {
     setCart((current) => {

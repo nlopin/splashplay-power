@@ -7,21 +7,9 @@ import { EVENT_TYPE } from "@/components/booking/types";
 import { getAvailability } from "@/services/availability";
 import { getExperiences, getGuestBounds } from "@/services/catalog/experiences";
 import { getFaq, getLocationInfo } from "@/services/catalog/faq";
-import { getPriceCents } from "@/services/catalog/pricing";
-import { formatCouplesProductName } from "@/services/catalog/couplesPricing";
-import {
-  formatFamilyProductName,
-  clampFamilyCanvases,
-} from "@/services/catalog/familyPricing";
-import {
-  formatFriendsProductName,
-  clampFriendsCanvases,
-} from "@/services/catalog/friendsPricing";
-import {
-  formatBookingProductName,
-  getProductTitle,
-} from "@/services/catalog/productName";
+import type { BookingSelection } from "@/services/catalog/bookingSelection";
 import { createHostedCheckoutSession } from "@/services/checkout/createCheckoutSession";
+import { quoteBooking } from "@/services/checkout/quote";
 import { getCheckoutSessionStatus } from "@/services/checkout/status";
 import { checkRateLimit } from "@/services/mcp/rateLimit";
 import { languages, type Language } from "@/utils/i18n";
@@ -149,7 +137,7 @@ function createMcpServer(origin: string): McpServer {
     {
       title: "Create booking checkout",
       description:
-        "Create a Stripe-hosted checkout session for a booking and return its URL. The price is computed server-side from the catalog — never pass or trust a price from elsewhere. Send the checkout URL to the user to complete payment; call get_booking_status afterwards to confirm.",
+        "Create a Stripe-hosted checkout session for a booking and return its URL. The price is computed server-side from the catalog, including the slot's discount (discountPercent from check_availability) — never pass or trust a price from elsewhere. The datetime must be an open slot returned by check_availability. Send the checkout URL to the user to complete payment; call get_booking_status afterwards to confirm.",
       inputSchema: {
         eventType: EventTypeSchema,
         datetime: z.iso
@@ -199,15 +187,18 @@ function createMcpServer(origin: string): McpServer {
       const resolvedLang = lang ?? DEFAULT_LOCALE;
       const resolvedActivityFormat = activityFormat ?? "splash";
       const resolvedCanvasType = canvasType ?? "standard";
-      const resolvedPicture = picture ?? "one_small";
+      // Big canvas defaults to one shared canvas; standard to one per guest.
+      const resolvedCanvases =
+        canvases ?? (resolvedCanvasType === "big" ? 1 : guests);
 
-      const amount = getPriceCents(eventType, { guests, canvases, canvasType, picture });
-
-      // e.g. "2 guests, 2 canvases, splash" — the per-event-type options fragment.
-      let eventOptions: string;
+      let selection: BookingSelection;
       switch (eventType) {
         case EVENT_TYPE.COUPLES:
-          eventOptions = formatCouplesProductName(resolvedPicture, resolvedActivityFormat, resolvedLang);
+          selection = {
+            eventType,
+            picture: picture ?? "one_small",
+            activityFormat: resolvedActivityFormat,
+          };
           break;
         case EVENT_TYPE.FAMILY: {
           const split = resolveFamilySplit(guests, adults, kids);
@@ -216,47 +207,44 @@ function createMcpServer(origin: string): McpServer {
               `adults (${adults ?? "?"}) and kids (${kids ?? "?"}) must add up to guests (${guests}), with neither negative.`,
             );
           }
-          eventOptions = formatFamilyProductName(
-            split.adults,
-            split.kids,
-            // Clamped so an out-of-range `canvases` shows what's actually charged.
-            clampFamilyCanvases(
-              canvases ?? (resolvedCanvasType === "big" ? 1 : guests),
-              guests,
-              resolvedCanvasType,
-            ),
-            resolvedCanvasType,
-            resolvedActivityFormat,
-          );
+          selection = {
+            eventType,
+            adults: split.adults,
+            kids: split.kids,
+            canvases: resolvedCanvases,
+            canvasType: resolvedCanvasType,
+            activityFormat: resolvedActivityFormat,
+          };
           break;
         }
         case EVENT_TYPE.FRIENDS:
-          eventOptions = formatFriendsProductName(
+          selection = {
+            eventType,
             guests,
-            clampFriendsCanvases(
-              canvases ?? (resolvedCanvasType === "big" ? 1 : guests),
-              guests,
-              resolvedCanvasType,
-            ),
-            resolvedCanvasType,
-            resolvedActivityFormat,
-          );
+            canvases: resolvedCanvases,
+            canvasType: resolvedCanvasType,
+            activityFormat: resolvedActivityFormat,
+          };
           break;
       }
 
-      // "{title}, {date} {time} ({eventOptions})" — same shape as BookingForm.tsx.
-      const productName = formatBookingProductName(
-        getProductTitle(eventType, resolvedLang),
-        datetime,
-        eventOptions,
-        resolvedLang,
-      );
+      // Same pricing path as the on-site checkout: catalog price, the slot's
+      // own discount, and a check that the slot is actually bookable.
+      const quoted = await quoteBooking({ selection, datetime, lang: resolvedLang });
+      if (!quoted.ok) {
+        return errorResult(
+          quoted.reason === "slot_unavailable"
+            ? `${datetime} is not an open ${eventType} slot. Call check_availability and pick one of the returned times.`
+            : quoted.error,
+        );
+      }
+      const { quote } = quoted;
 
       const session = await createHostedCheckoutSession({
-        amount,
-        productName,
-        guests,
-        datetime,
+        amount: quote.amountCents,
+        productName: quote.productName,
+        guests: quote.guests,
+        datetime: quote.datetime,
         lang: resolvedLang,
         eventType,
         origin,
@@ -265,7 +253,8 @@ function createMcpServer(origin: string): McpServer {
       return jsonResult({
         checkoutUrl: session.url,
         sessionId: session.id,
-        amountCents: amount,
+        amountCents: quote.amountCents,
+        discountPercent: quote.discountPercent,
         currency: "EUR",
       });
     },

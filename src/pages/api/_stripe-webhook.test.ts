@@ -50,7 +50,9 @@ vi.mock("@/services/partners", () => ({
   storePartnerBooking: vi.fn(async () => true),
 }));
 
-const { POST, formatPaymentSuccessMessage } = await import("./stripe-webhook");
+const { POST, formatPaymentSuccessMessage, checkQuotedPrice } = await import(
+  "./stripe-webhook"
+);
 
 const SESSION_ID = "cs_test_1";
 const PROCESSING_KEY = `checkout-session/${SESSION_ID}`;
@@ -327,6 +329,57 @@ describe("stripe-webhook checkout.session.completed", () => {
       expect.objectContaining({ name: "Guest" }),
     );
   });
+
+  it("books but flags a session whose items don't match our quote", async () => {
+    mocks.retrieveSession.mockResolvedValue({
+      ...checkoutSession({ eventType: "couples", quotedAmount: "12400" }),
+      amount_subtotal: 50,
+      amount_total: 50,
+    });
+
+    const response = await deliver();
+
+    expect(response.status).toBe(200);
+    expect(mocks.bookEvent).toHaveBeenCalledWith(
+      "couples",
+      expect.anything(),
+    );
+    expect(mocks.sendTelegramMessage).toHaveBeenCalledWith(
+      expect.stringContaining("Price check failed"),
+    );
+  });
+
+  it("doesn't flag a session whose items match our quote", async () => {
+    mocks.retrieveSession.mockResolvedValue({
+      ...checkoutSession({ quotedAmount: "9000" }),
+      amount_subtotal: 9000,
+    });
+
+    await deliver();
+
+    expect(mocks.sendTelegramMessage).toHaveBeenCalledWith(
+      expect.not.stringContaining("⚠️"),
+    );
+  });
+});
+
+describe("checkQuotedPrice", () => {
+  it("is ok when the subtotal equals the quote", () => {
+    expect(checkQuotedPrice(12400, 12400)).toEqual({ status: "ok" });
+  });
+
+  it("reports a mismatch", () => {
+    expect(checkQuotedPrice(50, 12400)).toEqual({
+      status: "mismatch",
+      chargedSubtotal: 50,
+      quoted: 12400,
+    });
+  });
+
+  it("is unverified without a quote or a subtotal", () => {
+    expect(checkQuotedPrice(9000, undefined).status).toBe("unverified");
+    expect(checkQuotedPrice(null, 9000).status).toBe("unverified");
+  });
 });
 
 describe("formatPaymentSuccessMessage", () => {
@@ -349,5 +402,31 @@ describe("formatPaymentSuccessMessage", () => {
     expect(message).toContain("no payment required");
     expect(message).not.toContain("Transaction ID");
     expect(message).not.toContain("Payment Received");
+  });
+
+  it("warns when the price check failed", () => {
+    const message = formatPaymentSuccessMessage(
+      50,
+      "Cita creativa",
+      "pi_1",
+      { success: true },
+      { status: "mismatch", chargedSubtotal: 50, quoted: 12400 },
+    );
+
+    expect(message).toContain("Price check failed");
+    expect(message).toContain("0.50 €");
+    expect(message).toContain("124.00 €");
+  });
+
+  it("warns when the price couldn't be verified", () => {
+    const message = formatPaymentSuccessMessage(
+      9000,
+      "Cita creativa",
+      "pi_1",
+      { success: true },
+      { status: "unverified" },
+    );
+
+    expect(message).toContain("Price not verified");
   });
 });

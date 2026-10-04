@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
@@ -13,14 +13,17 @@ export function IndividualOptions({
 }: EventTypeOptionsProps) {
   const t = useTranslator();
 
-  // Set the fixed price on mount and notify parent
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
+  // Fixed price: notify the parent once, on mount
   useEffect(() => {
-    onChange({
+    onChangeRef.current({
       amount: INDIVIDUAL_PRICE,
-      productName: t("individual_session"),
       guests: 1,
+      selection: { eventType: "individual" },
     });
-  }, [onChange, t]);
+  }, []);
 
   const discountedPrice = discount
     ? Math.round(INDIVIDUAL_PRICE * (1 - discount / 100))

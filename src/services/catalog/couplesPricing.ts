@@ -1,7 +1,14 @@
 import type { ActivityFormat } from "@/components/booking/eventTypeOptions/ActivityFormatSelector";
 import { getPageTranslations } from "@/utils/i18n";
 
-export type CouplesPicture = "one_small" | "one_big" | "two_big" | "individual";
+export const COUPLES_PICTURES = [
+  "one_small",
+  "one_big",
+  "two_big",
+  "individual",
+] as const;
+
+export type CouplesPicture = (typeof COUPLES_PICTURES)[number];
 
 export const COUPLES_PRICE: Record<CouplesPicture, number> = {
   one_small: 7500,

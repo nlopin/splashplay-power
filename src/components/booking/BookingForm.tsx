@@ -2,17 +2,15 @@ import { useState, useRef, useEffect } from "react";
 
 import { TranslatorProvider } from "@/components/TranslatorContext";
 import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
-import { formatBookingProductName, getBookingTitle } from "@/services/catalog/productName";
+import type { BookingSelection } from "@/services/catalog/bookingSelection";
 import { findOpenSlotOnDate } from "@/services/catalog/themedOpenSessions";
 import { isServer } from "@/utils/environment";
-import { getCurrentLanguage } from "@/utils/i18n";
 import { trackEvent, AnalyticsEvents } from "@/services/analytics";
 import type { ISODatetime } from "@/types";
 
 import { PaymentStep } from "./PaymentStep";
 import { ScheduleStep, type ScheduleStepProps } from "./ScheduleStep";
 import type { SelectedTimeSlot, EventType, Availability } from "./types";
-import type { OpenSessionCart } from "@/services/catalog/openSessionPricing";
 
 type Step = "schedule" | "payment";
 
@@ -49,13 +47,9 @@ export default function BookingForm({
   const [selectedTimeSlot, setSelectedTimeSlot] =
     useState<SelectedTimeSlot | null>(null);
   const [currentAmount, setCurrentAmount] = useState<number | null>(null);
-  const [currentProductName, setCurrentProductName] = useState<string | null>(
-    null,
-  );
   const [currentGuests, setCurrentGuests] = useState<number | null>(null);
-  const [currentOpenCart, setCurrentOpenCart] = useState<
-    OpenSessionCart | undefined
-  >(undefined);
+  const [currentSelection, setCurrentSelection] =
+    useState<BookingSelection | null>(null);
 
   // Payment state
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -137,19 +131,11 @@ export default function BookingForm({
   }, [currentStep, selectedTimeSlot]);
 
   const createSession = async ({
-    amount,
-    formattedProductName,
-    eventType,
+    selection,
     datetime,
-    guests,
-    openCart,
   }: {
-    amount: number;
-    formattedProductName: string;
-    eventType: EventType;
+    selection: BookingSelection;
     datetime: ISODatetime;
-    guests: number;
-    openCart?: OpenSessionCart;
   }): Promise<boolean> => {
     setError(null);
     setBookingError(null);
@@ -164,15 +150,12 @@ export default function BookingForm({
     try {
       const res = await fetch("/api/payment-session", {
         method: "POST",
+        // Price, discount and product name are decided by the server.
         body: JSON.stringify({
-          amount,
-          productName: formattedProductName,
-          eventType,
+          selection,
           datetime,
           lang,
           partner: partnerKey,
-          guests,
-          ...(openCart ? { openCart } : {}),
         }),
         signal: controller.signal,
       });
@@ -210,14 +193,12 @@ export default function BookingForm({
 
   const handlePriceChange: ScheduleStepProps["onPriceChange"] = ({
     amount,
-    productName,
     guests,
-    openCart,
+    selection,
   }) => {
     setCurrentAmount(amount);
-    setCurrentProductName(productName);
     setCurrentGuests(guests);
-    setCurrentOpenCart(openCart);
+    setCurrentSelection(selection);
   };
 
   const handleTimeSlotSelect: ScheduleStepProps["onTimeSlotSelect"] = (
@@ -233,40 +214,13 @@ export default function BookingForm({
   };
 
   const handlePayToBook: ScheduleStepProps["onPayToBook"] = async () => {
-    if (
-      !selectedTimeSlot ||
-      !currentAmount ||
-      !currentProductName ||
-      !currentGuests
-    )
-      return;
-
-    const themeSlug = availability.find(
-      (slot) => slot.time === selectedTimeSlot,
-    )?.themeSlug;
-    const formattedProductName = formatBookingProductName(
-      getBookingTitle(eventType, getCurrentLanguage(lang), themeSlug),
-      selectedTimeSlot,
-      currentProductName,
-      lang,
-    );
-
-    const slotDiscount = availability.find(
-      (a) => a.time === selectedTimeSlot,
-    )?.discount;
-    const amount = slotDiscount
-      ? Math.round(currentAmount * (1 - slotDiscount / 100))
-      : currentAmount;
+    if (!selectedTimeSlot || !currentSelection) return;
 
     setIsLoading(true);
     try {
       const ok = await createSession({
-        amount,
-        formattedProductName,
-        eventType,
+        selection: currentSelection,
         datetime: selectedTimeSlot,
-        guests: currentGuests,
-        openCart: currentOpenCart,
       });
       if (ok) {
         setCurrentStep("payment");
