@@ -15,18 +15,18 @@ describe("open session extra slots", () => {
     vi.useRealTimers();
   });
 
-  it("uses only 14:00 on 31 Oct 2026, not the usual Saturday 16:00", () => {
-    const halloween = "2026-10-31T13:00:00.000Z";
-    const usualSaturdayTime = "2026-10-31T15:00:00.000Z";
+  it("keeps 14:00 and 16:00 on 31 Oct 2026", () => {
+    const at14 = "2026-10-31T13:00:00.000Z";
+    const at16 = "2026-10-31T15:00:00.000Z";
     const otherSaturday = "2026-10-24T12:00:00.000Z";
 
     const result = filterToSchedule(
-      [halloween, usualSaturdayTime, otherSaturday],
+      [at14, at16, otherSaturday],
       OPEN_WEEKLY_SLOTS,
       OPTIONS,
     );
 
-    expect(result.map((slot) => slot.time)).toEqual([halloween]);
+    expect(result.map((slot) => slot.time)).toEqual([at14, at16]);
   });
 
   it("shows the extra session as booked when Calendly has no such time", () => {
@@ -34,15 +34,14 @@ describe("open session extra slots", () => {
     vi.setSystemTime(new Date("2026-10-01T10:00:00.000Z"));
 
     const result = generateBookedSlots([], 40, OPEN_WEEKLY_SLOTS, OPTIONS);
-    const halloween = result.find((slot) =>
+    const at14 = result.find((slot) =>
       slot.time.startsWith("2026-10-31T13:00:00"),
     );
-
-    const usualSaturday = result.find((slot) =>
+    const at16 = result.find((slot) =>
       slot.time.startsWith("2026-10-31T15:00:00"),
     );
 
-    expect(halloween).toMatchObject({ booked: true });
-    expect(usualSaturday).toBeUndefined();
+    expect(at14).toMatchObject({ booked: true });
+    expect(at16).toMatchObject({ booked: true });
   });
 });
