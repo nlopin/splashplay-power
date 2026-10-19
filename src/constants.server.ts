@@ -25,6 +25,7 @@ export const OPEN_WEEKLY_SLOTS: Record<string, SlotConfig[]> = {
 
 /** Replaces the weekly open-session times on that Madrid date. */
 export const OPEN_SESSION_EXTRA_SLOTS: Record<string, SlotConfig[]> = {
+  "2026-10-23": [{ time: "18:00" }, { time: "19:45" }],
   "2026-10-31": [{ time: "14:00" }, { time: "16:00" }],
 };
 

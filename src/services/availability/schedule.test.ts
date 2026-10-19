@@ -29,6 +29,20 @@ describe("open session extra slots", () => {
     expect(result.map((slot) => slot.time)).toEqual([at14, at16]);
   });
 
+  it("keeps the usual 18:00 and adds 19:45 on 23 Oct 2026", () => {
+    const at18 = "2026-10-23T16:00:00.000Z";
+    const at1945 = "2026-10-23T17:45:00.000Z";
+    const otherFriday = "2026-10-16T17:45:00.000Z";
+
+    const result = filterToSchedule(
+      [at18, at1945, otherFriday],
+      OPEN_WEEKLY_SLOTS,
+      OPTIONS,
+    );
+
+    expect(result.map((slot) => slot.time)).toEqual([at18, at1945]);
+  });
+
   it("shows the extra session as booked when Calendly has no such time", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-10-01T10:00:00.000Z"));
