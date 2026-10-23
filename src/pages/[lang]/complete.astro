@@ -23,6 +23,8 @@ const stripe = new Stripe(STRIPE_SECRET_KEY, {
 let status = "loading";
 let sessionTitle = "";
 let sessionTime = "";
+let amountPaid = 0;
+let currency = "EUR";
 
 try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
@@ -31,6 +33,8 @@ try {
         status = "success";
         sessionTitle = session.metadata?.sessionTitle || "";
         sessionTime = session.metadata?.sessionTime || "";
+        amountPaid = (session.amount_total ?? 0) / 100;
+        currency = (session.currency ?? "eur").toUpperCase();
     } else if (session.status === "open") {
         status = "processing";
     } else {
@@ -145,8 +149,22 @@ try {
 
 {status === "success" && (
     <script
-        define:vars={{ eventName: sessionTitle, eventStart: sessionTime }}
+        define:vars={{
+            eventName: sessionTitle,
+            eventStart: sessionTime,
+            transactionId: sessionId,
+            amountPaid,
+            currency,
+        }}
     >
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: "booking_complete",
+            booking_value: amountPaid,
+            booking_currency: currency,
+            booking_transaction_id: transactionId,
+        });
+
         if (window.amplitude) {
             window.amplitude.track("BookingScheduled", {
                 eventName,
