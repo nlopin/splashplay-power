@@ -3,6 +3,7 @@ import type { EventType } from "./types";
 
 interface EventTypeSelectorProps {
   currentEventType: EventType;
+  themeSlug?: string;
 }
 
 const EVENT_TYPE_OPTIONS: ReadonlyArray<{
@@ -33,6 +34,7 @@ const EVENT_TYPE_OPTIONS: ReadonlyArray<{
 
 export function EventTypeSelector({
   currentEventType,
+  themeSlug,
 }: EventTypeSelectorProps) {
   const t = useTranslator();
 
@@ -58,12 +60,15 @@ export function EventTypeSelector({
   };
 
   if (currentEventType === "open_session") {
+    const title = themeSlug ? t(`theme_${themeSlug}`) : t("open_session");
+    const blurb = themeSlug ? t(`theme_${themeSlug}_blurb`) : null;
     return (
       <div>
         <div className="event-type-trigger event-type-static">
-          <h1 className="current-selection">{t("open_session")}</h1>
+          <h1 className="current-selection">{title}</h1>
         </div>
         <p>⏰ {formatDuration(1.5)}</p>
+        {blurb && <p className="theme-note">{blurb}</p>}
       </div>
     );
   }

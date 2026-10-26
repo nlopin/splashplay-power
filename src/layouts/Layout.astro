@@ -394,6 +394,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         background-color: #ede5ff;
     }
 
+    .header-cell.themed,
+    .day-card.themed .day-card-header {
+        background-color: var(--orange-tint-bg);
+    }
+
     .slot-cell.popular {
         background-color: #f7f3ff;
     }
@@ -614,6 +619,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     .time-slot-button.selected .discount-badge {
         background-color: rgba(255,255,255,0.25);
+    }
+
+    .time-slot-button.themed {
+        border: 1px solid rgba(255, 107, 53, 0.35);
+    }
+
+    .theme-badge {
+        display: block;
+        font-size: var(--font-xs);
+        font-weight: 700;
+        color: var(--orange);
+        line-height: 1.2;
+        letter-spacing: 0.02em;
+    }
+
+    .time-slot-button.selected .theme-badge {
+        color: inherit;
+    }
+
+    .theme-note {
+        margin: 0.25rem 0 0;
+        color: var(--dark-text);
+        font-size: var(--font-sm);
+        line-height: 1.45;
     }
 
     .spots-left {

@@ -60,7 +60,10 @@ export function ScheduleStep({
         ← {t("back_to_main")}
       </button>
 
-      <EventTypeSelector currentEventType={eventType} />
+      <EventTypeSelector
+        currentEventType={eventType}
+        themeSlug={selectedSlot?.themeSlug}
+      />
 
       {availability.length > 0 ? (
         <AvailabilityCalendar

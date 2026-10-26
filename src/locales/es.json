@@ -158,7 +158,15 @@
       "ticket_pair_label": "Pareja · 2 lienzos",
       "ticket_pair_price": "62€",
       "ticket_pair_desc": "Un lienzo 30×40 cm para cada uno",
-      "cta": "Comprar plaza"
+      "cta": "Comprar plaza",
+      "special_kicker": "Próxima especial",
+      "themes": {
+        "halloween": {
+          "name": "Halloween Splash",
+          "when": "Jueves 29 de octubre, 18:00",
+          "blurb": "Pinta tu monstruo Splash con nuestras técnicas divertidas y colores de Halloween: negro, naranja, morado y verde."
+        }
+      }
     },
     "pricing": {
       "friends": {
@@ -350,6 +358,9 @@
     "event_type_individual_desc": "Exploración creativa y relajación en solitario",
     "open_session": "Splash: sesión abierta",
     "event_type_open_session_desc": "Plaza en un grupo pequeño. Splash, lienzo 30×40 cm.",
+    "theme_halloween": "Halloween Splash",
+    "theme_halloween_badge": "Halloween",
+    "theme_halloween_blurb": "Pinta tu monstruo Splash con nuestras técnicas divertidas y colores de Halloween: negro, naranja, morado y verde.",
     "open_ticket_solo": "1 persona",
     "open_ticket_solo_desc": "Tu lienzo 30×40 cm",
     "open_ticket_shared": "Pareja · 1 lienzo",

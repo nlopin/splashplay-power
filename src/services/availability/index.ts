@@ -1,5 +1,6 @@
 import { EVENT_TYPE, type EventType } from "@/components/booking/types";
 import { fetchAvailability } from "@/services/calendly";
+import { blockedPrivateTimesFromThemedOpenSessions } from "@/services/catalog/themedOpenSessions";
 import { createAndLogEvent } from "@/services/logger";
 import type { ISODatetime } from "@/types";
 import { getCachedAvailability, setCachedAvailability } from "./cache";
@@ -37,10 +38,13 @@ async function toAvailability(
     return getOpenSessionAvailability(times, days);
   }
 
-  const available = filterToSchedule(times);
-  return [...available, ...generateBookedSlots(times, days)].sort((a, b) =>
-    a.time.localeCompare(b.time),
-  );
+  const blockedTimes = blockedPrivateTimesFromThemedOpenSessions();
+  const privateOptions = { blockedTimes };
+  const available = filterToSchedule(times, undefined, privateOptions);
+  return [
+    ...available,
+    ...generateBookedSlots(times, days, undefined, privateOptions),
+  ].sort((a, b) => a.time.localeCompare(b.time));
 }
 
 /**

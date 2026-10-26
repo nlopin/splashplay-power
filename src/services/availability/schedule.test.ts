@@ -3,11 +3,15 @@ import {
   OPEN_SESSION_EXTRA_SLOTS,
   OPEN_WEEKLY_SLOTS,
 } from "@/constants.server";
+import { extraSlotsFromThemedOpenSessions } from "@/services/catalog/themedOpenSessions";
 import { filterToSchedule, generateBookedSlots } from "./schedule";
 
 const OPTIONS = {
   remapHolidays: false,
-  extraSlots: OPEN_SESSION_EXTRA_SLOTS,
+  extraSlots: {
+    ...OPEN_SESSION_EXTRA_SLOTS,
+    ...extraSlotsFromThemedOpenSessions(),
+  },
 };
 
 describe("open session extra slots", () => {
@@ -41,6 +45,19 @@ describe("open session extra slots", () => {
     );
 
     expect(result.map((slot) => slot.time)).toEqual([at18, at1945]);
+  });
+
+  it("replaces Thursday 19:45 with Halloween 18:00 on 29 Oct 2026", () => {
+    const at18 = "2026-10-29T17:00:00.000Z";
+    const at1945 = "2026-10-29T18:45:00.000Z";
+
+    const result = filterToSchedule(
+      [at18, at1945],
+      OPEN_WEEKLY_SLOTS,
+      OPTIONS,
+    );
+
+    expect(result.map((slot) => slot.time)).toEqual([at18]);
   });
 
   it("shows the extra session as booked when Calendly has no such time", () => {

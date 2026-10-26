@@ -2,11 +2,10 @@ import { useState, useRef, useEffect } from "react";
 
 import { TranslatorProvider } from "@/components/TranslatorContext";
 import { CreatePaymentSessionResponseSchema } from "@/pages/api/types";
-import {
-  formatBookingProductName,
-  ProductNameKeyByEventType,
-} from "@/services/catalog/productName";
+import { formatBookingProductName, getBookingTitle } from "@/services/catalog/productName";
+import { findOpenSlotOnDate } from "@/services/catalog/themedOpenSessions";
 import { isServer } from "@/utils/environment";
+import { getCurrentLanguage } from "@/utils/i18n";
 import { trackEvent, AnalyticsEvents } from "@/services/analytics";
 import type { ISODatetime } from "@/types";
 
@@ -73,6 +72,14 @@ export default function BookingForm({
   useEffect(() => {
     trackEvent(AnalyticsEvents.ScheduleStepOpened);
   }, []);
+
+  useEffect(() => {
+    if (selectedTimeSlot || eventType !== "open_session") return;
+    const date = new URLSearchParams(window.location.search).get("date");
+    if (!date) return;
+    const slot = findOpenSlotOnDate(availability, date);
+    if (slot) setSelectedTimeSlot(slot.time);
+  }, [availability, eventType, selectedTimeSlot]);
 
   useEffect(() => {
     if (!partnerKey) return;
@@ -234,8 +241,11 @@ export default function BookingForm({
     )
       return;
 
+    const themeSlug = availability.find(
+      (slot) => slot.time === selectedTimeSlot,
+    )?.themeSlug;
     const formattedProductName = formatBookingProductName(
-      translations[ProductNameKeyByEventType[eventType]],
+      getBookingTitle(eventType, getCurrentLanguage(lang), themeSlug),
       selectedTimeSlot,
       currentProductName,
       lang,
@@ -338,7 +348,8 @@ function redirectToSchedule(): void {
 
   const url = new URL(window.location.href);
   url.searchParams.delete("step");
-  window.history.replaceState({}, "", url.pathname);
+  const next = url.pathname + (url.search ? url.search : "");
+  window.history.replaceState({}, "", next);
 }
 
 function shouldRedirectToSchedule(

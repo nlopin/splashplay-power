@@ -7,4 +7,5 @@ export type AvailableTime = {
   discount?: Discount;
   booked?: true;
   spotsLeft?: number;
+  themeSlug?: string;
 };

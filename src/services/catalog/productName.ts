@@ -29,6 +29,27 @@ export function getProductTitle(eventType: EventType, lang: Language): string {
   }
 }
 
+export function getThemedProductTitle(
+  themeSlug: string,
+  lang: Language,
+): string | undefined {
+  const book = getPageTranslations(lang, "book");
+  const key = `theme_${themeSlug}` as keyof typeof book;
+  const title = book[key];
+  return typeof title === "string" ? title : undefined;
+}
+
+export function getBookingTitle(
+  eventType: EventType,
+  lang: Language,
+  themeSlug?: string,
+): string {
+  if (themeSlug) {
+    return getThemedProductTitle(themeSlug, lang) ?? getProductTitle(eventType, lang);
+  }
+  return getProductTitle(eventType, lang);
+}
+
 // e.g. "Sesión de amigos, 02/09/2026, 14:00 (2 guests, 2 canvases, splash)".
 export function formatBookingProductName(
   titleTranslation: string,
