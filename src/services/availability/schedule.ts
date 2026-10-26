@@ -40,6 +40,7 @@ type DatedSlots = Record<string, { time: string; discount?: Discount }[]>;
 type ScheduleOptions = {
   remapHolidays?: boolean;
   extraSlots?: DatedSlots;
+  blockedTimes?: Record<string, readonly string[]>;
 };
 
 function madridTime(iso: string): { date: string; time: string } {
@@ -52,10 +53,22 @@ function madridTime(iso: string): { date: string; time: string } {
   return { date: ymdFormatter.format(new Date(iso)), time: `${hour}:${minute}` };
 }
 
+function isBlocked(
+  date: string,
+  time: string,
+  blockedTimes?: Record<string, readonly string[]>,
+): boolean {
+  return blockedTimes?.[date]?.includes(time) ?? false;
+}
+
 export function filterToSchedule(
   slots: string[],
   schedule: WeeklySchedule = WEEKLY_SLOTS,
-  { remapHolidays = true, extraSlots = {} }: ScheduleOptions = {},
+  {
+    remapHolidays = true,
+    extraSlots = {},
+    blockedTimes,
+  }: ScheduleOptions = {},
 ): AvailableTime[] {
   const result: AvailableTime[] = [];
 
@@ -75,7 +88,7 @@ export function filterToSchedule(
     const { date } = madridTime(iso);
     const daySchedule = extraSlots[date] ?? schedule[scheduleDay];
     const match = daySchedule?.find((s) => s.time === `${hour}:${minute}`);
-    if (match) {
+    if (match && !isBlocked(date, match.time, blockedTimes)) {
       result.push({
         time: iso,
         discount: holiday ? undefined : match.discount,
@@ -107,7 +120,11 @@ export function generateBookedSlots(
   availableISOs: string[],
   days: number,
   schedule: WeeklySchedule = WEEKLY_SLOTS,
-  { remapHolidays = true, extraSlots = {} }: ScheduleOptions = {},
+  {
+    remapHolidays = true,
+    extraSlots = {},
+    blockedTimes,
+  }: ScheduleOptions = {},
 ): AvailableTime[] {
   const availableMs = new Set(availableISOs.map((s) => new Date(s).getTime()));
   const now = new Date();
@@ -128,6 +145,7 @@ export function generateBookedSlots(
     const daySlots = extraSlots[ymd] ?? slots;
 
     for (const slot of daySlots) {
+      if (isBlocked(ymd, slot.time, blockedTimes)) continue;
       const slotISO = toMadridISODatetime(utcDay, slot.time);
       if (!availableMs.has(new Date(slotISO).getTime()) && new Date(slotISO) > now) {
         result.push({ time: slotISO, booked: true });

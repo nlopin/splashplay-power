@@ -158,7 +158,15 @@
       "ticket_pair_label": "Couple · 2 canvases",
       "ticket_pair_price": "62€",
       "ticket_pair_desc": "One 30×40 cm canvas each",
-      "cta": "Buy a spot"
+      "cta": "Buy a spot",
+      "special_kicker": "Upcoming special",
+      "themes": {
+        "halloween": {
+          "name": "Halloween Splash",
+          "when": "Thursday 29 October, 18:00",
+          "blurb": "Paint your Splash monster with our fun techniques and Halloween colors: black, orange, purple and green."
+        }
+      }
     },
     "pricing": {
       "friends": {
@@ -350,6 +358,9 @@
     "event_type_individual_desc": "Solo creative exploration and relaxation",
     "open_session": "Splash: open session",
     "event_type_open_session_desc": "A seat in a small group. Splash, 30×40 cm canvas.",
+    "theme_halloween": "Halloween Splash",
+    "theme_halloween_badge": "Halloween",
+    "theme_halloween_blurb": "Paint your Splash monster with our fun techniques and Halloween colors: black, orange, purple and green.",
     "open_ticket_solo": "1 person",
     "open_ticket_solo_desc": "Your 30×40 cm canvas",
     "open_ticket_shared": "Couple · 1 canvas",

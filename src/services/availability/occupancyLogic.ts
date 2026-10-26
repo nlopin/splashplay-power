@@ -25,10 +25,19 @@ export function applyOccupancyToSlots(
       const spotsLeft = Math.max(0, capacity - taken);
 
       if (taken > 0 && spotsLeft > 0) {
-        return { time: slot.time, spotsLeft };
+        return {
+          time: slot.time,
+          spotsLeft,
+          ...(slot.themeSlug ? { themeSlug: slot.themeSlug } : {}),
+        };
       }
       if (spotsLeft <= 0) {
-        return { time: slot.time, booked: true as const, spotsLeft: 0 };
+        return {
+          time: slot.time,
+          booked: true as const,
+          spotsLeft: 0,
+          ...(slot.themeSlug ? { themeSlug: slot.themeSlug } : {}),
+        };
       }
       if (slot.booked) {
         return { ...slot, spotsLeft: 0 };

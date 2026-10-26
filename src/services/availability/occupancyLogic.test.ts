@@ -21,6 +21,16 @@ describe("applyOccupancyToSlots", () => {
     expect(result).toEqual([{ time: SLOT, spotsLeft: 6 }]);
   });
 
+  it("preserves a theme on occupied and full slots", () => {
+    const themed = { time: SLOT, themeSlug: "halloween" };
+    expect(applyOccupancyToSlots([themed], { [occupancyKey(SLOT)]: 2 })).toEqual([
+      { time: SLOT, spotsLeft: 4, themeSlug: "halloween" },
+    ]);
+    expect(applyOccupancyToSlots([themed], { [occupancyKey(SLOT)]: 6 })).toEqual([
+      { time: SLOT, booked: true, spotsLeft: 0, themeSlug: "halloween" },
+    ]);
+  });
+
   it("leaves a Calendly-closed empty slot booked (private took it)", () => {
     const result = applyOccupancyToSlots([{ time: SLOT, booked: true }], {});
     expect(result).toEqual([{ time: SLOT, booked: true, spotsLeft: 0 }]);

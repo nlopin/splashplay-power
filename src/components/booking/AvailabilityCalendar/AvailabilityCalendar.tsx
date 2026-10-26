@@ -30,10 +30,11 @@ export function AvailabilityCalendar({
     setInternalSelectedSlot(selectedTimeSlot ?? null);
   }, [selectedTimeSlot]);
 
-  const { discountMap, bookedSet, spotsLeftMap, weeks, initialWeekIndex } = useMemo(() => {
+  const { discountMap, bookedSet, spotsLeftMap, themeMap, weeks, initialWeekIndex } = useMemo(() => {
     const discountMap = new Map<string, Discount | undefined>();
     const bookedSet = new Set<string>();
     const spotsLeftMap = new Map<string, number>();
+    const themeMap = new Map<string, string>();
     const times: ISODatetime[] = [];
 
     let firstAvailableTime: string | null = null;
@@ -43,6 +44,9 @@ export function AvailabilityCalendar({
       if (s.spotsLeft != null) {
         spotsLeftMap.set(s.time, s.spotsLeft);
       }
+      if (s.themeSlug) {
+        themeMap.set(s.time, s.themeSlug);
+      }
       if (s.booked) {
         bookedSet.add(s.time);
       } else if (!firstAvailableTime) {
@@ -51,9 +55,10 @@ export function AvailabilityCalendar({
     }
 
     const weeks = groupWeeks(times);
-    const initialWeekIndex = firstAvailableTime
+    const focusTime = selectedTimeSlot ?? firstAvailableTime;
+    const initialWeekIndex = focusTime
       ? weeks.findIndex((week) =>
-          week.some((day) => day.times.includes(firstAvailableTime)),
+          week.some((day) => day.times.includes(focusTime)),
         )
       : 0;
 
@@ -61,16 +66,23 @@ export function AvailabilityCalendar({
       discountMap,
       bookedSet,
       spotsLeftMap,
+      themeMap,
       weeks,
       initialWeekIndex,
     };
-  }, [availability]);
+  }, [availability, selectedTimeSlot]);
 
   const [selectedWeekIndex, setSelectedWeekIndex] =
     useState<number>(initialWeekIndex);
   const [mobileWeekCount, setMobileWeekCount] = useState<number>(
     initialWeekIndex + 1,
   );
+
+  useEffect(() => {
+    if (!selectedTimeSlot || initialWeekIndex < 0) return;
+    setSelectedWeekIndex(initialWeekIndex);
+    setMobileWeekCount((count) => Math.max(count, initialWeekIndex + 1));
+  }, [selectedTimeSlot, initialWeekIndex]);
   const currentWeek = weeks[selectedWeekIndex];
 
   const uniqueTimes = useMemo(() => {
@@ -132,10 +144,11 @@ export function AvailabilityCalendar({
             const meta = getDayMeta(day, language);
             const dow = day.date.getUTCDay();
             const isPopular = dow === 5 || dow === 6 || dow === 0;
+            const isThemed = day.times.some((time) => themeMap.has(time));
             return (
               <div
                 key={meta.longDate}
-                className={`grid-cell header-cell${isPopular ? " popular" : ""}`}
+                className={`grid-cell header-cell${isPopular ? " popular" : ""}${isThemed ? " themed" : ""}`}
               >
                 <div className="weekday desktop-only">{meta.longWeekday}</div>
                 <div className="weekday mobile-only">{meta.shortWeekday}</div>
@@ -162,6 +175,7 @@ export function AvailabilityCalendar({
                         discount={discountMap.get(slot)}
                         isBooked={bookedSet.has(slot)}
                         spotsLeft={spotsLeftMap.get(slot)}
+                        themeSlug={themeMap.get(slot)}
                       />
                     )}
                   </div>
@@ -188,8 +202,9 @@ export function AvailabilityCalendar({
             return null;
           }
           const meta = getDayMeta(day, language);
+          const isThemed = day.times.some((time) => themeMap.has(time));
           return (
-            <div key={`day-${day.date}`} className="day-card">
+            <div key={`day-${day.date}`} className={`day-card${isThemed ? " themed" : ""}`}>
               <div className="day-card-header">
                 <span className="weekday">{meta.longWeekday}</span>
                 <span className="date">{meta.longDate}</span>
@@ -205,6 +220,7 @@ export function AvailabilityCalendar({
                       discount={discountMap.get(time)}
                       isBooked={bookedSet.has(time)}
                       spotsLeft={spotsLeftMap.get(time)}
+                      themeSlug={themeMap.get(time)}
                     />
                   ))}
                 </div>
@@ -282,6 +298,7 @@ const TimeSlotButton = ({
   discount,
   isBooked,
   spotsLeft,
+  themeSlug,
 }: {
   time: ISODatetime;
   isSelected: boolean;
@@ -289,6 +306,7 @@ const TimeSlotButton = ({
   discount?: Discount;
   isBooked?: boolean;
   spotsLeft?: number;
+  themeSlug?: string;
 }) => {
   const t = useTranslator();
   const formattedTime = formatTime(time);
@@ -298,14 +316,16 @@ const TimeSlotButton = ({
       : spotsLeft === 1
         ? t("spots_left_one")
         : t("spots_left").replace("{count}", String(spotsLeft));
+  const themeLabel = themeSlug ? t(`theme_${themeSlug}_badge`) : null;
   return (
     <button
       type="button"
       onClick={isBooked ? undefined : () => onSelect(time)}
       disabled={isBooked}
-      className={`time-slot-button ${isSelected ? "selected" : ""} ${isBooked ? "booked" : ""}`}
+      className={`time-slot-button ${isSelected ? "selected" : ""} ${isBooked ? "booked" : ""}${themeSlug ? " themed" : ""}`}
     >
       {formattedTime}
+      {themeLabel && <span className="theme-badge">{themeLabel}</span>}
       {discount && !isBooked && (
         <span className="discount-badge">-{discount}%</span>
       )}

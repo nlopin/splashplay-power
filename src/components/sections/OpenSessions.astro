@@ -1,9 +1,12 @@
 ---
+import { getUpcomingThemedSessions } from "../../services/catalog/themedOpenSessions";
 import { createAstroTranslator, getCurrentLanguage, getLocalizedPath } from "../../utils/i18n";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
 const lang = getCurrentLanguage(Astro.currentLocale);
 const bookUrl = getLocalizedPath("/book/open-session", lang);
+const special = getUpcomingThemedSessions()[0];
+const specialUrl = special ? `${bookUrl}?date=${special.date}` : bookUrl;
 
 const tickets = [
     {
@@ -34,6 +37,23 @@ const tickets = [
         <p class="open-sessions__subtitle">{t("open_sessions.subtitle")}</p>
         <p class="open-sessions__kicker">{t("open_sessions.meta")}</p>
     </div>
+
+    {
+        special && (
+            <a class="open-special" href={specialUrl}>
+                <span class="open-special__kicker">{t("open_sessions.special_kicker")}</span>
+                <span class="open-special__name">
+                    {t(`open_sessions.themes.${special.slug}.name`)}
+                </span>
+                <span class="open-special__when">
+                    {t(`open_sessions.themes.${special.slug}.when`)}
+                </span>
+                <span class="open-special__blurb">
+                    {t(`open_sessions.themes.${special.slug}.blurb`)}
+                </span>
+            </a>
+        )
+    }
 
     <ul class="open-sessions__tickets">
         {
@@ -99,6 +119,49 @@ const tickets = [
         color: var(--purple);
         font-size: var(--font-sm);
         font-weight: 600;
+        line-height: 1.45;
+    }
+
+    .open-special {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        margin: 0 0 1rem;
+        padding: 12px 16px;
+        background: var(--white);
+        border: 1px solid rgba(255, 107, 53, 0.4);
+        border-radius: 10px;
+        text-decoration: none;
+        text-align: left;
+    }
+
+    .open-special:hover {
+        border-color: var(--orange);
+    }
+
+    .open-special__kicker {
+        color: var(--orange);
+        font-size: var(--font-xs);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .open-special__name {
+        color: var(--purple);
+        font-size: var(--font-base);
+        font-weight: 700;
+    }
+
+    .open-special__when {
+        color: var(--purple);
+        font-size: var(--font-sm);
+        font-weight: 600;
+    }
+
+    .open-special__blurb {
+        color: var(--dark-text);
+        font-size: var(--font-sm);
         line-height: 1.45;
     }
 

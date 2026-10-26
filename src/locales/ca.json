@@ -158,7 +158,15 @@
       "ticket_pair_label": "Parella · 2 llenços",
       "ticket_pair_price": "62€",
       "ticket_pair_desc": "Un llenç 30×40 cm per a cadascú",
-      "cta": "Comprar plaça"
+      "cta": "Comprar plaça",
+      "special_kicker": "Pròxima especial",
+      "themes": {
+        "halloween": {
+          "name": "Halloween Splash",
+          "when": "Dijous 29 d'octubre, 18:00",
+          "blurb": "Pinta el teu monstre Splash amb les nostres tècniques divertides i colors de Halloween: negre, taronja, morat i verd."
+        }
+      }
     },
     "pricing": {
       "friends": {
@@ -350,6 +358,9 @@
     "event_type_individual_desc": "Exploració creativa i relaxació en solitari",
     "open_session": "Splash: sessió oberta",
     "event_type_open_session_desc": "Plaça en un grup petit. Splash, llenç 30×40 cm.",
+    "theme_halloween": "Halloween Splash",
+    "theme_halloween_badge": "Halloween",
+    "theme_halloween_blurb": "Pinta el teu monstre Splash amb les nostres tècniques divertides i colors de Halloween: negre, taronja, morat i verd.",
     "open_ticket_solo": "1 persona",
     "open_ticket_solo_desc": "El teu llenç 30×40 cm",
     "open_ticket_shared": "Parella · 1 llenç",

@@ -2,6 +2,10 @@ import {
   OPEN_SESSION_EXTRA_SLOTS,
   OPEN_WEEKLY_SLOTS,
 } from "@/constants.server";
+import {
+  extraSlotsFromThemedOpenSessions,
+  withThemeSlug,
+} from "@/services/catalog/themedOpenSessions";
 import type { ISODatetime } from "@/types";
 import { getOccupancyCounts } from "./occupancy";
 import { applyOccupancyToSlots } from "./occupancyLogic";
@@ -10,7 +14,10 @@ import type { AvailableTime } from "./types";
 
 const OPEN_SCHEDULE_OPTIONS = {
   remapHolidays: false,
-  extraSlots: OPEN_SESSION_EXTRA_SLOTS,
+  extraSlots: {
+    ...OPEN_SESSION_EXTRA_SLOTS,
+    ...extraSlotsFromThemedOpenSessions(),
+  },
 };
 
 export async function getOpenSessionAvailability(
@@ -29,5 +36,8 @@ export async function getOpenSessionAvailability(
     OPEN_SCHEDULE_OPTIONS,
   );
   const occupancy = await getOccupancyCounts();
-  return applyOccupancyToSlots([...available, ...booked], occupancy);
+  return applyOccupancyToSlots(
+    [...available, ...booked].map(withThemeSlug),
+    occupancy,
+  );
 }

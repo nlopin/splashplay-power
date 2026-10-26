@@ -158,7 +158,15 @@
       "ticket_pair_label": "Couple · 2 toiles",
       "ticket_pair_price": "62€",
       "ticket_pair_desc": "Une toile 30×40 cm pour chacun",
-      "cta": "Acheter une place"
+      "cta": "Acheter une place",
+      "special_kicker": "Prochaine spéciale",
+      "themes": {
+        "halloween": {
+          "name": "Halloween Splash",
+          "when": "Jeudi 29 octobre, 18:00",
+          "blurb": "Peins ton monstre Splash avec nos techniques ludiques et les couleurs d'Halloween : noir, orange, violet et vert."
+        }
+      }
     },
     "pricing": {
       "friends": {
@@ -350,6 +358,9 @@
     "event_type_individual_desc": "Exploration créative solo et détente",
     "open_session": "Splash: séance ouverte",
     "event_type_open_session_desc": "Une place dans un petit groupe. Splash, toile 30×40 cm.",
+    "theme_halloween": "Halloween Splash",
+    "theme_halloween_badge": "Halloween",
+    "theme_halloween_blurb": "Peins ton monstre Splash avec nos techniques ludiques et les couleurs d'Halloween : noir, orange, violet et vert.",
     "open_ticket_solo": "1 personne",
     "open_ticket_solo_desc": "Votre toile 30×40 cm",
     "open_ticket_shared": "Couple · 1 toile",
