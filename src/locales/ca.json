@@ -1030,6 +1030,7 @@
     "slot_selected": "Seleccionat: {label}. Ara tria les opcions amb set_booking_options.",
     "options_updated": "Opcions actualitzades.",
     "options_adjusted": "Alguns valors no eren possibles i s'han ajustat: {changes}.",
+    "options_not_ready": "Les opcions encara no estan a punt. Torna-ho a provar d'aquí a un moment.",
     "big_canvas_splash_only": "Els llenços grans només estan disponibles amb Splash.",
     "no_slot_selected": "Encara no hi ha cap horari seleccionat. Fes servir find_open_slots i després select_time_slot.",
     "add_participants": "Afegeix almenys un participant.",

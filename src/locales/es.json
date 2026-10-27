@@ -1030,6 +1030,7 @@
     "slot_selected": "Seleccionado: {label}. Ahora elige las opciones con set_booking_options.",
     "options_updated": "Opciones actualizadas.",
     "options_adjusted": "Algunos valores no eran posibles y se han ajustado: {changes}.",
+    "options_not_ready": "Las opciones todavía no están listas. Inténtalo de nuevo en un momento.",
     "big_canvas_splash_only": "Los lienzos grandes solo están disponibles con Splash.",
     "no_slot_selected": "Todavía no hay ningún horario seleccionado. Usa find_open_slots y luego select_time_slot.",
     "add_participants": "Añade al menos un participante.",

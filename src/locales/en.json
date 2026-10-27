@@ -1030,6 +1030,7 @@
     "slot_selected": "Selected {label}. Next, set the options with set_booking_options.",
     "options_updated": "Options updated.",
     "options_adjusted": "Some values didn't fit and were adjusted: {changes}.",
+    "options_not_ready": "The options aren't ready yet. Try again in a moment.",
     "big_canvas_splash_only": "Big canvases are only available with Splash.",
     "no_slot_selected": "No time slot selected yet. Use find_open_slots, then select_time_slot.",
     "add_participants": "Add at least one participant.",
