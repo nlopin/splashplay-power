@@ -99,11 +99,31 @@ const OPTION_HINTS: Record<WebMcpEventType, string> = {
     "Open sessions are shared with other people; buy tickets per person or pair. The total is limited by spots left in the selected slot, so select a slot first.",
 };
 
+// zod's JSON Schema output carries noise Chrome's WebMCP DevTools pane can't
+// render (no parameter form is shown): $schema, additionalProperties, the
+// safe-integer bounds on every .int(), and exclusiveMinimum for .positive().
+// Reduce it to the plain form the hand-written tool schemas use.
+function simplifySchema(node: unknown): unknown {
+  if (Array.isArray(node)) return node.map(simplifySchema);
+  if (!node || typeof node !== "object") return node;
+
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(node)) {
+    if (key === "$schema" || key === "additionalProperties") continue;
+    if (key === "maximum" && value === Number.MAX_SAFE_INTEGER) continue;
+    if (key === "minimum" && value === Number.MIN_SAFE_INTEGER) continue;
+    result[key] = simplifySchema(value);
+  }
+  if (typeof result.exclusiveMinimum === "number") {
+    const bound = result.exclusiveMinimum;
+    delete result.exclusiveMinimum;
+    result.minimum = result.type === "integer" ? bound + 1 : bound;
+  }
+  return result;
+}
+
 function toJsonSchema(shape: z.ZodRawShape): JsonSchema {
-  const { $schema: _, ...schema } = z.toJSONSchema(z.object(shape)) as {
-    $schema?: string;
-  } & JsonSchema;
-  return schema;
+  return simplifySchema(z.toJSONSchema(z.object(shape))) as JsonSchema;
 }
 
 const optionSchemas = new Map<WebMcpEventType, JsonSchema>();

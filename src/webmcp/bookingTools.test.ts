@@ -105,6 +105,30 @@ describe("booking tools", () => {
     expect(Object.keys(schema.properties)).toEqual(fields);
     expect(schema.$schema).toBeUndefined();
   });
+
+  it("emits a plain schema the DevTools pane can render", () => {
+    const { tools } = setup({ eventType: "family" });
+    const schema = tools.find(
+      (t) => t.name === "set_booking_options",
+    )!.inputSchema;
+    expect(schema).toEqual({
+      type: "object",
+      properties: {
+        adults: expect.objectContaining({ type: "integer", minimum: 0 }),
+        kids: expect.objectContaining({ type: "integer", minimum: 0 }),
+        activityFormat: expect.objectContaining({
+          type: "string",
+          enum: ["splash", "pouring"],
+        }),
+        canvasType: expect.objectContaining({ enum: ["standard", "big"] }),
+        canvases: expect.objectContaining({ type: "integer", minimum: 1 }),
+      },
+    });
+    const text = JSON.stringify(schema);
+    expect(text).not.toContain("additionalProperties");
+    expect(text).not.toContain("exclusiveMinimum");
+    expect(text).not.toContain(String(Number.MAX_SAFE_INTEGER));
+  });
 });
 
 describe("find_open_slots", () => {
