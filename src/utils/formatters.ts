@@ -1,13 +1,23 @@
 import { BUSINESS_TIMEZONE, DEFAULT_LOCALE } from "@/constants";
 import type { ISODatetime } from "@/types";
 
+/**
+ * Formats a date range as a closed en dash: "26 de octubre–1 de noviembre".
+ *
+ * Intl puts spaces around the dash, and which spaces depends on the ICU
+ * version (Node 24 uses thin spaces, Chrome plain ones). The server-rendered
+ * label then differs from the client one and React reports a hydration
+ * mismatch, so the spaces are removed rather than kept.
+ */
 export function formatWeek(start: Date, end: Date, locale?: string): string {
   const dateTimeFormat = Intl.DateTimeFormat(locale ?? DEFAULT_LOCALE, {
     month: "long",
     day: "numeric",
     timeZone: "UTC",
   });
-  return dateTimeFormat.formatRange(start, end);
+  return dateTimeFormat
+    .formatRange(start, end)
+    .replace(/\s*\u2013\s*/g, "\u2013");
 }
 
 export function formatWeekday(
