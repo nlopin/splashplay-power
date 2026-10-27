@@ -12,6 +12,14 @@ import { createHostedCheckoutSession } from "@/services/checkout/createCheckoutS
 import { quoteBooking } from "@/services/checkout/quote";
 import { getCheckoutSessionStatus } from "@/services/checkout/status";
 import { checkRateLimit } from "@/services/mcp/rateLimit";
+import {
+  ActivityFormatSchema,
+  AdultsSchema,
+  CanvasesSchema,
+  CanvasTypeSchema,
+  CouplesPictureSchema,
+  KidsSchema,
+} from "@/services/agentTools/schemas";
 import { languages, type Language } from "@/utils/i18n";
 import { DEFAULT_LOCALE } from "@/constants";
 
@@ -48,6 +56,12 @@ const MCP_HIDDEN_EXPERIENCES = new Set<string>([
   EVENT_TYPE.INDIVIDUAL,
   EVENT_TYPE.OPEN_SESSION,
 ]);
+
+// Shared field schemas are written for one experience at a time; this tool
+// takes every experience's fields, so say which experience each is for.
+function scoped(scope: string, schema: z.ZodType, extra?: string): string {
+  return [`${scope}: ${schema.description ?? ""}`, extra].filter(Boolean).join(" ");
+}
 
 function jsonResult(data: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] };
@@ -145,36 +159,24 @@ function createMcpServer(origin: string): McpServer {
           .describe("ISO 8601 datetime with offset, from check_availability."),
         guests: z.number().int().positive().describe("number of participants. If the eventType is `couples`, set it to 2. For all other events, request it from the user."),
         lang: LangSchema.optional(),
-        activityFormat: z
-          .enum(["splash", "pouring"])
-          .optional()
-          .describe("couples/family/friends only: Splash (energetic — throwing, spinning, guns) or Pouring (calmer). Defaults to splash."),
-        canvasType: z
-          .enum(["standard", "big"])
-          .optional()
-          .describe("family/friends only: shared big canvas (60×90) vs. standard canvases. Friends and family may take 1 or 2 big canvases via `canvases` (defaults to 1; 1 guest max 1). If big canvas is selected and `canvases` is omitted, it is one."),
-        canvases: z
-          .number()
-          .int()
-          .positive()
-          .optional()
-          .describe("family/friends only: number of canvases. For standard, usually one per guest. For a big canvas, 1 or 2 (max 2)."),
-        picture: z
-          .enum(["one_small", "one_big", "two_big", "individual"])
-          .optional()
-          .describe("couples only: canvas format. `one_small` is one shared standard canvas 40x30, `one_big` is one shared big canvas, `two_big` is two big canvases (Splash only), `individual` is a standard canvas for both"),
-        adults: z
-          .number()
-          .int()
-          .nonnegative()
-          .optional()
-          .describe("family only: number of adults. Ask the user for the adults/kids split — it's shown on the booking confirmation. If given with `kids`, must add up to `guests`."),
-        kids: z
-          .number()
-          .int()
-          .nonnegative()
-          .optional()
-          .describe("family only: number of kids. If given with `adults`, must add up to `guests`."),
+        activityFormat: ActivityFormatSchema.optional().describe(
+          scoped("couples/family/friends only", ActivityFormatSchema, "Defaults to splash."),
+        ),
+        canvasType: CanvasTypeSchema.optional().describe(
+          scoped("family/friends only", CanvasTypeSchema, "Defaults to standard."),
+        ),
+        canvases: CanvasesSchema.optional().describe(
+          scoped("family/friends only", CanvasesSchema, "Defaults to one per guest (standard) or 1 (big)."),
+        ),
+        picture: CouplesPictureSchema.optional().describe(
+          scoped("couples only", CouplesPictureSchema),
+        ),
+        adults: AdultsSchema.optional().describe(
+          scoped("family only", AdultsSchema, "It's shown on the booking confirmation. If given with `kids`, must add up to `guests`."),
+        ),
+        kids: KidsSchema.optional().describe(
+          scoped("family only", KidsSchema, "If given with `adults`, must add up to `guests`."),
+        ),
       },
     },
     async ({ eventType, datetime, guests, lang, activityFormat, canvasType, canvases, picture, adults, kids }) => {
