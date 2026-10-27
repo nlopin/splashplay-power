@@ -67,12 +67,20 @@ export default function BookingForm({
     trackEvent(AnalyticsEvents.ScheduleStepOpened);
   }, []);
 
+  // ?date=YYYY-MM-DD: an open session has one slot per day, so select it;
+  // other experiences open the calendar on that week.
+  const [focusTime, setFocusTime] = useState<SelectedTimeSlot | null>(null);
   useEffect(() => {
-    if (selectedTimeSlot || eventType !== "open_session") return;
+    if (selectedTimeSlot) return;
     const date = new URLSearchParams(window.location.search).get("date");
     if (!date) return;
     const slot = findOpenSlotOnDate(availability, date);
-    if (slot) setSelectedTimeSlot(slot.time);
+    if (!slot) return;
+    if (eventType === "open_session") {
+      setSelectedTimeSlot(slot.time);
+    } else {
+      setFocusTime(slot.time);
+    }
   }, [availability, eventType, selectedTimeSlot]);
 
   useEffect(() => {
@@ -256,6 +264,7 @@ export default function BookingForm({
         <ScheduleStep
           availability={availability}
           selectedTimeSlot={selectedTimeSlot}
+          focusTime={focusTime}
           currentAmount={currentAmount}
           currentGuests={currentGuests}
           isLoading={isLoading}

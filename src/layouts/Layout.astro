@@ -1243,6 +1243,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </style>
 
 <script>
+    import { isWebMcpAvailable } from "@/webmcp/register";
+
+    // Site-wide WebMCP tools; the module loads only in browsers with WebMCP.
+    if (isWebMcpAvailable()) {
+        import("@/webmcp/siteTools").then(({ registerSiteTools }) =>
+            registerSiteTools(document.documentElement.lang),
+        );
+    }
+</script>
+
+<script>
     document.addEventListener("click", (e) => {
         const target = e.target as HTMLElement;
         const bookLink = target.closest<HTMLAnchorElement>("a[href*='/book']");

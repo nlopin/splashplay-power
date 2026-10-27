@@ -16,7 +16,10 @@ export function truncateOutput(text: string): string {
 }
 
 // Every tool goes through here, so an API rename touches one file.
-export function registerWebMcpTool(tool: WebMcpTool, signal: AbortSignal): void {
+export function registerWebMcpTool(
+  tool: WebMcpTool,
+  signal: AbortSignal,
+): void {
   const modelContext = isWebMcpAvailable() ? document.modelContext : undefined;
   if (!modelContext || signal.aborted) return;
 

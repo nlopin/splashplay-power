@@ -50,7 +50,10 @@ describe("registerWebMcpTool", () => {
   it("does nothing when WebMCP is unavailable", () => {
     vi.stubGlobal("document", {});
     expect(() =>
-      registerWebMcpTool(tool(() => "ok"), new AbortController().signal),
+      registerWebMcpTool(
+        tool(() => "ok"),
+        new AbortController().signal,
+      ),
     ).not.toThrow();
   });
 
@@ -74,10 +77,15 @@ describe("registerWebMcpTool", () => {
 
   it("survives registerTool rejecting (permission policy)", async () => {
     const registerTool = stubModelContext();
-    registerTool.mockRejectedValue(new DOMException("blocked", "NotAllowedError"));
+    registerTool.mockRejectedValue(
+      new DOMException("blocked", "NotAllowedError"),
+    );
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    registerWebMcpTool(tool(() => "ok"), new AbortController().signal);
+    registerWebMcpTool(
+      tool(() => "ok"),
+      new AbortController().signal,
+    );
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(warn).toHaveBeenCalled();

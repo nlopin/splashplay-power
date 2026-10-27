@@ -14,6 +14,7 @@ import { EventTypeOptions } from "./eventTypeOptions";
 export interface ScheduleStepProps {
   availability: Availability;
   selectedTimeSlot: SelectedTimeSlot | null;
+  focusTime?: SelectedTimeSlot | null;
   currentAmount: number | null;
   currentGuests: number | null;
   isLoading: boolean;
@@ -27,6 +28,7 @@ export interface ScheduleStepProps {
 export function ScheduleStep({
   availability,
   selectedTimeSlot,
+  focusTime,
   currentAmount,
   currentGuests,
   isLoading,
@@ -70,6 +72,7 @@ export function ScheduleStep({
           availability={availability}
           onTimeSlotSelect={onTimeSlotSelect}
           selectedTimeSlot={selectedTimeSlot}
+          focusTime={focusTime}
         />
       ) : (
         "No calendar available"
