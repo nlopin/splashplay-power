@@ -84,6 +84,13 @@ export default defineConfig({
         context: "client",
         access: "public",
       }),
+      // Chrome origin-trial token for WebMCP (docs/plans/18-webmcp.md). Unset =
+      // no meta tag; WebMCP then only works with chrome://flags/#enable-webmcp-testing.
+      PUBLIC_WEBMCP_OT_TOKEN: envField.string({
+        context: "client",
+        access: "public",
+        optional: true,
+      }),
     },
   },
   redirects: {
