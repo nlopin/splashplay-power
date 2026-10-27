@@ -367,3 +367,22 @@ check the expiry date in the console and set a reminder to renew.
 - **Language.** Descriptions the AI reads (tool and parameter descriptions)
   are English only. Everything a tool returns is in the page language:
   experience names, FAQ, confirmations, warnings and errors.
+
+## Implementation notes
+
+Where the implementation differs from the design above:
+
+- `/webmcp/{lang}.json` is fetched on an agent's first tool call, not at
+  registration, so even WebMCP browsers download it only when used. Built
+  size: 8.3–9.5 KB raw, about 3.7 KB gzipped (it also carries the output
+  strings and booking paths).
+- `find_open_slots` returns at most 10 slots, not 20: each slot is about
+  110 characters, and 20 would exceed the 1.5K output budget.
+- The pure option rules live in
+  `src/components/booking/eventTypeOptions/formState.ts` (next to the
+  widgets that use them), not `src/services/catalog`.
+- Types are a local `src/webmcp/types.ts` instead of the `webmcp-types`
+  package; the hook is `useWebMcpTools` and registers a list of tools.
+- `WEBMCP_EVENT_TYPES` lives in `src/services/agentTools/eventTypes.ts`,
+  separate from the zod schemas, so the site-wide tools chunk stays small
+  (about 4 KB).
