@@ -13,4 +13,5 @@ export const CreatePaymentSessionPayloadSchema = z.object({
 
 export const CreatePaymentSessionResponseSchema = z.object({
   clientSecret: z.string(),
+  amountCents: z.number().int().nonnegative(),
 });

@@ -55,6 +55,10 @@ describe("POST /api/payment-session", () => {
     });
 
     expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({
+      clientSecret: "cs_test_secret",
+      amountCents: COUPLES_PRICE.two_big,
+    });
     expect(mocks.createEmbeddedCheckoutSession).toHaveBeenCalledWith(
       expect.objectContaining({
         amount: COUPLES_PRICE.two_big,

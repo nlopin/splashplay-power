@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useImperativeHandle, useRef, useState } from "react";
 
 import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
@@ -11,12 +11,12 @@ import {
   OPEN_SESSION_PRICE,
   OPEN_SESSION_TICKETS,
   openSessionAmountCents,
-  openSessionPeople,
   type OpenSessionCart,
   type OpenSessionTicket,
 } from "@/services/catalog/openSessionPricing";
 
 import type { EventTypeOptionsProps } from "./EventTypeOptions";
+import { applyOpenSessionPatch, openSessionPricingData } from "./formState";
 
 const DEFAULT_CART: OpenSessionCart = emptyOpenSessionCart();
 
@@ -60,6 +60,7 @@ function writeCartToUrl(cart: OpenSessionCart) {
 export function OpenSessionOptions({
   onChange,
   spotsLeft,
+  ref,
 }: EventTypeOptionsProps) {
   const t = useTranslator();
   const [cart, setCart] = useState<OpenSessionCart>(DEFAULT_CART);
@@ -84,14 +85,19 @@ export function OpenSessionOptions({
       return;
     }
 
-    onChangeRef.current({
-      amount: openSessionAmountCents(cart),
-      guests: openSessionPeople(cart),
-      selection: { eventType: "open_session", openCart: cart },
-    });
+    onChangeRef.current(openSessionPricingData(cart));
 
     writeCartToUrl(cart);
   }, [cart, spotsLeft]);
+
+  // Lets the WebMCP set_booking_options tool change tickets like a click.
+  useImperativeHandle(ref, () => ({
+    apply(patch) {
+      const { next, adjusted } = applyOpenSessionPatch(cart, patch, spotsLeft);
+      setCart(next);
+      return { data: openSessionPricingData(next), adjusted };
+    },
+  }));
 
   const setQuantity = (ticket: OpenSessionTicket, quantity: number) => {
     setCart((current) => {

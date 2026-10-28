@@ -9,6 +9,7 @@ import { normalizeSeoPath, shouldExcludeFromIndex } from "../utils/seo-paths.mjs
 import { getImage } from "astro:assets";
 import ogImageSrc from "../assets/og.jpg"
 import { CONTACT_EMAIL, WHATSAPP_PHONE } from "../constants";
+import { PUBLIC_WEBMCP_OT_TOKEN } from "astro:env/client";
 
 interface Props {
     title?: string;
@@ -80,6 +81,7 @@ const localBusinessSchema = {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {PUBLIC_WEBMCP_OT_TOKEN && <meta http-equiv="origin-trial" content={PUBLIC_WEBMCP_OT_TOKEN} />}
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website">
         <meta property="og:url" content={canonicalUrl}>
@@ -1239,6 +1241,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         color: var(--orange);
     }
 </style>
+
+<script>
+    import { isWebMcpAvailable } from "@/webmcp/register";
+
+    // Site-wide WebMCP tools; the module loads only in browsers with WebMCP.
+    if (isWebMcpAvailable()) {
+        import("@/webmcp/siteTools").then(({ registerSiteTools }) =>
+            registerSiteTools(document.documentElement.lang),
+        );
+    }
+</script>
 
 <script>
     document.addEventListener("click", (e) => {

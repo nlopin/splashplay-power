@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useImperativeHandle, useRef } from "react";
 
 import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
@@ -9,27 +9,30 @@ import {
   type ActivityFormat,
 } from "./ActivityFormatSelector";
 import {
+  applyFriendsPatch,
+  friendsPricingData,
+  friendsSetActivityFormat,
+  friendsSetCanvases,
+  friendsSetCanvasType,
+  friendsSetGuests,
+  type FriendsFormData,
+} from "./formState";
+import {
   MIN_GUESTS,
   MAX_GUESTS,
   getFriendsCanvasLimits,
-  clampFriendsCanvases,
   calculateFriendsPrice,
   type CanvasType,
 } from "@/services/catalog/friendsPricing";
 
 export type { CanvasType } from "@/services/catalog/friendsPricing";
-
-export interface FriendsFormData {
-  guests: number;
-  canvases: number;
-  canvasType: CanvasType;
-  activityFormat: ActivityFormat;
-}
+export type { FriendsFormData } from "./formState";
 
 export function FriendsOptions({
   onChange,
   showPrice,
   discount,
+  ref,
 }: EventTypeOptionsProps) {
   const [formData, setFormData] = useState<FriendsFormData>({
     guests: 2,
@@ -66,22 +69,7 @@ export function FriendsOptions({
 
   // Notify parent on change
   useEffect(() => {
-    const totalAmount = calculateFriendsPrice(
-      formData.canvases,
-      formData.guests,
-      formData.canvasType,
-    );
-    onChangeRef.current({
-      amount: totalAmount,
-      guests: formData.guests,
-      selection: {
-        eventType: "friends",
-        guests: formData.guests,
-        canvases: formData.canvases,
-        canvasType: formData.canvasType,
-        activityFormat: formData.activityFormat,
-      },
-    });
+    onChangeRef.current(friendsPricingData(formData));
 
     try {
       const url = new URL(window.location.href);
@@ -92,70 +80,29 @@ export function FriendsOptions({
     }
   }, [formData]);
 
+  // Lets the WebMCP set_booking_options tool change options like a click.
+  useImperativeHandle(ref, () => ({
+    apply(patch) {
+      const { next, adjusted } = applyFriendsPatch(formData, patch);
+      setFormData(next);
+      return { data: friendsPricingData(next), adjusted };
+    },
+  }));
+
   const handleActivityFormatChange = (format: ActivityFormat) => {
-    if (format === "pouring") {
-      setFormData((prev) => {
-        if (prev.canvasType === "big") {
-          const guests = Math.max(MIN_GUESTS, prev.guests);
-          const canvases = clampFriendsCanvases(guests, guests, "standard");
-          return {
-            ...prev,
-            activityFormat: "pouring",
-            canvasType: "standard",
-            canvases,
-          };
-        }
-        return { ...prev, activityFormat: "pouring" };
-      });
-      return;
-    }
-    setFormData((prev) => ({ ...prev, activityFormat: "splash" }));
+    setFormData((prev) => friendsSetActivityFormat(prev, format));
   };
 
   const handleCanvasTypeChange = (type: CanvasType) => {
-    if (type === "big") {
-      setFormData((prev) => {
-        const guests = Math.max(MIN_GUESTS, prev.guests);
-        return {
-          ...prev,
-          canvasType: "big",
-          canvases: clampFriendsCanvases(1, guests, "big"),
-          guests,
-        };
-      });
-    } else {
-      // Switching to standard: set canvases equal to guests (clamped to limits)
-      setFormData((prev) => {
-        const guests = Math.max(MIN_GUESTS, prev.guests);
-        const canvases = clampFriendsCanvases(guests, guests, "standard");
-        return { ...prev, canvasType: "standard", guests, canvases };
-      });
-    }
+    setFormData((prev) => friendsSetCanvasType(prev, type));
   };
 
   const handleGuestsChange = (value: number) => {
-    const guests = Math.max(MIN_GUESTS, Math.min(value, MAX_GUESTS));
-
-    if (formData.canvasType === "big") {
-      setFormData((prev) => ({
-        ...prev,
-        guests,
-        canvases: clampFriendsCanvases(prev.canvases, guests, "big"),
-      }));
-    } else {
-      // Default canvases to match guests count, clamped to allowed range
-      const canvases = clampFriendsCanvases(guests, guests, "standard");
-      setFormData((prev) => ({ ...prev, guests, canvases }));
-    }
+    setFormData((prev) => friendsSetGuests(prev, value));
   };
 
   const handleCanvasesChange = (value: number) => {
-    const canvases = clampFriendsCanvases(
-      value,
-      formData.guests,
-      formData.canvasType,
-    );
-    setFormData((prev) => ({ ...prev, canvases }));
+    setFormData((prev) => friendsSetCanvases(prev, value));
   };
 
   const totalPrice = calculateFriendsPrice(
