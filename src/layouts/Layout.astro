@@ -111,6 +111,17 @@ const localBusinessSchema = {
         <!-- Schema.org JSON-LD for AI discoverability -->
         <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
 
+        <script is:inline>
+            (function () {
+                var choice = null;
+                try { choice = localStorage.getItem('consentChoice'); } catch (e) {}
+                var state = choice === 'granted' ? 'granted' : 'denied';
+                window.dataLayer = window.dataLayer || [];
+                // gtag.js is not loaded, so consent commands are pushed to dataLayer directly for GTM.
+                window.dataLayer.push(['consent', 'default', { ad_storage: state, ad_user_data: state, ad_personalization: state, analytics_storage: state }]);
+            })();
+        </script>
+
         <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -170,6 +181,29 @@ const localBusinessSchema = {
     </head>
     <body>
         <slot />
+        <div id="consent-banner" class="consent-banner" hidden>
+            <p>We track your activities to better sell our product. Are you OK?</p>
+            <button type="button" id="consent-accept" class="consent-accept">OK</button>
+            <a href="#" id="consent-deny" class="consent-deny">Don't track</a>
+        </div>
+        <script is:inline>
+            (function () {
+                var banner = document.getElementById('consent-banner');
+                var stored = null;
+                try { stored = localStorage.getItem('consentChoice'); } catch (e) {}
+                if (stored === 'granted' || stored === 'denied') return;
+                banner.hidden = false;
+                function choose(state, event) {
+                    if (event) event.preventDefault();
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push(['consent', 'update', { ad_storage: state, ad_user_data: state, ad_personalization: state, analytics_storage: state }]);
+                    try { localStorage.setItem('consentChoice', state); } catch (e) {}
+                    banner.hidden = true;
+                }
+                document.getElementById('consent-accept').addEventListener('click', function (e) { choose('granted', e); });
+                document.getElementById('consent-deny').addEventListener('click', function (e) { choose('denied', e); });
+            })();
+        </script>
         <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N4QGN8B2"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -1239,6 +1273,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     .back-link:hover {
         color: var(--orange);
+    }
+
+    .consent-banner {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 10000;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 12px 20px;
+        padding: 16px;
+        background: var(--white);
+        color: var(--dark-text);
+        border-top: 1px solid var(--border-color);
+        box-shadow: 0 -2px 8px var(--shadow-color);
+        font-family: 'Montserrat', sans-serif;
+        font-size: var(--font-base);
+    }
+
+    .consent-banner[hidden] {
+        display: none;
+    }
+
+    .consent-accept {
+        padding: 12px 40px;
+        border: none;
+        border-radius: 8px;
+        background: var(--orange);
+        color: var(--white);
+        font: inherit;
+        font-size: var(--font-lg);
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .consent-deny {
+        color: var(--dark-text);
+        font-size: var(--font-xs);
     }
 </style>
 
