@@ -117,8 +117,9 @@ const localBusinessSchema = {
                 try { choice = localStorage.getItem('consentChoice'); } catch (e) {}
                 var state = choice === 'granted' ? 'granted' : 'denied';
                 window.dataLayer = window.dataLayer || [];
-                // gtag.js is not loaded, so consent commands are pushed to dataLayer directly for GTM.
-                window.dataLayer.push(['consent', 'default', { ad_storage: state, ad_user_data: state, ad_personalization: state, analytics_storage: state }]);
+                // GTM only recognizes a consent command pushed as a real `arguments` object (verified against the live container) — a plain array literal is silently ignored, so no named gtag() is defined elsewhere on the page.
+                function gtag() { window.dataLayer.push(arguments); }
+                gtag('consent', 'default', { ad_storage: state, ad_user_data: state, ad_personalization: state, analytics_storage: state });
             })();
         </script>
 
@@ -193,10 +194,11 @@ const localBusinessSchema = {
                 try { stored = localStorage.getItem('consentChoice'); } catch (e) {}
                 if (stored === 'granted' || stored === 'denied') return;
                 banner.hidden = false;
+                function gtag() { window.dataLayer.push(arguments); }
                 function choose(state, event) {
                     if (event) event.preventDefault();
                     window.dataLayer = window.dataLayer || [];
-                    window.dataLayer.push(['consent', 'update', { ad_storage: state, ad_user_data: state, ad_personalization: state, analytics_storage: state }]);
+                    gtag('consent', 'update', { ad_storage: state, ad_user_data: state, ad_personalization: state, analytics_storage: state });
                     try { localStorage.setItem('consentChoice', state); } catch (e) {}
                     banner.hidden = true;
                 }
