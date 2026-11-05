@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # Generated Netlify functions (built from src/netlify-functions/)
 netlify/functions/*.mjs
+
+# Project uses pnpm; ignore lockfiles left by npm install
+package-lock.json
