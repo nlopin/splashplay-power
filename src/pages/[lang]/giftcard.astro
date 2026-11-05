@@ -29,17 +29,58 @@ const giftUpLanguage = languageMap[lang];
 ---
 
 <SimpleLayout title={translations.title} description={translations.meta_description} homeHref={homeHref}>
+    <h1 class="giftcard-title">{translations.h1}</h1>
     <p class="giftcard-intro">{translations.intro}</p>
+    <ul class="giftcard-benefits">
+        {
+            translations.benefits.map((benefit) => {
+                const [icon, ...words] = benefit.split(" ");
+                return (
+                    <li>
+                        <span aria-hidden="true">{icon}</span>
+                        <span>{words.join(" ")}</span>
+                    </li>
+                );
+            })
+        }
+    </ul>
+    <p class="giftcard-popular" set:html={translations.popular} />
     <GiftCardWidget language={giftUpLanguage} />
 </SimpleLayout>
 
 <style>
-    .giftcard-intro {
+    .giftcard-title {
+        max-width: 700px;
+        line-height: 1.2;
+    }
+
+    .giftcard-intro,
+    .giftcard-benefits,
+    .giftcard-popular {
+        width: 100%;
         max-width: 500px;
-        margin: 0 auto 2rem;
-        text-align: center;
-        font-size: var(--font-md);
+        text-align: left;
+        font-size: var(--font-base);
         color: var(--dark-text);
         line-height: 1.6;
+    }
+
+    .giftcard-intro {
+        margin: 0 auto 1.5rem;
+    }
+
+    .giftcard-benefits {
+        margin: 0 auto 1.5rem;
+        padding: 0;
+        list-style: none;
+    }
+
+    .giftcard-benefits li {
+        display: flex;
+        gap: 0.5em;
+    }
+
+    .giftcard-popular {
+        margin: 0 auto 2rem;
     }
 </style>
