@@ -1,8 +1,8 @@
 {
   "home": {
-    "title": "Paint by throwing and playing in Barcelona | SplashPlay Playful Art Workshop",
+    "title": "Splash Painting in Barcelona: Throw Paint and Play | SplashPlay",
     "welcome": "Welcome to Splashplay",
-    "description": "Studio in El Clot: paint by splashing and playing — no need to know how to paint. Private session for couples, friends, families and teams, or a seat in a small group. From 32€. Open on Sundays too.",
+    "description": "Splash painting in Barcelona (El Clot): throw paint, no art skills needed. Private sessions for couples, friends and families, or a group spot from €32. Open Sundays.",
     "subtitle": "For families, couples, groups of friends and teams — or come on your own",
     "what_we_offer": "What we offer",
     "what_we_offer_intro": "<p>We offer two super fun activities, each with a different dynamic: Splash and Pouring. Choose the one that best matches your mood.</p>",
@@ -10,7 +10,7 @@
     "techniques_title": "Included techniques",
     "formats_title": "Available formats",
     "activity_splash_title": "Splash: paint by throwing, hitting, and playing",
-    "activity_splash_description": "Splash is our most dynamic and energetic experience: paint with balloons, guns, balls and more using acrylic paint. No need to know how to paint; you come to let go of control, laugh, and create an abstract artwork.",
+    "activity_splash_description": "Splash is our most dynamic and energetic experience: paint with balloons, guns, balls and more using acrylic paint. No need to know how to paint; you come to let go of control, laugh, and create an abstract artwork. Our Splash Zone works like a splatter room: protected walls, a protective suit and paint to throw without fear.",
     "activity_splash_details": "<strong>1.5h</strong> | 👥 <strong>Max. 6 people</strong> | <strong>Adults, kids 6+ with adults</strong> | From <strong>18€ per person</strong>",
     "activity_splash_format_big_title": "One large canvas (or two)",
     "activity_splash_format_big_description": "Come as a couple, with family, friends or as a team and share a 60x90 cm canvas with the whole group (2 to 6 people), or choose two canvases. It's the most collaborative and affordable format!",
@@ -84,7 +84,8 @@
     "nav_contact": "Contact",
     "nav_faq": "FAQ",
     "nav_book": "Book",
-    "hero_title": "Playful Art Workshop",
+    "hero_eyebrow": "SplashPlay | Playful Art Workshop",
+    "hero_title": "Splash Painting in Barcelona",
     "hero_subtitle": "Throw it, pour it, launch it, create without fear. Paint an abstract canvas for your wall that will hold the value of shared memories. Pure play, real art.<br><br>For families, couples, friends and teams — or come on your own. You don't need to know how to paint.",
     "hero_description": "",
     "cta_book": "BOOK YOUR SESSION",
@@ -269,7 +270,7 @@
     "cta_more_info_sr_families": "about family sessions",
     "cta_more_info_sr_teams": "about team sessions",
     "gift_cards": "Gift Cards",
-    "gift_cards_intro": "Give a creative experience, not another thing to dust.<br><br>Perfect for birthdays, anniversaries, Mother's Day, Valentine's Day, family celebrations, and friend get-togethers — any moment worth celebrating. Your gift card lets them splash, pour, and create at our Barcelona studio whenever they're ready.<br><br>Whoever receives it books a private session whenever they want.",
+    "gift_cards_intro": "<strong>Gift card: an original experience in Barcelona</strong><br><br>Give an experience, not another thing to dust: a private session throwing paint at our studio in El Clot. No painting skills needed, no rules.<br><br>For Christmas, birthdays, anniversaries, Valentine's Day or Mother's Day. For couples, families or friends.<br><br>Need a last-minute gift? It arrives by email right away, or on the date you choose. Valid for 6 months.",
     "gift_cards_logo_alt": "SplashPlay Studio Logo",
     "gift_cards_title": "Gift Certificate",
     "gift_cards_text": "The perfect gift for someone who has everything but time to play",
@@ -906,9 +907,18 @@
     "homeLink": "Go to homepage"
   },
   "giftcard": {
-    "title": "Gift Certificates - SplashPlay",
-    "meta_description": "SplashPlay gift certificates in Barcelona for a private, playful creative experience, available on Sundays too. Print or send by email. Valid 6 months.",
-    "intro": "A gift card is creative time together at the studio. Pick an amount, print or send by email on your chosen date. They come when they're ready. Valid 6 months."
+    "title": "Experience Gift Card in Barcelona | SplashPlay",
+    "meta_description": "Experience gift card in Barcelona: an original Christmas gift. A private paint-throwing session in El Clot. Delivered by email instantly. Valid 6 months.",
+    "h1": "Gift card: an original experience in Barcelona",
+    "intro": "Give them time to play: a private session at our El Clot studio where they throw, pour and splash paint until they've made their own painting. No painting skills needed.",
+    "benefits": [
+      "🎄 An original gift for Christmas, even last-minute",
+      "📩 Arrives by email right away, or schedule it for any day you like",
+      "🖨️ PDF to print and wrap",
+      "💑 Ideal for couples, families (kids 6+) and friends",
+      "⏳ Valid for 6 months; the recipient picks the day"
+    ],
+    "popular": "<strong>Most popular: €90</strong>, a private session for two."
   },
   "privacyPolicy": {
     "meta_title": "Privacy Policy - SplashPlay",

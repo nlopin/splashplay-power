@@ -1,8 +1,8 @@
 {
   "home": {
-    "title": "Peins en lançant et en jouant à Barcelone | SplashPlay Atelier d'art ludique",
+    "title": "Splash Painting à Barcelone : lance de la peinture | SplashPlay",
     "welcome": "Bienvenue chez SplashPlay",
-    "description": "Atelier à El Clot : peignez en éclaboussant et en jouant, pas besoin de savoir peindre. Séance privée pour couples, amis, familles et équipes, ou une place dans un petit groupe. À partir de 32€. Ouvert aussi le dimanche.",
+    "description": "Splash painting à Barcelone (El Clot) : lance de la peinture sans savoir peindre. Séances privées pour couples, amis et familles, ou place en groupe dès 32 €. Ouvert le dimanche.",
     "subtitle": "Pour les familles, les couples, les groupes d'amis et les équipes — ou venez seul",
     "what_we_offer": "Ce que nous proposons",
     "what_we_offer_intro": "<p>Nous proposons deux activités ultra fun, chacune avec une dynamique différente : Splash et Pouring. Choisissez celle qui correspond le mieux à votre humeur.</p>",
@@ -10,7 +10,7 @@
     "techniques_title": "Techniques incluses",
     "formats_title": "Formats disponibles",
     "activity_splash_title": "Splash : peindre en lançant, frappant et jouant",
-    "activity_splash_description": "Splash est notre expérience la plus dynamique et énergique : peignez avec des ballons, des pistolets, des balles et plus encore en utilisant de la peinture acrylique. Pas besoin de savoir peindre ; vous venez pour lâcher prise, rire et créer une œuvre abstraite.",
+    "activity_splash_description": "Splash est notre expérience la plus dynamique et énergique : peignez avec des ballons, des pistolets, des balles et plus encore en utilisant de la peinture acrylique. Pas besoin de savoir peindre ; vous venez pour lâcher prise, rire et créer une œuvre abstraite. Notre Zone Splash fonctionne comme une splatter room : murs protégés, combinaison de protection et peinture à lancer sans peur.",
     "activity_splash_details": "<strong>1.5h</strong> | 👥 <strong>Max. 6 personnes</strong> | <strong>Adultes, enfants 6+ accompagnés</strong> | À partir de <strong>18€ par personne</strong>",
     "activity_splash_format_big_title": "Une grande toile (ou deux)",
     "activity_splash_format_big_description": "Venez en couple, en famille, entre amis ou en équipe et partagez une toile de 60x90 cm avec tout le groupe (de 2 à 6 personnes), ou choisissez deux toiles. C'est le format le plus collaboratif et abordable !",
@@ -84,7 +84,8 @@
     "nav_contact": "Contact",
     "nav_faq": "FAQ",
     "nav_book": "Réserver",
-    "hero_title": "Atelier d'art ludique",
+    "hero_eyebrow": "SplashPlay | Atelier d'art ludique",
+    "hero_title": "Splash painting à Barcelone",
     "hero_subtitle": "Lancez, versez, projetez, créez sans peur. Peignez une toile abstraite pour votre mur qui portera la valeur de souvenirs partagés. Du jeu pur, de l'art vrai.<br><br>Pour les familles, les couples, les amis et les équipes — ou venez seul. Pas besoin de savoir peindre.",
     "hero_description": "",
     "cta_book": "RÉSERVEZ VOTRE SÉANCE",
@@ -269,7 +270,7 @@
     "cta_more_info_sr_families": "sur les séances famille",
     "cta_more_info_sr_teams": "sur les séances équipe",
     "gift_cards": "Cartes cadeaux",
-    "gift_cards_intro": "Offrez une expérience créative, pas un objet de plus à dépoussiérer.<br><br>Parfait pour les anniversaires, anniversaires de mariage, fête des Mères, Saint-Valentin, célébrations familiales et sorties entre amis — tout moment qui mérite d'être célébré. Votre carte cadeau leur permet d'éclabousser, de verser et de créer dans notre atelier à Barcelone quand ils sont prêts.<br><br>La personne qui la reçoit réserve une séance privée quand elle veut.",
+    "gift_cards_intro": "<strong>Carte cadeau : une expérience originale à Barcelone</strong><br><br>Offrez une expérience, pas un objet de plus à dépoussiérer : une séance privée pour lancer de la peinture dans notre atelier d'El Clot. Pas besoin de savoir peindre, pas de règles.<br><br>Pour Noël, un anniversaire, un anniversaire de mariage, la Saint-Valentin ou la fête des Mères. En couple, en famille ou entre amis.<br><br>Un cadeau de dernière minute ? La carte arrive par e-mail immédiatement, ou à la date de votre choix. Valable 6 mois.",
     "gift_cards_logo_alt": "Logo SplashPlay Studio",
     "gift_cards_title": "Bon cadeau",
     "gift_cards_text": "Le cadeau parfait pour quelqu'un qui a tout… sauf le temps de jouer",
@@ -906,9 +907,18 @@
     "homeLink": "Aller à l'accueil"
   },
   "giftcard": {
-    "title": "Bons cadeaux - SplashPlay",
-    "meta_description": "Bons cadeaux SplashPlay à Barcelone pour une expérience créative privée et ludique, disponibles aussi le dimanche. Imprimez ou envoyez par e-mail. Valables 6 mois.",
-    "intro": "Une carte cadeau, c'est du temps créatif ensemble à l'atelier. Choisissez un montant, imprimez ou envoyez par e-mail à la date de votre choix. Les destinataires viennent quand ils sont prêts. Valable 6 mois."
+    "title": "Carte Cadeau Expérience à Barcelone | SplashPlay",
+    "meta_description": "Carte cadeau expérience à Barcelone : un cadeau original pour Noël. Séance privée pour lancer de la peinture à El Clot. Envoyée par email immédiatement. Valable 6 mois.",
+    "h1": "Carte cadeau : une expérience originale à Barcelone",
+    "intro": "Offrez du temps pour jouer : une séance privée dans notre atelier d'El Clot où ils lancent, versent et éclaboussent la peinture jusqu'à créer leur propre tableau. Pas besoin de savoir peindre.",
+    "benefits": [
+      "🎄 Un cadeau original pour Noël, même de dernière minute",
+      "📩 Arrive par e-mail immédiatement, ou programmez-la pour le jour de votre choix",
+      "🖨️ PDF à imprimer et à emballer",
+      "💑 Idéale pour les couples, les familles (enfants dès 6 ans) et les amis",
+      "⏳ Valable 6 mois ; le ou la destinataire choisit le jour"
+    ],
+    "popular": "<strong>La plus choisie : 90 €</strong>, une séance privée pour deux."
   },
   "privacyPolicy": {
     "meta_title": "Politique de confidentialité - SplashPlay",

@@ -1,15 +1,15 @@
 ---
-import { createAstroTranslator, getCurrentLanguage } from "../../utils/i18n";
+import { createAstroTranslator } from "../../utils/i18n";
 import CTAButton from "../CTAButton.astro";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
-const lang = getCurrentLanguage(Astro.currentLocale);
 ---
 
-<section class:list={["hero", { "hero--en-title": lang === "en" }]} id="hero">
+<section class="hero" id="hero">
     <div class="hero-overlay"></div>
     <div class="container hero-container">
         <div class="hero-content">
+            <p class="hero-eyebrow">{t("hero_eyebrow")}</p>
             <h1>{t("hero_title")}</h1>
             <p class="subtitle" set:html={t("hero_subtitle")} />
             <div class="cta-wrapper">
@@ -81,16 +81,18 @@ const lang = getCurrentLanguage(Astro.currentLocale);
         text-align: left;
     }
 
+    .hero-eyebrow {
+        font-size: var(--font-md);
+        font-weight: 600;
+        color: #000;
+        margin-bottom: 32px;
+    }
+
     h1 {
         font-size: clamp(var(--font-3xl), 5vw, 3rem);
         color: var(--purple);
-        line-height: 1.5;
-        margin-bottom: 8px;
-        text-transform: capitalize;
-    }
-
-    .hero--en-title h1 {
-        white-space: nowrap;
+        line-height: 1.2;
+        margin-bottom: 16px;
     }
 
     .subtitle {
@@ -146,6 +148,7 @@ const lang = getCurrentLanguage(Astro.currentLocale);
             margin-right: auto;
         }
 
+        .hero-eyebrow,
         h1 {
             display: none;
         }
