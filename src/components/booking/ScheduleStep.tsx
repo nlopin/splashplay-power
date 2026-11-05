@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 import { usePageLanguage, useTranslator } from "@/components/TranslatorContext";
 import { isServer } from "@/utils/environment";
 
@@ -10,10 +12,12 @@ import type {
 import { AvailabilityCalendar } from "./AvailabilityCalendar";
 import { EventTypeSelector } from "./EventTypeSelector";
 import { EventTypeOptions } from "./eventTypeOptions";
+import type { OptionsHandle } from "./eventTypeOptions/formState";
 
 export interface ScheduleStepProps {
   availability: Availability;
   selectedTimeSlot: SelectedTimeSlot | null;
+  focusTime?: SelectedTimeSlot | null;
   currentAmount: number | null;
   currentGuests: number | null;
   isLoading: boolean;
@@ -22,11 +26,13 @@ export interface ScheduleStepProps {
   onTimeSlotSelect: (slot: SelectedTimeSlot | null) => void;
   onPriceChange: (data: PricingData) => void;
   onPayToBook: () => void;
+  optionsRef?: Ref<OptionsHandle>;
 }
 
 export function ScheduleStep({
   availability,
   selectedTimeSlot,
+  focusTime,
   currentAmount,
   currentGuests,
   isLoading,
@@ -35,6 +41,7 @@ export function ScheduleStep({
   onTimeSlotSelect,
   onPriceChange,
   onPayToBook,
+  optionsRef,
 }: ScheduleStepProps) {
   const t = useTranslator();
   const lang = usePageLanguage();
@@ -70,6 +77,7 @@ export function ScheduleStep({
           availability={availability}
           onTimeSlotSelect={onTimeSlotSelect}
           selectedTimeSlot={selectedTimeSlot}
+          focusTime={focusTime}
         />
       ) : (
         "No calendar available"
@@ -77,6 +85,7 @@ export function ScheduleStep({
 
       <div className="canvas-options">
         <EventTypeOptions
+          ref={optionsRef}
           eventType={eventType}
           onChange={onPriceChange}
           showPrice={!!selectedTimeSlot}

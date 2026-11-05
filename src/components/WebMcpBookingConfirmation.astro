@@ -1,0 +1,36 @@
+---
+import type { BookingConfirmation } from "@/webmcp/confirmationTool";
+
+// Exposes the /complete result to browser agents as a WebMCP tool.
+type Props = BookingConfirmation;
+
+const { status, title, time, amountCents } = Astro.props;
+const confirmation: BookingConfirmation = { status, title, time, amountCents };
+---
+
+<script
+    type="application/json"
+    id="webmcp-booking-confirmation"
+    set:html={JSON.stringify(confirmation)}
+/>
+
+<script>
+    import type { BookingConfirmation } from "@/webmcp/confirmationTool";
+    import { isWebMcpAvailable } from "@/webmcp/register";
+
+    if (isWebMcpAvailable()) {
+        const element = document.getElementById("webmcp-booking-confirmation");
+        if (element?.textContent) {
+            const confirmation = JSON.parse(
+                element.textContent,
+            ) as BookingConfirmation;
+            import("@/webmcp/confirmationTool").then(
+                ({ registerConfirmationTool }) =>
+                    registerConfirmationTool(
+                        document.documentElement.lang,
+                        confirmation,
+                    ),
+            );
+        }
+    }
+</script>

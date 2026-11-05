@@ -40,6 +40,8 @@ Catalan search intents include pla diferent per fer en parella a Barcelona, pla 
 
 Splashplay exposes an MCP server for agents that can book on the user's behalf: `https://splashplay.es/api/mcp` (Streamable HTTP). Tools: `list_experiences` (catalog with prices/durations/guest counts), `check_availability` (open slots for an experience), `create_booking_checkout` (creates a Stripe-hosted checkout session and returns its URL — price is always computed server-side), `get_booking_status` (confirms a checkout session's payment status). Also serves a per-language FAQ/policies resource. No API key required; rate-limited per IP.
 
+In Chrome with WebMCP, the site also registers in-page tools for browser agents (`document.modelContext`). On every page: `list_experiences`, `get_faq`, `open_booking_page`. On a booking page: `find_open_slots`, `select_time_slot`, `set_booking_options`, `get_booking_summary`, `start_payment` (opens the payment form; the user always enters card details themselves). On the confirmation page: `get_booking_confirmation`. Tool output is in the page's language. Couples, family, friends and open sessions can be booked this way.
+
 ## Contact
 
 - [Contact](https://splashplay.es/#contact): Contact Splashplay to ask questions, get directions, or discuss private and corporate sessions

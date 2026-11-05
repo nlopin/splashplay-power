@@ -5,6 +5,7 @@ import { STRIPE_SECRET_KEY } from "astro:env/server";
 import PageLayout from "@/layouts/PageLayout.astro";
 import { getPageTranslations, languagePrefixes } from "@/utils/i18n";
 import splashPlayLogo from "@/assets/splash-play-logo.svg";
+import WebMcpBookingConfirmation from "@/components/WebMcpBookingConfirmation.astro";
 
 export const prerender = false;
 
@@ -93,6 +94,12 @@ try {
             </div>
         </div>
     </div>
+    <WebMcpBookingConfirmation
+        status={status}
+        title={sessionTitle}
+        time={sessionTime}
+        amountCents={Math.round(amountPaid * 100)}
+    />
 </PageLayout>
 
 <style>

@@ -45,7 +45,12 @@ export const POST: APIRoute = async ({ request }) => {
     origin: new URL(request.url).origin,
   });
 
-  return jsonResponse({ clientSecret: session.client_secret });
+  // amountCents lets the client (and WebMCP's start_payment) report the
+  // exact server-priced charge.
+  return jsonResponse({
+    clientSecret: session.client_secret,
+    amountCents: quote.amountCents,
+  });
 };
 
 function jsonResponse(body: unknown, status = 200): Response {
