@@ -27,6 +27,7 @@ export const OPEN_WEEKLY_SLOTS: Record<string, SlotConfig[]> = {
 export const OPEN_SESSION_EXTRA_SLOTS: Record<string, SlotConfig[]> = {
   "2026-10-23": [{ time: "18:00" }, { time: "19:45" }],
   "2026-10-31": [{ time: "14:00" }, { time: "16:00" }],
+  "2026-12-23": [{ time: "12:00" }, { time: "18:00" }],
 };
 
 export const WEEKLY_SLOTS: Record<string, SlotConfig[]> = {
