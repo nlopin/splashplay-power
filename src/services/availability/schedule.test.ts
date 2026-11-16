@@ -47,6 +47,20 @@ describe("open session extra slots", () => {
     expect(result.map((slot) => slot.time)).toEqual([at18, at1945]);
   });
 
+  it("keeps the usual 18:00 and adds 12:00 on 23 Dec 2026", () => {
+    const at12 = "2026-12-23T11:00:00.000Z";
+    const at18 = "2026-12-23T17:00:00.000Z";
+    const otherWednesday = "2026-12-16T11:00:00.000Z";
+
+    const result = filterToSchedule(
+      [at12, at18, otherWednesday],
+      OPEN_WEEKLY_SLOTS,
+      OPTIONS,
+    );
+
+    expect(result.map((slot) => slot.time)).toEqual([at12, at18]);
+  });
+
   it("replaces Thursday 19:45 with Halloween 18:00 on 29 Oct 2026", () => {
     const at18 = "2026-10-29T17:00:00.000Z";
     const at1945 = "2026-10-29T18:45:00.000Z";
