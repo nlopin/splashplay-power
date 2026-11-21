@@ -1024,6 +1024,7 @@
     "already_on_page": "Ja ets a la pàgina de reserva de {name}. Fes servir find_open_slots per veure els horaris.",
     "opening_page": "Obrint la pàgina de reserva de {name}. La pàgina es recarrega; les seves eines de reserva estaran disponibles quan carregui.",
     "faq_not_found": "Cap pregunta coincideix amb \"{question}\". Crida get_faq sense pregunta per veure la llista.",
+    "activity_not_found": "No existeix l'activitat \"{activity}\". Opcions: {options}.",
     "slots_none": "No hi ha horaris lliures que coincideixin. Prova un rang de dates més ampli o una altra franja del dia.",
     "slots_more": "Hi ha {count} horaris lliures més. Acota el rang de dates per veure'ls.",
     "slot_not_open": "{datetime} no és un horari lliure. Aquests són els més propers.",

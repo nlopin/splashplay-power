@@ -1024,6 +1024,7 @@
     "already_on_page": "Vous êtes déjà sur la page de réservation {name}. Utilisez find_open_slots pour voir les horaires.",
     "opening_page": "Ouverture de la page de réservation {name}. La page se recharge ; ses outils de réservation seront disponibles une fois chargée.",
     "faq_not_found": "Aucune question ne correspond à « {question} ». Appelez get_faq sans question pour voir la liste.",
+    "activity_not_found": "L'activité « {activity} » n'existe pas. Options : {options}.",
     "slots_none": "Aucun créneau libre ne correspond. Essayez une période plus large ou un autre moment de la journée.",
     "slots_more": "{count} autres créneaux libres correspondent. Réduisez la période pour les voir.",
     "slot_not_open": "{datetime} n'est pas un créneau libre. Voici les plus proches.",

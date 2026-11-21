@@ -51,6 +51,16 @@ describe("buildWebMcpData", () => {
         MAX_TOOL_OUTPUT_CHARS,
       );
       expect(questionsOutput.length).toBeLessThanOrEqual(MAX_TOOL_OUTPUT_CHARS);
+      expect(data.activities.map((a) => a.activity)).toEqual([
+        "splash",
+        "pouring",
+      ]);
+      for (const activity of data.activities) {
+        expect(activity.techniques.length).toBeGreaterThan(0);
+        expect(JSON.stringify(activity).length).toBeLessThanOrEqual(
+          MAX_TOOL_OUTPUT_CHARS,
+        );
+      }
       for (const entry of data.faq) {
         expect(JSON.stringify(entry).length).toBeLessThanOrEqual(
           MAX_TOOL_OUTPUT_CHARS,

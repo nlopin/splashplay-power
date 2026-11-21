@@ -32,10 +32,11 @@ afterEach(() => {
 });
 
 describe("site tools", () => {
-  it("registers three tools with names within 30 characters", () => {
+  it("registers four tools with names within 30 characters", () => {
     const { tools } = setup();
     expect(tools.map((t) => t.name)).toEqual([
       "list_experiences",
+      "get_activity_details",
       "get_faq",
       "open_booking_page",
     ]);
@@ -52,6 +53,29 @@ describe("site tools", () => {
       output.experiences.map((e: { experience: string }) => e.experience),
     ).toContain("open_session");
     expect(output.contact).toContain("info@splashplay.es");
+  });
+
+  it("get_activity_details explains a session's techniques and flow", async () => {
+    const { run } = setup();
+    const splash = parse(await run("get_activity_details", { activity: "splash" }));
+    expect(splash.name).toContain("Splash");
+    expect(splash.techniques.map((t: { name: string }) => t.name)).toContain(
+      "Balloons",
+    );
+    expect(splash.included).toBeTruthy();
+    expect(splash.session.length).toBeGreaterThan(0);
+    expect(JSON.stringify(splash)).not.toMatch(/<[a-z]/i);
+
+    const pouring = parse(await run("get_activity_details", { activity: "Pouring" }));
+    expect(pouring.techniques.map((t: { name: string }) => t.name)).toContain(
+      "Spinning",
+    );
+  });
+
+  it("get_activity_details lists the options for an unknown activity", async () => {
+    const { run } = setup();
+    const output = await run("get_activity_details", { activity: "boxing" });
+    expect(output).toContain("splash, pouring");
   });
 
   it("get_faq lists questions, then answers one", async () => {

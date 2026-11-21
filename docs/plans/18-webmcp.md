@@ -386,3 +386,8 @@ Where the implementation differs from the design above:
 - `WEBMCP_EVENT_TYPES` lives in `src/services/agentTools/eventTypes.ts`,
   separate from the zod schemas, so the site-wide tools chunk stays small
   (about 4 KB).
+- Added `get_activity_details` (site-wide, read-only) after testing showed
+  agents couldn't explain what a Splash or Pouring session involves:
+  techniques, what's included and the session flow, built from the home
+  page's `whatWeOffer` config and copy. Kept under 1.5K by dropping the
+  takeaway text and the steps that repeat other fields.

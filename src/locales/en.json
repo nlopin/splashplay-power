@@ -1024,6 +1024,7 @@
     "already_on_page": "You're already on the {name} booking page. Use find_open_slots to see the times.",
     "opening_page": "Opening the {name} booking page. The page reloads; its booking tools are available once it loads.",
     "faq_not_found": "No question matches \"{question}\". Call get_faq without a question to see the list.",
+    "activity_not_found": "There is no activity \"{activity}\". Options: {options}.",
     "slots_none": "No open slots match. Try a wider date range or another time of day.",
     "slots_more": "{count} more open slots match. Narrow the date range to see them.",
     "slot_not_open": "{datetime} isn't an open slot. These are the nearest open ones.",

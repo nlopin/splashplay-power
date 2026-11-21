@@ -12,6 +12,9 @@ import type { WebMcpTool } from "./types";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
+// The activities shown on the home page (src/config/whatWeOffer.ts).
+const ACTIVITIES = ["splash", "pouring"] as const;
+
 export type SiteToolsDeps = {
   lang: string;
   loadData: (lang: string) => Promise<WebMcpData>;
@@ -81,7 +84,7 @@ export function buildSiteTools(deps: SiteToolsDeps): WebMcpTool[] {
   const listExperiences: WebMcpTool = {
     name: "list_experiences",
     description:
-      "List SplashPlay's painting experiences in Barcelona: name, starting price, duration in minutes, number of people, and whether it can be booked online. Use it to choose the experience before calling open_booking_page.",
+      "List SplashPlay's painting experiences in Barcelona: name, starting price, duration in minutes, number of people, and whether it can be booked online. Use it to choose the experience before calling open_booking_page. For what happens during a session, use get_activity_details.",
     inputSchema: { type: "object", properties: {} },
     annotations: { readOnlyHint: true },
     execute: async () => {
@@ -119,6 +122,38 @@ export function buildSiteTools(deps: SiteToolsDeps): WebMcpTool[] {
         return formatMessage(d.messages, "faq_not_found", { question });
       }
       return json(entry);
+    },
+  };
+
+  const getActivityDetails: WebMcpTool = {
+    name: "get_activity_details",
+    description:
+      "Explain what a session of one painting activity consists of: its techniques and how each works, what's included, how the session goes, and when the artwork is ready. Splash is the energetic one, Pouring the calm one. Private sessions (couples, family, friends) choose either; open sessions are Splash in a small shared group.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        activity: {
+          type: "string",
+          enum: [...ACTIVITIES],
+          description: "Which activity to explain.",
+        },
+      },
+      required: ["activity"],
+    },
+    annotations: { readOnlyHint: true },
+    execute: async (input) => {
+      const d = await data();
+      const wanted = String(input.activity ?? "")
+        .trim()
+        .toLowerCase();
+      const activity = d.activities.find((a) => a.activity === wanted);
+      if (!activity) {
+        return formatMessage(d.messages, "activity_not_found", {
+          activity: wanted,
+          options: d.activities.map((a) => a.activity).join(", "),
+        });
+      }
+      return json(activity);
     },
   };
 
@@ -205,7 +240,7 @@ export function buildSiteTools(deps: SiteToolsDeps): WebMcpTool[] {
     },
   };
 
-  return [listExperiences, getFaq, openBookingPage];
+  return [listExperiences, getActivityDetails, getFaq, openBookingPage];
 }
 
 export function registerSiteTools(lang: string): void {
