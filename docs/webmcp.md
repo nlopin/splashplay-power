@@ -115,10 +115,6 @@ Chrome recommends 1,500 characters or less for each tool output.
 - `list_experiences` gives no descriptions.
 - `get_activity_details` gives one activity for each call, without the text that repeats other fields.
 
-### No `individual` experience
-
-Agents cannot book `individual`. An open session is the correct option for one person.
-
 ### Local types and a local hook
 
 The code does not use the `webmcp-types` or `use-webmcp-tool` packages.
@@ -127,8 +123,3 @@ The API changes frequently. All calls go through `register.ts`, so an API change
 ### Same origin only
 
 The tools do not use `exposedTo`. No other site must call them.
-
-## Open items
-
-- No test with a real agent was done.
-- `/api/payment-session` has no rate limit. An agent in a loop can create many Stripe sessions.
