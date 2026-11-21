@@ -16,10 +16,13 @@ export function AvailabilityCalendar({
   availability,
   onTimeSlotSelect,
   selectedTimeSlot,
+  focusTime,
 }: {
   availability: Availability;
   onTimeSlotSelect?: (slot: SelectedTimeSlot | null) => void;
   selectedTimeSlot?: SelectedTimeSlot | null;
+  // Week to show when nothing is selected yet (e.g. from ?date=).
+  focusTime?: SelectedTimeSlot | null;
 }) {
   const t = useTranslator();
   const language = usePageLanguage();
@@ -83,6 +86,16 @@ export function AvailabilityCalendar({
     setSelectedWeekIndex(initialWeekIndex);
     setMobileWeekCount((count) => Math.max(count, initialWeekIndex + 1));
   }, [selectedTimeSlot, initialWeekIndex]);
+
+  useEffect(() => {
+    if (selectedTimeSlot || !focusTime) return;
+    const focusWeekIndex = weeks.findIndex((week) =>
+      week.some((day) => day.times.includes(focusTime)),
+    );
+    if (focusWeekIndex < 0) return;
+    setSelectedWeekIndex(focusWeekIndex);
+    setMobileWeekCount((count) => Math.max(count, focusWeekIndex + 1));
+  }, [focusTime, selectedTimeSlot, weeks]);
   const currentWeek = weeks[selectedWeekIndex];
 
   const uniqueTimes = useMemo(() => {

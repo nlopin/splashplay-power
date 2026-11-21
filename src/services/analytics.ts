@@ -17,6 +17,7 @@ export const AnalyticsEvents = {
   SessionDateSelected: "SessionDateSelected",
   PaymentPageOpened: "PaymentPageOpened",
   BookingScheduled: "BookingScheduled",
+  AgentToolCalled: "AgentToolCalled",
 } as const;
 
 export type AnalyticsEvent =

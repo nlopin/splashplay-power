@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useImperativeHandle, useRef } from "react";
 import one_small from "@/assets/img/30x40_compartido.jpg";
 import one_big from "@/assets/img/60x80_compartido.jpg";
 import two_big from "@/assets/img/60x90_2individuales.jpg";
@@ -16,6 +16,15 @@ import {
   COUPLES_PRICE,
   type CouplesPicture,
 } from "@/services/catalog/couplesPricing";
+import {
+  DEFAULT_SPLASH_PICTURE,
+  applyCouplesPatch,
+  couplesPricingData,
+  couplesSetActivityFormat,
+  couplesSetPicture,
+  isSplashOnlyPicture,
+  type CouplesFormState,
+} from "./formState";
 
 type PictureType = CouplesPicture;
 
@@ -28,9 +37,6 @@ const IMAGES: Record<PictureType, string> = {
   individual: individual.src,
 };
 
-const DEFAULT_SPLASH_PICTURE: PictureType = "one_big";
-const DEFAULT_POURING_PICTURE: PictureType = "individual";
-
 function isPictureType(value: string | null): value is PictureType {
   return (
     value === "one_small" ||
@@ -40,14 +46,11 @@ function isPictureType(value: string | null): value is PictureType {
   );
 }
 
-function isSplashOnlyPicture(value: PictureType): boolean {
-  return value === "one_big" || value === "two_big";
-}
-
 export function CouplesOptions({
   onChange,
   showPrice,
   discount,
+  ref,
 }: EventTypeOptionsProps) {
   const [pictureType, setPictureType] = useState<PictureType>(
     DEFAULT_SPLASH_PICTURE,
@@ -57,28 +60,34 @@ export function CouplesOptions({
   const savedSplashPictureTypeRef = useRef<PictureType>(DEFAULT_SPLASH_PICTURE);
   const t = useTranslator();
 
+  const currentState = (): CouplesFormState => ({
+    picture: pictureType,
+    activityFormat,
+    savedSplashPicture: savedSplashPictureTypeRef.current,
+  });
+
+  const commit = (next: CouplesFormState) => {
+    setPictureType(next.picture);
+    setActivityFormat(next.activityFormat);
+    savedSplashPictureTypeRef.current = next.savedSplashPicture;
+  };
+
   const handlePictureTypeChange = (type: PictureType) => {
-    setPictureType(type);
-    if (activityFormat === "splash") {
-      savedSplashPictureTypeRef.current = type;
-    }
+    commit(couplesSetPicture(currentState(), type));
   };
 
   const handleActivityFormatChange = (format: ActivityFormat) => {
-    if (format === activityFormat) return;
-
-    if (format === "pouring") {
-      if (activityFormat === "splash") {
-        savedSplashPictureTypeRef.current = pictureType;
-      }
-      setActivityFormat("pouring");
-      setPictureType(DEFAULT_POURING_PICTURE);
-      return;
-    }
-
-    setActivityFormat("splash");
-    setPictureType(savedSplashPictureTypeRef.current);
+    commit(couplesSetActivityFormat(currentState(), format));
   };
+
+  // Lets the WebMCP set_booking_options tool change options like a click.
+  useImperativeHandle(ref, () => ({
+    apply(patch) {
+      const { next, adjusted } = applyCouplesPatch(currentState(), patch);
+      commit(next);
+      return { data: couplesPricingData(next), adjusted };
+    },
+  }));
 
   const isSplash = activityFormat === "splash";
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useImperativeHandle, useRef } from "react";
 
 import { useTranslator } from "@/components/TranslatorContext";
 import { formatPrice } from "@/utils/price";
@@ -9,30 +9,33 @@ import {
   type ActivityFormat,
 } from "./ActivityFormatSelector";
 import {
+  applyFamilyPatch,
+  familyPricingData,
+  familySetActivityFormat,
+  familySetAdults,
+  familySetCanvases,
+  familySetCanvasType,
+  familySetKids,
+  type FamilyFormData,
+} from "./formState";
+import {
   MIN_ADULTS,
   MIN_KIDS,
   MAX_TOTAL,
   getFamilyCanvasLimits,
-  clampFamilyCanvases,
   calculateFamilyPrice,
   type CanvasType,
 } from "@/services/catalog/familyPricing";
 
 export type { CanvasType } from "@/services/catalog/familyPricing";
 export type { ActivityFormat } from "./ActivityFormatSelector";
-
-export interface FamilyFormData {
-  adults: number;
-  kids: number;
-  canvases: number;
-  canvasType: CanvasType;
-  activityFormat: ActivityFormat;
-}
+export type { FamilyFormData } from "./formState";
 
 export function FamilyOptions({
   onChange,
   showPrice,
   discount,
+  ref,
 }: EventTypeOptionsProps) {
   const [formData, setFormData] = useState<FamilyFormData>({
     adults: 2,
@@ -47,114 +50,36 @@ export function FamilyOptions({
 
   // Calculate total price and notify parent
   useEffect(() => {
-    const totalGuests = formData.adults + formData.kids;
-    const totalAmount = calculateFamilyPrice(
-      formData.canvases,
-      totalGuests,
-      formData.canvasType,
-    );
-    onChangeRef.current({
-      amount: totalAmount,
-      guests: totalGuests,
-      selection: {
-        eventType: "family",
-        adults: formData.adults,
-        kids: formData.kids,
-        canvases: formData.canvases,
-        canvasType: formData.canvasType,
-        activityFormat: formData.activityFormat,
-      },
-    });
+    onChangeRef.current(familyPricingData(formData));
   }, [formData]);
 
+  // Lets the WebMCP set_booking_options tool change options like a click.
+  useImperativeHandle(ref, () => ({
+    apply(patch) {
+      const { next, adjusted } = applyFamilyPatch(formData, patch);
+      setFormData(next);
+      return { data: familyPricingData(next), adjusted };
+    },
+  }));
+
   const handleActivityFormatChange = (format: ActivityFormat) => {
-    if (format === "pouring") {
-      setFormData((prev) => {
-        if (prev.canvasType === "big") {
-          const total = Math.max(
-            1,
-            Math.min(prev.adults + prev.kids, MAX_TOTAL),
-          );
-          const canvases = clampFamilyCanvases(total, total, "standard");
-          return {
-            ...prev,
-            activityFormat: "pouring",
-            canvasType: "standard",
-            canvases,
-          };
-        }
-        return { ...prev, activityFormat: "pouring" };
-      });
-      return;
-    }
-    setFormData((prev) => ({ ...prev, activityFormat: "splash" }));
+    setFormData((prev) => familySetActivityFormat(prev, format));
   };
 
   const handleCanvasTypeChange = (type: CanvasType) => {
-    if (type === "big") {
-      setFormData((prev) => {
-        const total = Math.max(1, Math.min(prev.adults + prev.kids, MAX_TOTAL));
-        return {
-          ...prev,
-          canvasType: "big",
-          canvases: clampFamilyCanvases(1, total, "big"),
-        };
-      });
-    } else {
-      setFormData((prev) => {
-        const total = Math.max(1, Math.min(prev.adults + prev.kids, MAX_TOTAL));
-        const canvases = clampFamilyCanvases(total, total, "standard");
-        return { ...prev, canvasType: "standard", canvases };
-      });
-    }
+    setFormData((prev) => familySetCanvasType(prev, type));
   };
 
   const handleAdultsChange = (value: number) => {
-    const adults = Math.max(MIN_ADULTS, value);
-    setFormData((prev) => {
-      const kids = Math.min(prev.kids, MAX_TOTAL - adults);
-      const total = Math.max(1, Math.min(adults + kids, MAX_TOTAL));
-      if (prev.canvasType === "big") {
-        return {
-          ...prev,
-          adults,
-          kids,
-          canvases: clampFamilyCanvases(prev.canvases, total, "big"),
-        };
-      }
-      const canvases = clampFamilyCanvases(total, total, "standard");
-      return { ...prev, adults, kids, canvases };
-    });
+    setFormData((prev) => familySetAdults(prev, value));
   };
 
   const handleKidsChange = (value: number) => {
-    const kids = Math.max(MIN_KIDS, value);
-    setFormData((prev) => {
-      const adults = Math.max(
-        MIN_ADULTS,
-        Math.min(prev.adults, MAX_TOTAL - kids),
-      );
-      const total = Math.max(1, Math.min(adults + kids, MAX_TOTAL));
-      if (prev.canvasType === "big") {
-        return {
-          ...prev,
-          adults,
-          kids,
-          canvases: clampFamilyCanvases(prev.canvases, total, "big"),
-        };
-      }
-      const canvases = clampFamilyCanvases(total, total, "standard");
-      return { ...prev, adults, kids, canvases };
-    });
+    setFormData((prev) => familySetKids(prev, value));
   };
 
   const handleCanvasesChange = (value: number) => {
-    const total = Math.max(
-      1,
-      Math.min(formData.adults + formData.kids, MAX_TOTAL),
-    );
-    const canvases = clampFamilyCanvases(value, total, formData.canvasType);
-    setFormData((prev) => ({ ...prev, canvases }));
+    setFormData((prev) => familySetCanvases(prev, value));
   };
 
   const totalGuests = formData.adults + formData.kids;

@@ -7,9 +7,14 @@ import { findOpenSlotOnDate } from "@/services/catalog/themedOpenSessions";
 import { isServer } from "@/utils/environment";
 import { trackEvent, AnalyticsEvents } from "@/services/analytics";
 import type { ISODatetime } from "@/types";
+import { isWebMcpEventType } from "@/services/agentTools/eventTypes";
+import { buildBookingTools, type PaymentResult } from "@/webmcp/bookingTools";
+import { loadWebMcpData } from "@/webmcp/data";
+import { useWebMcpTools } from "@/webmcp/useWebMcpTools";
 
 import { PaymentStep } from "./PaymentStep";
 import { ScheduleStep, type ScheduleStepProps } from "./ScheduleStep";
+import type { OptionsHandle } from "./eventTypeOptions/formState";
 import type { SelectedTimeSlot, EventType, Availability } from "./types";
 
 type Step = "schedule" | "payment";
@@ -61,18 +66,28 @@ export default function BookingForm({
   const [partnerKey] = useState<string | undefined>(getInitialPartnerKey);
 
   const abortControllerRef = useRef<AbortController | null>(null);
+  // Options widget handle, used by the WebMCP set_booking_options tool.
+  const optionsRef = useRef<OptionsHandle>(null);
 
   // Track ScheduleStepOpened on initial mount
   useEffect(() => {
     trackEvent(AnalyticsEvents.ScheduleStepOpened);
   }, []);
 
+  // ?date=YYYY-MM-DD: an open session has one slot per day, so select it;
+  // other experiences open the calendar on that week.
+  const [focusTime, setFocusTime] = useState<SelectedTimeSlot | null>(null);
   useEffect(() => {
-    if (selectedTimeSlot || eventType !== "open_session") return;
+    if (selectedTimeSlot) return;
     const date = new URLSearchParams(window.location.search).get("date");
     if (!date) return;
     const slot = findOpenSlotOnDate(availability, date);
-    if (slot) setSelectedTimeSlot(slot.time);
+    if (!slot) return;
+    if (eventType === "open_session") {
+      setSelectedTimeSlot(slot.time);
+    } else {
+      setFocusTime(slot.time);
+    }
   }, [availability, eventType, selectedTimeSlot]);
 
   useEffect(() => {
@@ -136,7 +151,7 @@ export default function BookingForm({
   }: {
     selection: BookingSelection;
     datetime: ISODatetime;
-  }): Promise<boolean> => {
+  }): Promise<PaymentResult> => {
     setError(null);
     setBookingError(null);
 
@@ -162,7 +177,7 @@ export default function BookingForm({
 
       if (res.status === 409) {
         setBookingError(translations.error_slot_full);
-        return false;
+        return { ok: false, reason: "slot_full" };
       }
 
       if (!res.ok) {
@@ -179,15 +194,15 @@ export default function BookingForm({
       }
 
       setClientSecret(parseResult.data.clientSecret);
-      return true;
+      return { ok: true, amountCents: parseResult.data.amountCents };
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") {
         console.log("Request aborted");
-        return false;
+        return { ok: false, reason: "failed" };
       }
       console.error(err);
       setError(translations.error_load);
-      return false;
+      return { ok: false, reason: "failed" };
     }
   };
 
@@ -213,24 +228,56 @@ export default function BookingForm({
     }
   };
 
-  const handlePayToBook: ScheduleStepProps["onPayToBook"] = async () => {
-    if (!selectedTimeSlot || !currentSelection) return;
+  const handlePayToBook = async (): Promise<PaymentResult> => {
+    if (!selectedTimeSlot || !currentSelection) {
+      return { ok: false, reason: "not_ready" };
+    }
 
     setIsLoading(true);
     try {
-      const ok = await createSession({
+      const result = await createSession({
         selection: currentSelection,
         datetime: selectedTimeSlot,
       });
-      if (ok) {
+      if (result.ok) {
         setCurrentStep("payment");
       }
+      return result;
     } catch (error) {
       console.error(error);
+      return { ok: false, reason: "failed" };
     } finally {
       setIsLoading(false);
     }
   };
+
+  // WebMCP tools for browser agents, only on the schedule step (the payment
+  // step is human-only). Individual sessions aren't exposed to agents.
+  useWebMcpTools(
+    currentStep === "schedule" && isWebMcpEventType(eventType)
+      ? buildBookingTools({
+          eventType,
+          lang,
+          availability,
+          selectedTimeSlot,
+          pricing:
+            currentSelection && currentAmount != null && currentGuests != null
+              ? {
+                  amount: currentAmount,
+                  guests: currentGuests,
+                  selection: currentSelection,
+                }
+              : null,
+          isLoading,
+          now: () => new Date(),
+          themeName: (slug) => translations[`theme_${slug}`],
+          selectTimeSlot: handleTimeSlotSelect,
+          applyOptions: (patch) => optionsRef.current?.apply(patch) ?? null,
+          startPayment: handlePayToBook,
+          loadData: loadWebMcpData,
+        })
+      : null,
+  );
 
   const handleEditSelections = () => {
     // Clear payment state when going back to schedule
@@ -256,6 +303,7 @@ export default function BookingForm({
         <ScheduleStep
           availability={availability}
           selectedTimeSlot={selectedTimeSlot}
+          focusTime={focusTime}
           currentAmount={currentAmount}
           currentGuests={currentGuests}
           isLoading={isLoading}
@@ -264,6 +312,7 @@ export default function BookingForm({
           onTimeSlotSelect={handleTimeSlotSelect}
           onPriceChange={handlePriceChange}
           onPayToBook={handlePayToBook}
+          optionsRef={optionsRef}
         />
       ) : (
         <PaymentStep
