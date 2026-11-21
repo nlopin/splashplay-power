@@ -1,9 +1,10 @@
 # WebMCP: Tools for Browser Agents
 
 [WebMCP](https://developer.chrome.com/docs/ai/webmcp) is a proposed web standard from Chrome. It is in an origin trial.
-A page registers tools. An AI agent in the browser calls these tools. It does not read the DOM or click buttons.
+A page registers tools. An AI agent in the browser calls these tools. The agent does not read the DOM and does not click buttons.
 
-The site uses WebMCP to let an agent find information, open a booking page, select a slot, set the options and open the payment form.
+With WebMCP, an agent can find information about the studio and book a session.
+The agent opens the booking page, selects a slot, sets the options and opens the payment form.
 The user sees each change in the page. The user always types the card data in the Stripe form.
 
 The server MCP (`/api/mcp`) is for remote agents without a browser. WebMCP is for an agent in the browser tab of the user.
@@ -40,20 +41,22 @@ Agents can book `couples`, `family`, `friends` and `open_session`. Team building
 ## How it works
 
 - **Feature detection.** If `document.modelContext` is not available, the page loads no WebMCP code and sends no request.
-- **Registration.** All tools go through `src/webmcp/register.ts`. It registers each tool with an `AbortSignal`, sends an analytics event for each call, cuts output at 1,500 characters and changes errors into text for the agent.
-- **Page state.** A React hook registers the booking tools on the schedule step and removes them at the payment step. A tool call always uses the latest React state.
+- **Registration.** All tools use `src/webmcp/register.ts`. This file registers each tool with an `AbortSignal`. For each call, it sends an analytics event and cuts the output at 1,500 characters. It gives errors to the agent as text.
+- **Page state.** A React hook registers the booking tools on the schedule step. The hook removes them at the payment step. A tool call always uses the latest React state.
 - **Data.** The tool data and output text are in a static file for each language, `/webmcp/{lang}.json`. The page loads it at the first tool call.
-- **Booking options.** The widgets and `set_booking_options` use the same pure functions for the option rules. If a value does not agree with a rule, the tool changes it and tells the agent why.
-- **Payment.** `start_payment` uses the same request as the button. The server calculates the price, and the tool gives that price to the agent.
+- **Booking options.** The widgets and `set_booking_options` use the same pure functions for the option rules. If a value does not agree with a rule, the tool changes the value. Then it tells the agent the reason.
+- **Payment.** `start_payment` sends the same request as the button. The server calculates the price. The tool gives this price to the agent.
 
 ## Testing
 
-1. In Chrome 149 or later, enable `chrome://flags/#enable-webmcp-testing` and restart Chrome.
-2. Run `pnpm dev` and open `http://localhost:4321/en/`. You do not need a token on `localhost`.
-3. In DevTools, open Application > WebMCP. You can see and run the tools of the page there.
+1. In Chrome 149 or later, set `chrome://flags/#enable-webmcp-testing` to "Enabled".
+2. Restart Chrome.
+3. Run `pnpm dev`.
+4. Open `http://localhost:4321/en/`. A token is not necessary on `localhost`.
+5. In DevTools, open Application > WebMCP. The panel shows the tools of the page. You can run each tool from the panel.
 
-Give tool input as an object, not as a JSON string.
-For more information, see the [Chrome documentation](https://developer.chrome.com/docs/ai/webmcp/imperative-api).
+Give the tool input as an object. Do not give it as a JSON string.
+For more information, refer to the [Chrome documentation](https://developer.chrome.com/docs/ai/webmcp/imperative-api).
 
 ## Decisions
 
@@ -63,48 +66,48 @@ The site uses `document.modelContext.registerTool()`, not the `toolname` attribu
 
 - The site has no HTML `<form>` for booking. The booking flow is in React and Stripe.
 - Many tools only read data. A declarative tool must have a form.
-- The tools must calculate, filter and validate, and give clear errors.
-- The booking tools must go away at the payment step.
+- The tools must calculate, filter and validate. They must also give clear errors.
+- The page must remove the booking tools at the payment step.
 
 If the site adds a plain HTML form, for example a contact form, use the declarative API for it.
 
 ### Tools only where they are useful
 
 Each page registers only the tools that it can run.
-Fewer tools use less of the agent context. An agent cannot call a booking tool without a booking form on the page.
+Fewer tools use less of the agent context. An agent cannot call a booking tool if the page has no booking form.
 
 ### A separate tool to open the payment form
 
 `start_payment` is a separate tool with `consequentialHint`.
-The agent must show the summary to the user first, and the browser can ask the user to confirm.
-The user types the card data, so an agent cannot complete a payment.
+The agent must show the summary to the user first. The browser can ask the user to confirm.
+Only the user types the card data. Thus an agent cannot complete a payment.
 
 ### Data in a static file
 
 The tool data is in `/webmcp/{lang}.json`, not in the page.
-Browsers without WebMCP do not load it, and browsers with WebMCP load it only when an agent uses a tool.
-The cost: the first tool call waits for one small request (about 4.5 KB with gzip).
+Browsers without WebMCP do not load it. Browsers with WebMCP load it only when an agent uses a tool.
+Tradeoff: the first tool call waits for one small request (approximately 4.5 KB with gzip).
 
 ### English descriptions, output in the page language
 
-The agent reads the descriptions, so one language is sufficient.
-The agent shows the output to the user, so the output uses the language of the page.
+The agent reads the descriptions. One language is sufficient for the agent.
+The agent shows the output to the user. Thus the output uses the language of the page.
 
 ### One set of option rules
 
 The option rules are pure functions. The widgets and `set_booking_options` use them.
-An agent and a person get the same result, and a change to a rule changes the two paths.
-The cost: the option widgets were changed to use these functions.
+An agent and a person get the same result. A change to a rule changes the two paths.
+Tradeoff: we changed the option widgets to use these functions.
 
 ### One set of option schemas
 
-The server MCP and WebMCP use the same zod schemas, so they cannot show different options.
-WebMCP changes them to plain JSON Schema without `$schema`, `additionalProperties`, the safe-integer limits and `exclusiveMinimum`.
+The server MCP and WebMCP use the same zod schemas. Thus they cannot show different options.
+WebMCP changes the schemas to plain JSON Schema. It removes `$schema`, `additionalProperties`, the safe-integer limits and `exclusiveMinimum`.
 With the full zod output, Chrome DevTools showed no parameters for `set_booking_options`.
 
 ### Simple schemas, strict code
 
-The schemas are simple. The code does the strict validation and gives clear errors, so the agent can try again with correct values.
+The schemas are simple. The code does the strict validation and gives clear errors. Then the agent can try again with correct values.
 
 ### Output limit of 1,500 characters
 
@@ -118,8 +121,8 @@ Chrome recommends 1,500 characters or less for each tool output.
 ### Local types and a local hook
 
 The code does not use the `webmcp-types` or `use-webmcp-tool` packages.
-The API changes frequently. All calls go through `register.ts`, so an API change touches one file.
+The API changes often. All calls use `register.ts`. Thus an API change affects only one file.
 
 ### Same origin only
 
-The tools do not use `exposedTo`. No other site must call them.
+The tools do not use `exposedTo`. Other sites cannot call them.
