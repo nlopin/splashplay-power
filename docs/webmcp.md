@@ -99,6 +99,19 @@ The option rules are pure functions. The widgets and `set_booking_options` use t
 An agent and a person get the same result. A change to a rule changes the two paths.
 Tradeoff: we changed the option widgets to use these functions.
 
+### Imperative handle on the option widgets
+
+Each option widget keeps its own state. `set_booking_options` must change this state from `BookingForm`.
+Each widget gives an `apply()` method to `BookingForm` with `useImperativeHandle`.
+`apply()` uses the same pure functions as a click. It returns the price and the changed values immediately.
+
+We did not use these alternatives:
+
+- Move the state of the widgets to `BookingForm`. This is a large change to the booking flow for users.
+- Give the values to the widget as a prop. The widget applies the values in an effect after the render. Thus the tool cannot return the result in the same call.
+
+Tradeoff: two `apply()` calls before a render start from the same state. Each agent tool call is a separate call, thus this does not occur.
+
 ### One set of option schemas
 
 The server MCP and WebMCP use the same zod schemas. Thus they cannot show different options.
