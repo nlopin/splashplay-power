@@ -1,7 +1,5 @@
 # WebMCP: Tools for Browser Agents
 
-This document is written in ASD-STE100 Simplified Technical English.
-
 ## 1. Overview
 
 WebMCP is a proposed web standard from Chrome. It is in an origin trial.
