@@ -1040,9 +1040,6 @@
     "payment_loading": "The payment form is already loading.",
     "payment_shown": "The payment form is open for {amount}. The user enters their card details on the page; this step is theirs.",
     "payment_slot_full": "That slot is no longer available. Pick another one with find_open_slots.",
-    "payment_failed": "The payment form couldn't be opened. Try again, or ask the user to press the payment button.",
-    "booking_confirmed": "Booking confirmed: {title}. Paid {amount}.",
-    "booking_processing": "The payment is still processing. Reload the page in a moment.",
-    "booking_failed": "The payment didn't go through. The user can try again from the booking page."
+    "payment_failed": "The payment form couldn't be opened. Try again, or ask the user to press the payment button."
   }
 }

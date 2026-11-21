@@ -1040,9 +1040,6 @@
     "payment_loading": "Le formulaire de paiement est déjà en cours de chargement.",
     "payment_shown": "Le formulaire de paiement est ouvert pour {amount}. La personne saisit ses données de carte sur la page ; cette étape lui revient.",
     "payment_slot_full": "Ce créneau n'est plus disponible. Choisissez-en un autre avec find_open_slots.",
-    "payment_failed": "Le formulaire de paiement n'a pas pu s'ouvrir. Réessayez ou demandez à la personne d'appuyer sur le bouton de paiement.",
-    "booking_confirmed": "Réservation confirmée : {title}. Payé : {amount}.",
-    "booking_processing": "Le paiement est encore en cours de traitement. Rechargez la page dans un instant.",
-    "booking_failed": "Le paiement n'a pas abouti. La personne peut réessayer depuis la page de réservation."
+    "payment_failed": "Le formulaire de paiement n'a pas pu s'ouvrir. Réessayez ou demandez à la personne d'appuyer sur le bouton de paiement."
   }
 }

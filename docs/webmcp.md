@@ -31,10 +31,9 @@ The two systems use the same option schemas.
 | `get_booking_summary` | readOnly      | Gives the slot, the options, the price, and the reason if the user cannot pay yet.                       |
 | `start_payment`       | consequential | Does the same action as the "Pay to book" button. It opens the Stripe form and gives the server price. |
 
-### Other pages
+### Payment step
 
-- Payment step: no tools. Only the user can use this step.
-- `/complete`: `get_booking_confirmation` (readOnly) gives the status, the title, the time and the amount.
+The payment step has no tools. Only the user can use this step.
 
 Agents can book `couples`, `family`, `friends` and `open_session`. Team building shows the contact data.
 

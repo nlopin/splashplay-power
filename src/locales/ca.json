@@ -1040,9 +1040,6 @@
     "payment_loading": "El formulari de pagament ja s'està carregant.",
     "payment_shown": "El formulari de pagament és obert per {amount}. La persona introdueix les dades de la targeta a la pàgina; aquest pas és seu.",
     "payment_slot_full": "Aquest horari ja no està disponible. Tria'n un altre amb find_open_slots.",
-    "payment_failed": "No s'ha pogut obrir el formulari de pagament. Torna-ho a provar o demana a la persona que premi el botó de pagament.",
-    "booking_confirmed": "Reserva confirmada: {title}. Pagat: {amount}.",
-    "booking_processing": "El pagament encara s'està processant. Recarrega la pàgina d'aquí a un moment.",
-    "booking_failed": "El pagament no s'ha completat. Es pot tornar a provar des de la pàgina de reserva."
+    "payment_failed": "No s'ha pogut obrir el formulari de pagament. Torna-ho a provar o demana a la persona que premi el botó de pagament."
   }
 }

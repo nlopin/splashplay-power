@@ -1040,9 +1040,6 @@
     "payment_loading": "El formulario de pago ya se está cargando.",
     "payment_shown": "El formulario de pago está abierto por {amount}. La persona introduce los datos de su tarjeta en la página; este paso es suyo.",
     "payment_slot_full": "Ese horario ya no está disponible. Elige otro con find_open_slots.",
-    "payment_failed": "No se ha podido abrir el formulario de pago. Inténtalo de nuevo o pide a la persona que pulse el botón de pago.",
-    "booking_confirmed": "Reserva confirmada: {title}. Pagado: {amount}.",
-    "booking_processing": "El pago todavía se está procesando. Recarga la página en un momento.",
-    "booking_failed": "El pago no se ha completado. Se puede volver a intentar desde la página de reserva."
+    "payment_failed": "No se ha podido abrir el formulario de pago. Inténtalo de nuevo o pide a la persona que pulse el botón de pago."
   }
 }
