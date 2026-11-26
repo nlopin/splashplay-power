@@ -925,7 +925,7 @@
     "meta_description": "Comment SplashPlay Studio (Aleksandra Lopina) collecte, utilise et protège vos données personnelles lorsque vous réservez une séance, effectuez un paiement ou naviguez sur le site.",
     "h1": "Politique de confidentialité",
     "last_updated_label": "Dernière mise à jour :",
-    "last_updated": "26 août 2026",
+    "last_updated": "27 novembre 2026",
     "intro": "Chez SplashPlay, nous prenons au sérieux la confidentialité de vos données. Cette politique explique quelles informations nous collectons lorsque vous réservez une séance, achetez une carte cadeau ou naviguez sur splashplay.es, à quoi elles servent, avec qui nous les partageons et quels droits vous avez sur elles.",
     "s1_title": "1. Qui est responsable de vos données",
     "s1_p1": "Le responsable du traitement de vos données personnelles est Aleksandra Lopina, travailleuse indépendante (autónoma), exerçant sous le nom « SplashPlay Studio », domiciliée au Carrer del Concili de Trento, 7, 08018 Barcelone, Espagne.",
@@ -942,7 +942,7 @@
     "s2_telegram_title": "Notifications internes de réservation",
     "s2_telegram_body": "Lorsqu'une réservation est créée, modifiée ou annulée, un message contenant votre nom, votre e-mail, votre numéro de téléphone et (en cas d'annulation) le motif d'annulation est automatiquement envoyé à un chat Telegram interne que nous utilisons uniquement pour gérer l'atelier.",
     "s2_analytics_title": "Analyse et publicité",
-    "s2_analytics_body": "Nous utilisons Amplitude pour comprendre l'utilisation du site (pages consultées, clics, étapes du parcours de réservation) ainsi que sa fonctionnalité de relecture de session (session replay), qui peut enregistrer la façon dont vous interagissez avec la page. Nous utilisons également Google Tag Manager, Google Ads et le pixel Meta (Facebook/Instagram) pour mesurer la performance de nos publicités et, sur la base de votre comportement sur le site, pour constituer des audiences de remarketing (vous montrer des publicités après votre visite) et des audiences similaires (lookalike) sur Google et Meta — autrement dit, ces outils réalisent un profilage à des fins publicitaires. Ces outils peuvent collecter votre adresse IP, des identifiants d'appareil/navigateur et votre activité sur le site via des cookies ou technologies similaires. Ces outils se chargent actuellement dès votre visite du site, sans demande de consentement préalable ; nous développons un dispositif de gestion des cookies qui vous permettra d'accepter ou de refuser ce profilage publicitaire avant son exécution.",
+    "s2_analytics_body": "Nous utilisons Amplitude pour comprendre l'utilisation du site (pages consultées, clics, étapes du parcours de réservation) ainsi que sa fonctionnalité de relecture de session (session replay), qui peut enregistrer la façon dont vous interagissez avec la page. Nous utilisons également Google Tag Manager, Google Ads et le pixel Meta (Facebook/Instagram) pour mesurer la performance de nos publicités et, sur la base de votre comportement sur le site, pour constituer des audiences de remarketing (vous montrer des publicités après votre visite) et des audiences similaires (lookalike) sur Google et Meta — autrement dit, ces outils réalisent un profilage à des fins publicitaires. Ces outils peuvent collecter votre adresse IP, des identifiants d'appareil/navigateur et votre activité sur le site via des cookies ou technologies similaires. Ces outils ne s'activent que si vous donnez votre consentement dans le bandeau cookies. Tant que vous n'avez pas fait de choix, ou si vous choisissez « Ne pas suivre », Amplitude et le pixel Meta ne s'activent pas, et les balises Google fonctionnent en mode consentement (Consent Mode) avec tous les signaux refusés : elles ne déposent aucun cookie et n'envoient que des signaux limités sans cookies.",
     "s2_hosting_title": "Hébergement et journaux techniques",
     "s2_hosting_body": "Notre site web et nos fonctions serveur sont hébergés sur Netlify, qui génère des journaux techniques temporaires (par exemple, des erreurs ou du trafic de fonctions) pouvant inclure des adresses IP ou d'autres données contenues dans les requêtes.",
     "s3_title": "3. Pourquoi nous traitons vos données (base légale)",
@@ -1010,7 +1010,7 @@
       "Pixel Meta — mesure des campagnes et constitution d'audiences de remarketing/similaires sur Facebook/Instagram à partir de votre activité sur le site (profilage publicitaire) ; cookies `_fbp`/`_fbc`, expirent après 90 jours.",
       "Google Maps — la carte interactive intégrée dans la section Contact se charge directement depuis Google et peut déposer ses propres cookies ; pour les visiteurs européens, Google affiche sa propre demande de consentement dans la carte avant leur chargement."
     ],
-    "s8_note": "Vous pouvez bloquer ou supprimer ces cookies depuis les paramètres de votre navigateur ; les bloquer n'affecte pas votre réservation ni votre paiement, qui sont gérés directement avec Stripe et Calendly. Ces outils se chargent actuellement sans demande de consentement préalable — nous développons un panneau de consentement qui vous permettra d'accepter ou de refuser l'analyse et la publicité (y compris le profilage décrit ci-dessus) avant leur exécution.",
+    "s8_note": "Vous pouvez bloquer ou supprimer ces cookies depuis les paramètres de votre navigateur ; les bloquer n'affecte pas votre réservation ni votre paiement, qui sont gérés directement avec Stripe et Calendly. Les cookies d'analyse et de publicité ci-dessus ne sont déposés qu'après avoir choisi « Oui » dans le bandeau cookies. Vous pouvez modifier votre choix à tout moment avec le bouton « Paramètres des cookies » ci-dessous ou en pied de page du site. Si vous retirez votre consentement, nous supprimons ces cookies de votre navigateur et les outils s'arrêtent.",
     "s9_title": "9. Sécurité",
     "s9_body": "Nous appliquons des mesures techniques et organisationnelles raisonnables pour protéger vos données, et confions le traitement des paiements à Stripe, plateforme certifiée PCI-DSS, de sorte que les détails de votre carte ne transitent jamais par nos propres serveurs.",
     "s10_title": "10. Enfants",
@@ -1051,5 +1051,11 @@
     "payment_shown": "Le formulaire de paiement est ouvert pour {amount}. La personne saisit ses données de carte sur la page ; cette étape lui revient.",
     "payment_slot_full": "Ce créneau n'est plus disponible. Choisissez-en un autre avec find_open_slots.",
     "payment_failed": "Le formulaire de paiement n'a pas pu s'ouvrir. Réessayez ou demandez à la personne d'appuyer sur le bouton de paiement."
+  },
+  "consent": {
+    "text": "Pouvons-nous utiliser des cookies d'analyse et de publicité (Google, Meta) pour mieux vendre notre produit ?",
+    "accept": "Oui",
+    "deny": "Ne pas suivre",
+    "settings": "Paramètres des cookies"
   }
 }

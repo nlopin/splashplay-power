@@ -925,7 +925,7 @@
     "meta_description": "Com SplashPlay Studio (Aleksandra Lopina) recull, utilitza i protegeix les teves dades personals quan reserves una sessió, pagues o navegues per la web.",
     "h1": "Política de Privacitat",
     "last_updated_label": "Última actualització:",
-    "last_updated": "26 d'agost de 2026",
+    "last_updated": "27 de novembre de 2026",
     "intro": "A SplashPlay ens prenem seriosament la privacitat de les teves dades. Aquesta política explica quina informació recollim quan reserves una sessió, compres una targeta regal o navegues per splashplay.es, per a què la fem servir, amb qui la compartim i quins drets tens sobre aquesta.",
     "s1_title": "1. Qui és responsable de les teves dades",
     "s1_p1": "La responsable del tractament de les teves dades personals és Aleksandra Lopina, autònoma, amb activitat comercial sota el nom «SplashPlay Studio», amb domicili a Carrer del Concili de Trento, 7, 08018 Barcelona, Espanya.",
@@ -942,7 +942,7 @@
     "s2_telegram_title": "Notificacions internes de reserva",
     "s2_telegram_body": "Quan es crea, modifica o cancel·la una reserva, s'envia automàticament un missatge amb el teu nom, email, telèfon i (si cancel·les) el motiu de la cancel·lació a un xat intern de Telegram que fem servir només nosaltres per gestionar l'estudi.",
     "s2_analytics_title": "Analítica i publicitat",
-    "s2_analytics_body": "Fem servir Amplitude per entendre com s'utilitza la web (pàgines vistes, clics, passos del procés de reserva) i la seva funció de repetició de sessió, que pot gravar com interactues amb la pàgina. També fem servir Google Tag Manager, Google Ads i el Píxel de Meta (Facebook/Instagram) per mesurar el rendiment dels nostres anuncis i, a partir del teu comportament a la web, generar audiències de remàrqueting (mostrar-te anuncis després de la teva visita) i audiències similars («lookalike») a Google i Meta — és a dir, aquestes eines fan elaboració de perfils amb finalitats publicitàries. Aquestes eines poden recollir la teva adreça IP, identificadors de dispositiu/navegador i la teva activitat a la web mitjançant cookies o altres tecnologies similars. Actualment aquestes eines es carreguen en visitar la web, sense demanar-te consentiment abans; estem treballant en un control de consentiment de cookies que et permetrà acceptar o rebutjar aquesta elaboració de perfils publicitaris abans que s'activi.",
+    "s2_analytics_body": "Fem servir Amplitude per entendre com s'utilitza la web (pàgines vistes, clics, passos del procés de reserva) i la seva funció de repetició de sessió, que pot gravar com interactues amb la pàgina. També fem servir Google Tag Manager, Google Ads i el Píxel de Meta (Facebook/Instagram) per mesurar el rendiment dels nostres anuncis i, a partir del teu comportament a la web, generar audiències de remàrqueting (mostrar-te anuncis després de la teva visita) i audiències similars («lookalike») a Google i Meta — és a dir, aquestes eines fan elaboració de perfils amb finalitats publicitàries. Aquestes eines poden recollir la teva adreça IP, identificadors de dispositiu/navegador i la teva activitat a la web mitjançant cookies o altres tecnologies similars. Aquestes eines només s'activen si dones el teu consentiment al bàner de cookies. Fins que triïs, o si tries «No rastrejar», Amplitude i el Píxel de Meta no s'activen, i les etiquetes de Google funcionen en mode de consentiment («Consent Mode») amb tots els senyals denegats: no instal·len cookies i només envien senyals limitats sense cookies.",
     "s2_hosting_title": "Allotjament i registres tècnics",
     "s2_hosting_body": "La nostra web i les nostres funcions de servidor s'allotgen a Netlify, que genera registres tècnics temporals (per exemple, d'errors o del trànsit de les funcions) que poden incloure adreces IP o altres dades incloses a les peticions.",
     "s3_title": "3. Per què tractem les teves dades (base legal)",
@@ -1010,7 +1010,7 @@
       "Píxel de Meta — mesurament de campanyes i generació d'audiències de remàrqueting/similars a Facebook/Instagram a partir de la teva activitat a la web (elaboració de perfils publicitaris); cookies `_fbp`/`_fbc`, caduquen als 90 dies.",
       "Google Maps — el mapa interactiu incrustat a la secció de contacte es carrega directament des de Google i pot establir les seves pròpies cookies; per a visitants de la UE, Google mostra el seu propi avís de consentiment dins del mapa abans de carregar-les."
     ],
-    "s8_note": "Pots bloquejar o eliminar aquestes cookies des de la configuració del teu navegador; bloquejar-les no afecta la teva reserva ni el pagament, que es gestionen directament amb Stripe i Calendly. Actualment aquestes eines es carreguen sense demanar-te consentiment previ — estem construint un panell de consentiment que et permetrà acceptar o rebutjar l'analítica i la publicitat (inclosa l'elaboració de perfils descrita a dalt) abans que s'activin.",
+    "s8_note": "Pots bloquejar o eliminar aquestes cookies des de la configuració del teu navegador; bloquejar-les no afecta la teva reserva ni el pagament, que es gestionen directament amb Stripe i Calendly. Les cookies d'analítica i publicitat de dalt només s'instal·len després que triïs «Sí» al bàner de cookies. Pots canviar la teva elecció en qualsevol moment amb el botó «Configuració de cookies» de sota o del peu de pàgina de la web. Si retires el teu consentiment, eliminem aquestes cookies del teu navegador i les eines s'aturen.",
     "s9_title": "9. Seguretat",
     "s9_body": "Apliquem mesures tècniques i organitzatives raonables per protegir les teves dades, i confiem el processament de pagaments a Stripe, una plataforma certificada sota l'estàndard PCI-DSS, perquè les dades de la teva targeta mai passin pels nostres propis servidors.",
     "s10_title": "10. Menors d'edat",
@@ -1051,5 +1051,11 @@
     "payment_shown": "El formulari de pagament és obert per {amount}. La persona introdueix les dades de la targeta a la pàgina; aquest pas és seu.",
     "payment_slot_full": "Aquest horari ja no està disponible. Tria'n un altre amb find_open_slots.",
     "payment_failed": "No s'ha pogut obrir el formulari de pagament. Torna-ho a provar o demana a la persona que premi el botó de pagament."
+  },
+  "consent": {
+    "text": "Podem fer servir cookies d'analítica i publicitat (Google, Meta) per vendre millor el nostre producte?",
+    "accept": "Sí",
+    "deny": "No rastrejar",
+    "settings": "Configuració de cookies"
   }
 }

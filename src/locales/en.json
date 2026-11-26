@@ -925,7 +925,7 @@
     "meta_description": "How SplashPlay Studio (Aleksandra Lopina) collects, uses and protects your personal data when you book a session, pay, or browse the website.",
     "h1": "Privacy Policy",
     "last_updated_label": "Last updated:",
-    "last_updated": "August 26, 2026",
+    "last_updated": "November 27, 2026",
     "intro": "At SplashPlay we take the privacy of your data seriously. This policy explains what information we collect when you book a session, buy a gift card, or browse splashplay.es, what we use it for, who we share it with, and what rights you have over it.",
     "s1_title": "1. Who is responsible for your data",
     "s1_p1": "The data controller for your personal data is Aleksandra Lopina, a self-employed professional (autónoma) trading as \"SplashPlay Studio\", with address at Carrer del Concili de Trento, 7, 08018 Barcelona, Spain.",
@@ -942,7 +942,7 @@
     "s2_telegram_title": "Internal booking notifications",
     "s2_telegram_body": "When a booking is created, changed or cancelled, a message with your name, email, phone number and (if you cancel) the cancellation reason is automatically sent to an internal Telegram chat that we use solely to run the studio.",
     "s2_analytics_title": "Analytics and advertising",
-    "s2_analytics_body": "We use Amplitude to understand how the website is used (pages viewed, clicks, booking-flow steps) and its session-replay feature, which can record how you interact with the page. We also use Google Tag Manager, Google Ads and the Meta (Facebook/Instagram) Pixel to measure the performance of our ads and, based on your on-site behaviour, to build remarketing audiences (showing you ads after your visit) and lookalike audiences on Google and Meta — in other words, these tools carry out profiling for advertising purposes. These tools may collect your IP address, device/browser identifiers and on-site activity through cookies or similar technologies. These tools currently load when you visit the site, without asking for your consent first; we are building a cookie-consent control that will let you accept or reject this advertising profiling before it runs.",
+    "s2_analytics_body": "We use Amplitude to understand how the website is used (pages viewed, clicks, booking-flow steps) and its session-replay feature, which can record how you interact with the page. We also use Google Tag Manager, Google Ads and the Meta (Facebook/Instagram) Pixel to measure the performance of our ads and, based on your on-site behaviour, to build remarketing audiences (showing you ads after your visit) and lookalike audiences on Google and Meta — in other words, these tools carry out profiling for advertising purposes. These tools may collect your IP address, device/browser identifiers and on-site activity through cookies or similar technologies. These tools run only if you agree in the cookie banner. Until you choose, or if you select “Don't track”, Amplitude and the Meta Pixel do not start, and Google tags run in Consent Mode with all consent signals set to “denied”: they set no cookies and send only limited, cookieless signals.",
     "s2_hosting_title": "Hosting and technical logs",
     "s2_hosting_body": "Our website and server functions are hosted on Netlify, which generates temporary technical logs (for example, of errors or function traffic) that may include IP addresses or other data included in requests.",
     "s3_title": "3. Why we process your data (legal basis)",
@@ -1010,7 +1010,7 @@
       "Meta Pixel — campaign measurement and building remarketing/lookalike audiences on Facebook/Instagram from your on-site activity (advertising profiling); `_fbp`/`_fbc` cookies, expire after 90 days.",
       "Google Maps — the interactive map embedded in the Contact section loads directly from Google and may set its own cookies; for EU visitors, Google shows its own consent prompt inside the map before loading them."
     ],
-    "s8_note": "You can block or delete these cookies from your browser settings; blocking them does not affect your booking or payment, which are handled directly with Stripe and Calendly. These tools currently load without asking for your consent first — we are building a consent panel that will let you accept or reject analytics and advertising (including the profiling described above) before they run.",
+    "s8_note": "You can block or delete these cookies from your browser settings; blocking them does not affect your booking or payment, which are handled directly with Stripe and Calendly. The analytics and advertising cookies above are set only after you select “Yes” in the cookie banner. You can change your choice at any time with the “Cookie settings” button below or in the website footer. If you withdraw your consent, we delete these cookies from your browser and the tools stop.",
     "s9_title": "9. Security",
     "s9_body": "We apply reasonable technical and organisational measures to protect your data, and we entrust payment processing to Stripe, a PCI-DSS certified platform, so your card details never pass through our own servers.",
     "s10_title": "10. Children",
@@ -1051,5 +1051,11 @@
     "payment_shown": "The payment form is open for {amount}. The user enters their card details on the page; this step is theirs.",
     "payment_slot_full": "That slot is no longer available. Pick another one with find_open_slots.",
     "payment_failed": "The payment form couldn't be opened. Try again, or ask the user to press the payment button."
+  },
+  "consent": {
+    "text": "Can we use analytics and advertising cookies (Google, Meta) to better sell our product?",
+    "accept": "Yes",
+    "deny": "Don't track",
+    "settings": "Cookie settings"
   }
 }

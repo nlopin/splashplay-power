@@ -21,6 +21,8 @@ const { title, description } = Astro.props;
 const language = getCurrentLanguage(Astro.currentLocale);
 const t = createAstroTranslator(Astro.currentLocale, "home");
 const tSchema = createAstroTranslator(Astro.currentLocale, "schema");
+const tConsent = createAstroTranslator(Astro.currentLocale, "consent");
+const tMain = createAstroTranslator(Astro.currentLocale, "main");
 
 const pageTitle = title || t("title");
 const pageDescription = description || t("description");
@@ -160,8 +162,34 @@ const localBusinessSchema = {
         />
         <script is:inline src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"></script>
         <script is:inline src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.8.0-min.js.gz"></script>
-        <script is:inline>window.amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
-        window.amplitude.init('5eca8b4e2674622d9489bf466cdab71a', { 'autocapture': { 'elementInteractions': true } });</script>
+        <script is:inline>
+            (function () {
+                // init() is what stores Amplitude's device ID cookie, so it waits for consent.
+                // amplitude.track() calls made before init() stay in an in-memory queue and are sent only if init() runs.
+                // Ad blockers often block cdn.amplitude.com, so window.amplitude and window.sessionReplay can be undefined.
+                var started = false;
+                window.startAmplitude = function () {
+                    var amplitude = window.amplitude;
+                    if (!amplitude || typeof amplitude.init !== 'function') return;
+                    if (started) {
+                        amplitude.setOptOut(false);
+                        return;
+                    }
+                    started = true;
+                    if (window.sessionReplay && typeof window.sessionReplay.plugin === 'function') {
+                        amplitude.add(window.sessionReplay.plugin({ sampleRate: 1 }));
+                    }
+                    // stopAmplitude() saves "opted out" in Amplitude's cookie, and init() reads it back. optOut: false overrides it, because init() runs only after a "yes".
+                    amplitude.init('5eca8b4e2674622d9489bf466cdab71a', { 'autocapture': { 'elementInteractions': true }, optOut: false });
+                };
+                window.stopAmplitude = function () {
+                    if (started) window.amplitude.setOptOut(true);
+                };
+                var choice = null;
+                try { choice = localStorage.getItem('consentChoice'); } catch (e) {}
+                if (choice === 'granted') window.startAmplitude();
+            })();
+        </script>
         <!-- Meta Pixel Code -->
         <script is:inline>
           !function(f,b,e,v,n,t,s)
@@ -172,38 +200,91 @@ const localBusinessSchema = {
           t.src=v;s=b.getElementsByTagName(e)[0];
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
+          (function () {
+              var choice = null;
+              try { choice = localStorage.getItem('consentChoice'); } catch (e) {}
+              // Must run before init. The banner calls fbq('consent', 'grant') when the user accepts.
+              if (choice !== 'granted') fbq('consent', 'revoke');
+          })();
           fbq('init', '1853018198982722');
           fbq('track', 'PageView');
         </script>
-        <noscript><img height="1" width="1" style="display:none"
-        src="https://www.facebook.com/tr?id=1853018198982722&ev=PageView&noscript=1"
-        /></noscript>
+        <!-- No <noscript> pixel: without JavaScript the consent banner cannot run, so there is never consent. -->
         <!-- End Meta Pixel Code -->
     </head>
     <body>
         <slot />
         <div id="consent-banner" class="consent-banner" hidden>
-            <p>We track your activities to better sell our product. Are you OK?</p>
-            <button type="button" id="consent-accept" class="consent-accept">OK</button>
-            <a href="#" id="consent-deny" class="consent-deny">Don't track</a>
+            <p>{tConsent("text")} <a href={getLocalizedPath("/privacy-policy", language)} class="consent-policy">{tMain("privacy_policy_link")}</a></p>
+            <div class="consent-actions">
+                <button type="button" id="consent-accept" class="consent-accept">{tConsent("accept")}</button>
+                <button type="button" id="consent-deny" class="consent-deny">{tConsent("deny")}</button>
+            </div>
         </div>
         <script is:inline>
             (function () {
                 var banner = document.getElementById('consent-banner');
                 var stored = null;
                 try { stored = localStorage.getItem('consentChoice'); } catch (e) {}
-                if (stored === 'granted' || stored === 'denied') return;
-                banner.hidden = false;
+                if (stored !== 'granted' && stored !== 'denied') banner.hidden = false;
                 function gtag() { window.dataLayer.push(arguments); }
-                function choose(state, event) {
-                    if (event) event.preventDefault();
+                // Each vendor call is isolated, so one blocked or broken vendor cannot stop the others.
+                function safely(fn) { try { fn(); } catch (e) {} }
+                // First-party cookies of Google Analytics, Google Ads, the Meta Pixel and Amplitude.
+                var TRACKING_COOKIE = /^(_ga($|_)|_gid$|_gat|_gcl_|_fbp$|_fbc$|AMP_)/;
+                function deleteTrackingData() {
+                    // Vendors set cookies on the parent domain (for example, .splashplay.es), and a cookie
+                    // is deleted only with the same domain, so try the host and each parent domain.
+                    var labels = location.hostname.split('.');
+                    var domains = [''];
+                    for (var i = 0; i < labels.length - 1; i++) domains.push('; domain=.' + labels.slice(i).join('.'));
+                    document.cookie.split(';').forEach(function (cookie) {
+                        var name = cookie.split('=')[0].trim();
+                        if (!TRACKING_COOKIE.test(name)) return;
+                        domains.forEach(function (domain) {
+                            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/' + domain;
+                        });
+                    });
+                    // localStorage: Amplitude's unsent events, Google Ads' _gcl_ls, and the Meta Pixel's referrer keys.
+                    for (var k = localStorage.length - 1; k >= 0; k--) {
+                        var key = localStorage.key(k);
+                        if (key && /^(AMP_|_gcl_|lastExternalReferrer)/.test(key)) localStorage.removeItem(key);
+                    }
+                }
+                var current = stored;
+                function choose(state) {
+                    var withdrawn = current === 'granted' && state === 'denied';
+                    current = state;
+                    banner.hidden = true;
+                    try { localStorage.setItem('consentChoice', state); } catch (e) {}
                     window.dataLayer = window.dataLayer || [];
                     gtag('consent', 'update', { ad_storage: state, ad_user_data: state, ad_personalization: state, analytics_storage: state });
-                    try { localStorage.setItem('consentChoice', state); } catch (e) {}
-                    banner.hidden = true;
+                    var granted = state === 'granted';
+                    safely(function () { if (window.fbq) window.fbq('consent', granted ? 'grant' : 'revoke'); });
+                    safely(function () {
+                        if (granted && window.startAmplitude) window.startAmplitude();
+                        if (!granted && window.stopAmplitude) window.stopAmplitude();
+                    });
+                    if (withdrawn) {
+                        safely(deleteTrackingData);
+                        // Scripts that already run (for example, Amplitude session replay) stop only with a new
+                        // page load. After the reload, no tracker starts because the stored choice is "denied".
+                        location.reload();
+                    }
                 }
-                document.getElementById('consent-accept').addEventListener('click', function (e) { choose('granted', e); });
-                document.getElementById('consent-deny').addEventListener('click', function (e) { choose('denied', e); });
+                // Window capture phase runs before the vendors' click listeners, so Meta's automatic
+                // button tracking already sees the revoke and does not report the "Don't track" click.
+                window.addEventListener('click', function (e) {
+                    var target = e.target && e.target.closest ? e.target : null;
+                    if (!target) return;
+                    if (target.closest('#consent-accept')) choose('granted');
+                    else if (target.closest('#consent-deny')) choose('denied');
+                    // Any element with data-consent-settings (for example, the footer link) shows the banner again.
+                    else if (target.closest('[data-consent-settings]')) {
+                        e.preventDefault();
+                        banner.hidden = false;
+                    }
+                }, true);
             })();
         </script>
         <!-- Google Tag Manager (noscript) -->
@@ -1285,7 +1366,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         z-index: 10000;
         display: flex;
         flex-wrap: wrap;
-        align-items: center;
+        align-items: baseline;
         justify-content: center;
         gap: 12px 20px;
         padding: 16px;
@@ -1301,21 +1382,40 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         display: none;
     }
 
+    .consent-banner p {
+        margin: 0;
+    }
+
+    .consent-actions {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+    }
+
     .consent-accept {
-        padding: 12px 40px;
+        padding: 8px 24px;
         border: none;
         border-radius: 8px;
         background: var(--orange);
         color: var(--white);
         font: inherit;
-        font-size: var(--font-lg);
         font-weight: 700;
         cursor: pointer;
     }
 
     .consent-deny {
+        padding: 7px 23px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: transparent;
         color: var(--dark-text);
-        font-size: var(--font-xs);
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .consent-policy {
+        color: inherit;
+        white-space: nowrap;
     }
 </style>
 

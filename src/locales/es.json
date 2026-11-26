@@ -925,7 +925,7 @@
     "meta_description": "Cómo SplashPlay Studio (Aleksandra Lopina) recoge, usa y protege tus datos personales al reservar una sesión, pagar o navegar por la web.",
     "h1": "Política de Privacidad",
     "last_updated_label": "Última actualización:",
-    "last_updated": "26 de agosto de 2026",
+    "last_updated": "27 de noviembre de 2026",
     "intro": "En SplashPlay nos tomamos en serio la privacidad de tus datos. Esta política explica qué información recogemos cuando reservas una sesión, compras una tarjeta regalo o navegas por splashplay.es, para qué la usamos, con quién la compartimos y qué derechos tienes sobre ella.",
     "s1_title": "1. Quién es el responsable de tus datos",
     "s1_p1": "La responsable del tratamiento de tus datos personales es Aleksandra Lopina, autónoma, con actividad comercial bajo el nombre «SplashPlay Studio», con domicilio en Carrer del Concili de Trento, 7, 08018 Barcelona, España.",
@@ -942,7 +942,7 @@
     "s2_telegram_title": "Notificaciones internas de reserva",
     "s2_telegram_body": "Cuando se crea, modifica o cancela una reserva, se envía automáticamente un mensaje con tu nombre, email, teléfono y (si cancelas) el motivo de la cancelación a un chat interno de Telegram que solo usamos nosotros para gestionar el estudio.",
     "s2_analytics_title": "Analítica y publicidad",
-    "s2_analytics_body": "Usamos Amplitude para entender cómo se usa la web (páginas vistas, clics, pasos del proceso de reserva) y su función de repetición de sesión, que puede grabar cómo interactúas con la página. También usamos Google Tag Manager, Google Ads y el Píxel de Meta (Facebook/Instagram) para medir el rendimiento de nuestros anuncios y, a partir de tu comportamiento en la web, generar audiencias de remarketing (mostrarte anuncios después de tu visita) y audiencias similares («lookalike») en Google y Meta — es decir, estas herramientas hacen elaboración de perfiles con fines publicitarios. Estas herramientas pueden recoger tu dirección IP, identificadores de dispositivo/navegador y tu actividad en la web mediante cookies u otras tecnologías similares. Actualmente estas herramientas se cargan al visitar la web, sin pedirte consentimiento antes; estamos trabajando en un control de consentimiento de cookies que te permitirá aceptar o rechazar esta elaboración de perfiles publicitarios antes de que se active.",
+    "s2_analytics_body": "Usamos Amplitude para entender cómo se usa la web (páginas vistas, clics, pasos del proceso de reserva) y su función de repetición de sesión, que puede grabar cómo interactúas con la página. También usamos Google Tag Manager, Google Ads y el Píxel de Meta (Facebook/Instagram) para medir el rendimiento de nuestros anuncios y, a partir de tu comportamiento en la web, generar audiencias de remarketing (mostrarte anuncios después de tu visita) y audiencias similares («lookalike») en Google y Meta — es decir, estas herramientas hacen elaboración de perfiles con fines publicitarios. Estas herramientas pueden recoger tu dirección IP, identificadores de dispositivo/navegador y tu actividad en la web mediante cookies u otras tecnologías similares. Estas herramientas solo se activan si das tu consentimiento en el banner de cookies. Hasta que elijas, o si eliges «No rastrear», Amplitude y el Píxel de Meta no se activan, y las etiquetas de Google funcionan en modo de consentimiento («Consent Mode») con todas las señales denegadas: no instalan cookies y solo envían señales limitadas sin cookies.",
     "s2_hosting_title": "Alojamiento y registros técnicos",
     "s2_hosting_body": "Nuestra web y nuestras funciones de servidor se alojan en Netlify, que genera registros técnicos temporales (por ejemplo, de errores o del tráfico de las funciones) que pueden incluir direcciones IP u otros datos incluidos en las peticiones.",
     "s3_title": "3. Por qué tratamos tus datos (base legal)",
@@ -1010,7 +1010,7 @@
       "Píxel de Meta — medición de campañas y generación de audiencias de remarketing/similares en Facebook/Instagram a partir de tu actividad en la web (elaboración de perfiles publicitarios); cookies `_fbp`/`_fbc`, caducan a los 90 días.",
       "Google Maps — el mapa interactivo insertado en la sección de contacto se carga directamente desde Google y puede fijar sus propias cookies; para visitantes de la UE, Google muestra su propio aviso de consentimiento dentro del mapa antes de cargarlas."
     ],
-    "s8_note": "Puedes bloquear o eliminar estas cookies desde la configuración de tu navegador; bloquearlas no afecta a tu reserva ni al pago, que se gestionan directamente con Stripe y Calendly. Actualmente estas herramientas se cargan sin pedirte consentimiento previo — estamos construyendo un panel de consentimiento que te permitirá aceptar o rechazar la analítica y la publicidad (incluida la elaboración de perfiles descrita arriba) antes de que se activen.",
+    "s8_note": "Puedes bloquear o eliminar estas cookies desde la configuración de tu navegador; bloquearlas no afecta a tu reserva ni al pago, que se gestionan directamente con Stripe y Calendly. Las cookies de analítica y publicidad de arriba solo se instalan después de que elijas «Sí» en el banner de cookies. Puedes cambiar tu elección en cualquier momento con el botón «Configuración de cookies» de abajo o del pie de página de la web. Si retiras tu consentimiento, eliminamos estas cookies de tu navegador y las herramientas se detienen.",
     "s9_title": "9. Seguridad",
     "s9_body": "Aplicamos medidas técnicas y organizativas razonables para proteger tus datos, y confiamos el procesamiento de pagos a Stripe, una plataforma certificada bajo el estándar PCI-DSS, para que los datos de tu tarjeta nunca pasen por nuestros propios servidores.",
     "s10_title": "10. Menores de edad",
@@ -1051,5 +1051,11 @@
     "payment_shown": "El formulario de pago está abierto por {amount}. La persona introduce los datos de su tarjeta en la página; este paso es suyo.",
     "payment_slot_full": "Ese horario ya no está disponible. Elige otro con find_open_slots.",
     "payment_failed": "No se ha podido abrir el formulario de pago. Inténtalo de nuevo o pide a la persona que pulse el botón de pago."
+  },
+  "consent": {
+    "text": "¿Podemos usar cookies de analítica y publicidad (Google, Meta) para vender mejor nuestro producto?",
+    "accept": "Sí",
+    "deny": "No rastrear",
+    "settings": "Configuración de cookies"
   }
 }
