@@ -7,6 +7,7 @@ import {
 import { CONTACT_EMAIL, WHATSAPP_LINK } from "../../constants";
 
 const t = createAstroTranslator(Astro.currentLocale, "main");
+const tConsent = createAstroTranslator(Astro.currentLocale, "consent");
 const language = getCurrentLanguage(Astro.currentLocale);
 const privacyPolicyHref = `${languagePrefixes[language]}/privacy-policy`;
 ---
@@ -70,9 +71,12 @@ const privacyPolicyHref = `${languagePrefixes[language]}/privacy-policy`;
     <div class="container">
         <div class="footer__content">
             <div class="footer__legal">
+                <div class="footer__links">
+                    <a href={privacyPolicyHref} class="footer__privacy-link">{t("privacy_policy_link")}</a>
+                    <a href="/api/mcp" class="footer__privacy-link">{t("ai_agent_link")}</a>
+                    <button type="button" class="footer__privacy-link footer__consent-settings" data-consent-settings>{tConsent("settings")}</button>
+                </div>
                 <p>{t("copyright")}</p>
-                <a href={privacyPolicyHref} class="footer__privacy-link">{t("privacy_policy_link")}</a>
-                <a href="/api/mcp" class="footer__privacy-link">{t("ai_agent_link")}</a>
             </div>
             <div class="footer__social">
                 <a
@@ -194,6 +198,13 @@ const privacyPolicyHref = `${languagePrefixes[language]}/privacy-policy`;
 
     .footer__legal {
         display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .footer__links {
+        display: flex;
         align-items: center;
         gap: 1rem;
         flex-wrap: wrap;
@@ -208,6 +219,14 @@ const privacyPolicyHref = `${languagePrefixes[language]}/privacy-policy`;
 
     .footer__privacy-link:hover {
         opacity: 1;
+    }
+
+    .footer__consent-settings {
+        padding: 0;
+        border: none;
+        background: none;
+        font: inherit;
+        cursor: pointer;
     }
 
     .social-link {
@@ -235,6 +254,10 @@ const privacyPolicyHref = `${languagePrefixes[language]}/privacy-policy`;
         }
 
         .footer__legal {
+            align-items: center;
+        }
+
+        .footer__links {
             flex-direction: column;
             gap: 0.5rem;
         }
