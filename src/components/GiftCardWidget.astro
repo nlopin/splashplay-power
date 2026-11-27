@@ -35,4 +35,58 @@ const { language } = Astro.props;
         "https://cdn.giftup.app/dist/gift-up.js",
         "giftup",
     );
+
+    // Gift Up calls this in the browser when an order succeeds inside the widget.
+    // There is no thank-you page, so this is the only place to record the sale.
+    // Docs: https://help.giftup.com/article/136-conversion-tracking-via-javascript
+    // Gift card codes are not sent to analytics on purpose.
+    window.giftup("conversion", function (payload) {
+        var currency = String(payload.currency || "").toUpperCase();
+        var giftCards = payload.giftCards || [];
+
+        // GTM: the Google Ads / GA4 / Meta tags fire on this event.
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: "giftcard_purchase",
+            giftcard_value: payload.revenue,
+            giftcard_currency: currency,
+            giftcard_transaction_id: payload.orderId,
+            giftcard_quantity: giftCards.length,
+            giftcard_items: giftCards.map(function (card) {
+                return {
+                    item_id: card.sku || card.item,
+                    item_name: card.item,
+                    price: card.price,
+                    quantity: 1,
+                };
+            }),
+        });
+
+        var amplitude = window.amplitude;
+        if (!amplitude) return;
+
+        amplitude.track("GiftCardPurchased", {
+            orderId: payload.orderId,
+            value: payload.revenue,
+            currency: currency,
+            quantity: giftCards.length,
+            items: giftCards.map(function (card) {
+                return card.item;
+            }),
+        });
+
+        // Amplitude revenue charts read only Revenue events.
+        if (amplitude.Revenue && amplitude.revenue) {
+            var revenue = new amplitude.Revenue()
+                .setProductId("gift_card")
+                .setPrice(payload.revenue)
+                .setQuantity(1)
+                .setRevenueType("gift_card")
+                .setEventProperties({ orderId: payload.orderId, currency: currency });
+            if (typeof revenue.setCurrency === "function") {
+                revenue.setCurrency(currency);
+            }
+            amplitude.revenue(revenue);
+        }
+    });
 </script>
